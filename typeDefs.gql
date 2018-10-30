@@ -1,0 +1,14 @@
+type Todo {
+    _id: ID,
+    task: String! @unique,
+    completed: Boolean!,
+    dateCreated: String!
+}
+
+type Query {
+    getTodos: [Todo]
+}
+
+type Mutation {
+    addTodo(task: String!, completed: Boolean!, dateCreated: String!): Todo!
+}

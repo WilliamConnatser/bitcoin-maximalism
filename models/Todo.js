@@ -1,3 +1,4 @@
+//Mongoose Schema
 const mongoose = require('mongoose');
 
 const TodoSchema = new mongoose.Schema({
@@ -8,12 +9,12 @@ const TodoSchema = new mongoose.Schema({
     },
     dateCreated: {
         type: Date,
+        required: true,
         default: Date.now
     },
     completed: {
         type: Boolean,
-        required: true,
-        unique: true
+        required: true
     }
 });
 
