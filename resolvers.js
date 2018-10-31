@@ -1,4 +1,3 @@
-//GraphQL Resolvers
 module.exports = {
     Query: {
         getTodos: async (_, args, {
