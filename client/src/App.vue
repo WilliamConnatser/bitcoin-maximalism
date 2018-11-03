@@ -1,6 +1,14 @@
 <template>
   <div>
-    <h1>Todos App</h1>
+    <img src="TodoAppLogo.png">
     <router-view/>
   </div>
 </template>
+
+<style>
+
+ div {
+   text-align: center;
+ }
+
+</style>

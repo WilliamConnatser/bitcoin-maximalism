@@ -1,16 +1,40 @@
 <template>
     <div>
-        <h1>Todo List</h1>
         <div v-if="loading">
             Loading...
         </div>
-        <TodoListItem v-else v-for="task in todos" :key="task._id"/>
+        <table v-else>
+            <thead>
+                <tr>
+                    <td>
+                        Task
+                    </td>
+                    <td>
+                        Status
+                    </td>
+                    <td>
+                        Date Created
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <TodoListItem v-for="task in todos" :task="task" :key="task._id" />
+                <tr v-if="noTasks">
+                    <td>
+                        You haven't added any tasks to your todo list yet. <br />
+                        Add a new todo task <a href="/add-todo">here</a>.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
 <script>
     import TodoListItem from './TodoListItem';
-    import {mapGetters} from 'vuex';
+    import {
+        mapGetters
+    } from 'vuex';
 
     export default {
         name: 'TodoList',
@@ -28,7 +52,44 @@
             }
         },
         computed: {
-            ...mapGetters(['loading', 'todos'])
+            ...mapGetters(['loading', 'todos']),
+            noTasks() {
+                //Check if any Todos have been loaded into the Store
+                if (this.$store.getters.todos.length === 0) {
+                    return true;
+                }
+            }
         }
     }
 </script>
+
+<style>
+    img {
+        margin: 2em;
+    }
+
+    table {
+        margin-left: auto;
+        margin-right: auto;
+        border-collapse: collapse;
+        font-family: sans-serif;
+    }
+
+    table,
+    th,
+    td {
+        border: 0.1rem solid #c31932;
+        padding: 1rem;
+    }
+
+    tbody tr:hover {
+        background-color: #464646;
+        color: #ffffff; 
+    }
+
+    thead {
+        background-color: #c31932;
+        color: #ffffff;
+        text-shadow: 1rem;
+    }
+</style>

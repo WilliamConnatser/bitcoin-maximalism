@@ -5,14 +5,17 @@ import Vuex from 'vuex';
 import {
   defaultClient as apolloClient
 } from './main';
-import { GET_TODOS } from './queries';
+import {
+  GET_TODOS
+} from './queries';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     todos: [],
-    loading: false
+    loading: false,
+    mode: 'list'
   },
   mutations: {
     setTodos: (state, payload) => {
@@ -20,6 +23,9 @@ export default new Vuex.Store({
     },
     setLoading: (state, payload) => {
       state.loading = payload;
+    },
+    setMode: (state, payload) => {
+      state.mode = payload;
     }
   },
   actions: {
@@ -47,11 +53,17 @@ export default new Vuex.Store({
           console.error(err);
           commit('setLoading', false);
         })
+    },
+    toggleCompletion: ({
+      commit
+    }, id) => {
+      //Toggle Task Completion
     }
 
   },
   getters: {
     todos: state => state.todos,
-    loading: state => state.loading
+    loading: state => state.loading,
+    mode: state => state.mode
   }
 })

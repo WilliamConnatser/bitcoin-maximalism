@@ -23,8 +23,8 @@ const apolloProvider = new VueApollo({
 Vue.config.productionTip = false;
 
 new Vue({
-  //apolloProvider.provide() injects Apollo into each of our Vue Components
-  provide: apolloProvider.provide(),
+  //apolloProvider injects Apollo into each of our Vue Components
+  apolloProvider,
   router,
   store,
   render: h => h(App)
