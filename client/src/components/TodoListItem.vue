@@ -77,7 +77,7 @@
     content: "";
     height: 1.8em;
     width: 2em;
-    left: 0.2em;
+    left: 0.1em;
     top: 0.1em;
     background-color: white;
     -webkit-transition: .4s;
@@ -93,9 +93,9 @@
   }
 
   input:checked+.slider:before {
-    -webkit-transform: translateX(2.7em);
-    -ms-transform: translateX(2.7em);
-    transform: translateX(2.7em);
+    -webkit-transform: translateX(2.8em);
+    -ms-transform: translateX(2.8em);
+    transform: translateX(2.8em);
   }
 
   /* Rounded sliders */

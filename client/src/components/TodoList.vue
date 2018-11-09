@@ -3,35 +3,43 @@
         <div v-if="loading">
             Loading...
         </div>
-        <table v-else>
-            <thead>
-                <tr>
-                    <td>
-                        Task
-                    </td>
-                    <td>
-                        Status
-                    </td>
-                    <td>
-                        Date Created
-                    </td>
-                </tr>
-            </thead>
-            <tbody>
-                <TodoListItem v-for="task in todos" :task="task" :key="task._id" />
-                <tr v-if="noTasks">
-                    <td>
-                        You haven't added any tasks to your todo list yet. <br />
-                        Add a new todo task <a href="/add-todo">here</a>.
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+
+        <div v-else>
+
+            <AddTodo />
+
+            <table>
+                <thead>
+                    <tr>
+                        <td>
+                            Task
+                        </td>
+                        <td>
+                            Status
+                        </td>
+                        <td>
+                            Date Created
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <TodoListItem v-for="task in todos" :task="task" :key="task._id" />
+                    <tr v-if="noTasks">
+                        <td>
+                            You haven't added any tasks to your todo list yet. <br />
+                            Add a new todo task <a href="/add-todo">here</a>.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
 <script>
+    import AddTodo from './AddTodo';
     import TodoListItem from './TodoListItem';
+
     import {
         mapGetters
     } from 'vuex';
@@ -43,7 +51,8 @@
             this.handleGetTodos();
         },
         components: {
-            TodoListItem
+            TodoListItem,
+            AddTodo
         },
         methods: {
             handleGetTodos() {
@@ -64,9 +73,6 @@
 </script>
 
 <style>
-    img {
-        margin: 2em;
-    }
 
     table {
         margin-left: auto;
@@ -84,12 +90,18 @@
 
     tbody tr:hover {
         background-color: #464646;
-        color: #ffffff; 
+        color: #ffffff;
     }
 
     thead {
         background-color: #c31932;
         color: #ffffff;
         text-shadow: 1rem;
+    }
+
+    #addTodo {
+        background-color: #464646;
+        color: #ffffff;
+        margin: 1em;
     }
 </style>

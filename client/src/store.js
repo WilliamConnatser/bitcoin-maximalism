@@ -14,8 +14,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     todos: [],
-    loading: false,
-    mode: 'list'
+    loading: false
   },
   mutations: {
     setTodos: (state, payload) => {
@@ -23,9 +22,6 @@ export default new Vuex.Store({
     },
     setLoading: (state, payload) => {
       state.loading = payload;
-    },
-    setMode: (state, payload) => {
-      state.mode = payload;
     }
   },
   actions: {
@@ -63,7 +59,6 @@ export default new Vuex.Store({
   },
   getters: {
     todos: state => state.todos,
-    loading: state => state.loading,
-    mode: state => state.mode
+    loading: state => state.loading
   }
 })
