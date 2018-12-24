@@ -27,7 +27,7 @@
                     <tr v-if="noTasks">
                         <td>
                             You haven't added any tasks to your todo list yet. <br />
-                            Add a new todo task <a href="/add-todo">here</a>.
+                            Add a new task using the form above!
                         </td>
                     </tr>
                 </tbody>
@@ -64,7 +64,7 @@
             ...mapGetters(['loading', 'todos']),
             noTasks() {
                 //Check if any Todos have been loaded into the Store
-                if (this.$store.getters.todos.length === 0) {
+                if (this.$store.getters.todos && this.$store.getters.todos.length === 0) {
                     return true;
                 }
             }

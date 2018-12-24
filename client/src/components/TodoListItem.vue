@@ -8,7 +8,7 @@
       <span v-else>Incomplete</span>
       <br/>
       <label @change="toggleCompletion" class="switch">
-        <input type="checkbox">
+        <input type="checkbox" :checked="task.completed">
         <span class="slider round"></span>
       </label>
     </td>
@@ -37,7 +37,8 @@
           str.getMinutes();
       },
       toggleCompletion() {
-        console.log(this.task._id)
+        //Call Vuex action for toggling if a task has been completed
+        this.$store.dispatch('toggleCompletion', this.task._id);
       }
     }
   }

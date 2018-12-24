@@ -1,8 +1,7 @@
 <template>
     <div>
         <form @submit.prevent="onSubmit">
-            <button @click="goHome" id="cancel">Cancel</button>
-            <input>
+            <input ref="task" type="text">
             <button type="submit" id="submit">Add Todo</button>
         </form>
     </div>
@@ -12,12 +11,9 @@
     export default {
         name: 'AddTodo',
         methods: {
-            goHome() {
-                console.log("cancel")
-                this.$router.push('/')
-            },
             onSubmit() {
-                console.log("add")
+                //Call Vuex action for adding Todos, pass the form's value
+                this.$store.dispatch('addTodo', this.$refs.task.value);
             }
         }
     }

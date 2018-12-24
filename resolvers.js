@@ -11,9 +11,7 @@ module.exports = {
     },
     Mutation: {
         addTodo: async (_, {
-            task,
-            completed,
-            dateCreated
+            task
         }, {
             Todo
         }) => {
@@ -23,16 +21,36 @@ module.exports = {
             });
 
             if (todo) {
-                throw new Error('Todo already exists')
+                throw new Error('This task already exists on your to-do list!')
             }
 
+            var id = require('mongodb').ObjectID();
+
             const newTodo = await new Todo({
+                _id: id,
                 task,
-                completed,
-                dateCreated
+                completed: false,
+                dateCreated: new Date()
             }).save();
 
             return newTodo;
+        },
+        toggleCompletion: async (_, {
+            _id
+        }, {
+            Todo
+        }) => {
+
+            Todo.findById(_id, function (err, todo) {
+                if (err) throw new Error('This task does not exist on your to-do list!');
+              
+                todo.completed = !todo.completed;
+                todo.save(function (err) {
+                  if (err) throw new Error('An error ocurred while updating your to-do list!');
+                });
+              });
+
+            return Todo.findById(_id);
         }
     }
 }

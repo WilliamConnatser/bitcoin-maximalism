@@ -6,7 +6,9 @@ import {
   defaultClient as apolloClient
 } from './main';
 import {
-  GET_TODOS
+  GET_TODOS,
+  ADD_TODO,
+  TOGGLE_COMPLETION
 } from './queries';
 
 Vue.use(Vuex)
@@ -22,6 +24,9 @@ export default new Vuex.Store({
     },
     setLoading: (state, payload) => {
       state.loading = payload;
+    },
+    addTodo: (state, payload) => {
+      state.todos.unshift(payload);
     }
   },
   actions: {
@@ -52,8 +57,40 @@ export default new Vuex.Store({
     },
     toggleCompletion: ({
       commit
-    }, id) => {
-      //Toggle Task Completion
+    }, _id) => {
+      apolloClient
+        .mutate({
+          mutation: TOGGLE_COMPLETION,
+          variables: {_id}
+        })
+        .then(({
+          data
+        }) => {
+          //Update the Todo in the Vuex Store
+          console.log(data)
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    addTodo: ({
+      commit
+    }, task) => {
+
+      apolloClient
+        .mutate({
+          mutation: ADD_TODO,
+          variables: {task}
+        })
+        .then(({
+          data
+        }) => {
+          //Add the Todo to the Vuex Store
+          commit('addTodo', data.addTodo);
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
 
   },
