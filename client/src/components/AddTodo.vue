@@ -1,7 +1,7 @@
 <template>
     <div>
         <form @submit.prevent="onSubmit">
-            <input ref="task" type="text">
+            <input v-model="task" type="text">
             <button type="submit" id="submit">Add Todo</button>
         </form>
     </div>
@@ -10,10 +10,17 @@
 <script>
     export default {
         name: 'AddTodo',
+        data: () => {
+            return {
+                task: ''
+            }
+        },
         methods: {
             onSubmit() {
-                //Call Vuex action for adding Todos, pass the form's value
-                this.$store.dispatch('addTodo', this.$refs.task.value);
+                if(this.task !== '') {
+                    //Call Vuex action for adding Todos, and pass the form's current value
+                    this.$store.dispatch('addTodo', this.task);
+                }
             }
         }
     }

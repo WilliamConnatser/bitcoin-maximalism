@@ -47,15 +47,15 @@
     export default {
         name: 'TodoList',
         created() {
-            //Queries database on page load by calling handleGetTodos method
-            this.handleGetTodos();
+            //Queries database on page load by calling getTodos method
+            this.getTodos();
         },
         components: {
             TodoListItem,
             AddTodo
         },
         methods: {
-            handleGetTodos() {
+            getTodos() {
                 //Calls Store Action which executes a GraphQL query
                 this.$store.dispatch('getTodos');
             }
