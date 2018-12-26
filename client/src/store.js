@@ -66,8 +66,9 @@ export default new Vuex.Store({
         .then(({
           data
         }) => {
-          //Update the Todo in the Vuex Store
-          console.log(data)
+          //Nothing need to be done afterwards
+          //The DOM checkbox represents the current version of the truth
+          //If the page is reloaded, then the database will update the Vuex store automatically
         })
         .catch(err => {
           console.error(err);
