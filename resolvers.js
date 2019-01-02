@@ -21,7 +21,7 @@ module.exports = {
             });
 
             if (todo) {
-                throw new Error('This task already exists on your to-do list!')
+                throw new Error('This task already exists on your todo list!')
             }
 
             var id = require('mongodb').ObjectID();
@@ -42,15 +42,27 @@ module.exports = {
         }) => {
 
             Todo.findById(_id, function (err, todo) {
-                if (err) throw new Error('This task does not exist on your to-do list!');
-              
+                if (err) throw new Error('This task does not exist on your todo list!');
+
                 todo.completed = !todo.completed;
                 todo.save(function (err) {
-                  if (err) throw new Error('An error ocurred while updating your to-do list!');
+                    if (err) throw new Error('An error ocurred while updating your todo list!');
                 });
-              });
+            });
 
             return Todo.findById(_id);
+        },
+        deleteTodo: async (_, {
+            _id
+        }, {
+            Todo
+        }) => {
+
+            Todo.findOneAndDelete(_id, function (err) {
+                if (err) throw new Error('This task does not exist on your todo list!');
+            });
+
+            return _id;
         }
     }
 }

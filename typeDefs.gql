@@ -11,5 +11,6 @@ type Query {
 
 type Mutation {
     addTodo(task: String!): Todo!,
-     toggleCompletion(_id: String!): Todo!
+    toggleCompletion(_id: String!): Todo!,
+    deleteTodo(_id: String!): ID
 }

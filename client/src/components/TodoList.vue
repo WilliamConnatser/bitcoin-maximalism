@@ -25,7 +25,7 @@
                 <tbody>
                     <TodoListItem v-for="task in todos" :task="task" :key="task._id" />
                     <tr v-if="noTasks">
-                        <td>
+                        <td colspan="3">
                             You haven't added any tasks to your todo list yet. <br />
                             Add a new task using the form above!
                         </td>
@@ -88,7 +88,7 @@
         padding: 1rem;
     }
 
-    tbody tr:hover {
+    tbody tr:hover td:nth-child(1),tbody tr:hover td:nth-child(2),tbody tr:hover td:nth-child(3) {
         background-color: #464646;
         color: #ffffff;
     }

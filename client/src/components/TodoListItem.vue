@@ -6,14 +6,17 @@
     <td>
       <span v-if="task.completed">Completed</span>
       <span v-else>Incomplete</span>
-      <br/>
+      <br />
       <label @change="toggleCompletion" class="switch">
-        <input type="checkbox" :checked="task.completed">
-        <span class="slider round"></span>
+        <input type="checkbox" :checked="task.completed" tooltip>
+        <span class="slider"></span>
       </label>
     </td>
     <td>
       {{formatDate(task.dateCreated)}}
+    </td>
+    <td class="outside">
+      <button @click="deleteTask" title="Delete this task">X</button>
     </td>
   </tr>
 </template>
@@ -37,8 +40,14 @@
           str.getMinutes();
       },
       toggleCompletion() {
-        //Call Vuex action for toggling if a task has been completed
+        //Call Vuex action to toggle if a task has been completed or not
         this.$store.dispatch('toggleCompletion', this.task._id);
+      },
+      deleteTask(){
+        console.log(this.task)
+        
+        //Call Vuex action for removing the Todo from the database and store
+        this.$store.dispatch('deleteTodo', this.task._id);
       }
     }
   }
@@ -71,8 +80,10 @@
     background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
+    border-radius: 34px;
   }
 
+  /* The slider when false */
   .slider:before {
     position: absolute;
     content: "";
@@ -83,6 +94,7 @@
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
+    border-radius: 50%;
   }
 
   input:checked+.slider {
@@ -99,12 +111,14 @@
     transform: translateX(2.8em);
   }
 
-  /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
+  .outside {
+    border:1px solid #fff;
   }
 
-  .slider.round:before {
+  button {
+    margin: 1em;
+    padding: 1em;
     border-radius: 50%;
+    border-radius: 1em;
   }
 </style>

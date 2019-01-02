@@ -8,7 +8,8 @@ import {
 import {
   GET_TODOS,
   ADD_TODO,
-  TOGGLE_COMPLETION
+  TOGGLE_COMPLETION,
+  DELETE_TODO
 } from './queries';
 
 Vue.use(Vuex)
@@ -27,6 +28,22 @@ export default new Vuex.Store({
     },
     addTodo: (state, payload) => {
       state.todos.unshift(payload);
+    },
+    setCompletion: (state, payload) => {
+      for (var i = 0; i < state.todos.length; i++) {
+        if (state.todos[i]._id === payload._id) {
+          state.todos[i].completed = !state.todos[i].completed;
+          break;
+        }
+      }
+    },
+    removeTodo: (state, payload) => {
+      for (var i = 0; i < state.todos.length; i++) {
+        if (state.todos[i]._id === payload) {
+          state.todos.splice(i, 1);
+          break;
+        }
+      }
     }
   },
   actions: {
@@ -61,14 +78,15 @@ export default new Vuex.Store({
       apolloClient
         .mutate({
           mutation: TOGGLE_COMPLETION,
-          variables: {_id}
+          variables: {
+            _id
+          }
         })
         .then(({
           data
         }) => {
-          //Nothing need to be done afterwards
-          //The DOM checkbox represents the current version of the truth
-          //If the page is reloaded, then the database will update the Vuex store automatically
+          //Toggle the completion boolean in the Vuex Store
+          commit('setCompletion', data.toggleCompletion);
         })
         .catch(err => {
           console.error(err);
@@ -81,7 +99,9 @@ export default new Vuex.Store({
       apolloClient
         .mutate({
           mutation: ADD_TODO,
-          variables: {task}
+          variables: {
+            task
+          }
         })
         .then(({
           data
@@ -92,8 +112,28 @@ export default new Vuex.Store({
         .catch(err => {
           console.error(err);
         });
-    }
+    },
+    deleteTodo: ({
+      commit
+    }, _id) => {
 
+      apolloClient
+        .mutate({
+          mutation: DELETE_TODO,
+          variables: {
+            _id
+          }
+        })
+        .then(({
+          data
+        }) => {
+          //Remove the Todo from the Vuex Store
+          commit('removeTodo', _id);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    }
   },
   getters: {
     todos: state => state.todos,
