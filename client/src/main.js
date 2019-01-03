@@ -13,16 +13,16 @@ import ApolloClient from 'apollo-boost';
 
 Vue.use(VueApollo);
 
-//Set the port to what's stored in the .ENV file if the app is being deployed
+//Set the URI to what's stored in the now.json file if the app is being deployed
 if(process.env.DEPLOYING !== "false") {
-  var apolloAddress = 'http://localhost:4000/graphql'
+  var apolloURI = 'http://localhost:4000/graphql'
 } else {
-  var apolloAddress = process.env.APOLLO_URI;
+  var apolloURI = process.env.GRAPHQL_URI;
 }
 
 //Setup ApolloClient (exported so it can be Imported into the Vuex Store)
 export const defaultClient = new ApolloClient({
-  uri: 'https://vue-vuex-apollo-graphql-mongodb-boilerplate-qvchoyvyuk.now.sh/graphql'
+  uri: apolloURI
 });
 
 //Setup VueApollo
