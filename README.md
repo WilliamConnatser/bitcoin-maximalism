@@ -1,12 +1,6 @@
 This repository contains a barebones implementation of the following stack:
 
-Vue
-Vue Router
-Vuex
-Apollo
-GraphQL
-Mongoose
-MongoDB
+Vue + Vue Router + Vuex + Apollo + GraphQL + Mongoose + MongoDB
 
 ## Project setup
 ```

@@ -1,3 +1,6 @@
+#ZEIT configuration files
+now.json
+
 # Logs
 logs
 *.log
