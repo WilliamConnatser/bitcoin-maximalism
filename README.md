@@ -8,15 +8,16 @@ It is pre-configured to be easily ran in a development environment or deployed v
 ## Project Overview
 
 Almost all Mongoose, Apollo, and GraphQL logic is located server-side in the project's root directory:
-
+```
 typedefs.gql = Defines aliases for GraphQL Models
 /models/Todo.js = Defines GraphQL models (aka. schemas)
 server.js = MongoDB, Mongoose, and Apollo GraphQL initialization
 resolvers.js = GraphQL resolvers which use Mongoose to interact with MongoDB
 now.json = ZEIT Configuration and additional Environment Variables
+```
 
 In the /client directory:
-
+```
 /public/index.html = Root HTML file that the main Vue instance is loaded into
 /src/App.vue = The main Vue instance
 /src/components = Contains all Vue components used in the app
@@ -24,8 +25,7 @@ In the /client directory:
 /src/main.js = Wires Vue up to Vue Router, Apollo GraphQL, and Vuex
 /src/queries.js = Abstracts away the GraphQL queries that are called from the Vuex store
 /src/store.js = Controls local state, and syncs/updates local state with MongoDB via GraphQL
-
-
+```
 
 ## Project Setup
 Run the following commands in the root directory:
