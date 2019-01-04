@@ -1,7 +1,7 @@
 {
-  "name": "vue-vuex-apollo-graphql-mongodb-boilerplate",
+  "name": "bitcoin-maximalism-v2",
   "version": "0.0.1",
-  "description": "Boilerplate containing the classic Todo implementation using Vue, Vuex, Apollo GraphQL, and MongoDB",
+  "description": "BitcoinMaximalism.com is an unbiased and interactive overview of Bitcoin Maximalism.",
   "main": "server.js",
   "scripts": {
     "server": "nodemon server.js",

@@ -15,7 +15,13 @@ const {
 const filePath = path.join(__dirname, 'typeDefs.gql');
 const typeDefs = fs.readFileSync(filePath, 'utf-8');
 const resolvers = require('./resolvers');
-const Todo = require('./models/Todo');
+const Rhetoric = require('./models/Rhetoric');
+const Edit = require('./models/Edit');
+const Opinion = require('./models/Opinion');
+const Resource = require('./models/Resource');
+const Certificate = require('./models/Certificate');
+const Donation = require('./models/Donation');
+const BulletPoint = require('./models/BulletPoint');
 
 //Dynamically set the appropriate MongoDB URI
 //Depends on if the app is being deployed or ran in a development environment
@@ -39,7 +45,13 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     context: {
-        Todo
+        Edit,
+        Opinion,
+        Resource,
+        Rhetoric,
+        Certificate,
+        Donation,
+        BulletPoint
     }
 });
 

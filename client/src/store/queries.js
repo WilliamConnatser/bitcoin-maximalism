@@ -2,6 +2,8 @@ import {
     gql
 } from 'apollo-boost';
 
+/* Example GraphQL mutations and queries!
+
 export const GET_TODOS = gql `
     query {
         getTodos {
@@ -38,4 +40,4 @@ export const DELETE_TODO = gql `
     mutation($_id: String!){
         deleteTodo(_id: $_id)
     }
-`
+` */
