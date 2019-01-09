@@ -9,7 +9,8 @@ const BulletPointSchema = new mongoose.Schema({
         default: Date.now
     },
     slug: {
-        type: String
+        type: String,
+        required: true
     },
     pro: {
         type: Boolean,
@@ -29,17 +30,21 @@ const BulletPointSchema = new mongoose.Schema({
     },
     applicableDonation: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'Donation'
     },
     edits: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Edit'
+        ref: 'Edit',
+        required: true
     },
     dateLastEdited: {
         type: Date,
         required: true,
         default: Date.now
+    },
+    opinions: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Opinion'
     }
 });
 

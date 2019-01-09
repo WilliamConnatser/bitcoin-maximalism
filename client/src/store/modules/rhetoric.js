@@ -1,12 +1,3 @@
-//Import GraphQL dependencies and queries
-import {
-    defaultClient as apolloClient
-} from '../../main';
-import {
-    EXAMPLE,
-    QUERIES
-} from '../queries';
-
 const state = {
     protagonistic: [{
             key: 'inflation-pro',

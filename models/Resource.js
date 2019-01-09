@@ -15,7 +15,7 @@ const ResourceSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
-    name: {
+    title: {
         type: String,
         required: true
     },
@@ -37,7 +37,6 @@ const ResourceSchema = new mongoose.Schema({
     },
     applicableDonation: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'Donation'
     },
     edits: {
@@ -48,6 +47,10 @@ const ResourceSchema = new mongoose.Schema({
         type: Date,
         required: true,
         default: Date.now
+    },
+    opinions: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Opinion'
     }
 });
 

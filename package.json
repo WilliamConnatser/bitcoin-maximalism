@@ -18,12 +18,13 @@
   "author": "William Connatser",
   "license": "ISC",
   "dependencies": {
+    "apollo-link-state": "^0.4.2",
     "apollo-server": "^2.3.1",
     "bcrypt": "^3.0.3",
     "graphql": "^0.13.2",
     "jsonwebtoken": "^8.4.0",
     "md5": "^2.2.1",
-    "mongoose": "^5.4.0",
+    "mongoose": "^5.4.2",
     "now-env": "^3.1.0"
   },
   "devDependencies": {

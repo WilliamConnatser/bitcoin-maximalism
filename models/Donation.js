@@ -8,11 +8,6 @@ const DonationSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
-    publicKey: {
-        type: String,
-        required: true,
-        trim: true
-    },
     ticker: {
         type: String,
         required: true
@@ -25,28 +20,21 @@ const DonationSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    category: {
+    slug: {
+        type: String,
+        require: true
+    },
+    pro: {
+        type: Boolean,
+        required: true
+    },
+    typeCategory: {
         type: String,
         required: true
     },
-    slug: {
-        type: String
-    },
-    pro: {
-        type: Boolean
-    },
-    applicableAction: {
+    type: {
         type: mongoose.Schema.Types.Mixed,
         required: true
-    },
-    edits: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Edit'
-    },
-    dateLastEdited: {
-        type: Date,
-        required: true,
-        default: Date.now
     }
 });
 

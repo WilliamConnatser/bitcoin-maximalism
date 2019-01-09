@@ -1,16 +1,120 @@
-type Todo {
+union Type = BulletPoint | Resource | Opinion | Edit | Certificate
+
+type Token {
+    token: String!
+}
+
+type Rhetoric {
     _id: ID,
-    task: String! @unique,
-    completed: Boolean,
-    dateCreated: String
+    dateCreated: String!,
+    slug: String!@unique,
+    pro: Boolean!,
+    title: String!,
+    bulletPoints: [BulletPoint!]!,
+    resources: [Resource!]!,
+    opinions: [Opinion!]!,
+    approved: Boolean!,
+    dateApproved: String,
+    applicableDonation: Donation,
+    edits: [Edit!]!,
+    dateLastEdited: String!
+}
+
+type BulletPoint {
+    _id: ID,
+    dateCreated: String!,
+    slug: String!,
+    pro: Boolean!,
+    content: String!,
+    approved: Boolean!,
+    dateApproved: String,
+    applicableDonation: Donation,
+    edits: [Edit!]!,
+    dateLastEdited: String!,
+    opinions: [Opinion!]!
+}
+
+type Resource {
+    _id: ID,
+    dateCreated: String!,
+    slug: String,
+    pro: Boolean!,
+    title: String!,
+    media: String!,
+    link: String!,
+    approved: Boolean!,
+    dateApproved: String,
+    applicableDonation: Donation,
+    edits: [Edit!]!,
+    dateLastEdited: String!,
+    opinions: [Opinion!]!
+}
+
+type Opinion {
+    _id: ID,
+    dateCreated: String!,
+    slug: String,
+    pro: Boolean!,
+    comment: String!,
+    approved: Boolean!,
+    dateApproved: String,
+    applicableDonation: Donation
+}
+
+type Edit {
+    _id: ID,
+    dateCreated: String!,
+    slug: String!,
+    pro: Boolean!,
+    old: Type!,
+    new: Type!,
+    approved: Boolean!,
+    dateApproved: String,
+    applicableDonation: Donation,
+    opinions: [Opinion!]!
+}
+
+type Donation {
+    _id: ID,
+    dateCreated: String!,
+    ticker: String!,
+    amount: Float!,
+    value: Float!,
+    slug: String!,
+    pro: Boolean!,
+    typeCategory: String!,
+    type: Type!
+}
+
+type Certificate {
+    _id: ID,
+    dateCreated: String!,
+    name: String!,
+    pro: Boolean,
+    applicableDonation: Donation
+}
+
+type User {
+    _id: ID
+    username: String!@unique
+    email: String!@unique
+    password: String!
+    allegiance: Boolean
+    maximalist: Boolean
+    admin: Boolean!
 }
 
 type Query {
-    getTodos: [Todo]
+    getCurrentUser: User,
+    getRhetoric(pro: Boolean, slug: String, approved: Boolean): [Rhetoric],
+    getDonation(pro: Boolean, slug: String): [Donation],
+    getType(type: String, pro: Boolean, slug: String): [Type]
 }
 
 type Mutation {
-    addTodo(task: String!): Todo!,
-    toggleCompletion(_id: String!): Todo!,
-    deleteTodo(_id: String!): ID
+    setAllegiance(allegiance: String!): User
+    addBulletPoint(slug: String!, pro: Boolean!, content: String!): BulletPoint
+    signinUser(email: String!, password: String!): Token
+    signupUser(username: String!, email: String!, password: String!): Token
+    populateData: Boolean
 }

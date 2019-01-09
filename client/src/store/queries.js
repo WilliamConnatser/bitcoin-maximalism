@@ -41,3 +41,45 @@ export const DELETE_TODO = gql `
         deleteTodo(_id: $_id)
     }
 ` */
+
+export const GET_CURRENT_USER = gql `
+    query getCurrentUser {
+        getCurrentUser {
+            _id
+            username
+            email
+            admin
+            allegiance
+            maximalist
+        }
+    }
+`
+
+export const SIGNUP_USER = gql `
+    mutation($username: String!, $email: String!, $password: String!) {
+        signupUser(username: $username, email:$email, password:$password){
+            token
+        }
+    }
+`;
+
+export const SIGNIN_USER = gql `
+    mutation($email:String!, $password: String!) {
+        signinUser(email: $email,password: $password) {
+            token
+        }
+    }
+`
+
+export const SET_ALLEGIANCE = gql `
+    mutation($allegiance: String!) {
+        setAllegiance(allegiance: $allegiance){
+            _id
+            username
+            email
+            admin
+            allegiance
+            maximalist
+        }
+    }
+`

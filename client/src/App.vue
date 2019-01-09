@@ -5,6 +5,8 @@
             <BitcoinMaximalism />
             <ParentSlide :args="protagonistic" :sectionSlug="options.anchors[1]" />
             <ParentSlide :args="antagonistic" :sectionSlug="options.anchors[2]" />
+            <Quiz />
+            <Account />
             <Terms />
             <Privacy />
         </full-page>
@@ -15,8 +17,11 @@
     import Header from "./components/Header";
     import BitcoinMaximalism from "./components/BitcoinMaximalism";
     import ParentSlide from "./components/ParentSlide";
+    import Quiz from "./components/Quiz";
+    import Account from "./components/Account";
     import Terms from "./components/Terms";
     import Privacy from "./components/Privacy";
+
     import {
         mapState
     } from 'vuex';
@@ -27,6 +32,8 @@
             Header,
             BitcoinMaximalism,
             ParentSlide,
+            Quiz,
+            Account,
             Terms,
             Privacy
         },
@@ -47,9 +54,10 @@
                         "bitcoin-maximalism",
                         "protagonistic",
                         "antagonistic",
+                        "quiz",
+                        "account",
                         "terms",
-                        "privacy",
-                        "donate"
+                        "privacy"
                     ],
                     sectionsColor: [
                         "#41b883",

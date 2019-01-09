@@ -3,7 +3,12 @@ const mongoose = require('mongoose');
 
 //Define Model Schema
 const RhetoricSchema = new mongoose.Schema({
-    key: {
+    dateCreated: {
+        type: Date,
+        required: true,
+        default: Date.now
+    },
+    slug: {
         type: String,
         required: true,
         unique: true
@@ -36,6 +41,18 @@ const RhetoricSchema = new mongoose.Schema({
         type: Date,
         required: true,
         default: Date.now
+    },
+    approved: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    dateApproved: {
+        type: Date
+    },
+    applicableDonation: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Donation'
     }
 });
 

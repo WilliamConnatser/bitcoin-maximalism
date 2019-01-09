@@ -4,30 +4,54 @@
       <a href="#bitcoin-maximalism" class="small">Intro</a></li>
     <li data-menuanchor="protagonistic"><a href="#protagonistic">Pros</a></li>
     <li data-menuanchor="antagonistic"><a href="#antagonistic">Cons</a></li>
-    <li data-menuanchor="terms"><a href="#terms">Terms</a></li>
-    <li data-menuanchor="privacy"><a href="#privacy">Privacy</a></li>
+    <li data-menuanchor="quiz"><a href="#quiz">Quiz</a></li>
+    <div id="upperMenu">
+      <li id="signOut" v-if="user" @click="signoutUser"><a href="#">Signout</a></li>
+      <li data-menuanchor="account"><a href="#account"><strong>Account</strong></a></li>
+      <li data-menuanchor="terms"><a href="#terms">Terms</a></li>
+      <li data-menuanchor="privacy"><a href="#privacy">Privacy</a></li>
+    </div>
   </ul>
 </template>
 
 <script>
+  import {
+    mapState
+  } from 'vuex';
+
   export default {
-    name: "Header"
+    name: "Header",
+    computed: {
+      ...mapState({
+        user: state => state.auth.user
+      })
+    },
+    methods: {
+      signoutUser() {
+        this.$store.dispatch('signoutUser');
+      }
+    }
   };
 </script>
 
 <style>
-  #menu-line {
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 159px;
-    height: 2px;
-    background: #fff
+  #upperMenu {
+    position: fixed;
+    top: 0em;
+    right: 0em;
+    z-index: 70;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    font-size: 0.8em;
+  }
+
+  #signOut {
+    float: left;
   }
 
   #menu {
     position: fixed;
-    top: 20px;
+    top: 2em;
     right: 20px;
     z-index: 70;
     -webkit-font-smoothing: antialiased;
@@ -39,7 +63,7 @@
   #menu li {
     display: inline-block;
     margin: 10px 0;
-    position: relative
+    position: relative;
   }
 
   #menu a {

@@ -29,17 +29,7 @@ const OpinionSchema = new mongoose.Schema({
     },
     applicableDonation: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'Donation'
-    },
-    edits: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Edit'
-    },
-    dateLastEdited: {
-        type: Date,
-        required: true,
-        default: Date.now
     }
 });
 

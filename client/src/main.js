@@ -29,9 +29,32 @@ if (process.env.DEPLOYING !== "false") {
 
 //Setup ApolloClient (exported so it can be Imported into the Vuex Store)
 export const defaultClient = new ApolloClient({
-    uri: apolloURI
-});
+    uri: apolloURI,
+    //Include Auth Token
+    fetchOptions: {
+        credentials: "include"
+    },
+    request: operation => {
+        //If no token in local storage, then add it
+        if (!localStorage.token) localStorage.setItem("token", "");
 
+        //Add token to the GraphQL Authorization Header, which is sent to GraphQL server for authorization
+        operation.setContext({
+            headers: {
+                authorization: localStorage.getItem("token")
+            }
+        });
+    },
+    onError: ({ operation, graphQLErrors, networkError }) => {
+        console.log("The following Error occurred on this Operation:", operation);
+        if (networkError) console.log("[networkError]", networkError);
+        if (graphQLErrors) {
+            for (let err of graphQLErrors) {
+                console.log("[GraphqlError:]", err);
+            }
+        }
+    }
+});
 //Setup VueApollo
 const apolloProvider = new VueApollo({
     defaultClient
@@ -42,7 +65,10 @@ Vue.config.productionTip = false;
 new Vue({
     //apolloProvider injects Apollo into each of our Vue Components
     apolloProvider,
-    router,
     store,
-    render: h => h(App)
-}).$mount('#app')
+    render: h => h(App),
+    created() {
+        //Get information about the user via getCurrentUser query.
+        this.$store.dispatch('getCurrentUser');
+    }
+}).$mount('#app');
