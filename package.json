@@ -24,7 +24,7 @@
     "graphql": "^0.13.2",
     "jsonwebtoken": "^8.4.0",
     "md5": "^2.2.1",
-    "mongoose": "^5.4.2",
+    "mongoose": "^5.4.3",
     "now-env": "^3.1.0"
   },
   "devDependencies": {

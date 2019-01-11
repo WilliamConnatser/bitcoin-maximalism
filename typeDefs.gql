@@ -1,4 +1,11 @@
-union Type = BulletPoint | Resource | Opinion | Edit | Certificate
+union Donatable = BulletPoint | Resource | Opinion | Edit | Certificate
+union Opinionable = BulletPoint | Edit | Resource | Rhetoric
+union Editable = BulletPoint | Resource | Rhetoric
+
+schema {
+  query: Query,
+  mutation: Mutation
+}
 
 type Token {
     token: String!
@@ -7,7 +14,7 @@ type Token {
 type Rhetoric {
     _id: ID,
     dateCreated: String!,
-    slug: String!@unique,
+    slug: String!,
     pro: Boolean!,
     title: String!,
     bulletPoints: [BulletPoint!]!,
@@ -58,7 +65,9 @@ type Opinion {
     comment: String!,
     approved: Boolean!,
     dateApproved: String,
-    applicableDonation: Donation
+    applicableDonation: Donation,
+    applicableDocument: Opinionable,
+    onModel: String
 }
 
 type Edit {
@@ -66,8 +75,9 @@ type Edit {
     dateCreated: String!,
     slug: String!,
     pro: Boolean!,
-    old: Type!,
-    new: Type!,
+    old: Editable!,
+    new: Editable!,
+    onModel: String!,
     approved: Boolean!,
     dateApproved: String,
     applicableDonation: Donation,
@@ -82,8 +92,8 @@ type Donation {
     value: Float!,
     slug: String!,
     pro: Boolean!,
-    typeCategory: String!,
-    type: Type!
+    applicableDocument: Donatable,
+    onModel: String
 }
 
 type Certificate {
@@ -107,8 +117,10 @@ type User {
 type Query {
     getCurrentUser: User,
     getRhetoric(pro: Boolean, slug: String, approved: Boolean): [Rhetoric],
+    getAllProtagonisticRhetoric(approved: Boolean): [Rhetoric],
+    getAllAntagonisticRhetoric(approved: Boolean): [Rhetoric],
     getDonation(pro: Boolean, slug: String): [Donation],
-    getType(type: String, pro: Boolean, slug: String): [Type]
+    getSubType(type: String, pro: Boolean, slug: String): [Donatable]
 }
 
 type Mutation {
@@ -116,5 +128,4 @@ type Mutation {
     addBulletPoint(slug: String!, pro: Boolean!, content: String!): BulletPoint
     signinUser(email: String!, password: String!): Token
     signupUser(username: String!, email: String!, password: String!): Token
-    populateData: Boolean
 }

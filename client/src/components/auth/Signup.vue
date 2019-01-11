@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Sign Up</h1>
-        <form @submit.prevent="register">
+        <form @submit.prevent="signupUser">
             <div class="block">
                 <label>Username</label>
                 <input type="text" v-model="username" autocomplete="username">
@@ -25,6 +25,8 @@
 </template>
 
 <script>
+    import gql from 'graphql-tag';
+
     export default {
         name: "Signup",
         data: () => {
@@ -35,13 +37,45 @@
             }
         },
         methods: {
-            register() {
-                this.$store.dispatch('signupUser', {
-                    username: this.username,
-                    email: this.email,
-                    password: this.password
-                });
+            signupUser() {
+                //GraphQL Mutation
+                this.$apollo.mutate({
+                    mutation: gql `
+                        mutation($username: String!, $email: String!, $password: String!) {
+                            signupUser(username: $username, email:$email, password:$password){
+                                token
+                            }
+                        }
+                    `,
+                    variables: {
+                        username: this.username,
+                        email: this.email,
+                        password: this.password
+                    }
+                }).then(async ({data}) => {
+                    //Insert token into Local Storage
+                    await localStorage.setItem("token", data.signupUser.token);
+                    //Refresh the getCurrentUser query
+                    this.$apollo.queries.getCurrentUser.refetch();
+                }).catch(error => {
+                    // Error :\
+                    console.error(error);
+                })
             }
+        },
+        apollo: {
+            getCurrentUser: gql `
+                query getCurrentUser {
+                    getCurrentUser {
+                        _id
+                        username
+                        email
+                        admin
+                        allegiance
+                        maximalist
+                    }
+                }
+            `
         }
     };
 </script>

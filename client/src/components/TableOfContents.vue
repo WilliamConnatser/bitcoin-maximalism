@@ -1,15 +1,14 @@
 <template>
-  <div class="slide">
+  <div class="slide active">
     <div class="slideWrapper">
         <h1>{ {{slug}} }</h1>
 
-        <ol class="help">
-            <li v-for="arg in args" :key="arg.key">
+        <ol>
+            <li v-for="arg in args" :key="arg.slug">
                 <a :href="urlGenerator(slug, arg)">{{arg.title}}</a>
             </li>
         </ol>
     </div>
-
   </div>
 </template>
 
@@ -21,7 +20,7 @@
     },
     methods: {
       urlGenerator: (slug, arg) => {
-        return `#${slug}/${arg.key}`
+        return `#${slug}/${arg.slug}`
       }
     }
   };

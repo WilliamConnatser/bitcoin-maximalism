@@ -10,8 +10,7 @@ const RhetoricSchema = new mongoose.Schema({
     },
     slug: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     pro: {
         type: Boolean,

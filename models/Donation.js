@@ -28,13 +28,13 @@ const DonationSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
-    typeCategory: {
-        type: String,
-        required: true
+    applicableDocument: {
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: 'onModel'
     },
-    type: {
-        type: mongoose.Schema.Types.Mixed,
-        required: true
+    onModel: {
+        type: String,
+        enum: ['BulletPoint', 'Opinion', 'Resource', 'Rhetoric', 'Certificate']
     }
 });
 

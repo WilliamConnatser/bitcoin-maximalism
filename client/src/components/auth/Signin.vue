@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Sign In</h1>
-        <form @submit.prevent="login">
+        <form @submit.prevent="signinUser">
             <div class="block">
                 <label>Email</label>
                 <input type="email" v-model="email" autocomplete="email">
@@ -21,9 +21,7 @@
 </template>
 
 <script>
-    import {
-        mapState
-    } from 'vuex';
+    import gql from 'graphql-tag';
 
     export default {
         name: "Signin",
@@ -33,24 +31,45 @@
                 password: ""
             }
         },
-        computed: {
-            ...mapState({
-                user: state => state.auth.user
-            })
-        },
-        watch: {
-            user(payload) {
-                //If payload changes from null to an object, then take the user to the user panel...
-                console.log(payload);
-            }
-        },
         methods: {
-            login() {
-                this.$store.dispatch('signinUser', {
-                    email: this.email,
-                    password: this.password
-                });
+            signinUser() {
+                //GraphQL Mutation
+                this.$apollo.mutate({
+                    mutation: gql `
+                        mutation($email:String!, $password: String!) {
+                            signinUser(email: $email,password: $password) {
+                                token
+                            }
+                        }
+                    `,
+                    variables: {
+                        email: this.email,
+                        password: this.password
+                    }
+                }).then(async ({ data }) => {
+                    //Insert token into Local Storage
+                    await localStorage.setItem("token", data.signinUser.token);
+                    //Refresh the getCurrentUser query
+                    this.$apollo.queries.getCurrentUser.refetch();
+                }).catch(error => {
+                    // Error :\
+                    console.error(error);
+                })
             }
+        },
+        apollo: {
+            getCurrentUser: gql `
+                query getCurrentUser {
+                    getCurrentUser {
+                        _id
+                        username
+                        email
+                        admin
+                        allegiance
+                        maximalist
+                    }
+                }
+            `
         }
     };
 </script>

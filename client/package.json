@@ -9,23 +9,22 @@
     "deploy": "npm run build && now --public && now alias"
   },
   "dependencies": {
-    "@vue/cli": "^3.2.3",
+    "@vue/cli": "^3.3.0",
     "apollo-boost": "^0.1.19",
     "axios": "^0.18.0",
     "prerender-spa-plugin": "^3.4.0",
     "qrcode": "^1.3.2",
     "textticker": "0.0.4",
     "vue": "^2.5.21",
-    "vue-apollo": "^3.0.0-beta.25",
+    "vue-apollo": "^3.0.0-beta.27",
     "vue-fullpage.js": "0.0.5",
-    "vue-marquee-ho": "^1.2.1",
-    "vuex": "^3.0.1"
+    "vue-marquee-ho": "^1.2.1"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.0.0-beta.49",
-    "@vue/cli-plugin-babel": "^3.2.2",
-    "@vue/cli-plugin-eslint": "^3.2.2",
-    "@vue/cli-service": "^3.2.3",
+    "@vue/cli-plugin-babel": "^3.3.0",
+    "@vue/cli-plugin-eslint": "^3.3.0",
+    "@vue/cli-service": "^3.3.0",
     "vue-template-compiler": "^2.5.21"
   },
   "eslintConfig": {

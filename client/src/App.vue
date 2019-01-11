@@ -1,12 +1,12 @@
 <template>
     <div id="app">
-        <Header />
-        <full-page :options="options" id="fullpage">
+        <Header :user="getCurrentUser" />
+        <full-page :options="options" id="fullpage" ref="fullpage">
             <BitcoinMaximalism />
-            <ParentSlide :args="protagonistic" :sectionSlug="options.anchors[1]" />
-            <ParentSlide :args="antagonistic" :sectionSlug="options.anchors[2]" />
+            <ParentSlide :args="getAllProtagonisticRhetoric" :sectionSlug="'protagonistic'" :fullpage="this.$refs.fullpage" @slideMounted="reBuild" />
+            <ParentSlide :args="getAllAntagonisticRhetoric" :sectionSlug="'antagonistic'" :fullpage="this.$refs.fullpage" @slideMounted="reBuild" />
             <Quiz />
-            <Account />
+            <Account :user="getCurrentUser" />
             <Terms />
             <Privacy />
         </full-page>
@@ -22,9 +22,7 @@
     import Terms from "./components/Terms";
     import Privacy from "./components/Privacy";
 
-    import {
-        mapState
-    } from 'vuex';
+    import gql from 'graphql-tag';
 
     export default {
         name: "app",
@@ -37,16 +35,14 @@
             Terms,
             Privacy
         },
-        computed: mapState({
-            protagonistic: state => state.rhetoric.protagonistic,
-            antagonistic: state => state.rhetoric.antagonistic
-        }),
         data() {
             return {
+                getCurrentUser: null,
                 options: {
                     licenseKey: "9B5DE7FD-139843A3-B9E1EAF5-F1341360",
                     menu: "#menu",
                     scrollOverflow: true,
+                    controlArrows: true,
                     scrollOverflowReset: true,
                     scrollBar: false,
                     paddingTop: '4em',
@@ -72,11 +68,148 @@
                     ]
                 }
             }
+        },
+        methods: {
+            reBuild() {
+                this.$refs.fullpage.api.reBuild();
+            }
+        },
+        apollo: {
+            getCurrentUser: {
+                query: gql `
+                    query getCurrentUser {
+                        getCurrentUser {
+                            _id
+                            username
+                            email
+                            admin
+                            allegiance
+                            maximalist
+                        }
+                    }
+                `
+            },
+            getAllProtagonisticRhetoric: {
+                query: gql `
+                    query getAllProtagonisticRhetoric($approved: Boolean) {
+                        getAllProtagonisticRhetoric(approved: $approved) {
+                            _id
+                            slug
+                            pro
+                            title
+                            dateCreated
+                            dateLastEdited
+                            approved
+                            dateApproved
+                            bulletPoints {
+                                _id
+                                slug
+                                pro
+                                dateCreated
+                                dateLastEdited
+                                content
+                                approved
+                                dateApproved
+                            }
+                            resources {
+                                _id
+                                slug
+                                pro
+                                dateCreated
+                                dateLastEdited
+                                title
+                                media
+                                link
+                                approved
+                                dateApproved
+                            }
+                            opinions {
+                                _id
+                                slug
+                                pro
+                                dateCreated
+                                comment
+                                approved
+                                dateCreated
+                            }
+                            edits {
+                                slug
+                                pro
+                                dateCreated
+                                dateApproved
+                            }  
+                        }
+                    }
+                `,
+                variables: {
+                    approved: true
+                }
+            },
+            getAllAntagonisticRhetoric: {
+                query: gql `
+                    query getAllAntagonisticRhetoric($approved: Boolean) {
+                        getAllAntagonisticRhetoric(approved: $approved) {
+                            _id
+                            slug
+                            pro
+                            title
+                            dateCreated
+                            dateLastEdited
+                            approved
+                            dateApproved
+                            bulletPoints {
+                                _id
+                                slug
+                                pro
+                                dateCreated
+                                dateLastEdited
+                                content
+                                approved
+                                dateApproved
+                            }
+                            resources {
+                                _id
+                                slug
+                                pro
+                                dateCreated
+                                dateLastEdited
+                                title
+                                media
+                                link
+                                approved
+                                dateApproved
+                            }
+                            opinions {
+                                _id
+                                slug
+                                pro
+                                dateCreated
+                                comment
+                                approved
+                                dateCreated
+                            }
+                            edits {
+                                slug
+                                pro
+                                dateCreated
+                                dateApproved
+                            }  
+                        }
+                    }
+                `,
+                variables: {
+                    approved: true
+                }
+            }
         }
     };
 </script>
 
 <style>
+    #app {
+        font-family: arial, helvetica
+    }
+
     blockquote,
     body,
     dd,

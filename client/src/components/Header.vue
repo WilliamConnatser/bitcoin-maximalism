@@ -7,7 +7,10 @@
     <li data-menuanchor="quiz"><a href="#quiz">Quiz</a></li>
     <div id="upperMenu">
       <li id="signOut" v-if="user" @click="signoutUser"><a href="#">Signout</a></li>
-      <li data-menuanchor="account"><a href="#account"><strong>Account</strong></a></li>
+      <li data-menuanchor="account"><a href="#account">
+        <strong v-if="user">Account</strong>
+        <strong v-else>Log In</strong>
+      </a></li>
       <li data-menuanchor="terms"><a href="#terms">Terms</a></li>
       <li data-menuanchor="privacy"><a href="#privacy">Privacy</a></li>
     </div>
@@ -15,22 +18,24 @@
 </template>
 
 <script>
+  //Import Apollo Client
   import {
-    mapState
-  } from 'vuex';
+      defaultClient as apolloClient
+  } from '../main';
 
   export default {
     name: "Header",
-    computed: {
-      ...mapState({
-        user: state => state.auth.user
-      })
-    },
     methods: {
-      signoutUser() {
-        this.$store.dispatch('signoutUser');
+      signoutUser: async () => {
+        //Remove token in localStorage
+        localStorage.setItem("token", "");
+        //End Apollo Client Session
+        await apolloClient.resetStore();
       }
-    }
+    },
+    props: [
+      'user'
+    ]
   };
 </script>
 
@@ -43,10 +48,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-font-smoothing: antialiased;
     font-size: 0.8em;
-  }
-
-  #signOut {
-    float: left;
   }
 
   #menu {

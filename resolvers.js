@@ -2,15 +2,19 @@
 const bcrypt = require("bcrypt");
 //Import needed to generate jsonwebtoken to track logged in user
 const jwt = require("jsonwebtoken");
+//Import seed data for initial population of database
+const initData = require('./initData')
 
 const createToken = (user, secret, expiresIn) => {
     const {
         username,
-        email
+        email,
+        admin
     } = user;
     return jwt.sign({
         username,
-        email
+        email,
+        admin
     }, secret, {
         expiresIn
     });
@@ -34,9 +38,67 @@ module.exports = {
             Rhetoric
         }) => {
             // args destructed = { pro: Boolean, slug: String, approved: Boolean }
-            const rhetoric = await Rhetoric.find(args).sort({
-                dateCreated: 'desc'
-            });
+            const rhetoric = await Rhetoric
+                .find(args)
+                .populate({
+                    path: 'bulletPoints',
+                    model: 'BulletPoint'
+                })
+                .populate({
+                    path: 'resources',
+                    model: 'Resource'
+                })
+                .sort({
+                    dateCreated: 'desc'
+                })
+            return rhetoric;
+        },
+        getAllProtagonisticRhetoric: async (_, {
+            approved
+        }, {
+            Rhetoric
+        }) => {
+            // args destructed = { approved: Boolean }
+            const rhetoric = await Rhetoric
+                .find({
+                    pro: true,
+                    approved
+                })
+                .populate({
+                    path: 'bulletPoints',
+                    model: 'BulletPoint'
+                })
+                .populate({
+                    path: 'resources',
+                    model: 'Resource'
+                })
+                .sort({
+                    dateCreated: 'desc'
+                })
+            return rhetoric;
+        },
+        getAllAntagonisticRhetoric: async (_, {
+            approved
+        }, {
+            Rhetoric
+        }) => {
+            // args destructed = { approved: Boolean }
+            const rhetoric = await Rhetoric
+                .find({
+                    pro: false,
+                    approved
+                })
+                .populate({
+                    path: 'bulletPoints',
+                    model: 'BulletPoint'
+                })
+                .populate({
+                    path: 'resources',
+                    model: 'Resource'
+                })
+                .sort({
+                    dateCreated: 'desc'
+                })
             return rhetoric;
         },
         getDonation: async (_, args, {
@@ -48,7 +110,7 @@ module.exports = {
             });
             return donation;
         },
-        getType: async (_, args, {
+        getSubType: async (_, args, {
             BulletPoint,
             Resource,
             Opinion,
@@ -104,6 +166,7 @@ module.exports = {
             BulletPoint
         }) => {
 
+            //May be broken...............................
             const bulletPoint = await BulletPoint.findOne({
                 content
             });
@@ -123,37 +186,6 @@ module.exports = {
 
             return newBulletPoint;
         },
-        /*
-                    toggleCompletion: async (_, {
-                        _id
-                    }, {
-                        Todo
-                    }) => {
-
-                        Todo.findById(_id, function (err, todo) {
-                            if (err) throw new Error('This task does not exist on your todo list!');
-
-                            todo.completed = !todo.completed;
-                            todo.save(function (err) {
-                                if (err) throw new Error('An error ocurred while updating your todo list!');
-                            });
-                        });
-
-                        return Todo.findById(_id);
-                    },
-                    deleteTodo: async (_, {
-                        _id
-                    }, {
-                        Todo
-                    }) => {
-
-                        Todo.findOneAndDelete(_id, function (err) {
-                            if (err) throw new Error('This task does not exist on your todo list!');
-                        });
-
-                        return _id;
-                    },*/
-
         setAllegiance: async (_, {
             allegiance
         }, {
@@ -243,6 +275,5 @@ module.exports = {
                 token: createToken(newUser, process.env.SECRET, "1hr")
             };
         }
-
     }
 }

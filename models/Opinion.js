@@ -30,6 +30,14 @@ const OpinionSchema = new mongoose.Schema({
     applicableDonation: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Donation'
+    },
+    applicableDocument: {
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: 'onModel'
+    },
+    onModel: {
+        type: String,
+        enum: ['BulletPoint', 'Edit', 'Resource', 'Rhetoric']
     }
 });
 

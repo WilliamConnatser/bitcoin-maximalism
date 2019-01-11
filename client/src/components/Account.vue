@@ -6,23 +6,24 @@
                 <h1>Welcome {{user.username}}!</h1>
                 <p v-if="!user.allegiance">
                     You have not yet sworn allegiance to either faction. Your ancestors would be ashamed...
-
-                    <button @click="setAllegiance('Maximalist')">
-                        I identify as a Bitcoin Maximalist
-                    </button>
-                    <button @click="setAllegiance('Multicoinist')">
-                        I identify as a Multicoinist
-                    </button>
                 </p>
                 <p v-else>
-                    You think you're a {{getAllegiance}}?
-                    <a v-if="!user.passedQuiz">Prove it!</a>
+                    You think you're a {{getAllegiance}}, huh? <br/>
+                    <strong>
+                        <a v-if="!user.passedQuiz" href="#quiz">Prove it!</a>
+                    </strong>
                 </p>
+                    
+                <button @click="setAllegiance('Maximalist')" :style="getStyle('Maximalist')">
+                    I identify as a Bitcoin Maximalist
+                </button>
+                <button @click="setAllegiance('Multicoinist')" :style="getStyle('Multicoinist')">
+                    I identify as a Multicoinist
+                </button>
 
-                <div v-show="!user.admin">
-                    Hey, hey, hey! Fancy! {{user.username}} is an administrator.
-                    <button>Populate Database</button>
-                </div>
+                <p v-show="user.admin">
+                    You so fancy! Look are you, Mr. Administrator...
+                </p>
             </div>
         </div>
     </div>
@@ -30,30 +31,73 @@
 
 <script>
     import Login from './auth/Login';
-    import {
-        mapState,
-        mapActions
-    } from 'vuex';
+    import gql from 'graphql-tag';
 
     export default {
         name: "Account",
         computed: {
-            ...mapState({
-                user: state => state.auth.user
-            }),
             getAllegiance() {
                 if (this.user.maximalist) {
-                    return "Bitcoin Maximalist";
+                    return 'Bitcoin Maximalist';
                 } else {
-                    return "Multicoinist";
+                    return 'Multicoinist';
                 }
             }
         },
-        methods: {
-            ...mapActions(['setAllegiance'])
-        },
         components: {
             Login
+        },
+        props: [
+            'user'
+        ],
+        methods: {
+            getStyle(allegiance) {
+                if (this.user.maximalist && allegiance === 'Maximalist') {
+                    return 'background-color: #41b883';
+                } else if (!this.user.maximalist && allegiance === 'Multicoinist') {
+                    return 'background-color: #41b883';
+                }
+            },
+            setAllegiance(allegiance) {
+                //GraphQL Mutation
+                this.$apollo.mutate({
+                    mutation: gql `
+                        mutation($allegiance: String!) {
+                            setAllegiance(allegiance: $allegiance){
+                                _id
+                                username
+                                email
+                                admin
+                                allegiance
+                                maximalist
+                            }
+                        }
+                    `,
+                    variables: {
+                        allegiance
+                    }
+                }).then(() => {
+                    //Refresh the getCurrentUser query
+                    this.$apollo.queries.getCurrentUser.refetch();
+                }).catch(error => {
+                    // Error :\
+                    console.error(error);
+                })
+            }
+        },
+        apollo: {
+            getCurrentUser: gql `
+                query getCurrentUser {
+                    getCurrentUser {
+                        _id
+                        username
+                        email
+                        admin
+                        allegiance
+                        maximalist
+                    }
+                }
+            `
         }
     };
 </script>
@@ -69,14 +113,12 @@
         border: 0.1em solid #4e4e4e;
     }
 
-    .selected {}
-
     @media only screen and (max-width: 400px) {
 
         button {
             width: 17em;
             margin: 0em;
-            margin-top: 1em;
+            margin: 1em;
         }
     }
 </style>

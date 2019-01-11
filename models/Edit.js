@@ -16,12 +16,19 @@ const EditSchema = new mongoose.Schema({
         required: true
     },
     old: {
-        type: mongoose.Schema.Types.Mixed,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        refPath: 'onModel'
     },
     new: {
-        type: mongoose.Schema.Types.Mixed,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        refPath: 'onModel'
+    },
+    onModel: {
+        type: String,
+        required: true,
+        enum: ['BulletPoint', 'Resource', 'Rhetoric']
     },
     approved: {
         type: Boolean,
