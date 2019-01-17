@@ -1,30 +1,28 @@
 <template>
     <div class="section">
-        <div class="wrapper">
-            <Login v-if="!user" />
-            <div v-if="user">
-                <h1>Welcome {{user.username}}!</h1>
-                <p v-if="!user.allegiance">
-                    You have not yet sworn allegiance to either faction. Your ancestors would be ashamed...
-                </p>
-                <p v-else>
-                    You think you're a {{getAllegiance}}, huh? <br/>
-                    <strong>
-                        <a v-if="!user.passedQuiz" href="#quiz">Prove it!</a>
-                    </strong>
-                </p>
-                    
-                <button @click="setAllegiance('Maximalist')" :style="getStyle('Maximalist')">
-                    I identify as a Bitcoin Maximalist
-                </button>
-                <button @click="setAllegiance('Multicoinist')" :style="getStyle('Multicoinist')">
-                    I identify as a Multicoinist
-                </button>
+        <Login v-if="!user" />
+        <div v-if="user">
+            <h1>Welcome {{user.username}}!</h1>
+            <p v-if="!user.allegiance">
+                You have not yet sworn allegiance to either faction. Your ancestors would be ashamed...
+            </p>
+            <p v-else>
+                You think you're a {{getAllegiance}}, huh? <br />
+                <strong>
+                    <a v-if="!user.passedQuiz" href="#quiz">Prove it!</a>
+                </strong>
+            </p>
 
-                <p v-show="user.admin">
-                    You so fancy! Look are you, Mr. Administrator...
-                </p>
-            </div>
+            <button @click="setAllegiance('Maximalist')" :style="getStyle('Maximalist')">
+                I identify as a Bitcoin Maximalist
+            </button>
+            <button @click="setAllegiance('Multicoinist')" :style="getStyle('Multicoinist')">
+                I identify as a Multicoinist
+            </button>
+
+            <p v-show="user.admin">
+                You so fancy! Look are you, Mr. Administrator...
+            </p>
         </div>
     </div>
 </template>

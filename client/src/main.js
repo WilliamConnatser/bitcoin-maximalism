@@ -16,6 +16,14 @@ import resolvers from './localState/resolvers';
 import defaults from './localState/defaults';
 import typeDefs from './localState/typeDefs';
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faAngleUp, faAngleDown, faCommentDollar, faComment, faPlusSquare, faMinusSquare, faPenSquare } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+library.add(faAngleUp, faAngleDown, faCommentDollar, faComment, faPlusSquare, faMinusSquare, faPenSquare);
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+
 Vue.use(VueRouter);
 Vue.use(VueApollo);
 

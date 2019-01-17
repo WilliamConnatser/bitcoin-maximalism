@@ -18,14 +18,19 @@
   "author": "William Connatser",
   "license": "ISC",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.12",
+    "@fortawesome/free-solid-svg-icons": "^5.6.3",
+    "@fortawesome/vue-fontawesome": "^0.1.5",
     "apollo-link-state": "^0.4.2",
     "apollo-server": "^2.3.1",
     "bcrypt": "^3.0.3",
     "graphql": "^0.13.2",
+    "i": "^0.3.6",
     "jsonwebtoken": "^8.4.0",
     "md5": "^2.2.1",
     "mongoose": "^5.4.3",
-    "now-env": "^3.1.0"
+    "now-env": "^3.1.0",
+    "npm": "^6.5.0"
   },
   "devDependencies": {
     "concurrently": "^3.6.0",

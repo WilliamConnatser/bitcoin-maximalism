@@ -23,11 +23,6 @@
                 getCurrentUser: null
             }
         },
-        methods: {
-            reBuild() {
-                this.$refs.fullpage.api.reBuild();
-            }
-        },
         apollo: {
             getCurrentUser: {
                 query: gql `
@@ -177,9 +172,8 @@
         font-family: "Lato", sans-serif;
         font-weight: 400;
         line-height: 1.7;
-
         height: 100%;
-        position: relative;
+
         box-sizing: border-box;
     }
 
@@ -188,22 +182,10 @@
     }
 
     .view {
-        min-height: 100vh;
-        /* will cover the 100% of viewport */
-        overflow-y: auto;
-        display: block;
-        position: relative;
-
-        padding-top: 8vh;
-        padding-bottom: 3vh;
-
+        min-height: 92vh;
+        padding: 2rem 2rem;
         background-color: $color-secondary;
         text-align: center;
-    }
-
-    svg {
-        fill: #fff;
-        height: 3em;
-        width: 3em;
+        font-size: 1.5rem;
     }
 </style>

@@ -1,17 +1,17 @@
 <template>
   <ul id="menu">
-    <li><a href="bitcoin-maximalism" class="small">Intro</a></li>
-    <li><a href="protagonistic">Pros</a></li>
-    <li><a href="antagonistic">Cons</a></li>
-    <li><a href="quiz">Quiz</a></li>
+    <li><router-link to="/" class="small">Intro</router-link></li>
+    <li><router-link to="/rhetoric/protagonistic">Pros</router-link></li>
+    <li><router-link to="/rhetoric/antagonistic">Cons</router-link></li>
+    <li><router-link to="scoreboard">Scoreboard</router-link></li>
 
     <div class="right-nav">
-      <li id="signOut" v-if="user" @click="signoutUser"><a href="#">Signout</a></li>
+      <li id="signOut" v-if="user" @click="signoutUser"><a to="#">Signout</a></li>
       <li>
-        <a href="account">
+        <router-link to="account">
           <strong v-if="user">Account</strong>
           <strong v-else>Log In</strong>
-        </a>
+        </router-link>
       </li>
     </div>
   </ul>
@@ -43,17 +43,11 @@
   @import "../sass/variables";
 
   ul {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 8vh;
-    margin: 0;
-    padding: 0;
-    z-index: 30;
-
+    padding-right: 10vw;
+    height: 4vh;
     background-image: linear-gradient(to right bottom,
-      hsla(196, 31%, 33%, .8),
-      hsla(68, 16%, 62%, .8)),
+      hsla(196, 31%, 33%, .7),
+      hsla(68, 16%, 62%, .7)),
       url(../../public/images/header-bg.jpg);
     background-size: cover;
     background-position: bottom;
@@ -63,7 +57,7 @@
 
   li {
     display: inline-block;
-    padding: 0rem 1rem;
+    padding: 0rem .5rem;
   }
 
   a {
@@ -74,6 +68,8 @@
   }
 
   .right-nav {
-    float: right;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 </style>
