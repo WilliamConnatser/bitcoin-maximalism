@@ -2,6 +2,10 @@
 import Vue from 'vue';
 import App from './App.vue';
 
+//Vue-Router
+import VueRouter from 'vue-router';
+import router from './router.js';
+
 //ZEIT Now and Environment Variables Imports
 require('now-env');
 
@@ -12,15 +16,8 @@ import resolvers from './localState/resolvers';
 import defaults from './localState/defaults';
 import typeDefs from './localState/typeDefs';
 
-//Fullpage.js Imports
-import 'fullpage.js/dist/fullpage.min.css';
-import 'fullpage.js/dist/fullpage.min.js';
-import 'fullpage.js/vendors/scrolloverflow';
-import VueFullPage from 'vue-fullpage.js';
-
-//Tie Vue instance to fullpage.js and vue-apollo
+Vue.use(VueRouter);
 Vue.use(VueApollo);
-Vue.use(VueFullPage);
 
 //Set the Apollo URI to what's stored in the now.json file if the app is being deployed
 var apolloURI = ''
@@ -77,5 +74,6 @@ Vue.config.productionTip = false;
 new Vue({
     //apolloProvider injects Apollo into each of our Vue Components
     apolloProvider,
+    router,
     render: h => h(App)
 }).$mount('#app');

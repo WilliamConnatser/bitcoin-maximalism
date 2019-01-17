@@ -17,8 +17,7 @@
     "textticker": "0.0.4",
     "vue": "^2.5.21",
     "vue-apollo": "^3.0.0-beta.27",
-    "vue-fullpage.js": "0.0.5",
-    "vue-marquee-ho": "^1.2.1"
+    "vue-router": "^3.0.2"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.0.0-beta.49",

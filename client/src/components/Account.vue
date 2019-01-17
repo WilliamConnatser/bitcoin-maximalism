@@ -101,24 +101,3 @@
         }
     };
 </script>
-
-<style scoped>
-    button {
-        white-space: nowrap;
-        color: #ffffff;
-        font-size: 1em;
-        width: 17em;
-        height: 5em;
-        margin: 1em;
-        border: 0.1em solid #4e4e4e;
-    }
-
-    @media only screen and (max-width: 400px) {
-
-        button {
-            width: 17em;
-            margin: 0em;
-            margin: 1em;
-        }
-    }
-</style>

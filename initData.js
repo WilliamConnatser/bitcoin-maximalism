@@ -1,6 +1,6 @@
 var initData = {
     rhetoric: [{
-            slug: 'inflation-pro',
+            slug: 'inflation',
             pro: true,
             title: 'Alternative Cryptocurrencies Are Inflation',
             bulletPoints: [],
@@ -12,7 +12,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'decentralization-pro',
+            slug: 'decentralization',
             pro: true,
             title: 'Bitcoin Is Decentralized- Alternatives Are Not',
             bulletPoints: [],
@@ -24,7 +24,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'efficiency-pro',
+            slug: 'efficiency',
             pro: true,
             title: 'Bitcoin Is Inefficient And Expensive For Good Reason',
             bulletPoints: [],
@@ -36,7 +36,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'sidechains-layers-pro',
+            slug: 'sidechains-layers',
             pro: true,
             title: 'Sidechains and Extra Layers Will Assimilate ALTs',
             bulletPoints: [],
@@ -48,7 +48,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'hardness-pro',
+            slug: 'hardness',
             pro: true,
             title: 'Impossible To Recreate Bitcoin\'s Hardness',
             bulletPoints: [],
@@ -59,7 +59,7 @@ var initData = {
             approved: true,
             dateApproved: Date.now()
         }, {
-            slug: 'censorship-resistant-pro',
+            slug: 'censorship-resistant',
             pro: true,
             title: 'Bitcoin Is The Most Censorship-Resistant Cryptocurrency',
             bulletPoints: [],
@@ -70,7 +70,7 @@ var initData = {
             approved: true,
             dateApproved: Date.now()
         }, {
-            slug: 'interoperability-pro',
+            slug: 'interoperability',
             pro: true,
             title: 'Interoperability Is Unnecessary- There Can Only Be One Winner',
             bulletPoints: [],
@@ -81,7 +81,7 @@ var initData = {
             approved: true,
             dateApproved: Date.now()
         }, {
-            slug: 'conspiracy-pro',
+            slug: 'conspiracy',
             pro: true,
             title: 'Difficult Choices and Tradeoffs',
             bulletPoints: [],
@@ -92,7 +92,7 @@ var initData = {
             approved: true,
             dateApproved: Date.now()
         }, {
-            slug: 'network-effect-pro',
+            slug: 'network-effect',
             pro: true,
             title: 'Bitcoin\'s Network Effect Is Insurmountable',
             bulletPoints: [],
@@ -103,7 +103,7 @@ var initData = {
             approved: true,
             dateApproved: Date.now()
         }, {
-            slug: 'toxic-community-pro',
+            slug: 'toxic-community',
             pro: true,
             title: 'Vigilant Self-Regulation Is Necessary',
             bulletPoints: [],
@@ -114,7 +114,7 @@ var initData = {
             approved: true,
             dateApproved: Date.now()
         }, {
-            slug: 'resources-pro',
+            slug: 'resources',
             pro: true,
             title: 'Protagonistic Links And Resources',
             bulletPoints: [],
@@ -125,7 +125,7 @@ var initData = {
             approved: true,
             dateApproved: Date.now()
         }, {
-            slug: 'inflation-ant',
+            slug: 'inflation',
             pro: false,
             title: 'Alternative Cryptocurrencies Are Not Inflation',
             bulletPoints: [],
@@ -137,7 +137,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'decentralized-ant',
+            slug: 'decentralized',
             pro: false,
             title: 'Alternative Cryptocurrencies Are Sufficiently Decentralized',
             bulletPoints: [],
@@ -149,7 +149,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'efficiency-ant',
+            slug: 'efficiency',
             pro: false,
             title: 'Bitcoin Is Inefficient In Multiple Ways',
             bulletPoints: [],
@@ -161,7 +161,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'assimilate-ant',
+            slug: 'assimilate',
             pro: false,
             title: 'Sidechains And Extra Layers Are Insecure And Unproven',
             bulletPoints: [],
@@ -173,7 +173,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'interoperability-ant',
+            slug: 'interoperability',
             pro: false,
             title: 'Free Market Competition and Interoperability Is Ideal',
             bulletPoints: [],
@@ -185,7 +185,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'conspiracy-ant',
+            slug: 'conspiracy',
             pro: false,
             title: 'Bitcoin Is No Longer The Real Bitcoin',
             bulletPoints: [],
@@ -197,7 +197,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'network-effect-ant',
+            slug: 'network-effect',
             pro: false,
             title: 'Network Effects Are Prone To Defeat',
             bulletPoints: [],
@@ -209,7 +209,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'toxic-community-ant',
+            slug: 'toxic-community',
             pro: false,
             title: 'The Bitcoin Community Is Toxic',
             bulletPoints: [],
@@ -221,7 +221,7 @@ var initData = {
             dateApproved: Date.now()
         },
         {
-            slug: 'resources-ant',
+            slug: 'resources',
             pro: false,
             title: 'Antagonistic Links And Resources',
             bulletPoints: [],
@@ -234,7 +234,7 @@ var initData = {
         }
     ],
     bulletPoint: [{
-            slug: 'inflation-pro',
+            slug: 'inflation',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -244,7 +244,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'inflation-pro',
+            slug: 'inflation',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -254,7 +254,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'inflation-pro',
+            slug: 'inflation',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -264,7 +264,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'inflation-pro',
+            slug: 'inflation',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -274,7 +274,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'decentralization-pro',
+            slug: 'decentralization',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -284,7 +284,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'decentralization-pro',
+            slug: 'decentralization',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -294,7 +294,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'decentralization-pro',
+            slug: 'decentralization',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -304,7 +304,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'efficiency-pro',
+            slug: 'efficiency',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -314,7 +314,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'efficiency-pro',
+            slug: 'efficiency',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -324,7 +324,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'efficiency-pro',
+            slug: 'efficiency',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -334,7 +334,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'efficiency-pro',
+            slug: 'efficiency',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -344,7 +344,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'sidechains-layers-pro',
+            slug: 'sidechains-layers',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -354,7 +354,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'sidechains-layers-pro',
+            slug: 'sidechains-layers',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -364,7 +364,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'hardness-pro',
+            slug: 'hardness',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -374,7 +374,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'hardness-pro',
+            slug: 'hardness',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -384,7 +384,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'hardness-pro',
+            slug: 'hardness',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -393,7 +393,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'censorship-resistant-pro',
+            slug: 'censorship-resistant',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -402,7 +402,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'censorship-resistant-pro',
+            slug: 'censorship-resistant',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -411,7 +411,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'censorship-resistant-pro',
+            slug: 'censorship-resistant',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -420,7 +420,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'interoperability-pro',
+            slug: 'interoperability',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -429,7 +429,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'interoperability-pro',
+            slug: 'interoperability',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -438,7 +438,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'interoperability-pro',
+            slug: 'interoperability',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -447,7 +447,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'conspiracy-pro',
+            slug: 'conspiracy',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -456,7 +456,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'conspiracy-pro',
+            slug: 'conspiracy',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -465,16 +465,16 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'conspiracy-pro',
+            slug: 'conspiracy',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
-            content: 'However, not everyone in the cryptocurrency community agrees with the importance of full nodes. Some contend that running non-mining full modes is unnecessary, and some even go so far to say that they harm the network by unnecessarily slowing down network propagation. Some people think that Bitcoin was taken over by special interest groups who have great incentive to keep transaction fees high so that users are forced to use their for-profit payment channels. The point is that design decisions on peer-to-peer networks are highly nuanced and there is really no best solution. Bitcoin developers and the Bitcoin community have adopted the scaling "road map" that they feel is optimal for Bitcoin in the long run. Although keeping the block size small may have some short term problems with higher fees, it will stimulate the effort to make Bitcoin more efficient, and ensure it remains as decentralized as possible.',
+            content: 'However, not everyone in the cryptocurrency community agrees with the importance of full nodes. Some contend that running non-mining full modes is unnecessary, and some even go so far to say that they harm the network by unnecessarily slowing down network propagation. Some people think that Bitcoin was taken over by special interest groups who have great incentive to keep transaction fees high so that users are forced to use their forfit payment channels. The point is that design decisions on peer-to-peer networks are highly nuanced and there is really no best solution. Bitcoin developers and the Bitcoin community have adopted the scaling "road map" that they feel is optimal for Bitcoin in the long run. Although keeping the block size small may have some short term problems with higher fees, it will stimulate the effort to make Bitcoin more efficient, and ensure it remains as decentralized as possible.',
             edits: [],
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'network-effect-pro',
+            slug: 'network-effect',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -483,7 +483,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'network-effect-pro',
+            slug: 'network-effect',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -492,7 +492,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'network-effect-pro',
+            slug: 'network-effect',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -501,7 +501,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'toxic-community-pro',
+            slug: 'toxic-community',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -510,7 +510,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'toxic-community-pro',
+            slug: 'toxic-community',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -519,7 +519,7 @@ var initData = {
             dateLastEdited: Date.now(),
             opinions: []
         }, {
-            slug: 'toxic-community-pro',
+            slug: 'toxic-community',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -529,7 +529,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'inflation-ant',
+            slug: 'inflation',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -539,7 +539,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'inflation-ant',
+            slug: 'inflation',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -549,7 +549,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'inflation-ant',
+            slug: 'inflation',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -559,7 +559,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'decentralized-ant',
+            slug: 'decentralized',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -569,7 +569,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'decentralized-ant',
+            slug: 'decentralized',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -579,7 +579,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'decentralized-ant',
+            slug: 'decentralized',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -589,7 +589,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'efficiency-ant',
+            slug: 'efficiency',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -599,7 +599,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'efficiency-ant',
+            slug: 'efficiency',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -609,7 +609,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'efficiency-ant',
+            slug: 'efficiency',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -619,7 +619,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'efficiency-ant',
+            slug: 'efficiency',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -629,7 +629,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'assimilate-ant',
+            slug: 'assimilate',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -639,7 +639,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'assimilate-ant',
+            slug: 'assimilate',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -649,7 +649,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'assimilate-ant',
+            slug: 'assimilate',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -659,7 +659,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'interoperability-ant',
+            slug: 'interoperability',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -669,7 +669,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'interoperability-ant',
+            slug: 'interoperability',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -679,7 +679,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'interoperability-ant',
+            slug: 'interoperability',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -689,7 +689,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'conspiracy-ant',
+            slug: 'conspiracy',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -699,7 +699,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'conspiracy-ant',
+            slug: 'conspiracy',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -709,7 +709,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'conspiracy-ant',
+            slug: 'conspiracy',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -719,7 +719,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'conspiracy-ant',
+            slug: 'conspiracy',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -729,7 +729,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'network-effect-ant',
+            slug: 'network-effect',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -739,7 +739,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'network-effect-ant',
+            slug: 'network-effect',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -749,7 +749,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'network-effect-ant',
+            slug: 'network-effect',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -759,7 +759,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'toxic-community-ant',
+            slug: 'toxic-community',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -769,7 +769,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'toxic-community-ant',
+            slug: 'toxic-community',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -779,7 +779,7 @@ var initData = {
             opinions: []
         },
         {
-            slug: 'toxic-community-ant',
+            slug: 'toxic-community',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -790,7 +790,7 @@ var initData = {
         }
     ],
     resource: [{
-            slug: 'inflation-pro',
+            slug: 'inflation',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -802,7 +802,7 @@ var initData = {
             link: 'https://medium.com/@vijayboyapati/the-bullish-case-for-bitcoin-6ecc8bdecc1'
         },
         {
-            slug: 'inflation-pro',
+            slug: 'inflation',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -813,7 +813,7 @@ var initData = {
             media: 'video',
             link: 'https://youtu.be/D2WXxgZ8h-0?t=700'
         }, {
-            slug: 'inflation-pro',
+            slug: 'inflation',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -825,7 +825,7 @@ var initData = {
             link: 'https://www.scribd.com/document/354688866/Bitcoin-A-5-8-Million-Valuation-Crypto-Currency-and-A-New-Era-of-Human-Cooperation'
         },
         {
-            slug: 'decentralization-pro',
+            slug: 'decentralization',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -837,7 +837,7 @@ var initData = {
             link: 'https://news.bitcoin.com/most-cryptocurrencies-are-more-centralized-than-you-think/'
         },
         {
-            slug: 'decentralization-pro',
+            slug: 'decentralization',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -849,7 +849,7 @@ var initData = {
             link: 'https://hackernoon.com/sharding-centralizes-ethereum-by-selling-you-scaling-in-disguised-as-scaling-out-266c136fc55d'
         },
         {
-            slug: 'efficiency-pro',
+            slug: 'efficiency',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -861,7 +861,7 @@ var initData = {
             link: 'https://medium.com/@pierre_rochard/bitcoin-governance-37e86299470f'
         },
         {
-            slug: 'efficiency-pro',
+            slug: 'efficiency',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -873,7 +873,7 @@ var initData = {
             link: 'http://blog.zorinaq.com/bitcoin-mining-is-not-wasteful/'
         },
         {
-            slug: 'efficiency-pro',
+            slug: 'efficiency',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -885,7 +885,7 @@ var initData = {
             link: 'https://coinshares.co.uk/wp-content/uploads/2018/11/Mining-Whitepaper-Final.pdf'
         },
         {
-            slug: 'efficiency-pro',
+            slug: 'efficiency',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -897,7 +897,7 @@ var initData = {
             link: 'https://www.sosthene.net/strongest-case-small-blocks/'
         },
         {
-            slug: 'sidechains-layers-pro',
+            slug: 'sidechains-layers',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -909,7 +909,7 @@ var initData = {
             link: 'https://letstalkbitcoin.com/blog/post/lets-talk-bitcoin-377-sidechains-drivechains-and-the-apple-store'
         },
         {
-            slug: 'sidechains-layers-pro',
+            slug: 'sidechains-layers',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -921,7 +921,7 @@ var initData = {
             link: 'https://medium.com/@timevalueofbtc/the-bitcoin-second-layer-d503949d0a06'
         },
         {
-            slug: 'hardness-pro',
+            slug: 'hardness',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -933,7 +933,7 @@ var initData = {
             link: 'https://amzn.to/2S1dw6g'
         },
         {
-            slug: 'censorship-resistant-pro',
+            slug: 'censorship-resistant',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -945,7 +945,7 @@ var initData = {
             link: 'https://coincentral.com/bitcoin-censorship-resistance/'
         },
         {
-            slug: 'interoperability-pro',
+            slug: 'interoperability',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -957,7 +957,7 @@ var initData = {
             link: 'https://hackernoon.com/there-is-no-blockchain-technology-8d70c878b18c'
         },
         {
-            slug: 'conspiracy-pro',
+            slug: 'conspiracy',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -969,7 +969,7 @@ var initData = {
             link: 'https://medium.com/@lopp/who-controls-bitcoin-core-c55c0af91b8a'
         },
         {
-            slug: 'network-effect-pro',
+            slug: 'network-effect',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -981,7 +981,7 @@ var initData = {
             link: 'https://hackernoon.com/crypto-network-effects-37962671998a'
         },
         {
-            slug: 'toxic-community-pro',
+            slug: 'toxic-community',
             pro: true,
             approved: true,
             dateApproved: Date.now(),
@@ -993,7 +993,7 @@ var initData = {
             link: 'https://fee.org/articles/free-markets-are-regulated/'
         },
         {
-            slug: 'inflation-ant',
+            slug: 'inflation',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1004,7 +1004,7 @@ var initData = {
             media: 'blog',
             link: 'https://hackernoon.com/post-bitcoin-maximalism-19f392610d67'
         }, {
-            slug: 'inflation-ant',
+            slug: 'inflation',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1016,7 +1016,7 @@ var initData = {
             link: 'https://blog.elidourado.com/the-case-for-ethereum-maximalism-e6ec5dc7f7b2'
         },
         {
-            slug: 'decentralized-ant',
+            slug: 'decentralized',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1028,7 +1028,7 @@ var initData = {
             link: 'https://onwardlabs.co/blog/the-decentralization-spectrum/'
         },
         {
-            slug: 'efficiency-ant',
+            slug: 'efficiency',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1040,7 +1040,7 @@ var initData = {
             link: 'https://medium.com/@jonaldfyookball/why-does-bitcoin-have-ridiculously-high-fees-and-slow-confirmations-e3fd58258a6d'
         },
         {
-            slug: 'efficiency-ant',
+            slug: 'efficiency',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1052,7 +1052,7 @@ var initData = {
             link: 'https://spectrum.ieee.org/energy/policy/the-ridiculous-amount-of-energy-it-takes-to-run-bitcoin'
         },
         {
-            slug: 'efficiency-ant',
+            slug: 'efficiency',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1064,7 +1064,7 @@ var initData = {
             link: 'https://medium.com/@noahruderman/why-bitcoin-maximalism-is-deeply-flawed-96a26ab0b7a8'
         },
         {
-            slug: 'assimilate-ant',
+            slug: 'assimilate',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1076,7 +1076,7 @@ var initData = {
             link: 'https://youtu.be/UYHFrf5ci_g'
         },
         {
-            slug: 'interoperability-ant',
+            slug: 'interoperability',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1088,7 +1088,7 @@ var initData = {
             link: 'https://medium.com/@jer979/how-blockchain-interoperability-opens-the-mainstream-adoption-floodgates-22f86fba38c'
         },
         {
-            slug: 'conspiracy-ant',
+            slug: 'conspiracy',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1100,7 +1100,7 @@ var initData = {
             link: 'https://medium.com/@jonaldfyookball/12-reasons-bitcoin-cash-is-the-real-bitcoin-8d5547988374'
         },
         {
-            slug: 'conspiracy-ant',
+            slug: 'conspiracy',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1112,7 +1112,7 @@ var initData = {
             link: 'https://medium.com/@olivierjanss/why-non-mining-full-nodes-are-a-terrible-idea-ad3c49f7a7b6'
         },
         {
-            slug: 'network-effect-ant',
+            slug: 'network-effect',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1124,7 +1124,7 @@ var initData = {
             link: 'https://www.wired.com/insights/2014/03/reverse-network-effects-todays-social-networks-can-fail-grow-larger/'
         },
         {
-            slug: 'network-effect-ant',
+            slug: 'network-effect',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1136,7 +1136,7 @@ var initData = {
             link: 'https://multicoin.capital/2018/05/09/on-the-network-effects-of-stores-of-value/'
         },
         {
-            slug: 'toxic-community-ant',
+            slug: 'toxic-community',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
@@ -1148,7 +1148,7 @@ var initData = {
             link: 'https://medium.com/s/story/divided-we-fail-the-irrational-insanity-of-crypto-tribalism-6acc54465769'
         },
         {
-            slug: 'toxic-community-ant',
+            slug: 'toxic-community',
             pro: false,
             approved: true,
             dateApproved: Date.now(),
