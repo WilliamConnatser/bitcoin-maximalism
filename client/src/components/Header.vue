@@ -1,57 +1,70 @@
 <template>
   <ul id="menu">
-    <li><router-link to="/" class="small">Intro</router-link></li>
-    <li><router-link to="/rhetoric/protagonistic">Pros</router-link></li>
-    <li><router-link to="/rhetoric/antagonistic">Cons</router-link></li>
-    <li><router-link to="scoreboard">Scoreboard</router-link></li>
+    <li>
+      <router-link to="/" class="small">About</router-link>
+    </li>
+    <li>
+      <router-link to="/rhetoric/protagonistic">Pros</router-link>
+    </li>
+    <li>
+      <router-link to="/rhetoric/antagonistic">Cons</router-link>
+    </li>
+    <li>
+      <router-link to="/scoreboard">Score</router-link>
+    </li>
 
     <div class="right-nav">
-      <li id="signOut" v-if="user" @click="signoutUser"><a to="#">Signout</a></li>
       <li>
-        <router-link to="account">
-          <strong v-if="user">Account</strong>
+        <router-link to="/account">
+          <strong v-if="getCurrentUser">Account</strong>
           <strong v-else>Log In</strong>
-        </router-link>
+        </router-link>        
       </li>
     </div>
   </ul>
 </template>
 
 <script>
-  //Import Apollo Client
-  import {
-    defaultClient as apolloClient
-  } from '../main';
+  import gql from 'graphql-tag';
 
   export default {
     name: "Header",
-    methods: {
-      signoutUser: async () => {
-        //Remove token in localStorage
-        localStorage.setItem("token", "");
-        //End Apollo Client Session
-        await apolloClient.resetStore();
+    data() {
+      return {
+        getCurrentUser: null
       }
     },
-    props: [
-      'user'
-    ]
+    apollo: {
+      getCurrentUser: {
+        query: gql `
+                    query getCurrentUser {
+                        getCurrentUser {
+                            _id
+                            username
+                            email
+                            emailValidated
+                            active
+                            admin
+                            allegiance
+                            maximalist
+                        }
+                    }
+                `
+      }
+    }
   };
 </script>
 
 <style lang="scss" scoped>
   @import "../sass/variables";
 
+  #menu {
+    text-align: left;
+  }
+
   ul {
     padding-right: 10vw;
-    height: 4vh;
-    background-image: linear-gradient(to right bottom,
-      hsla(196, 31%, 33%, .7),
-      hsla(68, 16%, 62%, .7)),
-      url(../../public/images/header-bg.jpg);
-    background-size: cover;
-    background-position: bottom;
-
+    height: $header-height;
     list-style-type: none;
   }
 

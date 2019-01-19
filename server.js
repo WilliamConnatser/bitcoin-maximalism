@@ -39,6 +39,22 @@ if (process.env.DEPLOYING === "false") {
     var mongoURI = process.env.MONGO_URI_PRODUCTION;
 }
 
+/*
+//Nomics Cryptocurrency API
+const Nomics = require('nomics');
+const nomicsAPI = new Nomics.NomicsNode({
+    apiKey: process.env.NOMICS
+});
+
+var prices = nomicsAPI.pricesObject();
+prices.then(function (result) {
+    console.log(result)
+}, function (err) {
+    console.log(err)
+});
+*/
+
+
 //Connect to MongoDB
 mongoose
     .connect(mongoURI, {
@@ -49,7 +65,7 @@ mongoose
     }) => {
         console.log("MongoDB Database Connected")
 
-        var originalInitialization = async () => {
+        async function originalInitialization() {
             //Initialize the database on the first start up
             await models.BulletPoint.findOne({}, async (err, result) => {
                 if (!result) await models.BulletPoint.collection.insertMany(initData.bulletPoint)
@@ -62,61 +78,80 @@ mongoose
             });
         }
 
-        var originalPopulation = async () => {
-
-            var bulletPointDocumentArray = []
-            await models.BulletPoint.find({}, async (err, result) => {
-                bulletPointDocumentArray = result;
-
-                for (var i = 0; i < bulletPointDocumentArray.length; i++) {
-
-                    if (bulletPointDocumentArray[i] !== undefined) {
-
-                        await Rhetoric.findOne({
-                            slug: bulletPointDocumentArray[i].slug
-                        }, async (err, rhetoric) => {
-
-                            var arrayToCompare = rhetoric.bulletPoints.map(function (v) {
-                                return v.toString();
-                            });
-
-                            if (arrayToCompare.indexOf(bulletPointDocumentArray[i]._id.toString()) < 0) {
-                                rhetoric.bulletPoints.push(bulletPointDocumentArray[i]._id);
-                                await rhetoric.save();
-                            }
+        function populateBulletPoints() {
+            models.BulletPoint.find({}, async (err, results) => {
+                for (const bulletPoint of results) {
+                    Rhetoric.findOne({
+                        slug: bulletPoint.slug,
+                        pro: bulletPoint.pro
+                    }, async (err, rhetoric) => {
+                        var arrayToCompare = rhetoric.bulletPoints.map(function (v) {
+                            return v.toString();
                         });
-                    }
-                }
-            });
-            var resourceDocumentArray = []
-            await models.Resource.find({}, async (err, result) => {
-                resourceDocumentArray = result;
-
-                for (var i = 0; i < resourceDocumentArray.length; i++) {
-
-                    if (resourceDocumentArray[i] !== undefined) {
-
-                        await Rhetoric.findOne({
-                            slug: resourceDocumentArray[i].slug
-                        }, async (err, rhetoric) => {
-
-                            var arrayToCompare = rhetoric.resources.map(function (v) {
-                                return v.toString();
-                            });
-
-                            if (arrayToCompare.indexOf(resourceDocumentArray[i]._id.toString()) < 0) {
-                                rhetoric.resources.push(resourceDocumentArray[i]._id);
-                                await rhetoric.save();
+                        if (bulletPoint !== undefined) {
+                            if (bulletPoint.slug === rhetoric.slug && bulletPoint.pro === rhetoric.pro) {
+                                if (arrayToCompare.indexOf(bulletPoint._id.toString()) < 0) {
+                                    rhetoric.bulletPoints.push(bulletPoint._id);
+                                    rhetoric.save();
+                                }
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             });
         }
 
+        function populateResources() {
+            models.Resource.find({}, async (err, results) => {
+                for (const resource of results) {
+                    Rhetoric.findOne({
+                        slug: resource.slug,
+                        pro: resource.pro
+                    }, async (err, rhetoric) => {
+                        var arrayToCompare = rhetoric.resources.map(function (v) {
+                            return v.toString();
+                        });
+                        if (resource !== undefined) {
+                            if (resource.slug === rhetoric.slug && resource.pro === rhetoric.pro) {
+                                if (arrayToCompare.indexOf(resource._id.toString()) < 0) {
+                                    rhetoric.resources.push(resource._id);
+                                    rhetoric.save();
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function populateResourceRhetoric() {
+            models.Resource.find({}, (err, results) => {
+                for (const resource of results) {
+                    Rhetoric.findOne({
+                        slug: "resources",
+                        pro: resource.pro
+                    }, (err, rhetoric) => {
+
+                        var arrayToCompare = rhetoric.resources.map(function (v) {
+                            return v.toString();
+                        });
+                        if (resource !== undefined) {
+                            if (resource.pro === rhetoric.pro) {
+                                if (arrayToCompare.indexOf(resource._id.toString()) < 0) {
+                                    rhetoric.resources.push(resource._id);
+                                    rhetoric.save();
+                                }
+                            }
+                        }
+                    });
+                }
+            })
+        }
+
         await originalInitialization();
-        //await originalPopulation(); Tired of wasting time debugging this...
-        //Comment out this function after it's ben run once so duplicate document IDs aren't pushed to arrays
+        populateBulletPoints();
+        populateResources();
+        populateResourceRhetoric();
     })
     .catch(err => console.log(err));
 
@@ -135,11 +170,10 @@ const getUser = async (token) => {
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    /*
-        formatError: error => ({
-            name: error.name,
-            message: error.message
-        }),*/
+    formatError: error => ({
+        name: error.name,
+        message: error.message
+    }),
     context: async ({
         req
     }) => {

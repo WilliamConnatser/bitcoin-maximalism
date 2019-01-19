@@ -8,8 +8,14 @@ const ResourceSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    active: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     slug: {
-        type: String
+        type: String,
+        required: true
     },
     pro: {
         type: Boolean,
@@ -35,22 +41,30 @@ const ResourceSchema = new mongoose.Schema({
     dateApproved: {
         type: Date
     },
-    applicableDonation: {
+    approvedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Donation'
+        ref: 'User'
+    },
+    approvalCommentary: {
+        type: String
     },
     edits: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Edit'
-    },
-    dateLastEdited: {
-        type: Date,
         required: true,
-        default: Date.now
+        default: [],
+        ref: 'Edit'
     },
     opinions: {
         type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
         ref: 'Opinion'
+    },
+    donations: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Donation'
     }
 });
 

@@ -1,9 +1,9 @@
-union Donatable = BulletPoint | Resource | Opinion | Edit | Certificate
+union Donatable = BulletPoint | Resource | Opinion | Edit | Certificate | Rhetoric | User
 union Opinionable = BulletPoint | Edit | Resource | Rhetoric
 union Editable = BulletPoint | Resource | Rhetoric
 
 schema {
-  query: Query,
+  query: Query
   mutation: Mutation
 }
 
@@ -12,114 +12,135 @@ type Token {
 }
 
 type Rhetoric {
-    _id: ID,
-    dateCreated: String!,
-    slug: String!,
-    pro: Boolean!,
-    title: String!,
-    bulletPoints: [BulletPoint!]!,
-    resources: [Resource!]!,
-    opinions: [Opinion!]!,
-    approved: Boolean!,
-    dateApproved: String,
-    applicableDonation: Donation,
-    edits: [Edit!]!,
-    dateLastEdited: String!
+    _id: ID
+    dateCreated: String!
+    active: Boolean!
+    slug: String!
+    pro: Boolean!
+    title: String!
+    approved: Boolean!
+    dateApproved: String
+    approvedBy: User
+    approvalCommentary: String
+    bulletPoints: [BulletPoint!]!
+    resources: [Resource!]!
+    opinions: [Opinion!]!
+    edits: [Edit!]!
+    donations: [Donation!]!
 }
 
 type BulletPoint {
-    _id: ID,
-    dateCreated: String!,
-    slug: String!,
-    pro: Boolean!,
-    content: String!,
-    approved: Boolean!,
-    dateApproved: String,
-    applicableDonation: Donation,
-    edits: [Edit!]!,
-    dateLastEdited: String!,
+    _id: ID
+    dateCreated: String!
+    active: Boolean!
+    slug: String!
+    pro: Boolean!
+    content: String!
+    approved: Boolean!
+    dateApproved: String
+    approvedBy: User
+    approvalCommentary: String
+    edits: [Edit!]!
     opinions: [Opinion!]!
+    donations: [Donation!]!
 }
 
 type Resource {
-    _id: ID,
-    dateCreated: String!,
-    slug: String,
-    pro: Boolean!,
-    title: String!,
-    media: String!,
-    link: String!,
-    approved: Boolean!,
-    dateApproved: String,
-    applicableDonation: Donation,
-    edits: [Edit!]!,
-    dateLastEdited: String!,
+    _id: ID
+    dateCreated: String!
+    active: Boolean!
+    slug: String!
+    pro: Boolean!
+    title: String!
+    media: String!
+    link: String!
+    approved: Boolean!
+    dateApproved: String
+    approvedBy: User
+    approvalCommentary: String
+    edits: [Edit!]!
     opinions: [Opinion!]!
+    donations: [Donation!]!
 }
 
 type Opinion {
-    _id: ID,
-    dateCreated: String!,
-    slug: String,
-    pro: Boolean!,
-    comment: String!,
-    approved: Boolean!,
-    dateApproved: String,
-    applicableDonation: Donation,
-    applicableDocument: Opinionable,
+    _id: ID
+    dateCreated: String!
+    slug: String!
+    pro: Boolean!
+    comment: String!
+    approved: Boolean!
+    dateApproved: String
+    approvedBy: User
+    approvalCommentary: String
+    document: Opinionable
     onModel: String
+    donations: [Donation!]!
 }
 
 type Edit {
-    _id: ID,
-    dateCreated: String!,
-    slug: String!,
-    pro: Boolean!,
-    old: Editable!,
-    new: Editable!,
-    onModel: String!,
-    approved: Boolean!,
-    dateApproved: String,
-    applicableDonation: Donation,
+    _id: ID
+    dateCreated: String!
+    slug: String!
+    pro: Boolean!
+    old: Editable!
+    new: Editable!
+    onModel: String!
+    approved: Boolean!
+    dateApproved: String
+    approvedBy: User
+    approvalCommentary: String
     opinions: [Opinion!]!
+    donations: [Donation!]!
 }
 
 type Donation {
-    _id: ID,
-    dateCreated: String!,
-    ticker: String!,
-    amount: Float!,
-    value: Float!,
-    slug: String!,
-    pro: Boolean!,
-    applicableDocument: Donatable,
+    _id: ID
+    dateCreated: String!
+    slug: String!
+    pro: Boolean!
+    ticker: String!
+    amount: Float!
+    username: String!
+    document: Donatable
     onModel: String
 }
 
 type Certificate {
-    _id: ID,
-    dateCreated: String!,
-    name: String!,
-    pro: Boolean,
-    applicableDonation: Donation
+    _id: ID
+    dateCreated: String!
+    active: Boolean!
+    name: String!
+    pro: Boolean!
+    donations: [Donation!]!
 }
 
 type User {
     _id: ID
+    dateCreated: String!
     username: String!@unique
     email: String!@unique
+    emailValidated: Boolean!
+    active: Boolean!
     password: String!
     allegiance: Boolean
     maximalist: Boolean
     admin: Boolean!
+    donations: [Donation!]!
+}
+
+type Crypto {
+    _id: ID
+    ticker: String!
+    valueUSD: Float!
 }
 
 type Query {
-    getCurrentUser: User,
-    getRhetoric(pro: Boolean, slug: String, approved: Boolean): [Rhetoric],
-    getAllProtagonisticRhetoric(approved: Boolean): [Rhetoric],
-    getAllAntagonisticRhetoric(approved: Boolean): [Rhetoric],
-    getDonation(pro: Boolean, slug: String): [Donation],
+    getCurrentUser: User
+    getRhetoricByMetaSlugAndSlug(pro: Boolean!, slug: String!): Rhetoric
+    getAllProtagonisticRhetoric: [Rhetoric]
+    getAllAntagonisticRhetoric: [Rhetoric]
+    getDonation(pro: Boolean, slug: String): [Donation!]
     getSubType(type: String, pro: Boolean, slug: String): [Donatable]
 }
 

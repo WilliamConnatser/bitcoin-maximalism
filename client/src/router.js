@@ -1,11 +1,13 @@
 import Vue from "vue";
 import Router from "vue-router";
-import BitcoinMaximalism from "./components/BitcoinMaximalism.vue";
+import About from "./components/About.vue";
 import Account from "./components/Account.vue";
 import TableOfContents from "./components/TableOfContents.vue";
-import ParentSlide from "./components/ParentSlide.vue";
+import Rhetoric from "./components/Rhetoric.vue";
 import Signin from "./components/auth/Signin.vue";
 import Signup from "./components/auth/Signup.vue";
+import Terms from "./components/Terms.vue";
+import Privacy from "./components/Privacy.vue";
 
 Vue.use(Router);
 
@@ -15,27 +17,27 @@ export default new Router({
   routes: [
     {
       path: "/",
-      component: BitcoinMaximalism
+      component: About
     },
     {
       path: "/rhetoric/:metaSlug",
       component: TableOfContents
     },
     {
-      path: "/rhetoric/:metaSlug/:rhetoric",
-      component: ParentSlide
+      path: "/rhetoric/:metaSlug/:slug",
+      component: Rhetoric
     },
     {
       path: "/account",
       component: Account
     },
     {
-      path: "/signin",
-      component: Signin
+      path: "/terms",
+      component: Terms
     },
     {
-      path: "/signup",
-      component: Signup
+      path: "/privacy",
+      component: Privacy
     }
   ]
 });

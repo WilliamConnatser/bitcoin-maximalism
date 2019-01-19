@@ -59,7 +59,7 @@
                     this.$apollo.queries.getCurrentUser.refetch();
                 }).catch(error => {
                     // Error :\
-                    console.error(error);
+                    // Error handled in main.js
                 })
             }
         },
@@ -70,6 +70,8 @@
                         _id
                         username
                         email
+                        emailValidated
+                        active
                         admin
                         allegiance
                         maximalist
@@ -79,3 +81,38 @@
         }
     };
 </script>
+
+<style lang="scss" scoped>
+    @import "../../sass/variables.scss";
+
+    input {
+        display: inline-block;
+        width: 75vw;
+        height: 4rem;
+        font-size: 1.5rem;
+        border: 0.1rem solid $color-white;
+    }
+
+    label {
+        text-align: center;
+        color: $color-white;
+        display: inline-block;
+        width: 80vw;
+        font-size: 1.9rem;
+        font-weight: 200;
+    }
+
+    button {
+        color: $color-white;
+        font-size: 1.5rem;
+        width: 40vw;
+        height: 4rem;
+        padding: .5rem;
+        margin-bottom: 4rem;
+        border: 0.1rem solid $color-dark-grey;
+    }
+
+    .block {
+        margin: 3rem;
+    }
+</style>

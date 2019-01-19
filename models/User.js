@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const UserSchema = new mongoose.Schema({
+    dateCreated: {
+        type: Date,
+        required: true,
+        default: Date.now
+    },
     username: {
         type: String,
         required: true,
@@ -14,13 +19,25 @@ const UserSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    emailValidated: {
+        type: String,
+        required: true,
+        default: false
+    },
+    active: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     password: {
         type: String,
         required: true,
         trim: true
     },
     allegiance: {
-        type: Boolean
+        type: Boolean,
+        required: true,
+        default: false
     },
     maximalist: {
         type: Boolean
@@ -29,6 +46,12 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
+    },
+    donations: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Donation'
     }
 });
 

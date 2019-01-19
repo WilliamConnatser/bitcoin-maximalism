@@ -8,6 +8,11 @@ const CertificateSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    active: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     name: {
         type: String,
         required: true,
@@ -17,9 +22,10 @@ const CertificateSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
-    applicableDonation: {
-        type: mongoose.Schema.Types.ObjectId,
+    donations: {
+        type: [mongoose.Schema.Types.ObjectId],
         required: true,
+        default: [],
         ref: 'Donation'
     }
 });

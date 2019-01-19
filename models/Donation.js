@@ -8,6 +8,10 @@ const DonationSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    username: {
+        type: String,
+        required: true
+    },
     ticker: {
         type: String,
         required: true
@@ -16,25 +20,21 @@ const DonationSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    value: {
-        type: Number,
-        required: true
-    },
     slug: {
         type: String,
-        require: true
+        required: true
     },
     pro: {
         type: Boolean,
         required: true
     },
-    applicableDocument: {
+    document: {
         type: mongoose.Schema.Types.ObjectId,
         refPath: 'onModel'
     },
     onModel: {
         type: String,
-        enum: ['BulletPoint', 'Opinion', 'Resource', 'Rhetoric', 'Certificate']
+        enum: ['BulletPoint', 'Opinion', 'Resource', 'Rhetoric', 'Certificate', 'User', 'Edit']
     }
 });
 

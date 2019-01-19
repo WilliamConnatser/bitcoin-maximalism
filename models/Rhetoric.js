@@ -8,6 +8,11 @@ const RhetoricSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    active: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     slug: {
         type: String,
         required: true
@@ -20,27 +25,6 @@ const RhetoricSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    bulletPoints: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'BulletPoint'
-    },
-    resources: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Resource'
-    },
-    opinions: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Opinion'
-    },
-    edits: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Edit'
-    },
-    dateLastEdited: {
-        type: Date,
-        required: true,
-        default: Date.now
-    },
     approved: {
         type: Boolean,
         required: true,
@@ -49,8 +33,41 @@ const RhetoricSchema = new mongoose.Schema({
     dateApproved: {
         type: Date
     },
-    applicableDonation: {
-        type: mongoose.Schema.Types.ObjectId,
+    approvedBy: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'User'
+    },
+    approvalCommentary: {
+        type: String
+    },
+    bulletPoints: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'BulletPoint'
+    },
+    resources: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Resource'
+    },
+    opinions: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Opinion'
+    },
+    edits: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Edit'
+    },
+    donations: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
         ref: 'Donation'
     }
 });

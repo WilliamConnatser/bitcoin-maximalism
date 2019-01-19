@@ -5,6 +5,7 @@ import App from './App.vue';
 //Vue-Router
 import VueRouter from 'vue-router';
 import router from './router.js';
+Vue.use(VueRouter);
 
 //ZEIT Now and Environment Variables Imports
 require('now-env');
@@ -15,17 +16,55 @@ import ApolloClient from 'apollo-boost';
 import resolvers from './localState/resolvers';
 import defaults from './localState/defaults';
 import typeDefs from './localState/typeDefs';
-
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faAngleUp, faAngleDown, faCommentDollar, faComment, faPlusSquare, faMinusSquare, faPenSquare } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faAngleUp, faAngleDown, faCommentDollar, faComment, faPlusSquare, faMinusSquare, faPenSquare);
-
-Vue.component('font-awesome-icon', FontAwesomeIcon)
-
-
-Vue.use(VueRouter);
 Vue.use(VueApollo);
+
+//Font Awesome
+import {
+    library
+} from '@fortawesome/fontawesome-svg-core'
+import {
+    faAngleUp,
+    faAngleDown,
+    faCommentDollar,
+    faComment,
+    faPlusSquare,
+    faMinusSquare,
+    faPenSquare
+} from '@fortawesome/free-solid-svg-icons'
+import {
+    FontAwesomeIcon
+} from '@fortawesome/vue-fontawesome'
+library.add(faAngleUp, faAngleDown, faCommentDollar, faComment, faPlusSquare, faMinusSquare, faPenSquare);
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+
+// register the plugin on vue
+import Toasted from 'vue-toasted';
+Vue.use(Toasted, {
+    duration: 5000,
+    iconPack: 'fontawesome',
+    router,
+    icon: 'fa-exclamation-circle',
+    action: {
+        text: 'Close',
+        onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+        }
+    }
+});
+
+Vue.toasted.register('log_in', 'You must log in or before doing this', {
+    duration: 5000,
+    icon: 'fa-exclamation-circle',
+    action: [{
+      text: 'Close',
+      onClick: (e, toastObject) => {
+        toastObject.goAway(0);
+      }
+    },{
+      text: 'Log in or Register',
+      push: '/account'
+    }]
+  });
 
 //Set the Apollo URI to what's stored in the now.json file if the app is being deployed
 var apolloURI = ''
@@ -61,12 +100,15 @@ export const defaultClient = new ApolloClient({
         });
     },
     //Catches all errors
-    onError: ({ operation, graphQLErrors, networkError }) => {
-        console.log("The following Error occurred on this Operation:", operation);
-        if (networkError) console.log("[networkError]", networkError);
+    onError: ({
+        operation,
+        graphQLErrors,
+        networkError
+    }) => {
+        if (networkError) Vue.toasted.show(networkError.message);
         if (graphQLErrors) {
             for (let err of graphQLErrors) {
-                console.log("[GraphqlError:]", err);
+                Vue.toasted.show(err.message);
             }
         }
     }

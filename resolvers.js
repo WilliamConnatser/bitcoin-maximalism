@@ -34,12 +34,16 @@ module.exports = {
             });
             return user;
         },
-        getRhetoric: async (_, args, {
+        getRhetoricByMetaSlugAndSlug: async (_, args, {
             Rhetoric
         }) => {
-            // args destructed = { pro: Boolean, slug: String, approved: Boolean }
+            // args destructed = { pro: Boolean, slug: String }
+
+            //Only return approved arguments
+            args.approved = true;
+
             const rhetoric = await Rhetoric
-                .find(args)
+                .findOne(args)
                 .populate({
                     path: 'bulletPoints',
                     model: 'BulletPoint'
@@ -50,19 +54,18 @@ module.exports = {
                 })
                 .sort({
                     dateCreated: 'desc'
-                })
+                });
+
             return rhetoric;
         },
-        getAllProtagonisticRhetoric: async (_, {
-            approved
-        }, {
+        getAllProtagonisticRhetoric: async (_, args, {
             Rhetoric
         }) => {
-            // args destructed = { approved: Boolean }
             const rhetoric = await Rhetoric
                 .find({
                     pro: true,
-                    approved
+                    approved: true,
+                    active: true
                 })
                 .populate({
                     path: 'bulletPoints',
@@ -86,7 +89,8 @@ module.exports = {
             const rhetoric = await Rhetoric
                 .find({
                     pro: false,
-                    approved
+                    approved: true,
+                    active: true
                 })
                 .populate({
                     path: 'bulletPoints',

@@ -1,5 +1,8 @@
 <template>
     <ul id="footer">
+        <li>&copy; YOLO International LLC</li>
+        <li><router-link to="/terms">Terms</router-link></li>
+        <li><router-link to="/privacy">Privacy</router-link></li>
         <li class="social-icons">
             <a href="https://twitter.com/BTCMaximalism21" target="_blank" rel="noopener" class="icons">
                 <i>
@@ -20,9 +23,6 @@
                 </i>
             </a>
         </li>
-        <li>&copy; YOLO International LLC</li>
-        <li><a href="terms">Terms</a></li>
-        <li><a href="privacy">Privacy</a></li>
     </ul>
 </template>
 
@@ -36,27 +36,22 @@
     @import "../sass/variables";
 
     ul {
-        height: 4vh;
-        padding-top: .5rem;
-        background-color: $color-primary;
-        font-size: 1rem;
+        height: $footer-height;
+        font-size: 1.25rem;
+        font-weight: 400;
         list-style-type: none;
         text-align: right;
+        margin-right: 1rem;
     }
 
     li {
         display: inline-block;
-        padding: 0rem 1rem;
+        padding: 0rem 0.5rem;
     }
 
     a {
         color: $color-white;
-        font-size: 1rem;
         text-decoration: none;
-    }
-
-    .social-icons {
-        float: left;
     }
 
     svg {

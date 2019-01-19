@@ -1,15 +1,16 @@
 <template>
     <div class="section">
-        <Login v-if="!user" />
-        <div v-if="user">
-            <h1>Welcome {{user.username}}!</h1>
-            <p v-if="!user.allegiance">
+        <Login v-if="!getCurrentUser" />
+        <div v-if="getCurrentUser">
+            <h1>Welcome {{getCurrentUser.username}}!</h1>
+            <button id="signOut" v-if="getCurrentUser" @click="signoutUser">Signout</button>
+            <p v-if="!getCurrentUser.allegiance">
                 You have not yet sworn allegiance to either faction. Your ancestors would be ashamed...
             </p>
             <p v-else>
                 You think you're a {{getAllegiance}}, huh? <br />
                 <strong>
-                    <a v-if="!user.passedQuiz" href="#quiz">Prove it!</a>
+                    <a v-if="!getCurrentUser.passedQuiz" href="#quiz">Prove it!</a>
                 </strong>
             </p>
 
@@ -20,7 +21,7 @@
                 I identify as a Multicoinist
             </button>
 
-            <p v-show="user.admin">
+            <p v-show="getCurrentUser.admin">
                 You so fancy! Look are you, Mr. Administrator...
             </p>
         </div>
@@ -29,13 +30,21 @@
 
 <script>
     import Login from './auth/Login';
+    import {
+        defaultClient as apolloClient
+    } from '../main';
     import gql from 'graphql-tag';
 
     export default {
         name: "Account",
+        data() {
+            return {
+                getCurrentUser: null
+            }
+        },
         computed: {
             getAllegiance() {
-                if (this.user.maximalist) {
+                if (this.getCurrentUser.maximalist) {
                     return 'Bitcoin Maximalist';
                 } else {
                     return 'Multicoinist';
@@ -45,14 +54,17 @@
         components: {
             Login
         },
-        props: [
-            'user'
-        ],
         methods: {
+            signoutUser: async () => {
+                //Remove token in localStorage
+                localStorage.setItem("token", "");
+                //End Apollo Client Session
+                await apolloClient.resetStore();
+            },
             getStyle(allegiance) {
-                if (this.user.maximalist && allegiance === 'Maximalist') {
+                if (this.getCurrentUser.maximalist && allegiance === 'Maximalist') {
                     return 'background-color: #41b883';
-                } else if (!this.user.maximalist && allegiance === 'Multicoinist') {
+                } else if (!this.getCurrentUser.maximalist && allegiance === 'Multicoinist') {
                     return 'background-color: #41b883';
                 }
             },
@@ -90,6 +102,8 @@
                         _id
                         username
                         email
+                        emailValidated
+                        active
                         admin
                         allegiance
                         maximalist
