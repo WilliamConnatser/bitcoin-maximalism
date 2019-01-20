@@ -1,36 +1,9 @@
 <template>
   <div>
     <h1>{ {{metaSlug}} }</h1>
-    <AdvancedListItem :metaSlug="metaSlug" :arrayProp="this.args"/>
-    <!--
-      <ul class="comments">
-        <li id="top" class="comment">
-          <div>
-            <strong class="comment-label">Top Comment</strong>
-            ($100 - 0.05 BTC)
-          </div>
-          <strong class="comment-username">UserName:</strong>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus labore consequatur explicabo repellat. Porro,
-          aspernatur.
-        </li>
-        <li id="last" class="comment">
-          <div>
-            <strong class="comment-label">Last Comment</strong>
-            ($0.10)
-            <strong class="comment-username">CoinHoarder</strong>
-          </div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit facere sit nobis quae veniam debitis?
-        </li>
-        <li id="random" class="comment">
-          <div>
-            <strong class="comment-label">Random Comment</strong>
-            ($2.00)
-            <strong class="comment-username">CoinHoarder</strong>
-          </div>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab nemo libero voluptas minima at vel.
-        </li>
-      </ul>
-    -->
+    <ul>
+      <AdvancedListItem :metaSlug="metaSlug" :arrayProp="this.args"/>
+    </ul>
   </div>
 </template>
 
@@ -42,28 +15,43 @@
     data: () => {
       return {
         getCurrentUser: null,
-        getAllProtagonisticRhetoric: [],
-        getAllAntagonisticRhetoric: [],
-        metaSlug: ""
+        getAllApprovedAndActiveProtagonisticRhetoric: [],
+        getAllApprovedAndActiveAntagonisticRhetoric: [],
+        metaSlug: "",
+        slug: "",
+        pro: ""
       }
     },
     components: {
       AdvancedListItem
     },
     created() {
+      if (this.$route.params.metaSlug == "protagonistic") {
+        this.pro = true;
+      } else {
+        this.pro = false;
+      }
+
       this.metaSlug = this.$route.params.metaSlug;
+      this.slug = this.$route.params.slug;
     },
     computed: {
       args() {
         if (this.metaSlug == "protagonistic") {
-          return this.getAllProtagonisticRhetoric;
+          return this.getAllApprovedAndActiveProtagonisticRhetoric;
         } else {
-          return this.getAllAntagonisticRhetoric;
+          return this.getAllApprovedAndActiveAntagonisticRhetoric;
         }
       }
     },
     watch: {
       '$route'(to, from) {
+        if (to.params.metaSlug == "protagonistic") {
+          this.pro = true;
+        } else {
+          this.pro = false;
+        }
+        this.slug = to.params.slug;
         this.metaSlug = to.params.metaSlug;
       }
     },
@@ -92,20 +80,20 @@
                     }
                 `
       },
-      getAllProtagonisticRhetoric: {
+      getAllApprovedAndActiveProtagonisticRhetoric: {
         query: gql `
-                    query getAllProtagonisticRhetoric {
-                        getAllProtagonisticRhetoric {
+                    query getAllApprovedAndActiveProtagonisticRhetoric {
+                        getAllApprovedAndActiveProtagonisticRhetoric {
                             slug
                             title
                         }
                     }
                 `
       },
-      getAllAntagonisticRhetoric: {
+      getAllApprovedAndActiveAntagonisticRhetoric: {
         query: gql `
-                    query getAllAntagonisticRhetoric {
-                        getAllAntagonisticRhetoric {
+                    query getAllApprovedAndActiveAntagonisticRhetoric {
+                        getAllApprovedAndActiveAntagonisticRhetoric {
                             slug
                             title
                         }
@@ -172,18 +160,5 @@
         margin: 0rem 1rem;
       }
     }
-  }
-
-  .comments {
-    list-style-type: none;
-  }
-
-  .comment {
-    margin: 2rem;
-    padding: 2rem;
-  }
-
-  .comment-label {
-    text-transform: uppercase;
   }
 </style>

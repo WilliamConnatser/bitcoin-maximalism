@@ -21,20 +21,20 @@ Vue.use(VueApollo);
 //Font Awesome
 import {
     library
-} from '@fortawesome/fontawesome-svg-core'
+} from '@fortawesome/fontawesome-svg-core';
 import {
     faAngleUp,
     faAngleDown,
-    faCommentDollar,
     faComment,
     faPlusSquare,
     faMinusSquare,
-    faPenSquare
-} from '@fortawesome/free-solid-svg-icons'
+    faPenSquare,
+    faSearch
+} from '@fortawesome/free-solid-svg-icons';
 import {
     FontAwesomeIcon
-} from '@fortawesome/vue-fontawesome'
-library.add(faAngleUp, faAngleDown, faCommentDollar, faComment, faPlusSquare, faMinusSquare, faPenSquare);
+} from '@fortawesome/vue-fontawesome';
+library.add(faAngleUp, faAngleDown, faComment, faPlusSquare, faMinusSquare, faPenSquare, faSearch);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 // register the plugin on vue

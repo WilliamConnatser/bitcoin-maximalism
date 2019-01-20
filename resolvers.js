@@ -51,14 +51,11 @@ module.exports = {
                 .populate({
                     path: 'resources',
                     model: 'Resource'
-                })
-                .sort({
-                    dateCreated: 'desc'
                 });
 
             return rhetoric;
         },
-        getAllProtagonisticRhetoric: async (_, args, {
+        getAllApprovedAndActiveProtagonisticRhetoric: async (_, args, {
             Rhetoric
         }) => {
             const rhetoric = await Rhetoric
@@ -80,12 +77,9 @@ module.exports = {
                 })
             return rhetoric;
         },
-        getAllAntagonisticRhetoric: async (_, {
-            approved
-        }, {
+        getAllApprovedAndActiveAntagonisticRhetoric: async (_, args, {
             Rhetoric
         }) => {
-            // args destructed = { approved: Boolean }
             const rhetoric = await Rhetoric
                 .find({
                     pro: false,
@@ -114,7 +108,55 @@ module.exports = {
             });
             return donation;
         },
-        getSubType: async (_, args, {
+        getAmountDonatedSlugSpecific: async (_, args, {
+            Donation,
+            Crypto
+        }) => {
+            // args destructed = { pro: Boolean, slug: String }
+            args.paid = true;
+
+            var cryptoValues = {};
+            var aggregateValue = 0;
+
+            await Donation.find(args, function (err, docs) {
+                docs.forEach(donation => {
+                    if (donations.ticker === undefined) {
+                        let value = Crypto.findOne({
+                            ticker: donations.ticker
+                        }).value;
+                        cryptoValues[donations.ticker] = value;
+                    }
+                    aggregateValue += donation.amount * cryptoValues[donations.ticker]
+                });
+            });
+
+            return aggregateValue;
+        },
+        getAmountDonatedModelSpecific: async (_, args, {
+            Donation,
+            Crypto
+        }) => {
+            // args destructed = { pro: Boolean, slug: String, onModel: String }
+            args.paid = true;
+
+            var cryptoValues = {};
+            var aggregateValue = 0;
+
+            await Donation.find(args, function (err, docs) {
+                docs.forEach(donation => {
+                    if (donations.ticker === undefined) {
+                        let value = Crypto.findOne({
+                            ticker: donations.ticker
+                        }).value;
+                        cryptoValues[donations.ticker] = value;
+                    }
+                    aggregateValue += donation.amount * cryptoValues[donations.ticker]
+                });
+            });
+
+            return aggregateValue;
+        },
+        getModel: async (_, args, {
             BulletPoint,
             Resource,
             Opinion,

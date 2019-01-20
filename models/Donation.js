@@ -35,6 +35,20 @@ const DonationSchema = new mongoose.Schema({
     onModel: {
         type: String,
         enum: ['BulletPoint', 'Opinion', 'Resource', 'Rhetoric', 'Certificate', 'User', 'Edit']
+    },
+    active: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
+    paid: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    invoice: {
+        type: String,
+        required: true
     }
 });
 

@@ -1,14 +1,14 @@
 <template>
     <div>
         <li class="advanced-list-item" v-for="arrayItem in arrayProp" :key="arrayItem._id">
-            <ToolbarVotes :arrayItemProp="arrayItem" :metaSlug="metaSlug" />
+            <ToolbarVotes :arrayItemProp="arrayItem" :metaSlug="metaSlug" :slug="slug"/>
 
             <span v-if="arrayItem.__typename == 'BulletPoint'">{{arrayItem.content}}</span>
             <a v-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link"><span class="media-type">{
                     {{arrayItem.media}} } </span>{{arrayItem.title}}</a>
             <router-link v-if="arrayItem.__typename == 'Rhetoric'" class="link" :to="urlGenerator(metaSlug, arrayItem.slug)">{{arrayItem.title}}</router-link>
 
-            <ToolbarActions :arrayItemProp="arrayItem" :metaSlug="metaSlug" />
+            <ToolbarActions v-if="arrayItem.__typename !=='Rhetoric'" :arrayItemProp="arrayItem" :metaSlug="metaSlug" />
         </li>
     </div>
 </template>
@@ -106,12 +106,8 @@
             text-decoration: none;
 
             .media-type {
-                font-weight: 500;
-
-                &::after {
-                    content: '\A';
-                    white-space: pre;
-                }
+                font-weight: 700;
+                margin-right: 1rem;
             }
         }
     }

@@ -1,6 +1,6 @@
 union Donatable = BulletPoint | Resource | Opinion | Edit | Certificate | Rhetoric | User
-union Opinionable = BulletPoint | Edit | Resource | Rhetoric
-union Editable = BulletPoint | Resource | Rhetoric
+union Opinionable = BulletPoint | Resource
+union Editable = BulletPoint | Resource
 
 schema {
   query: Query
@@ -102,8 +102,11 @@ type Donation {
     ticker: String!
     amount: Float!
     username: String!
-    document: Donatable
-    onModel: String
+    document: Donatable!
+    onModel: String!
+    active: Boolean!
+    paid: Boolean!
+    invoice: String!
 }
 
 type Certificate {
@@ -138,10 +141,14 @@ type Crypto {
 type Query {
     getCurrentUser: User
     getRhetoricByMetaSlugAndSlug(pro: Boolean!, slug: String!): Rhetoric
-    getAllProtagonisticRhetoric: [Rhetoric]
-    getAllAntagonisticRhetoric: [Rhetoric]
+    getAllApprovedAndActiveProtagonisticRhetoric: [Rhetoric]
+    getAllApprovedAndActiveAntagonisticRhetoric: [Rhetoric]
+
+    getAmountDonatedSlugSpecific(pro: Boolean!, slug: String!): Float
+    getAmountDonatedModelSpecific(pro: Boolean!, slug: String!, onModel: String!): Float
+
     getDonation(pro: Boolean, slug: String): [Donation!]
-    getSubType(type: String, pro: Boolean, slug: String): [Donatable]
+    getModel(pro: Boolean!, slug: String!, model: String!): [Donatable]
 }
 
 type Mutation {
