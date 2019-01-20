@@ -2,7 +2,21 @@
 const mongoose = require('mongoose');
 
 //Import ZEIT Now configuration
-require('now-env')
+require('now-env');
+
+const btcpay = require('btcpay')
+const keypair = btcpay.crypto.load_keypair(new Buffer.from(process.env.BTCPAY_KEY, 'hex'));
+
+// Recreate client
+const client = new btcpay.BTCPayClient(process.env.BTCPAY_URL, keypair, {merchant: process.env.BTCPAY_MERCHANT});
+
+client.get_rates('BTC_USD', process.env.BTCPAY_STOREID)
+  .then(rates => console.log(rates))
+  .catch(err => console.log(err))
+
+  client.create_invoice({price: 20, currency: 'USD'})
+  .then(invoice => console.log(invoice, invoice.url))
+  .catch(err => console.log(err))
 
 //Node Modules needed to import GraphQL typeDefs
 const fs = require('fs');

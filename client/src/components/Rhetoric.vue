@@ -2,61 +2,28 @@
   <div>
     <h1>{{getRhetoricByMetaSlugAndSlug.title}}</h1>
     <ul>
-      <li class="rhetoric" v-for="bulletPoint in getRhetoricByMetaSlugAndSlug.bulletPoints" :key="bulletPoint.content">
-        <div class="toolbar--top">
-          <span @click='vote(true, bulletPoint)' title="Upvote">
-            <font-awesome-icon icon="angle-up" />
-          </span>
-          <span class="amount-donated">
-            ${{bulletPoint.amountDonated}}
-          </span>
-          <span @click='vote(false, bulletPoint)' title="Downvote">
-            <font-awesome-icon icon="angle-down" />
-          </span>
-        </div>
-        {{bulletPoint.content}}
-        <div class="toolbar--bottom">
-          <font-awesome-icon class="toolbar-icons" icon="comment-dollar" title="Comment">Comment</font-awesome-icon>
-          <font-awesome-icon class="toolbar-icons" icon="pen-square" title="Submit Edit" />
-          <font-awesome-icon class="toolbar-icons" icon="minus-square" title="Remove Argument" />
-        </div>
-      </li>
-
-      <li class="rhetoric" v-for="resource in getRhetoricByMetaSlugAndSlug.resources" :key="resource.link">
-        <div class="toolbar">
-          <span @click='vote(true, resource)' title="Upvote">
-            <font-awesome-icon icon="angle-up" />
-          </span>
-          <span class="amountDonated">
-            ${{resource.amountDonated}}
-          </span>
-          <span @click='vote(false, resource)' title="Downvote">
-            <font-awesome-icon icon="angle-down" />
-          </span>
-          <!--
-          <i class="right-toolbar">
-            <font-awesome-icon class="toolbar-icons" icon="comment-dollar" title="Comment" />
-            <font-awesome-icon class="toolbar-icons" icon="minus-square" title="Remove Resource" />
-          </i>
-          -->
-        </div>
-        <a :href="resource.link">{{resource.title}} <span class="media-type">({{resource.media}})</span></a>
-      </li>
+      <AdvancedListItem :arrayProp="getRhetoricByMetaSlugAndSlug.bulletPoints" :metaSlug="this.metaSlug"/>
+      <AdvancedListItem :arrayProp="getRhetoricByMetaSlugAndSlug.resources" :metaSlug="this.metaSlug"/>
     </ul>
   </div>
 </template>
 
 <script>
   import gql from 'graphql-tag';
+  import AdvancedListItem from './AdvancedListItem';
 
   export default {
     name: "Rhetoric",
+    components: {
+      AdvancedListItem
+    },
     data() {
       return {
         getCurrentUser: {},
         getRhetoricByMetaSlugAndSlug: {},
         pro: "",
-        slug: ""
+        slug: "",
+        metaSlug: ""
       }
     },
     created() {
@@ -65,6 +32,8 @@
       } else {
         this.pro = false;
       }
+
+      this.metaSlug = this.$route.params.metaSlug;
       this.slug = this.$route.params.slug;
     },
     watch: {
@@ -74,6 +43,7 @@
         } else {
           this.pro = false;
         }
+        this.metaSlug = this.$route.params.metaSlug;
         this.slug = to.params.slug;
       }
     },

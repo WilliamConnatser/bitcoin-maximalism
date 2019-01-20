@@ -60,10 +60,6 @@
 
   #menu {
     text-align: left;
-  }
-
-  ul {
-    padding-right: 10vw;
     height: $header-height;
     list-style-type: none;
   }
