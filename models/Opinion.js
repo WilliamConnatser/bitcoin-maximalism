@@ -8,6 +8,10 @@ const OpinionSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    createdBy: {
+        type: String,
+        required: true
+    },
     slug: {
         type: String,
         required: true
@@ -16,7 +20,7 @@ const OpinionSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
-    comment: {
+    opinion: {
         type: String,
         required: true
     },
@@ -29,19 +33,20 @@ const OpinionSchema = new mongoose.Schema({
         type: Date
     },
     approvedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        type: String
     },
     approvalCommentary: {
         type: String
     },
-    document: {
+    documentID: {
         type: mongoose.Schema.Types.ObjectId,
-        refPath: 'onModel'
+        refPath: 'onModel',
+        required: true
     },
     onModel: {
         type: String,
-        enum: ['BulletPoint', 'Edit', 'Resource', 'Rhetoric']
+        enum: ['BulletPoint', 'Edit', 'Resource', 'Rhetoric'],
+        required: true
     },
     donations: {
         type: [mongoose.Schema.Types.ObjectId],

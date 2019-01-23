@@ -14,7 +14,8 @@ const DonationSchema = new mongoose.Schema({
     },
     ticker: {
         type: String,
-        required: true
+        required: true,
+        default: 'BTC'
     },
     amount: {
         type: Number,
@@ -28,9 +29,10 @@ const DonationSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
-    document: {
+    documentID: {
         type: mongoose.Schema.Types.ObjectId,
-        refPath: 'onModel'
+        refPath: 'onModel',
+        require: true
     },
     onModel: {
         type: String,
@@ -46,7 +48,11 @@ const DonationSchema = new mongoose.Schema({
         required: true,
         default: false
     },
-    invoice: {
+    invoiceID: {
+        type: String,
+        required: true
+    },
+    invoiceURL: {
         type: String,
         required: true
     }

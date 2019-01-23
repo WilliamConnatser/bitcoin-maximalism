@@ -85,43 +85,16 @@
                         approved
                         bulletPoints {
                             _id
-                            active
                             slug
-                            pro
                             content
-                            approved
                         }
                         resources {
                             _id
                             slug
-                            pro
                             title
                             media
                             link
-                            approved
                         }
-                        opinions {
-                            _id
-                            dateCreated
-                            slug
-                            pro                              
-                            comment
-                            approved
-                        }
-                        edits {
-                            _id
-                            dateCreated
-                            slug
-                            pro
-                        }
-                        donations {
-                            _id
-                            slug
-                            pro
-                            ticker
-                            amount
-                            username
-                        }  
                       }
                     }
                 `,

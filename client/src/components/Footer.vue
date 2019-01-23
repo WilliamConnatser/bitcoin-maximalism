@@ -36,7 +36,7 @@
     @import "../sass/variables";
 
     ul {
-        height: $footer-height;
+        min-height: $footer-minimum-height;
         font-size: 1.25rem;
         font-weight: 400;
         list-style-type: none;

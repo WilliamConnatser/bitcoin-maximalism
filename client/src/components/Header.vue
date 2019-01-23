@@ -10,7 +10,7 @@
       <router-link to="/rhetoric/antagonistic">Cons</router-link>
     </li>
     <li>
-      <router-link to="/scoreboard">Score</router-link>
+      <router-link to="/activity">Activity</router-link>
     </li>
 
     <div class="right-nav">
@@ -60,7 +60,7 @@
 
   #menu {
     text-align: left;
-    height: $header-height;
+    min-height: $header-minimum-height;
     list-style-type: none;
   }
 

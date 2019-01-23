@@ -2,7 +2,7 @@
   <div>
     <h1>{ {{metaSlug}} }</h1>
     <ul>
-      <AdvancedListItem :metaSlug="metaSlug" :arrayProp="this.args"/>
+      <AdvancedListItem :metaSlug="metaSlug" :arrayProp="this.args" />
     </ul>
   </div>
 </template>
@@ -84,6 +84,7 @@
         query: gql `
                     query getAllApprovedAndActiveProtagonisticRhetoric {
                         getAllApprovedAndActiveProtagonisticRhetoric {
+                            _id
                             slug
                             title
                         }
@@ -94,6 +95,7 @@
         query: gql `
                     query getAllApprovedAndActiveAntagonisticRhetoric {
                         getAllApprovedAndActiveAntagonisticRhetoric {
+                            _id
                             slug
                             title
                         }

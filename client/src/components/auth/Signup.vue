@@ -86,6 +86,7 @@
     @import "../../sass/variables.scss";
 
     input {
+        text-align: center;
         display: inline-block;
         width: 75vw;
         height: 4rem;
@@ -104,6 +105,7 @@
 
     button {
         color: $color-white;
+        background-color: $color-green;
         font-size: 1.5rem;
         width: 40vw;
         height: 4rem;

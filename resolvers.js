@@ -2,23 +2,97 @@
 const bcrypt = require("bcrypt");
 //Import needed to generate jsonwebtoken to track logged in user
 const jwt = require("jsonwebtoken");
-//Import seed data for initial population of database
-const initData = require('./initData')
+
+//Import Apollo Errors
+const {
+    ApolloError,
+    AuthenticationError,
+    ForbiddenError,
+    UserInputError,
+} = require('apollo-server');
+
+//BTCPay Server
+const btcpay = require('btcpay')
+const keypair = btcpay.crypto.load_keypair(new Buffer.from(process.env.BTCPAY_KEY, 'hex'));
+//Recreate client ... used every time you nee to talk to the BTCPAY Server
+const client = new btcpay.BTCPayClient(process.env.BTCPAY_URL, keypair, {
+    merchant: process.env.BTCPAY_MERCHANT
+});
 
 const createToken = (user, secret, expiresIn) => {
     const {
         username,
         email,
-        admin
+        admin,
+        allegiance
     } = user;
     return jwt.sign({
         username,
         email,
-        admin
+        admin,
+        allegiance
     }, secret, {
         expiresIn
     });
 };
+
+const createInvoice = async (args, currentUser) => {
+    try {
+        return await client.create_invoice({
+            price: args.amount,
+            currency: 'BTC',
+            itemDesc: `${args.amount} BTC donation for ${currentUser.username}'s opinion on the ${args.onModel} ${args.documentID}: "${args.opinion}"`,
+            buyer: {
+                name: currentUser.username,
+                email: currentUser.email
+            }
+        });
+
+    } catch (err) {
+        throw new ApolloError('An unknown error occurred while interacting with the BTCPay server.');
+    }
+}
+
+const createDonation = async (args, applicableDocument, invoice, Donation, currentUser) => {
+
+    try {
+        return await new Donation({
+            _id: require('mongodb').ObjectID(),
+            invoiceID: invoice.id,
+            invoiceURL: invoice.url,
+            onModel: args.onModel,
+            documentID: args.documentID,
+            username: currentUser.username,
+            amount: args.amount,
+            slug: applicableDocument.slug,
+            pro: applicableDocument.pro
+        }).save();
+
+    } catch (err) {
+        throw new ApolloError('An unknown error occurred while creating the donation.');
+    }
+}
+
+const createOpinion = async (args, applicableDocument, donation, Opinion, currentUser) => {
+
+    try {
+        return await new Opinion({
+            _id: require('mongodb').ObjectID(),
+            createdBy: currentUser.username,
+            slug: applicableDocument.slug,
+            pro: applicableDocument.pro,
+            opinion: args.opinion,
+            documentID: args.documentID,
+            onModel: args.onModel,
+            donations: [
+                donation._id
+            ]
+        }).save();
+
+    } catch (err) {
+        throw new ApolloError('An unknown error occurred while creating the opinion.');
+    }
+}
 
 module.exports = {
     Query: {
@@ -114,19 +188,11 @@ module.exports = {
         }) => {
             // args destructed = { pro: Boolean, slug: String }
             args.paid = true;
-
-            var cryptoValues = {};
             var aggregateValue = 0;
 
             await Donation.find(args, function (err, docs) {
                 docs.forEach(donation => {
-                    if (donations.ticker === undefined) {
-                        let value = Crypto.findOne({
-                            ticker: donations.ticker
-                        }).value;
-                        cryptoValues[donations.ticker] = value;
-                    }
-                    aggregateValue += donation.amount * cryptoValues[donations.ticker]
+                    aggregateValue += donation.amount;
                 });
             });
 
@@ -136,70 +202,142 @@ module.exports = {
             Donation,
             Crypto
         }) => {
-            // args destructed = { pro: Boolean, slug: String, onModel: String }
+            // args destructed = { pro: Boolean, slug: String, onModel: String, documentID: ID }
             args.paid = true;
-
-            var cryptoValues = {};
             var aggregateValue = 0;
 
             await Donation.find(args, function (err, docs) {
                 docs.forEach(donation => {
-                    if (donations.ticker === undefined) {
-                        let value = Crypto.findOne({
-                            ticker: donations.ticker
-                        }).value;
-                        cryptoValues[donations.ticker] = value;
-                    }
-                    aggregateValue += donation.amount * cryptoValues[donations.ticker]
+                    aggregateValue += donation.amount;
                 });
             });
 
             return aggregateValue;
         },
-        getModel: async (_, args, {
-            BulletPoint,
-            Resource,
+        getUnapprovedOpinions: async (_, args, {
+            Donation,
             Opinion,
-            Edit,
-            Certificate
+            currentUser
         }) => {
-            // args destructed = { type: String, pro: Boolean, slug: String }
-            var types = ["BulletPoint", "Resource", "Opinion", "Edit", "Certificate"]
-            //Ensure a valid Type was passed to the Query
-            if (types.indexOf(args.type) === -1) throw new Error('This Query included an invalid Collection Type!')
+            // args destructed = { }
+            if (!currentUser) throw new AuthenticationError('You must be logged in to do this');
+            if (!currentUser.admin) throw new AuthenticationError('You must be an Admin to do this');
 
-            var index = types.indexOf(args.type);
-            delete args.type;
+            try {
 
-            if (index == 0) {
-                const bulletPoint = await BulletPoint.find(args).sort({
-                    dateCreated: 'desc'
+                var unapprovedAndPaidOpinions = [];
+                const unapprovedOpinions = await Opinion.find({
+                    approved: false,
+                    approvedBy: {
+                        $exists: false
+                    }
                 });
-                return bulletPoint;
 
-            } else if (index == 1) {
-                const resource = await Resource.find(args).sort({
-                    dateCreated: 'desc'
-                });
-                return resource;
+                await unapprovedOpinions.forEach(opinion => {
+                    const applicableDonation = Donation.findOne({
+                        _id: opinion.donations[0]
+                    })
 
-            } else if (index == 2) {
-                const opinion = await Opinion.find(args).sort({
-                    dateCreated: 'desc'
+                    //TODO delete ! once ability to mark invoices as paid is working
+                    if (!applicableDonation.paid) {
+                        unapprovedAndPaidOpinions.push(opinion);
+                    }
                 });
-                return opinion;
 
-            } else if (index == 3) {
-                const edit = await Edit.find(args).sort({
-                    dateCreated: 'desc'
-                });
-                return edit;
+                return unapprovedAndPaidOpinions;
 
-            } else if (index == 4) {
-                const certificate = await Certificate.find(args).sort({
-                    dateCreated: 'desc'
+            } catch (err) {
+                new ApolloError('An unknown error occurred while retrieving unapproved opinions');
+            }
+        },
+        getUnapprovedEdits: async (_, args, {
+            Donation,
+            Edit,
+            currentUser
+        }) => {
+            // args destructed = { }
+            if (!currentUser) throw new AuthenticationError('You must be logged in to do this');
+            if (!currentUser.admin) throw new AuthenticationError('You must be an Admin to do this');
+
+            try {
+
+                var unapprovedAndPaidEdits = [];
+                const unapprovedEdits = await Edit.find({
+                    approved: false,
+                    approvedBy: {
+                        $exists: false
+                    }
                 });
-                return certificate;
+
+                await unapprovedEdits.forEach(edit => {
+                    const applicableDonation = Donation.findOne({
+                        _id: edit.donations[0]
+                    });
+
+                    //TODO delete ! once ability to mark invoices as paid is working
+                    if (!applicableDonation.paid) {
+                        unapprovedAndPaidEdits.push(edit);
+                    }
+                });
+
+                return unapprovedAndPaidEdits;
+
+            } catch (err) {
+                new ApolloError('An unknown error occurred while retrieving unapproved opinions');
+            }
+        },
+        getOpinionsModelSpecific: async (_, args, {
+            Opinion,
+            Donation
+        }) => {
+            // args destructed = { _id: String!, onModel: String! }
+
+            try {
+
+                const applicableOpinions = await Opinion.find({
+                    approved: false,
+                    documentID: args._id
+                }, {
+                    sort: {
+                        dateApproved: 'descending'
+                    }
+                });
+                var donationAccumulator = []
+                var lastOpinion = applicableOpinions[0];
+                var totalDonated = 0;
+                var biggestDonation = 0;
+
+                function getSum(total, num) {
+                    return total + num;
+                  }
+
+                applicableOpinions.forEach(async (opinion, i) => {
+
+                    await opinion.donations.forEach(async donationID => {
+                        //TODO Add paid: true to query
+                        const donationAmount = await Donation.findOne({
+                            _id: donationID
+                        }).amount;
+
+                        if(donationAccumulator[i] === undefined) {
+                            donationAccumulator[i].push(amountDonated);
+                        } else {
+                            donationAccumulator[i] += donationAmount;
+                        }
+                    });
+                });
+
+                biggestDonation = Math.max(donationAccumulator);
+                biggestDonation = donationAccumulator.indexOf(biggestDonation);
+                totalDonated = donationAccumulator.reduce(getSum);
+
+                
+
+
+                return unapprovedAndPaidEdits;
+
+            } catch (err) {
+                new ApolloError('An unknown error occurred while retrieving unapproved opinions');
             }
         }
     },
@@ -209,10 +347,17 @@ module.exports = {
             pro,
             content
         }, {
-            BulletPoint
+            BulletPoint,
+            currentUser
         }) => {
 
+            if (!currentUser) throw new Error('You must be logged in to perform this function!');
+            /*
             //May be broken...............................
+            //May be broken...............................
+            //May be broken...............................
+            //May be broken...............................
+            */
             const bulletPoint = await BulletPoint.findOne({
                 content
             });
@@ -232,7 +377,7 @@ module.exports = {
 
             return newBulletPoint;
         },
-        setAllegiance: async (_, {
+        setUserAllegiance: async (_, {
             allegiance
         }, {
             User,
@@ -246,7 +391,7 @@ module.exports = {
                 username: currentUser.username
             }, function (err, user) {
                 if (err) throw new Error('An unknown error has occurred!');
-                console.log(allegiance)
+
                 if (allegiance === "Maximalist") {
                     user.maximalist = true;
                 } else {
@@ -320,6 +465,75 @@ module.exports = {
             return {
                 token: createToken(newUser, process.env.SECRET, "1hr")
             };
+        },
+        submitOpinionModelSpecific: async (_, args, {
+            Crypto,
+            Donation,
+            Opinion,
+            BulletPoint,
+            Resource,
+            currentUser
+        }) => {
+            // args destructed {amount: String!, documentID: ID!, onModel: String!, opinion: String!}
+            if (!currentUser) throw new AuthenticationError('Log in or register to do this!');
+            //if (!currentUser.emailValidated) throw new Error('Validate your email before doing this!');
+            if (!currentUser.allegiance) throw new AuthenticationError('Choose a faction in the Account Panel before doing this!');
+            if (args.opinion.length > 280) throw new UserInputError('The maximum length of an opinion is 280 characters.');
+            /*const value = await Crypto.findOne({
+                ticker: 'BTC'
+            });
+            if (value.rate * Number(args.amount) < 1) throw new Error(`Donation amount to small! ($1 minimum aka ${1.01/result[0].rate} BTC)`);
+            */
+
+            if (args.onModel === 'BulletPoint') {
+
+                const bulletPoint = await BulletPoint.findOne({
+                    _id: args.documentID
+                });
+                const newInvoice = await createInvoice(args, currentUser);
+                const newDonation = await createDonation(args, bulletPoint, newInvoice, Donation, currentUser);
+                await createOpinion(args, bulletPoint, newDonation, Opinion, currentUser);
+
+                return newInvoice.url;
+
+            } else if (args.onModel === 'Resource') {
+
+                const resource = await Resource.findOne({
+                    _id: args.documentID
+                });
+                const newInvoice = await createInvoice(args, currentUser);
+                const newDonation = await createDonation(args, resource, newInvoice, Donation, currentUser);
+                await createOpinion(args, resource, newDonation, Opinion, currentUser);
+
+                return newInvoice.url;
+            }
+        },
+        approveOpinion: async (_, args, {
+            Opinion,
+            currentUser
+        }) => {
+            // args destructed {_id: ID!, approved: Boolean!, approvalCommentary: String!}
+            //if (!currentUser.emailValidated) throw new Error('Validate your email before doing this!');
+            if (!currentUser.admin) throw new AuthenticationError('You must be an Admin to do this');
+
+            try {
+                const opinion = await Opinion.findOne({
+                    _id: args._id
+                });
+
+                opinion.createdBy = currentUser.username;
+                opinion.approved = args.approved;
+                opinion.approvedBy = currentUser.username;
+                opinion.approvalCommentary = args.approvalCommentary;
+                opinion.dateApproved = new Date();
+                opinion.save()
+
+                return true;
+
+            } catch (err) {
+                throw new ApolloError('An unknown error occurred while approving this opinion')
+            }
+
         }
     }
 }

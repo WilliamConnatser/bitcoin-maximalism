@@ -8,6 +8,10 @@ const EditSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    createdBy: {
+        type: String,
+        required: true
+    },
     slug: {
         type: String,
         required: true,
@@ -16,12 +20,12 @@ const EditSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
-    old: {
+    oldDocumentID: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         refPath: 'onModel'
     },
-    new: {
+    newDocumentID: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         refPath: 'onModel'
@@ -40,8 +44,7 @@ const EditSchema = new mongoose.Schema({
         type: Date
     },
     approvedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        type: String
     },
     approvalCommentary: {
         type: String

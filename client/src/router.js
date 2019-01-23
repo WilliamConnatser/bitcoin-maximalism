@@ -4,18 +4,17 @@ import About from "./components/About.vue";
 import Account from "./components/Account.vue";
 import TableOfContents from "./components/TableOfContents.vue";
 import Rhetoric from "./components/Rhetoric.vue";
-import Signin from "./components/auth/Signin.vue";
-import Signup from "./components/auth/Signup.vue";
+import Activity from "./components/Activity.vue";
 import Terms from "./components/Terms.vue";
 import Privacy from "./components/Privacy.vue";
+import PageNotFound from "./components/PageNotFound.vue"
 
 Vue.use(Router);
 
 export default new Router({
   mode: "history",
   base: process.env.BASE_URL,
-  routes: [
-    {
+  routes: [{
       path: "/",
       component: About
     },
@@ -38,6 +37,14 @@ export default new Router({
     {
       path: "/privacy",
       component: Privacy
+    },
+    {
+      path: "/activity",
+      component: Activity
+    },
+    {
+      path: "*",
+      component: PageNotFound
     }
   ]
 });
