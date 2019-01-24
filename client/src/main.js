@@ -52,7 +52,7 @@ Vue.use(Toasted, {
     }
 });
 
-Vue.toasted.register('log_in', 'You must log in or before doing this', {
+Vue.toasted.register('log_in', 'You must log in or register before doing this', {
     duration: 5000,
     icon: 'fa-exclamation-circle',
     action: [{
@@ -65,6 +65,21 @@ Vue.toasted.register('log_in', 'You must log in or before doing this', {
       push: '/account'
     }]
   });
+
+  Vue.toasted.register('assign_allegiance', 'You must choose a faction on your Account Panel before doing this', {
+    duration: 5000,
+    icon: 'fa-exclamation-circle',
+    action: [{
+      text: 'Close',
+      onClick: (e, toastObject) => {
+        toastObject.goAway(0);
+      }
+    },{
+      text: 'Choose a faction',
+      push: '/account'
+    }]
+  });
+
 
 //Set the Apollo URI to what's stored in the now.json file if the app is being deployed
 var apolloURI = ''

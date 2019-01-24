@@ -1,39 +1,39 @@
 <template>
-    <ul class="opinions">
-        <li id="top" class="opinion">
+<div>
+    <ul v-if="getOpinionsModelSpecific !== null" class="opinions">
+        <li v-if="getOpinionsModelSpecific.top !== null" id="top" class="opinion">
             <div>
-                {{arrayItemProp}}
                 <strong class="opinion-label">Top: </strong>
-                <strong class="opinion-username">CoinHoarder</strong>
+                <strong class="opinion-username">{{getOpinionsModelSpecific.top.createdBy}}</strong>
             </div>
             <div>
-                0.05 BTC
+                {{getOpinionsModelSpecific.top.donation.amount}} BTC
             </div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus labore consequatur explicabo
-            repellat. Porro, aspernatur.
+            {{getOpinionsModelSpecific.top.opinion}}
         </li>
-        <li id="last" class="opinion">
+        <li v-if="getOpinionsModelSpecific.last !== null" id="last" class="opinion">
             <div>
                 <strong class="opinion-label">Last: </strong>
-                <strong class="opinion-username">CoinHoarder</strong>
+                <strong class="opinion-username">{{getOpinionsModelSpecific.last.createdBy}}</strong>
             </div>
             <div>
-                0.0000000001 BTC
+                {{getOpinionsModelSpecific.last.donation.amount}} BTC
             </div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit facere sit nobis quae veniam
-            debitis?
+            {{getOpinionsModelSpecific.last.opinion}}
         </li>
-        <li id="random" class="opinion">
+        <li v-if="getOpinionsModelSpecific.random !== null" id="random" class="opinion">
             <div>
                 <strong class="opinion-label">Random: </strong>
-                <strong class="opinion-username">CoinHoarder</strong>
+                <strong class="opinion-username">{{getOpinionsModelSpecific.random.createdBy}}</strong>
             </div>
             <div>
-                0.00000001 BTC
+                {{getOpinionsModelSpecific.random.donation.amount}} BTC
             </div>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab nemo libero voluptas minima at vel.
+            {{getOpinionsModelSpecific.random.opinion}}
         </li>
     </ul>
+    <span v-if="getOpinionsModelSpecific === null || getOpinionsModelSpecific.top === null">No one's commented on this yet...</span>
+</div>
 </template>
 
 <script>
@@ -49,7 +49,8 @@
             return {
                 getCurrentUser: null,
                 viewOpinions: null,
-                viewEdits: null
+                viewEdits: null,
+                getOpinionsModelSpecific: null
             }
         },
         methods: {
@@ -62,9 +63,6 @@
             initialize(actionType) {
                 this.getCurrentUser ? this[actionType] = true : this.$toasted.global.log_in();
             }
-        },
-        created() {
-            console.log(this.arrayItemProp)
         },
         apollo: {
             getCurrentUser: {
@@ -82,6 +80,45 @@
                         }
                     }
                 `
+            },
+            getOpinionsModelSpecific: {
+                query: gql `query getOpinionsModelSpecific ($_id: String!, $onModel: String!) {
+                    getOpinionsModelSpecific(_id: $_id, onModel: $onModel) {
+                        top {
+                            _id
+                            createdBy
+                            dateApproved
+                            opinion
+                            donation {
+                                amount
+                            }
+                        }
+                        last {
+                            _id
+                            createdBy
+                            dateApproved
+                            opinion
+                            donation {
+                                amount
+                            }
+                        }
+                        random {
+                            _id
+                            createdBy
+                            dateApproved
+                            opinion
+                            donation {
+                                amount
+                            }
+                        }
+                    }
+                }`,
+                variables() {
+                    return {
+                        _id: this.arrayItemProp._id,
+                        onModel: this.arrayItemProp.__typename
+                    }
+                }
             }
         }
     };

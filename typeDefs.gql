@@ -22,7 +22,7 @@ type Rhetoric {
     resources: [Resource!]!
     opinions: [Opinion!]!
     edits: [Edit!]!
-    donations: [Donation!]!
+    donation: Donation!
 }
 
 type BulletPoint {
@@ -38,7 +38,7 @@ type BulletPoint {
     approvalCommentary: String
     edits: [Edit!]!
     opinions: [Opinion!]!
-    donations: [Donation!]!
+    donation: Donation!
 }
 
 type Resource {
@@ -56,7 +56,7 @@ type Resource {
     approvalCommentary: String
     edits: [Edit!]!
     opinions: [Opinion!]!
-    donations: [Donation!]!
+    donation: Donation!
 }
 
 type Opinion {
@@ -72,7 +72,7 @@ type Opinion {
     approvalCommentary: String
     documentID: ID!
     onModel: String!
-    donations: [Donation!]!
+    donation: Donation!
 }
 
 type Edit {
@@ -89,7 +89,7 @@ type Edit {
     approvedBy: String
     approvalCommentary: String
     opinions: [Opinion!]!
-    donations: [Donation!]!
+    donation: Donation!
 }
 
 type Donation {
@@ -113,7 +113,7 @@ type Certificate {
     active: Boolean!
     name: String!
     pro: Boolean!
-    donations: [Donation!]!
+    donation: Donation!
 }
 
 type User {
@@ -127,7 +127,7 @@ type User {
     allegiance: Boolean
     maximalist: Boolean
     admin: Boolean!
-    donations: [Donation!]!
+    donation: [Donation!]!
 }
 
 type Crypto {
@@ -137,7 +137,6 @@ type Crypto {
 }
 
 type OpinionResponse {
-    _id: ID
     top: Opinion
     last: Opinion
     random: Opinion
@@ -159,7 +158,7 @@ type Query {
 }
 
 type Mutation {
-    setUserAllegiance(allegiance: String!): User
+    setUserAllegiance(allegiance: String!): Token
     signinUser(email: String!, password: String!): Token
     signupUser(username: String!, email: String!, password: String!): Token
     submitOpinionModelSpecific(amount: String!, documentID: ID!, onModel: String!, opinion: String!): String

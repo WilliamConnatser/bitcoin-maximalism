@@ -88,19 +88,16 @@
                     mutation: gql `
                         mutation($allegiance: String!) {
                             setUserAllegiance(allegiance: $allegiance){
-                                _id
-                                username
-                                email
-                                admin
-                                allegiance
-                                maximalist
+                                token
                             }
                         }
                     `,
                     variables: {
                         allegiance
                     }
-                }).then(() => {
+                }).then(async ({data}) => {
+                    //Insert token into Local Storage
+                    await localStorage.setItem("token", data.setUserAllegiance.token);
                     //Refresh the getCurrentUser query
                     this.$apollo.queries.getCurrentUser.refetch();
                 }).catch(error => {

@@ -22,7 +22,7 @@
                 <div class="description">
                     All donations are non-binding, no products or services are guaranteed in lieu of a donation, and
                     absolutely no refunds will be performed, whether your opinion is published- or not. By continuing
-                    you are agreeing to accept the <router-link to="/terms">Terms</router-link> &amp; 
+                    you are agreeing to accept the <router-link to="/terms">Terms</router-link> &amp;
                     <router-link to="/privacy">Privacy Policy</router-link>.
                 </div>
             </div>
@@ -65,28 +65,34 @@
                 window.scrollTo(0, top);
             },
             submitOpinionToServer() {
-                this.submitted = true;
-                //GraphQL Mutation
-                this.$apollo.mutate({
-                    mutation: gql `
+                if (!this.getCurrentUser) {
+                    this.$toasted.global.log_in();
+                } else if (!this.getCurrentUser.allegiance) {
+                    this.$toasted.global.assign_allegiance();
+                } else {
+                    //GraphQL Mutation
+                    this.$apollo.mutate({
+                        mutation: gql `
                         mutation submitOpinionModelSpecific($amount: String!, $documentID: ID!, $onModel: String!, $opinion: String!){
                             submitOpinionModelSpecific(amount: $amount, documentID: $documentID, onModel: $onModel, opinion: $opinion)
                         }
                     `,
-                    variables: {
-                        amount: this.donationAmount,
-                        documentID: this.arrayItemProp._id,
-                        onModel: this.arrayItemProp.__typename,
-                        opinion: this.opinion
-                    }
-                }).then(async ({
-                    data
-                }) => {
-                    this.incoiceURL = data.submitOpinionModelSpecific;                    
-                }).catch(error => {
-                    // Error :\
-                    // Error handled in main.js
-                });
+                        variables: {
+                            amount: this.donationAmount,
+                            documentID: this.arrayItemProp._id,
+                            onModel: this.arrayItemProp.__typename,
+                            opinion: this.opinion
+                        }
+                    }).then(async ({
+                        data
+                    }) => {
+                        this.incoiceURL = data.submitOpinionModelSpecific;
+                        this.submitted = true;
+                    }).catch(error => {
+                        // Error :\
+                        // Error handled in main.js
+                    });
+                }
             }
         },
         watch: {

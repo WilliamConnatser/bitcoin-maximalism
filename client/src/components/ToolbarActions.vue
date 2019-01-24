@@ -54,7 +54,13 @@
                 this[actionType] = null;
             },
             show(actionType) {
-                this[actionType] = true;
+                if(actionType.indexOf('submit') > -1 && !this.getCurrentUser) {
+                    this.$toasted.global.log_in();
+                } else if (actionType.indexOf('submit') > -1 && !this.getCurrentUser.allegiance) {
+                    this.$toasted.global.assign_allegiance();
+                } else {
+                    this[actionType] = true;
+                }
             },
             initialize(actionType) {
                 this.getCurrentUser ? this[actionType] = true : this.$toasted.global.log_in();

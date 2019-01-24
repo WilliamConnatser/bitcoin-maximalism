@@ -48,10 +48,9 @@ const OpinionSchema = new mongoose.Schema({
         enum: ['BulletPoint', 'Edit', 'Resource', 'Rhetoric'],
         required: true
     },
-    donations: {
-        type: [mongoose.Schema.Types.ObjectId],
+    donation: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        default: [],
         ref: 'Donation'
     }
 });

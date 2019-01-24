@@ -92,7 +92,13 @@
         },
         methods: {
             initialize(upvote) {
-                this.getCurrentUser ? this.upvote = upvote : this.$toasted.global.log_in();
+                if(!this.getCurrentUser) { 
+                    this.$toasted.global.log_in();
+                } else if (!this.getCurrentUser.allegiance) {
+                    this.$toasted.global.assign_allegiance();
+                } else {
+                    this.upvote = upvote;
+                }
             },
             cancel() {
                 this.upvote = null;

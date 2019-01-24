@@ -55,10 +55,9 @@ const EditSchema = new mongoose.Schema({
         default: [],
         ref: 'Opinion'
     },
-    donations: {
-        type: [mongoose.Schema.Types.ObjectId],
+    donation: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        default: [],
         ref: 'Donation'
     }
 });

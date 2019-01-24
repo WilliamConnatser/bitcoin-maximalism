@@ -26,6 +26,7 @@ const createToken = (user, secret, expiresIn) => {
         admin,
         allegiance
     } = user;
+
     return jwt.sign({
         username,
         email,
@@ -84,9 +85,7 @@ const createOpinion = async (args, applicableDocument, donation, Opinion, curren
             opinion: args.opinion,
             documentID: args.documentID,
             onModel: args.onModel,
-            donations: [
-                donation._id
-            ]
+            donation: donation._id
         }).save();
 
     } catch (err) {
@@ -235,7 +234,7 @@ module.exports = {
 
                 await unapprovedOpinions.forEach(opinion => {
                     const applicableDonation = Donation.findOne({
-                        _id: opinion.donations[0]
+                        _id: opinion.donation
                     })
 
                     //TODO delete ! once ability to mark invoices as paid is working
@@ -271,7 +270,7 @@ module.exports = {
 
                 await unapprovedEdits.forEach(edit => {
                     const applicableDonation = Donation.findOne({
-                        _id: edit.donations[0]
+                        _id: edit.donation
                     });
 
                     //TODO delete ! once ability to mark invoices as paid is working
@@ -292,52 +291,61 @@ module.exports = {
         }) => {
             // args destructed = { _id: String!, onModel: String! }
 
-            try {
+            const topOpinion = async function(_id) {
+                const answer = await Opinion.find({
+                    approved: true,
+                    documentID: _id
+                }).populate({
+                    path: 'donation',
+                    model: 'Donation'
+                });
+                var max = {
+                    index: null,
+                    value: 0
+                }
 
-                const applicableOpinions = await Opinion.find({
-                    approved: false,
-                    documentID: args._id
-                }, {
-                    sort: {
-                        dateApproved: 'descending'
+                await answer.forEach(function(answerItems, i) {
+                    if(answerItems.donation.amount > max.value) {
+                        max.index = i;
+                        max.value = answerItems.donation.amount
                     }
+                })
+
+                return answer[max.index];
+            }
+
+            const lastOpinion = async function(_id) {
+                const answer = await Opinion.find({
+                    approved: true,
+                    documentID: _id
+                }).populate({
+                    path: 'donation',
+                    model: 'Donation'
+                })
+                .sort({
+                    dateApproved: 'desc'
+                })
+                .limit(1);
+
+                return answer[0];
+            }
+
+            const randomOpinion = async function(_id) {
+                const opinionArray = await Opinion.find({
+                    approved: true,
+                    documentID: args._id
+                }).populate({
+                    path: 'donation',
+                    model: 'Donation'
                 });
-                var donationAccumulator = []
-                var lastOpinion = applicableOpinions[0];
-                var totalDonated = 0;
-                var biggestDonation = 0;
 
-                function getSum(total, num) {
-                    return total + num;
-                  }
+                return opinionArray[Math.floor(Math.random()*opinionArray.length)];
+            }
 
-                applicableOpinions.forEach(async (opinion, i) => {
-
-                    await opinion.donations.forEach(async donationID => {
-                        //TODO Add paid: true to query
-                        const donationAmount = await Donation.findOne({
-                            _id: donationID
-                        }).amount;
-
-                        if(donationAccumulator[i] === undefined) {
-                            donationAccumulator[i].push(amountDonated);
-                        } else {
-                            donationAccumulator[i] += donationAmount;
-                        }
-                    });
-                });
-
-                biggestDonation = Math.max(donationAccumulator);
-                biggestDonation = donationAccumulator.indexOf(biggestDonation);
-                totalDonated = donationAccumulator.reduce(getSum);
-
-                
-
-
-                return unapprovedAndPaidEdits;
-
-            } catch (err) {
-                new ApolloError('An unknown error occurred while retrieving unapproved opinions');
+            return {
+                top: await topOpinion(args._id),
+                last: await lastOpinion(args._id),
+                random:  await randomOpinion(args._id)
             }
         }
     },
@@ -402,7 +410,9 @@ module.exports = {
                 user.save();
             });
 
-            return newUser;
+            return {
+                token: createToken(newUser, process.env.SECRET, "1hr")
+            }
         },
         signinUser: async (_, {
             email,
@@ -422,7 +432,7 @@ module.exports = {
             }
             return {
                 token: createToken(user, process.env.SECRET, "1hr")
-            };
+            }
         },
         signupUser: async (_, {
             username,
@@ -477,6 +487,7 @@ module.exports = {
             // args destructed {amount: String!, documentID: ID!, onModel: String!, opinion: String!}
             if (!currentUser) throw new AuthenticationError('Log in or register to do this!');
             //if (!currentUser.emailValidated) throw new Error('Validate your email before doing this!');
+            console.log(currentUser)
             if (!currentUser.allegiance) throw new AuthenticationError('Choose a faction in the Account Panel before doing this!');
             if (args.opinion.length > 280) throw new UserInputError('The maximum length of an opinion is 280 characters.');
             /*const value = await Crypto.findOne({

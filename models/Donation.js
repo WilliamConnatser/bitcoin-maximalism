@@ -32,7 +32,7 @@ const DonationSchema = new mongoose.Schema({
     documentID: {
         type: mongoose.Schema.Types.ObjectId,
         refPath: 'onModel',
-        require: true
+        required: true
     },
     onModel: {
         type: String,

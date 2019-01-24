@@ -22,10 +22,9 @@ const CertificateSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
-    donations: {
-        type: [mongoose.Schema.Types.ObjectId],
+    donation: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        default: [],
         ref: 'Donation'
     }
 });

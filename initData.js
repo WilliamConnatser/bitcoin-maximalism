@@ -223,7 +223,7 @@ var initData = {
             slug: 'censorship-resistant',
             pro: true,
             approved: true,
-            content: 'Due to the aforementioned highly competitive nature of the Bitcoin mining business, miners can not afford to leave money on the table for their competitors to scoop up at no additional cost. Miners gifting transaction fees to their competitors is obviously bad for business, and can make a huge difference when miners are looking for any advantage they can muster in order to remain competitive.',
+            content: 'Due to the highly competitive nature of the Bitcoin mining industry, miners can not afford to leave money on the table for their competitors to scoop up at no additional cost. Effectively, although it is their right to choose whether or not to do so, giving their business competitors an advantage is what they would be doing if they were to censor a transaction by choosing not to include it in a block. Miners gifting transaction fees to their competitors is obviously bad for business, and can make a huge difference when miners are looking for any advantage they can muster in order to remain competitive.',
         }, {
             slug: 'interoperability',
             pro: true,
