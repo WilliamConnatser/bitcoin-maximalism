@@ -5,8 +5,9 @@
                 <font-awesome-icon icon="angle-up" />
             </span>
             <span class="amount-donated">
-                {{totalDonationsQuery}}
-                {{arrayItemProp._id}}
+                <span v-if="arrayItemProp.accruedVotes>0">+ {{arrayItemProp.accruedVotes}}</span>
+                <span v-if="arrayItemProp.accruedVotes<0">- {{arrayItemProp.accruedVotes*-1}}</span>
+                <span v-if="arrayItemProp.accruedVotes===0">{{arrayItemProp.accruedVotes*-1}}</span>
             </span>
             <span class="icon" @click='initialize(false)' title="Downvote">
                 <font-awesome-icon icon="angle-down" />
@@ -15,17 +16,23 @@
         <div v-if="this.upvote !== null">
             <h2 v-if="upvote">Submit an Upvote</h2>
             <h2 v-else>Submit a Downvote</h2>
-            <button @click="cancel()">Hide Vote</button>
+            <button @click="cancel()">
+                Hide
+                <span v-if="upvote">Upvote</span>
+                <span v-else>Downvote</span>
+            </button>
 
             <div ref="success">
-                <form v-if="!submitted" @submit.prevent="submitted=true">
+                <form v-if="!submitted" @submit.prevent="submitVote(upvote)">
                     <div class="block">
                         <label>Donation Amount (BTC)</label>
                         <input id="donation-amount" type="text" v-model="donationAmount">
-                        <div class="description">Your upvote or downvote will be weighted an amount proportional to
-                            your donation compared to the amount of all other donations. Features may be implemented or
-                            deprecated
-                            in the future which reduce or increase the weight of your upvotes or downvotes.</div>
+                        <div class="description">Your <span v-if="upvote">upvote</span><span v-else>downvote</span>
+                            will be weighted by an amount proportional to
+                            your donation, which is then compared to the amount of all other upvote and downvote
+                            donations for this specific {{arrayItemProp.__typename}}.
+                            Features may be implemented or deprecated in the future which reduce
+                            (or increase) the weight of your upvotes or downvotes.</div>
                     </div>
                     <div class="block">
                         <div class="description">
@@ -39,7 +46,7 @@
                     </div>
                     <button type="submit">I Agree</button>
                 </form>
-                <div v-else>
+                <div id="success" v-else>
                     <h2>Success!</h2>
 
                     If the donation was completed successfully, then your upvote or downvote should be attributed
@@ -92,16 +99,52 @@
         },
         methods: {
             initialize(upvote) {
-                if(!this.getCurrentUser) { 
+                if (!this.getCurrentUser) {
                     this.$toasted.global.log_in();
-                } else if (!this.getCurrentUser.allegiance) {
-                    this.$toasted.global.assign_allegiance();
                 } else {
                     this.upvote = upvote;
                 }
             },
             cancel() {
                 this.upvote = null;
+            },
+            scrollToTop() {
+                var element = this.$refs.success;
+                var top = element.offsetTop;
+                window.scrollTo(0, top);
+            },
+            submitVote(upVote) {
+                if (!this.getCurrentUser) {
+                    this.$toasted.global.log_in();
+                } else {
+                    //GraphQL Mutation
+                    this.$apollo.mutate({
+                        mutation: gql `
+                            mutation submitVote($onModel: String!, $documentID: ID!, $amount: Float!, $upVote: Boolean!) {
+                                submitVote(onModel:$onModel, documentID:$documentID, amount:$amount, upVote: $upVote)
+                            }
+                        `,
+                        variables: {
+                            amount: this.donationAmount,
+                            documentID: this.arrayItemProp._id,
+                            onModel: this.arrayItemProp.__typename,
+                            upVote
+                        }
+                    }).then(async ({
+                        data
+                    }) => {
+                        this.incoiceURL = data.submitOpinion;
+                        this.submitted = true;
+                    }).catch(error => {
+                        // Error :\
+                        // Error handled in main.js
+                    });
+                }
+            }
+        },
+        watch: {
+            submitted(newValue) {
+                if (newValue) this.scrollToTop();
             }
         },
         apollo: {
@@ -120,32 +163,6 @@
                         }
                     }
                 `
-            },
-            getAmountDonatedSlugSpecific: {
-                query: gql `query getAmountDonatedSlugSpecific($pro: Boolean!, $slug: String!) {
-                                getAmountDonatedSlugSpecific(pro: $pro, slug: $slug)
-                            }
-                        `,
-                variables() {
-                    return {
-                        pro: this.pro,
-                        slug: this.slug
-                    }
-                }
-            },
-            getAmountDonatedModelSpecific: {
-                query: gql `query getAmountDonatedModelSpecific($pro: Boolean!, $slug: String!, $onModel: String!, $documentID: ID!) {
-                                getAmountDonatedModelSpecific(pro: $pro, slug: $slug, onModel: $onModel, documentID: $documentID)
-                            }
-                        `,
-                variables() {
-                    return {
-                        pro: this.pro,
-                        slug: this.slug,
-                        onModel: this.arrayItemProp.__typename,
-                        documentID: this.arrayItemProp._id
-                    }
-                }
             }
         }
     };
@@ -218,5 +235,9 @@
 
     .description {
         font-size: 1.5rem;
+    }
+
+    #success {
+        margin: 5rem;
     }
 </style>

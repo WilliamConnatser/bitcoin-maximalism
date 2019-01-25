@@ -52,10 +52,14 @@ const BulletPointSchema = new mongoose.Schema({
         default: [],
         ref: 'Opinion'
     },
-    donation: {
+    originalDonation: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'Donation'
+    },
+    accruedVotes: {
+        type: Number,
+        required: true,
+        default: 0
     }
 });
 

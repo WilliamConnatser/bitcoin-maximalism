@@ -82,25 +82,35 @@
       },
       getAllApprovedAndActiveProtagonisticRhetoric: {
         query: gql `
-                    query getAllApprovedAndActiveProtagonisticRhetoric {
-                        getAllApprovedAndActiveProtagonisticRhetoric {
-                            _id
-                            slug
-                            title
-                        }
+                    query getAllApprovedAndActiveProtagonisticRhetoric($pro: Boolean!) {
+                      getAllApprovedAndActiveRhetoric(pro: $pro) {
+                        _id
+                        slug
+                        title
+                        accruedVotes
+                      }
                     }
-                `
+                `,
+                variables: {
+                  pro: true
+                },
+                update: data => data.getAllApprovedAndActiveRhetoric
       },
       getAllApprovedAndActiveAntagonisticRhetoric: {
         query: gql `
-                    query getAllApprovedAndActiveAntagonisticRhetoric {
-                        getAllApprovedAndActiveAntagonisticRhetoric {
-                            _id
-                            slug
-                            title
-                        }
+                    query getAllApprovedAndActiveAntagonisticRhetoric($pro: Boolean!) {
+                      getAllApprovedAndActiveRhetoric(pro: $pro) {
+                        _id
+                        slug
+                        title
+                        accruedVotes
+                      }
                     }
-                `
+                `,
+                variables: {
+                  pro: false
+                },
+                update: data => data.getAllApprovedAndActiveRhetoric
       }
     }
   }

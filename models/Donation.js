@@ -55,6 +55,14 @@ const DonationSchema = new mongoose.Schema({
     invoiceURL: {
         type: String,
         required: true
+    },
+    votingDonation: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    upVote: {
+        type: Boolean
     }
 });
 

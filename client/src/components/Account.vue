@@ -4,7 +4,7 @@
         <div v-if="getCurrentUser">
             <h1>Account Panel</h1>
             <button id="signOut" v-if="getCurrentUser" @click="signoutUser">Signout</button>
-
+            <!--
             <div class="allegiance">
                 <p v-if="!getCurrentUser.allegiance">
                     You have not yet sworn allegiance to either faction. Your ancestors would be ashamed...
@@ -23,6 +23,7 @@
                     I identify as a Multicoinist
                 </button>
             </div>
+            -->
 
             <div v-show="getCurrentUser.admin">
                 <h2>You so fancy! Look are you, Mr. Administrator...</h2>
@@ -56,6 +57,10 @@
                 approvalCommentary: []
             }
         },
+        created() {
+            //Make sure the user token is still valid.
+            if(this.getCurrentUser) this.$apollo.queries.getCurrentUser.refetch();
+        }/*,
         computed: {
             getAllegiance() {
                 if (this.getCurrentUser.maximalist) {
@@ -64,7 +69,7 @@
                     return 'Multicoinist';
                 }
             }
-        },
+        }*/,
         components: {
             Login
         },
@@ -81,7 +86,7 @@
                 } else if (!this.getCurrentUser.maximalist && allegiance === 'Multicoinist') {
                     return 'background-color: #41b883';
                 }
-            },
+            }/*,
             setAllegiance(allegiance) {
                 //GraphQL Mutation
                 this.$apollo.mutate({
@@ -104,7 +109,7 @@
                     // Error :\
                     console.error(error);
                 });
-            },
+            }*/,
             approveOpinion(unapprovedOpinion, approved) {
                 //GraphQL Mutation
                 this.$apollo.mutate({

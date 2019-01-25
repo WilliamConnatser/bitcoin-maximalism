@@ -29,7 +29,7 @@
 
             <button type="submit">I Agree</button>
         </form>
-        <div v-else>
+        <div id="success" v-else>
             <h2>Success!</h2>
 
             If the donation was completed successfully, then your opinion has been submitted to the administrators for
@@ -67,14 +67,12 @@
             submitOpinionToServer() {
                 if (!this.getCurrentUser) {
                     this.$toasted.global.log_in();
-                } else if (!this.getCurrentUser.allegiance) {
-                    this.$toasted.global.assign_allegiance();
                 } else {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                        mutation submitOpinionModelSpecific($amount: String!, $documentID: ID!, $onModel: String!, $opinion: String!){
-                            submitOpinionModelSpecific(amount: $amount, documentID: $documentID, onModel: $onModel, opinion: $opinion)
+                        mutation submitOpinion($amount: String!, $documentID: ID!, $onModel: String!, $opinion: String!){
+                            submitOpinion(amount: $amount, documentID: $documentID, onModel: $onModel, opinion: $opinion)
                         }
                     `,
                         variables: {
@@ -86,7 +84,7 @@
                     }).then(async ({
                         data
                     }) => {
-                        this.incoiceURL = data.submitOpinionModelSpecific;
+                        this.incoiceURL = data.submitOpinion;
                         this.submitted = true;
                     }).catch(error => {
                         // Error :\
@@ -172,5 +170,9 @@
 
     .description {
         font-size: 1.5rem;
+    }
+
+    #success {
+        margin: 5em;
     }
 </style>

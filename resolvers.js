@@ -37,17 +37,29 @@ const createToken = (user, secret, expiresIn) => {
     });
 };
 
-const createInvoice = async (args, currentUser) => {
+const createInvoice = async (args, currentUser, transactionType) => {
     try {
-        return await client.create_invoice({
+        var objectToInsert = {
             price: args.amount,
             currency: 'BTC',
-            itemDesc: `${args.amount} BTC donation for ${currentUser.username}'s opinion on the ${args.onModel} ${args.documentID}: "${args.opinion}"`,
             buyer: {
                 name: currentUser.username,
                 email: currentUser.email
             }
-        });
+        }
+
+        if (transactionType === 'Opinion') {
+            objectToInsert.itemDesc = `${args.amount} BTC donation for ${currentUser.username}'s opinion on the ${args.onModel} ${args.documentID}: "${args.opinion}"`
+        } else if (transactionType === 'Vote') {
+            if (args.upVote) {
+                var vote = "Upvote";
+            } else {
+                var vote = "Downvote";
+            }
+            objectToInsert.itemDesc = `${args.amount} BTC donation for ${currentUser.username}'s ${vote} on the ${args.onModel} ${args.documentID}`
+        }
+
+        return await client.create_invoice(objectToInsert);
 
     } catch (err) {
         throw new ApolloError('An unknown error occurred while interacting with the BTCPay server.');
@@ -56,19 +68,26 @@ const createInvoice = async (args, currentUser) => {
 
 const createDonation = async (args, applicableDocument, invoice, Donation, currentUser) => {
 
-    try {
-        return await new Donation({
-            _id: require('mongodb').ObjectID(),
-            invoiceID: invoice.id,
-            invoiceURL: invoice.url,
-            onModel: args.onModel,
-            documentID: args.documentID,
-            username: currentUser.username,
-            amount: args.amount,
-            slug: applicableDocument.slug,
-            pro: applicableDocument.pro
-        }).save();
+    var objectToInsert = {
+        _id: require('mongodb').ObjectID(),
+        invoiceID: invoice.id,
+        invoiceURL: invoice.url,
+        onModel: args.onModel,
+        documentID: args.documentID,
+        username: currentUser.username,
+        amount: args.amount,
+        slug: applicableDocument.slug,
+        pro: applicableDocument.pro,
+        votingDonation: false
+    }
 
+    if(args.votingDonation) {
+        objectToInsert.votingDonation = true;
+        objectToInsert.upVote = args.upVote;
+    }
+
+    try {
+        return await new Donation(objectToInsert).save();
     } catch (err) {
         throw new ApolloError('An unknown error occurred while creating the donation.');
     }
@@ -85,10 +104,23 @@ const createOpinion = async (args, applicableDocument, donation, Opinion, curren
             opinion: args.opinion,
             documentID: args.documentID,
             onModel: args.onModel,
-            donation: donation._id
+            originalDonation: donation._id
         }).save();
 
     } catch (err) {
+        throw new ApolloError('An unknown error occurred while creating the opinion.');
+    }
+}
+
+const applyVote = async (args, applicableDocument) => {
+    try {
+
+        if(args.upVote) applicableDocument.accruedVotes += args.amount;
+        if(!args.upVote) applicableDocument.accruedVotes -= args.amount;
+        return await applicableDocument.save();
+
+    } catch (err) {
+        console.log(err)
         throw new ApolloError('An unknown error occurred while creating the opinion.');
     }
 }
@@ -128,12 +160,13 @@ module.exports = {
 
             return rhetoric;
         },
-        getAllApprovedAndActiveProtagonisticRhetoric: async (_, args, {
+        getAllApprovedAndActiveRhetoric: async (_, args, {
             Rhetoric
         }) => {
+            //args deconstructed: { pro: Boolean! }
             const rhetoric = await Rhetoric
                 .find({
-                    pro: true,
+                    pro: args.pro,
                     approved: true,
                     active: true
                 })
@@ -146,29 +179,7 @@ module.exports = {
                     model: 'Resource'
                 })
                 .sort({
-                    dateCreated: 'desc'
-                })
-            return rhetoric;
-        },
-        getAllApprovedAndActiveAntagonisticRhetoric: async (_, args, {
-            Rhetoric
-        }) => {
-            const rhetoric = await Rhetoric
-                .find({
-                    pro: false,
-                    approved: true,
-                    active: true
-                })
-                .populate({
-                    path: 'bulletPoints',
-                    model: 'BulletPoint'
-                })
-                .populate({
-                    path: 'resources',
-                    model: 'Resource'
-                })
-                .sort({
-                    dateCreated: 'desc'
+                    accruedVotes: 'desc'
                 })
             return rhetoric;
         },
@@ -291,7 +302,7 @@ module.exports = {
         }) => {
             // args destructed = { _id: String!, onModel: String! }
 
-            const topOpinion = async function(_id) {
+            const topOpinion = async function (_id) {
                 const answer = await Opinion.find({
                     approved: true,
                     documentID: _id
@@ -299,13 +310,14 @@ module.exports = {
                     path: 'donation',
                     model: 'Donation'
                 });
+
                 var max = {
                     index: null,
                     value: 0
                 }
 
-                await answer.forEach(function(answerItems, i) {
-                    if(answerItems.donation.amount > max.value) {
+                await answer.forEach(function (answerItems, i) {
+                    if (answerItems.donation.amount > max.value) {
                         max.index = i;
                         max.value = answerItems.donation.amount
                     }
@@ -314,23 +326,23 @@ module.exports = {
                 return answer[max.index];
             }
 
-            const lastOpinion = async function(_id) {
+            const lastOpinion = async function (_id) {
                 const answer = await Opinion.find({
-                    approved: true,
-                    documentID: _id
-                }).populate({
-                    path: 'donation',
-                    model: 'Donation'
-                })
-                .sort({
-                    dateApproved: 'desc'
-                })
-                .limit(1);
+                        approved: true,
+                        documentID: _id
+                    }).populate({
+                        path: 'donation',
+                        model: 'Donation'
+                    })
+                    .sort({
+                        dateApproved: 'desc'
+                    })
+                    .limit(1);
 
                 return answer[0];
             }
 
-            const randomOpinion = async function(_id) {
+            const randomOpinion = async function (_id) {
                 const opinionArray = await Opinion.find({
                     approved: true,
                     documentID: args._id
@@ -339,13 +351,13 @@ module.exports = {
                     model: 'Donation'
                 });
 
-                return opinionArray[Math.floor(Math.random()*opinionArray.length)];
+                return opinionArray[Math.floor(Math.random() * opinionArray.length)];
             }
 
             return {
                 top: await topOpinion(args._id),
                 last: await lastOpinion(args._id),
-                random:  await randomOpinion(args._id)
+                random: await randomOpinion(args._id)
             }
         }
     },
@@ -476,7 +488,7 @@ module.exports = {
                 token: createToken(newUser, process.env.SECRET, "1hr")
             };
         },
-        submitOpinionModelSpecific: async (_, args, {
+        submitOpinion: async (_, args, {
             Crypto,
             Donation,
             Opinion,
@@ -487,8 +499,6 @@ module.exports = {
             // args destructed {amount: String!, documentID: ID!, onModel: String!, opinion: String!}
             if (!currentUser) throw new AuthenticationError('Log in or register to do this!');
             //if (!currentUser.emailValidated) throw new Error('Validate your email before doing this!');
-            console.log(currentUser)
-            if (!currentUser.allegiance) throw new AuthenticationError('Choose a faction in the Account Panel before doing this!');
             if (args.opinion.length > 280) throw new UserInputError('The maximum length of an opinion is 280 characters.');
             /*const value = await Crypto.findOne({
                 ticker: 'BTC'
@@ -501,7 +511,7 @@ module.exports = {
                 const bulletPoint = await BulletPoint.findOne({
                     _id: args.documentID
                 });
-                const newInvoice = await createInvoice(args, currentUser);
+                const newInvoice = await createInvoice(args, currentUser, 'Opinion');
                 const newDonation = await createDonation(args, bulletPoint, newInvoice, Donation, currentUser);
                 await createOpinion(args, bulletPoint, newDonation, Opinion, currentUser);
 
@@ -512,9 +522,66 @@ module.exports = {
                 const resource = await Resource.findOne({
                     _id: args.documentID
                 });
-                const newInvoice = await createInvoice(args, currentUser);
+                const newInvoice = await createInvoice(args, currentUser, 'Donation');
                 const newDonation = await createDonation(args, resource, newInvoice, Donation, currentUser);
                 await createOpinion(args, resource, newDonation, Opinion, currentUser);
+
+                return newInvoice.url;
+            }
+
+        },
+        submitVote: async (_, args, {
+            Crypto,
+            Donation,
+            BulletPoint,
+            Resource,
+            Rhetoric,
+            currentUser
+        }) => {
+            // args destructed {onModel: String!, documentID: ID!, amount: Float!, upVote: Boolean!}
+            if (!currentUser) throw new AuthenticationError('Log in or register to do this!');
+            //if (!currentUser.emailValidated) throw new Error('Validate your email before doing this!');
+            /*const value = await Crypto.findOne({
+                ticker: 'BTC'
+            });
+            if (value.rate * Number(args.amount) < 1) throw new Error(`Donation amount to small! ($1 minimum aka ${1.01/result[0].rate} BTC)`);
+            */
+
+            args.votingDonation = true;
+
+            if (args.onModel === 'BulletPoint') {
+
+                const bulletPoint = await BulletPoint.findOne({
+                    _id: args.documentID
+                });
+                const newInvoice = await createInvoice(args, currentUser, 'BulletPoint');
+                createDonation(args, bulletPoint, newInvoice, Donation, currentUser);
+                //TODO applyVote should only be called when the invoice is paid
+                applyVote(args, bulletPoint);
+
+                return newInvoice.url;
+
+            } else if (args.onModel === 'Resource') {
+
+                const resource = await Resource.findOne({
+                    _id: args.documentID
+                });
+                const newInvoice = await createInvoice(args, currentUser, 'Vote');
+                createDonation(args, resource, newInvoice, Donation, currentUser);
+                //TODO applyVote should only be called when the invoice is paid
+                applyVote(args, resource);
+
+                return newInvoice.url;
+
+            } else if (args.onModel === 'Rhetoric') {
+
+                const rhetoric = await Rhetoric.findOne({
+                    _id: args.documentID
+                });
+                const newInvoice = await createInvoice(args, currentUser, 'Rhetoric');
+                createDonation(args, rhetoric, newInvoice, Donation, currentUser);
+                //TODO applyVote should only be called when the invoice is paid
+                applyVote(args, rhetoric);
 
                 return newInvoice.url;
             }

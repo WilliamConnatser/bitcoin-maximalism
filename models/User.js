@@ -46,12 +46,6 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
-    },
-    donations: {
-        type: [mongoose.Schema.Types.ObjectId],
-        required: true,
-        default: [],
-        ref: 'Donation'
     }
 });
 

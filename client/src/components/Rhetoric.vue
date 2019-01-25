@@ -83,10 +83,12 @@
                         pro
                         title
                         approved
+                        accruedVotes
                         bulletPoints {
                             _id
                             slug
                             content
+                            accruedVotes
                         }
                         resources {
                             _id
@@ -94,6 +96,7 @@
                             title
                             media
                             link
+                            accruedVotes
                         }
                       }
                     }

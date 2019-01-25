@@ -32,7 +32,7 @@
             {{getOpinionsModelSpecific.random.opinion}}
         </li>
     </ul>
-    <span v-if="getOpinionsModelSpecific === null || getOpinionsModelSpecific.top === null">No one's commented on this yet...</span>
+    <span class="no-opinions" v-if="getOpinionsModelSpecific === null || getOpinionsModelSpecific.top === null">No one's commented on this yet...</span>
 </div>
 </template>
 
@@ -127,34 +127,6 @@
 <style lang="scss" scoped>
     @import "../sass/variables.scss";
 
-    input {
-        display: inline-block;
-        width: 75vw;
-        height: 4rem;
-        font-size: 1.5rem;
-        border: 0.1rem solid $color-white;
-    }
-
-    label {
-        text-align: center;
-        color: $color-white;
-        display: inline-block;
-        width: 80vw;
-        font-size: 1.9rem;
-        font-weight: 200;
-    }
-
-    button {
-        color: $color-white;
-        background-color: $color-green;
-        font-size: 1.5rem;
-        width: 35%;
-        height: 5rem;
-        padding: .5rem;
-        margin: 0rem .5rem;
-        border: 0.1rem solid $color-white;
-    }
-
     .opinions {
         list-style-type: none;
 
@@ -166,5 +138,10 @@
                 text-transform: uppercase;
             }
         }
+    }
+
+    .no-opinions {
+        margin: 2rem;
+        padding: 2rem;
     }
 </style>

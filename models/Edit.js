@@ -49,15 +49,8 @@ const EditSchema = new mongoose.Schema({
     approvalCommentary: {
         type: String
     },
-    opinions: {
-        type: [mongoose.Schema.Types.ObjectId],
-        required: true,
-        default: [],
-        ref: 'Opinion'
-    },
-    donation: {
+    originalDonation: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'Donation'
     }
 });

@@ -22,7 +22,8 @@ type Rhetoric {
     resources: [Resource!]!
     opinions: [Opinion!]!
     edits: [Edit!]!
-    donation: Donation!
+    originalDonation: Donation
+    accruedVotes: Float!
 }
 
 type BulletPoint {
@@ -38,7 +39,8 @@ type BulletPoint {
     approvalCommentary: String
     edits: [Edit!]!
     opinions: [Opinion!]!
-    donation: Donation!
+    originalDonation: Donation
+    accruedVotes: Float
 }
 
 type Resource {
@@ -56,7 +58,8 @@ type Resource {
     approvalCommentary: String
     edits: [Edit!]!
     opinions: [Opinion!]!
-    donation: Donation!
+    originalDonation: Donation
+    accruedVotes: Float
 }
 
 type Opinion {
@@ -72,7 +75,7 @@ type Opinion {
     approvalCommentary: String
     documentID: ID!
     onModel: String!
-    donation: Donation!
+    originalDonation: Donation!
 }
 
 type Edit {
@@ -88,8 +91,7 @@ type Edit {
     dateApproved: String
     approvedBy: String
     approvalCommentary: String
-    opinions: [Opinion!]!
-    donation: Donation!
+    originalDonation: Donation!
 }
 
 type Donation {
@@ -105,6 +107,8 @@ type Donation {
     paid: Boolean!
     invoiceID: String!
     invoiceURL: String!
+    votingDonation: Boolean
+    upVote: Boolean
 }
 
 type Certificate {
@@ -113,7 +117,7 @@ type Certificate {
     active: Boolean!
     name: String!
     pro: Boolean!
-    donation: Donation!
+    originalDonation: Donation!
 }
 
 type User {
@@ -127,7 +131,6 @@ type User {
     allegiance: Boolean
     maximalist: Boolean
     admin: Boolean!
-    donation: [Donation!]!
 }
 
 type Crypto {
@@ -145,8 +148,7 @@ type OpinionResponse {
 type Query {
     getCurrentUser: User
     getRhetoricByMetaSlugAndSlug(pro: Boolean!, slug: String!): Rhetoric
-    getAllApprovedAndActiveProtagonisticRhetoric: [Rhetoric]
-    getAllApprovedAndActiveAntagonisticRhetoric: [Rhetoric]
+    getAllApprovedAndActiveRhetoric(pro: Boolean!): [Rhetoric]
     getAmountDonatedSlugSpecific(pro: Boolean!, slug: String!): Float
     getAmountDonatedModelSpecific(pro: Boolean!, slug: String!, onModel: String!, documentID: ID!): Float
     getUnapprovedOpinions: [Opinion]
@@ -161,13 +163,11 @@ type Mutation {
     setUserAllegiance(allegiance: String!): Token
     signinUser(email: String!, password: String!): Token
     signupUser(username: String!, email: String!, password: String!): Token
-    submitOpinionModelSpecific(amount: String!, documentID: ID!, onModel: String!, opinion: String!): String
-
+    submitOpinion(amount: String!, documentID: ID!, onModel: String!, opinion: String!): String
     approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
+    submitVote(onModel: String!, documentID: ID!, amount: Float!, upVote: Boolean!): String
+
     submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
     submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String
-    submitVoteSlugSpecific: String
-    submitVoteModelSpecific: String
-
     addBulletPoint(slug: String!, pro: Boolean!, content: String!): BulletPoint
 }

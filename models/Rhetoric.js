@@ -64,9 +64,14 @@ const RhetoricSchema = new mongoose.Schema({
         default: [],
         ref: 'Edit'
     },
-    donation: {
+    originalDonation: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Donation'
+    },
+    accruedVotes: {
+        type: Number,
+        required: true,
+        default: 0
     }
 });
 

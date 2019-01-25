@@ -97,10 +97,10 @@
                 viewOpinions: null,
                 viewEdits: null,
                 donationAmount: 0,
-                bulletPointContent: "",
-                resourceTitle: "",
-                resourceLink: "",
-                resourceMedia: "",
+                bulletPointContent: this.arrayItemProp.content,
+                resourceTitle: this.arrayItemProp.title,
+                resourceLink: this.arrayItemProp.link,
+                resourceMedia:  this.arrayItemProp.media,
                 submitted: null
             }
         },
