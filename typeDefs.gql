@@ -139,12 +139,6 @@ type Crypto {
     valueUSD: Float!
 }
 
-type OpinionResponse {
-    top: Opinion
-    last: Opinion
-    random: Opinion
-}
-
 type Query {
     getCurrentUser: User
     getRhetoricByMetaSlugAndSlug(pro: Boolean!, slug: String!): Rhetoric
@@ -153,7 +147,7 @@ type Query {
     getAmountDonatedModelSpecific(pro: Boolean!, slug: String!, onModel: String!, documentID: ID!): Float
     getUnapprovedOpinions: [Opinion]
     getUnapprovedEdits: [Edit]
-    getOpinionsModelSpecific(_id: String!, onModel: String!): OpinionResponse
+    getOpinionsModelSpecific(_id: String!, onModel: String!): [Opinion]
 
     getCryptoValue(ticker: String!): Float
     getDonation(pro: Boolean, slug: String): [Donation!]

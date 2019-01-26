@@ -5,9 +5,9 @@
                 <font-awesome-icon icon="angle-up" />
             </span>
             <span class="amount-donated">
-                <span v-if="arrayItemProp.accruedVotes>0">+ {{arrayItemProp.accruedVotes}}</span>
-                <span v-if="arrayItemProp.accruedVotes<0">- {{arrayItemProp.accruedVotes*-1}}</span>
-                <span v-if="arrayItemProp.accruedVotes===0">{{arrayItemProp.accruedVotes*-1}}</span>
+                <span v-if="arrayItemProp.accruedVotes>0">+ {{toFixed(arrayItemProp.accruedVotes)}}</span>
+                <span v-if="arrayItemProp.accruedVotes<0">- {{toFixed(arrayItemProp.accruedVotes*-1)}}</span>
+                <span v-if="arrayItemProp.accruedVotes===0">{{toFixed(arrayItemProp.accruedVotes*-1)}}</span>
             </span>
             <span class="icon" @click='initialize(false)' title="Downvote">
                 <font-awesome-icon icon="angle-down" />
@@ -140,6 +140,9 @@
                         // Error handled in main.js
                     });
                 }
+            },
+            toFixed(number) {
+                return number.toFixed(8);
             }
         },
         watch: {

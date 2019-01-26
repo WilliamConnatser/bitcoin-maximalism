@@ -1,38 +1,20 @@
 <template>
 <div>
-    <ul v-if="getOpinionsModelSpecific !== null" class="opinions">
-        <li v-if="getOpinionsModelSpecific.top !== null" id="top" class="opinion">
+    <ul v-if="getOpinionsModelSpecific && getOpinionsModelSpecific[0]" class="opinions">
+        <li v-for="(opinion, index) in getOpinionsModelSpecific" class="opinion" :key="index">
             <div>
-                <strong class="opinion-label">Top: </strong>
-                <strong class="opinion-username">{{getOpinionsModelSpecific.top.createdBy}}</strong>
+                <strong class="opinion-label">{{title(index)}}: </strong>
+                <strong class="opinion-username">{{opinion.createdBy}}</strong>
             </div>
             <div>
-                {{getOpinionsModelSpecific.top.donation.amount}} BTC
+                {{toFixed(opinion.originalDonation.amount)}} BTC
             </div>
-            {{getOpinionsModelSpecific.top.opinion}}
-        </li>
-        <li v-if="getOpinionsModelSpecific.last !== null" id="last" class="opinion">
-            <div>
-                <strong class="opinion-label">Last: </strong>
-                <strong class="opinion-username">{{getOpinionsModelSpecific.last.createdBy}}</strong>
-            </div>
-            <div>
-                {{getOpinionsModelSpecific.last.donation.amount}} BTC
-            </div>
-            {{getOpinionsModelSpecific.last.opinion}}
-        </li>
-        <li v-if="getOpinionsModelSpecific.random !== null" id="random" class="opinion">
-            <div>
-                <strong class="opinion-label">Random: </strong>
-                <strong class="opinion-username">{{getOpinionsModelSpecific.random.createdBy}}</strong>
-            </div>
-            <div>
-                {{getOpinionsModelSpecific.random.donation.amount}} BTC
-            </div>
-            {{getOpinionsModelSpecific.random.opinion}}
+            {{opinion.opinion}}
         </li>
     </ul>
-    <span class="no-opinions" v-if="getOpinionsModelSpecific === null || getOpinionsModelSpecific.top === null">No one's commented on this yet...</span>
+    <span class="no-opinions" v-if="!getOpinionsModelSpecific || !getOpinionsModelSpecific[0]">
+        No one's commented on this yet...
+    </span>
 </div>
 </template>
 
@@ -62,6 +44,19 @@
             },
             initialize(actionType) {
                 this.getCurrentUser ? this[actionType] = true : this.$toasted.global.log_in();
+            },
+            toFixed(number) {
+                return number.toFixed(8);
+            },
+            title(index) {
+                if(index === 0) return "top";
+                if(index === 1) return "last";
+                if(index === 2) return "random";
+            }
+        },
+        computed: {
+            opinionArray() {
+                return this.getOpinionsModelSpecific;
             }
         },
         apollo: {
@@ -84,32 +79,12 @@
             getOpinionsModelSpecific: {
                 query: gql `query getOpinionsModelSpecific ($_id: String!, $onModel: String!) {
                     getOpinionsModelSpecific(_id: $_id, onModel: $onModel) {
-                        top {
-                            _id
-                            createdBy
-                            dateApproved
-                            opinion
-                            donation {
-                                amount
-                            }
-                        }
-                        last {
-                            _id
-                            createdBy
-                            dateApproved
-                            opinion
-                            donation {
-                                amount
-                            }
-                        }
-                        random {
-                            _id
-                            createdBy
-                            dateApproved
-                            opinion
-                            donation {
-                                amount
-                            }
+                        _id
+                        createdBy
+                        dateApproved
+                        opinion
+                        originalDonation {
+                            amount
                         }
                     }
                 }`,
@@ -140,8 +115,7 @@
         }
     }
 
-    .no-opinions {
-        margin: 2rem;
-        padding: 2rem;
+    .opinions {
+        margin: 5rem;
     }
 </style>

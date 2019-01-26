@@ -24,7 +24,6 @@
                 </button>
             </div>
             -->
-
             <div v-show="getCurrentUser.admin">
                 <h2>You so fancy! Look are you, Mr. Administrator...</h2>
                 <ul>
@@ -56,10 +55,6 @@
                 approved: null,
                 approvalCommentary: []
             }
-        },
-        created() {
-            //Make sure the user token is still valid.
-            if(this.getCurrentUser) this.$apollo.queries.getCurrentUser.refetch();
         }/*,
         computed: {
             getAllegiance() {

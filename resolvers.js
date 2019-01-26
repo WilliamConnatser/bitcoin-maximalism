@@ -81,7 +81,7 @@ const createDonation = async (args, applicableDocument, invoice, Donation, curre
         votingDonation: false
     }
 
-    if(args.votingDonation) {
+    if (args.votingDonation) {
         objectToInsert.votingDonation = true;
         objectToInsert.upVote = args.upVote;
     }
@@ -115,8 +115,8 @@ const createOpinion = async (args, applicableDocument, donation, Opinion, curren
 const applyVote = async (args, applicableDocument) => {
     try {
 
-        if(args.upVote) applicableDocument.accruedVotes += args.amount;
-        if(!args.upVote) applicableDocument.accruedVotes -= args.amount;
+        if (args.upVote) applicableDocument.accruedVotes += args.amount;
+        if (!args.upVote) applicableDocument.accruedVotes -= args.amount;
         return await applicableDocument.save();
 
     } catch (err) {
@@ -172,11 +172,21 @@ module.exports = {
                 })
                 .populate({
                     path: 'bulletPoints',
-                    model: 'BulletPoint'
+                    model: 'BulletPoint',
+                    options: {
+                        $sort: {
+                            'accruedVotes': 'desc'
+                        }
+                    }
                 })
                 .populate({
                     path: 'resources',
-                    model: 'Resource'
+                    model: 'Resource',
+                    options: {
+                        $sort: {
+                            'accruedVotes': 'desc'
+                        }
+                    }
                 })
                 .sort({
                     accruedVotes: 'desc'
@@ -307,7 +317,7 @@ module.exports = {
                     approved: true,
                     documentID: _id
                 }).populate({
-                    path: 'donation',
+                    path: 'originalDonation',
                     model: 'Donation'
                 });
 
@@ -317,9 +327,9 @@ module.exports = {
                 }
 
                 await answer.forEach(function (answerItems, i) {
-                    if (answerItems.donation.amount > max.value) {
+                    if (answerItems.originalDonation.amount > max.value) {
                         max.index = i;
-                        max.value = answerItems.donation.amount
+                        max.value = answerItems.originalDonation.amount
                     }
                 })
 
@@ -331,7 +341,7 @@ module.exports = {
                         approved: true,
                         documentID: _id
                     }).populate({
-                        path: 'donation',
+                        path: 'originalDonation',
                         model: 'Donation'
                     })
                     .sort({
@@ -347,18 +357,16 @@ module.exports = {
                     approved: true,
                     documentID: args._id
                 }).populate({
-                    path: 'donation',
+                    path: 'originalDonation',
                     model: 'Donation'
                 });
 
                 return opinionArray[Math.floor(Math.random() * opinionArray.length)];
             }
 
-            return {
-                top: await topOpinion(args._id),
-                last: await lastOpinion(args._id),
-                random: await randomOpinion(args._id)
-            }
+            return await Promise.all([topOpinion(args._id), lastOpinion(args._id), randomOpinion(args._id)]).then(returnValue => {
+                return returnValue;
+            });
         }
     },
     Mutation: {
