@@ -139,6 +139,14 @@ module.exports = {
             });
             return user;
         },
+        cryptoValue: async (_, args, {
+            Crypto
+        }) => {
+            const cryptoDoc = await Crypto.findOne({
+                ticker: args.ticker
+            })
+            return cryptoDoc.valueUSD;
+        },
         getRhetoricByMetaSlugAndSlug: async (_, args, {
             Rhetoric
         }) => {
@@ -173,24 +181,23 @@ module.exports = {
                 .populate({
                     path: 'bulletPoints',
                     model: 'BulletPoint',
-                    options: {
-                        $sort: {
-                            'accruedVotes': 'desc'
-                        }
+                    match: {
+                        approved: true,
+                        active: true
                     }
                 })
                 .populate({
                     path: 'resources',
                     model: 'Resource',
-                    options: {
-                        $sort: {
-                            'accruedVotes': 'desc'
-                        }
+                    match: {
+                        approved: true,
+                        active: true
                     }
                 })
                 .sort({
                     accruedVotes: 'desc'
-                })
+                })           
+
             return rhetoric;
         },
         getDonation: async (_, args, {

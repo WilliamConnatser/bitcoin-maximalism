@@ -2,8 +2,7 @@
   <div>
     <h1>{{getRhetoricByMetaSlugAndSlug.title}}</h1>
     <ul>
-      <AdvancedListItem :arrayProp="getRhetoricByMetaSlugAndSlug.bulletPoints" :metaSlug="this.metaSlug"/>
-      <AdvancedListItem :arrayProp="getRhetoricByMetaSlugAndSlug.resources" :metaSlug="this.metaSlug"/>
+      <AdvancedListItem :arrayProp="concatAndSort" :metaSlug="this.metaSlug" />
     </ul>
   </div>
 </template>
@@ -53,6 +52,18 @@
       },
       loggedIn() {
         if (!this.getCurrentUser) this.$toasted.global.log_in();
+      }
+    },
+    computed: {
+      concatAndSort: function() {
+        if (this.getRhetoricByMetaSlugAndSlug.bulletPoints && this.getRhetoricByMetaSlugAndSlug.resources) {
+          var result = this.getRhetoricByMetaSlugAndSlug.bulletPoints.concat(this.getRhetoricByMetaSlugAndSlug.resources);
+          return result.sort((a, b) => {
+            return b.accruedVotes - a.accruedVotes
+          });
+        } else {
+          return [];
+        }
       }
     },
     apollo: {

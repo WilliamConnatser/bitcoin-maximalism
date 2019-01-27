@@ -4,6 +4,7 @@
             <div class="block">
                 <label>Donation Amount (BTC)</label>
                 <input type="text" v-model="donationAmount">
+                <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>
                 <div class="description">Your opinion is more (or less) likely to be seen depending on the donation's
                     value. You may view the opinions on what you are commenting on to see the likelihood your
                     opinion will be shown. Features may be implemented or deprecated in the future which reduce or
@@ -32,7 +33,8 @@
         <div id="success" v-else>
             <h2>Success!</h2>
 
-            If the donation was completed successfully, then your opinion has been submitted to the administrators for
+            <div><iframe :src="invoiceURL" scrolling="no">Pay Here: {{invoiceURL}}</iframe></div>
+            If the donation is completed successfully, then your opinion has been submitted to the administrators for
             review. From this point forward, you may track the status of the opinion you've submitted on the user
             <router-link to="/account">Account Panel</router-link>.
         </div>
@@ -41,6 +43,9 @@
 
 <script>
     import gql from 'graphql-tag';
+    import {
+        defaultClient as apolloClient
+    } from '../main';
 
     export default {
         name: "SubmitOpinions",
@@ -50,6 +55,7 @@
         data() {
             return {
                 getCurrentUser: null,
+                cryptoValue: 0,
                 viewOpinions: null,
                 viewEdits: null,
                 donationAmount: 0,
@@ -67,14 +73,18 @@
             submitOpinionToServer() {
                 if (!this.getCurrentUser) {
                     this.$toasted.global.log_in();
+                    //Remove token in localStorage
+                    localStorage.setItem("token", "");
+                    //End Apollo Client Session
+                    apolloClient.resetStore();
                 } else {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                        mutation submitOpinion($amount: String!, $documentID: ID!, $onModel: String!, $opinion: String!){
-                            submitOpinion(amount: $amount, documentID: $documentID, onModel: $onModel, opinion: $opinion)
-                        }
-                    `,
+                            mutation submitOpinion($amount: String!, $documentID: ID!, $onModel: String!, $opinion: String!){
+                                submitOpinion(amount: $amount, documentID: $documentID, onModel: $onModel, opinion: $opinion)
+                            }
+                        `,
                         variables: {
                             amount: this.donationAmount,
                             documentID: this.arrayItemProp._id,
@@ -84,18 +94,45 @@
                     }).then(async ({
                         data
                     }) => {
-                        this.incoiceURL = data.submitOpinion;
+                        this.setInvoiceURL(data.submitOpinion);
                         this.submitted = true;
                     }).catch(error => {
                         // Error :\
                         // Error handled in main.js
                     });
                 }
+            },
+            setInvoiceURL(url) {
+                this.invoiceURL = url;
+            },
+            validAmount(value) {
+                if(value < 0) {
+                    this.donationAmount *= -1;
+                    this.$toasted.global.invalid_donation_negative();
+                    return false;
+                }
+                if(Math.floor(value) === value) return true;
+                if(value.indexOf('.') < 0) return true;
+                if(value.toString().split(".")[1].length > 8) {
+                    this.donationAmount = Number(this.donationAmount).toFixed(8);
+                    this.$toasted.global.invalid_donation_decimal();
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        },
+        computed: {
+            computedAmount: function() {
+                return (this.donationAmount * this.cryptoValue).toFixed(2);
             }
         },
         watch: {
             submitted(newValue) {
                 if (newValue) this.scrollToTop();
+            },
+            donationAmount(newValue) {
+                this.validAmount(newValue);
             }
         },
         apollo: {
@@ -114,6 +151,16 @@
                         }
                     }
                 `
+            },
+            cryptoValue: {
+                query: gql `
+                    query cryptoValue($ticker: String!){
+                        cryptoValue(ticker:$ticker)
+                    }
+                `,
+                variables: {
+                    ticker: 'BTC'
+                }
             }
         }
     };
@@ -172,7 +219,8 @@
         font-size: 1.5rem;
     }
 
-    #success {
-        margin: 5em;
+    iframe {
+        width: 32rem;
+        height: 78rem;
     }
 </style>

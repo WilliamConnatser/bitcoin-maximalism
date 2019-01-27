@@ -149,7 +149,7 @@ type Query {
     getUnapprovedEdits: [Edit]
     getOpinionsModelSpecific(_id: String!, onModel: String!): [Opinion]
 
-    getCryptoValue(ticker: String!): Float
+    cryptoValue(ticker: String!): Float
     getDonation(pro: Boolean, slug: String): [Donation!]
 }
 

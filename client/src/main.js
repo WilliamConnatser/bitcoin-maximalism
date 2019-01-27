@@ -80,6 +80,28 @@ Vue.toasted.register('log_in', 'You must log in or register before doing this', 
     }]
   });
 
+  Vue.toasted.register('invalid_donation_decimal', 'Donations may only contain a maximum of 8 decimal places', {
+    duration: 5000,
+    icon: 'fa-exclamation-circle',
+    action: [{
+      text: 'Close',
+      onClick: (e, toastObject) => {
+        toastObject.goAway(0);
+      }
+    }]
+  });
+
+  Vue.toasted.register('invalid_donation_negative', 'Donations amounts may only be positive', {
+    duration: 5000,
+    icon: 'fa-exclamation-circle',
+    action: [{
+      text: 'Close',
+      onClick: (e, toastObject) => {
+        toastObject.goAway(0);
+      }
+    }]
+  });
+
 
 //Set the Apollo URI to what's stored in the now.json file if the app is being deployed
 var apolloURI = ''

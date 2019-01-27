@@ -27,6 +27,7 @@
                     <div class="block">
                         <label>Donation Amount (BTC)</label>
                         <input id="donation-amount" type="text" v-model="donationAmount">
+                        <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>
                         <div class="description">Your <span v-if="upvote">upvote</span><span v-else>downvote</span>
                             will be weighted by an amount proportional to
                             your donation, which is then compared to the amount of all other upvote and downvote
@@ -48,8 +49,10 @@
                 </form>
                 <div id="success" v-else>
                     <h2>Success!</h2>
+                    
+                    <iframe :src="invoiceURL" scrolling="no">{{invoiceURL}}</iframe>
 
-                    If the donation was completed successfully, then your upvote or downvote should be attributed
+                    If the donation is completed successfully, then your upvote or downvote should be attributed
                     shortly.
                     You may track the history of your upvotes and downvotes in the user <router-link to="/account">Account
                         Panel</router-link>.
@@ -61,6 +64,9 @@
 
 <script>
     import gql from 'graphql-tag';
+    import {
+        defaultClient as apolloClient
+    } from '../main';
 
     export default {
         name: "ToolbarVotes",
@@ -77,7 +83,8 @@
                 slug: "",
                 submitted: null,
                 donationAmount: "",
-                deActivate: true
+                deActivate: true,
+                invoiceURL: ""
             }
         },
         computed: {
@@ -95,12 +102,19 @@
                     return this.getAmountDonatedModelSpecific;
                 }
 
-            }
+            },
+            computedAmount: function() {
+                return (this.donationAmount * this.cryptoValue).toFixed(2);
+            }        
         },
         methods: {
             initialize(upvote) {
                 if (!this.getCurrentUser) {
                     this.$toasted.global.log_in();
+                    //Remove token in localStorage
+                    localStorage.setItem("token", "");
+                    //End Apollo Client Session
+                    apolloClient.resetStore();
                 } else {
                     this.upvote = upvote;
                 }
@@ -116,6 +130,10 @@
             submitVote(upVote) {
                 if (!this.getCurrentUser) {
                     this.$toasted.global.log_in();
+                    //Remove token in localStorage
+                    localStorage.setItem("token", "");
+                    //End Apollo Client Session
+                    apolloClient.resetStore();
                 } else {
                     //GraphQL Mutation
                     this.$apollo.mutate({
@@ -133,7 +151,7 @@
                     }).then(async ({
                         data
                     }) => {
-                        this.incoiceURL = data.submitOpinion;
+                        this.setInvoiceURL(data.submitVote)
                         this.submitted = true;
                     }).catch(error => {
                         // Error :\
@@ -141,13 +159,35 @@
                     });
                 }
             },
+            setInvoiceURL(url) {
+                this.invoiceURL = url;
+            },
             toFixed(number) {
                 return number.toFixed(8);
+            },
+            validAmount(value) {
+                if(value < 0) {
+                    this.donationAmount *= -1;
+                    this.$toasted.global.invalid_donation_negative();
+                    return false;
+                }
+                if(Math.floor(value) === value) return true;
+                if(value.indexOf('.') < 0) return true;
+                if(value.toString().split(".")[1].length > 8) {
+                    this.$toasted.global.invalid_donation_decimal();
+                    this.donationAmount = Number(this.donationAmount).toFixed(8);
+                    return false;
+                } else {
+                    return true;
+                }
             }
         },
         watch: {
             submitted(newValue) {
                 if (newValue) this.scrollToTop();
+            },
+            donationAmount(newValue) {
+                this.validAmount(newValue)
             }
         },
         apollo: {
@@ -166,6 +206,16 @@
                         }
                     }
                 `
+            },
+            cryptoValue: {
+                query: gql `
+                    query cryptoValue($ticker: String!){
+                        cryptoValue(ticker:$ticker)
+                    }
+                `,
+                variables: {
+                    ticker: 'BTC'
+                }
             }
         }
     };
@@ -239,8 +289,10 @@
     .description {
         font-size: 1.5rem;
     }
-
-    #success {
-        margin: 5rem;
+    
+    iframe {
+        overflow: scroll;
+        width: 90vw;
+        height: 71rem;
     }
 </style>

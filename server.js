@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 //Import ZEIT Now configuration
 require('now-env');
 
-/*
+
 
 //BTCPay Server
 const btcpay = require('btcpay')
@@ -15,6 +15,7 @@ const client = new btcpay.BTCPayClient(process.env.BTCPAY_URL, keypair, {
     merchant: process.env.BTCPAY_MERCHANT
 });
 
+/*
 //Only needed for initial pairing
 client
   .pair_client(<PAIRCODE?)
@@ -315,6 +316,7 @@ const Certificate = require('./models/Certificate');
 const Donation = require('./models/Donation');
 const BulletPoint = require('./models/BulletPoint');
 const User = require('./models/User');
+const Crypto = require('./models/Crypto');
 
 //Needed to authenticate the token sent from the client
 const jwt = require('jsonwebtoken');
@@ -444,6 +446,33 @@ mongoose
         populateBulletPoints();
         populateResources();
         populateResourceRhetoric();
+
+        //Update the Bitcoin value every hour
+        setInterval(function () {
+            client.get_rates('BTC_USD', process.env.BTCPAY_STOREID)
+                .then(async function (rates) {
+
+                    var cryptoDoc = await Crypto.findOne({
+                        ticker: 'BTC'
+                    });
+
+                    if (cryptoDoc) {
+
+                        cryptoDoc.valueUSD = Number(rates[0].rate);
+                        cryptoDoc.save();
+
+                    } else {
+
+                        var id = require('mongodb').ObjectID();
+                        const newCrypto = new Crypto({
+                            _id: id,
+                            ticker: 'BTC',
+                            valueUSD: Number(rates[0].rate)
+                        }).save();
+                    }
+                })
+                .catch(err => console.log(err))
+        }, 60 * 60000);
     })
     .catch(err => console.log(err));
 
@@ -481,6 +510,7 @@ const server = new ApolloServer({
             Donation,
             BulletPoint,
             User,
+            Crypto,
             currentUser: await getUser(token),
             operationName
         }
