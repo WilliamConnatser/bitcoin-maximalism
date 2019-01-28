@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
         trim: true
     },
     emailValidated: {
-        type: String,
+        type: Boolean,
         required: true,
         default: false
     },

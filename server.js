@@ -447,8 +447,7 @@ mongoose
         populateResources();
         populateResourceRhetoric();
 
-        //Update the Bitcoin value every hour
-        setInterval(function () {
+        function updateBitcoinValue() {
             client.get_rates('BTC_USD', process.env.BTCPAY_STOREID)
                 .then(async function (rates) {
 
@@ -472,6 +471,14 @@ mongoose
                     }
                 })
                 .catch(err => console.log(err))
+        }
+
+        //Update the Bitcoin value on startup
+        updateBitcoinValue();
+
+        //Update the Bitcoin value every hour
+        setInterval(function () {
+            updateBitcoinValue();
         }, 60 * 60000);
     })
     .catch(err => console.log(err));

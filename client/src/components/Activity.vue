@@ -12,10 +12,10 @@
     export default {
         name: "Activity",
         apollo: {
-            getCurrentUser: {
+            currentUser: {
                 query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email
@@ -28,9 +28,9 @@
                     }
                 `
             },
-            getAmountDonatedSlugSpecific: {
-                query: gql `query getAmountDonatedSlugSpecific($pro: Boolean!, $slug: String!) {
-                                getAmountDonatedSlugSpecific(pro: $pro, slug: $slug)
+            slugSpecificAmountDonated: {
+                query: gql `query slugSpecificAmountDonated($pro: Boolean!, $slug: String!) {
+                                slugSpecificAmountDonated(pro: $pro, slug: $slug)
                             }
                         `,
                 variables() {
@@ -40,9 +40,9 @@
                     }
                 }
             },
-            getAmountDonatedModelSpecific: {
-                query: gql `query getAmountDonatedModelSpecific($pro: Boolean!, $slug: String!, $onModel: String!, $documentID: ID!) {
-                                getAmountDonatedModelSpecific(pro: $pro, slug: $slug, onModel: $onModel, documentID: $documentID)
+            docSpecificAmountDonated: {
+                query: gql `query docSpecificAmountDonated($pro: Boolean!, $slug: String!, $onModel: String!, $documentID: ID!) {
+                                docSpecificAmountDonated(pro: $pro, slug: $slug, onModel: $onModel, documentID: $documentID)
                             }
                         `,
                 variables() {

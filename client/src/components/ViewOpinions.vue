@@ -1,18 +1,18 @@
 <template>
 <div>
-    <ul v-if="getOpinionsModelSpecific && getOpinionsModelSpecific[0]" class="opinions">
-        <li v-for="(opinion, index) in getOpinionsModelSpecific" class="opinion" :key="index">
+    <ul v-if="topLastRandomOpinions && topLastRandomOpinions[0]" class="opinions">
+        <li v-for="(opinion, index) in topLastRandomOpinions" class="opinion" :key="index">
             <div>
                 <strong class="opinion-label">{{title(index)}}: </strong>
                 <strong class="opinion-username">{{opinion.createdBy}}</strong>
             </div>
             <div>
-                {{toFixed(opinion.originalDonation.amount)}} BTC
+                {{opinion.originalDonation.amount | bitcoinAmount}} BTC
             </div>
             {{opinion.opinion}}
         </li>
     </ul>
-    <span class="no-opinions" v-if="!getOpinionsModelSpecific || !getOpinionsModelSpecific[0]">
+    <span class="no-opinions" v-if="!topLastRandomOpinions || !topLastRandomOpinions[0]">
         No one's commented on this yet...
     </span>
 </div>
@@ -29,10 +29,10 @@
         },
         data() {
             return {
-                getCurrentUser: null,
+                currentUser: null,
                 viewOpinions: null,
                 viewEdits: null,
-                getOpinionsModelSpecific: null
+                topLastRandomOpinions: null
             }
         },
         methods: {
@@ -43,10 +43,7 @@
                 this[actionType] = true;
             },
             initialize(actionType) {
-                this.getCurrentUser ? this[actionType] = true : this.$toasted.global.log_in();
-            },
-            toFixed(number) {
-                return number.toFixed(8);
+                this.currentUser ? this[actionType] = true : this.$toasted.global.log_in();
             },
             title(index) {
                 if(index === 0) return "top";
@@ -56,14 +53,14 @@
         },
         computed: {
             opinionArray() {
-                return this.getOpinionsModelSpecific;
+                return this.topLastRandomOpinions;
             }
         },
         apollo: {
-            getCurrentUser: {
+            currentUser: {
                 query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email
@@ -76,9 +73,9 @@
                     }
                 `
             },
-            getOpinionsModelSpecific: {
-                query: gql `query getOpinionsModelSpecific ($_id: String!, $onModel: String!) {
-                    getOpinionsModelSpecific(_id: $_id, onModel: $onModel) {
+            topLastRandomOpinions: {
+                query: gql `query topLastRandomOpinions ($_id: String!, $onModel: String!) {
+                    topLastRandomOpinions(_id: $_id, onModel: $onModel) {
                         _id
                         createdBy
                         dateApproved

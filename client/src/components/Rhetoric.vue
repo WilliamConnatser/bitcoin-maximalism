@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>{{getRhetoricByMetaSlugAndSlug.title}}</h1>
+    <h1>{{slugSpecificRhetoric.title}}</h1>
     <ul>
       <AdvancedListItem :arrayProp="concatAndSort" :metaSlug="this.metaSlug" />
     </ul>
@@ -18,8 +18,8 @@
     },
     data() {
       return {
-        getCurrentUser: {},
-        getRhetoricByMetaSlugAndSlug: {},
+        currentUser: {},
+        slugSpecificRhetoric: {},
         pro: "",
         slug: "",
         metaSlug: ""
@@ -51,13 +51,13 @@
         this.loggedIn();
       },
       loggedIn() {
-        if (!this.getCurrentUser) this.$toasted.global.log_in();
+        if (!this.currentUser) this.$toasted.global.log_in();
       }
     },
     computed: {
       concatAndSort: function() {
-        if (this.getRhetoricByMetaSlugAndSlug.bulletPoints && this.getRhetoricByMetaSlugAndSlug.resources) {
-          var result = this.getRhetoricByMetaSlugAndSlug.bulletPoints.concat(this.getRhetoricByMetaSlugAndSlug.resources);
+        if (this.slugSpecificRhetoric.bulletPoints && this.slugSpecificRhetoric.resources) {
+          var result = this.slugSpecificRhetoric.bulletPoints.concat(this.slugSpecificRhetoric.resources);
           return result.sort((a, b) => {
             return b.accruedVotes - a.accruedVotes
           });
@@ -67,10 +67,10 @@
       }
     },
     apollo: {
-      getCurrentUser: {
+      currentUser: {
         query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email
@@ -83,10 +83,10 @@
                     }
                 `
       },
-      getRhetoricByMetaSlugAndSlug: {
+      slugSpecificRhetoric: {
         query: gql `
-                    query getRhetoricByMetaSlugAndSlug($pro: Boolean!, $slug: String!) {
-                      getRhetoricByMetaSlugAndSlug(pro:$pro, slug: $slug) {
+                    query slugSpecificRhetoric($pro: Boolean!, $slug: String!) {
+                      slugSpecificRhetoric(pro:$pro, slug: $slug) {
                         _id
                         dateCreated
                         active

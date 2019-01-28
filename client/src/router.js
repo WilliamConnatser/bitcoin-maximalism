@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import About from "./components/About.vue";
 import Account from "./components/Account.vue";
+import VerifyEmail from "./components/auth/VerifyEmail.vue";
 import TableOfContents from "./components/TableOfContents.vue";
 import Rhetoric from "./components/Rhetoric.vue";
 import Activity from "./components/Activity.vue";
@@ -41,6 +42,10 @@ export default new Router({
     {
       path: "/activity",
       component: Activity
+    },
+    {
+      path: "/verify-email/:token",
+      component: VerifyEmail
     },
     {
       path: "*",

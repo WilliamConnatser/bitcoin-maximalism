@@ -3,6 +3,30 @@ const bcrypt = require("bcrypt");
 //Import needed to generate jsonwebtoken to track logged in user
 const jwt = require("jsonwebtoken");
 
+//Nodemailer NPM package used to send emails
+const nodemailer = require("nodemailer");
+//Create reusable transporter object using the default SMTP transport
+const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOSTNAME,
+    port: process.env.EMAIL_PORT,
+    secure: true, // true for 465, false for other ports
+    auth: {
+        user: process.env.EMAIL_USERNAME, // generated ethereal user
+        pass: process.env.EMAIL_PASSWORD // generated ethereal password
+    }
+});
+const registrationEmail = {
+    from: '"Bitcoin Maximalism" <admin@BitcoinMaximalism.com>', //sender address
+    to: "bar@example.com, baz@example.com", //list of receivers
+    subject: "Confirm Your Email for BitcoinMaximalism.com", //Subject line
+    text: "Thanks for registering for BitcoinMaximalism.com!! Please confirm your email address by navigating to: ", //plain text body
+    html: 'Thanks for registering for <a href="www.BitcoinMaximalism.com">BitcoinMaximalism.com</a>!! Please confirm your email address by navigating to: ' //html body
+};
+transporter.verify((err, success) => {
+    if (err) console.error(err);
+    if(success) console.log('Your nodemailer config is working');
+});
+
 //Import Apollo Errors
 const {
     ApolloError,
@@ -24,14 +48,14 @@ const createToken = (user, secret, expiresIn) => {
         username,
         email,
         admin,
-        allegiance
+        emailValidated
     } = user;
 
     return jwt.sign({
         username,
         email,
         admin,
-        allegiance
+        emailValidated
     }, secret, {
         expiresIn
     });
@@ -74,7 +98,7 @@ const createDonation = async (args, applicableDocument, invoice, Donation, curre
         invoiceURL: invoice.url,
         onModel: args.onModel,
         documentID: args.documentID,
-        username: currentUser.username,
+        createdBy: currentUser.username,
         amount: args.amount,
         slug: applicableDocument.slug,
         pro: applicableDocument.pro,
@@ -89,6 +113,7 @@ const createDonation = async (args, applicableDocument, invoice, Donation, curre
     try {
         return await new Donation(objectToInsert).save();
     } catch (err) {
+        console.log(err)
         throw new ApolloError('An unknown error occurred while creating the donation.');
     }
 }
@@ -127,7 +152,7 @@ const applyVote = async (args, applicableDocument) => {
 
 module.exports = {
     Query: {
-        getCurrentUser: async (_, args, {
+        currentUser: async (_, args, {
             User,
             currentUser
         }) => {
@@ -139,6 +164,18 @@ module.exports = {
             });
             return user;
         },
+        userSpecificActivity: async (_, args, {
+            Donation,
+            currentUser
+        }) => {
+            if (!currentUser) {
+                return null;
+            }
+            const userDonations = await Donation.find({
+                createdBy: currentUser.username
+            });
+            return userDonations;
+        },
         cryptoValue: async (_, args, {
             Crypto
         }) => {
@@ -147,7 +184,7 @@ module.exports = {
             })
             return cryptoDoc.valueUSD;
         },
-        getRhetoricByMetaSlugAndSlug: async (_, args, {
+        slugSpecificRhetoric: async (_, args, {
             Rhetoric
         }) => {
             // args destructed = { pro: Boolean, slug: String }
@@ -168,7 +205,7 @@ module.exports = {
 
             return rhetoric;
         },
-        getAllApprovedAndActiveRhetoric: async (_, args, {
+        allRhetoric: async (_, args, {
             Rhetoric
         }) => {
             //args deconstructed: { pro: Boolean! }
@@ -196,11 +233,11 @@ module.exports = {
                 })
                 .sort({
                     accruedVotes: 'desc'
-                })           
+                })
 
             return rhetoric;
         },
-        getDonation: async (_, args, {
+        donation: async (_, args, {
             Donation
         }) => {
             // args destructed = { pro: Boolean, slug: String }
@@ -209,7 +246,7 @@ module.exports = {
             });
             return donation;
         },
-        getAmountDonatedSlugSpecific: async (_, args, {
+        slugSpecificAmountDonated: async (_, args, {
             Donation,
             Crypto
         }) => {
@@ -225,7 +262,7 @@ module.exports = {
 
             return aggregateValue;
         },
-        getAmountDonatedModelSpecific: async (_, args, {
+        docSpecificAmountDonated: async (_, args, {
             Donation,
             Crypto
         }) => {
@@ -241,7 +278,13 @@ module.exports = {
 
             return aggregateValue;
         },
-        getUnapprovedOpinions: async (_, args, {
+        singleOpinion: async (_, {_id}, {
+            Opinion
+        }) => {
+            const opinion = await Opinion.findOne({_id})
+            return opinion;
+        },
+        allUnapprovedOpinions: async (_, args, {
             Donation,
             Opinion,
             currentUser
@@ -253,14 +296,14 @@ module.exports = {
             try {
 
                 var unapprovedAndPaidOpinions = [];
-                const unapprovedOpinions = await Opinion.find({
+                const allUnapprovedOpinions = await Opinion.find({
                     approved: false,
                     approvedBy: {
                         $exists: false
                     }
                 });
 
-                await unapprovedOpinions.forEach(opinion => {
+                await allUnapprovedOpinions.forEach(opinion => {
                     const applicableDonation = Donation.findOne({
                         _id: opinion.donation
                     })
@@ -277,7 +320,7 @@ module.exports = {
                 new ApolloError('An unknown error occurred while retrieving unapproved opinions');
             }
         },
-        getUnapprovedEdits: async (_, args, {
+        allUnapprovedEdits: async (_, args, {
             Donation,
             Edit,
             currentUser
@@ -289,14 +332,14 @@ module.exports = {
             try {
 
                 var unapprovedAndPaidEdits = [];
-                const unapprovedEdits = await Edit.find({
+                const allUnapprovedEdits = await Edit.find({
                     approved: false,
                     approvedBy: {
                         $exists: false
                     }
                 });
 
-                await unapprovedEdits.forEach(edit => {
+                await allUnapprovedEdits.forEach(edit => {
                     const applicableDonation = Donation.findOne({
                         _id: edit.donation
                     });
@@ -313,7 +356,7 @@ module.exports = {
                 new ApolloError('An unknown error occurred while retrieving unapproved opinions');
             }
         },
-        getOpinionsModelSpecific: async (_, args, {
+        topLastRandomOpinions: async (_, args, {
             Opinion,
             Donation
         }) => {
@@ -453,6 +496,7 @@ module.exports = {
             if (!user) {
                 throw new Error("User not found");
             }
+            if (!user.emailValidated) throw new Error('Validate your email before doing this!');
             const isValidPassword = await bcrypt.compare(password, user.password);
             if (!isValidPassword) {
                 throw new Error("Invalid password");
@@ -460,6 +504,50 @@ module.exports = {
             return {
                 token: createToken(user, process.env.SECRET, "1hr")
             }
+        },
+        verifyEmail: async (_, {
+            token
+        }, {
+            User
+        }) => {
+
+            const userObject = await jwt.verify(token, process.env.SECRET);
+            if(!userObject) throw new AuthenticationError('Invalid token submitted.')
+            if (userObject.emailValidated) throw new UserInputError("This user has already validated their email address");
+
+            var user = await User.findOne({
+                username: userObject.username
+            });
+            if (!user) throw new AuthenticationError('User not found');
+            user.emailValidated = true;
+            user.save();
+
+            return {
+                token: createToken(user, process.env.SECRET, "1hr")
+            }
+        },
+        resendEmail: async (_, {            
+            email
+        }, {
+            User
+        }) => {
+
+            //Check to make sure the user doesn't already exist
+            const user = await User.findOne({
+                email
+            });
+            if (!user) throw new UserInputError("This email hasn't been registered");
+            if (user.emailValidated) throw new UserInputError("This user has already validated their email address");
+
+            //Construct and send email verification
+            var emailObject = registrationEmail;
+            const emailValidationToken = createToken(user, process.env.SECRET, "1d");
+            emailObject.to = user.email;
+            emailObject.text += 'www.BitcoinMaximalism.com/verify-email/' + emailValidationToken;
+            emailObject.html += '<a href="www.BitcoinMaximalism.com/verify-email/' + emailValidationToken + '">www.BitcoinMaximalism.com/verify-email/' + emailValidationToken + '</a>';
+            transporter.sendMail(emailObject);
+
+            return true;
         },
         signupUser: async (_, {
             username,
@@ -473,17 +561,14 @@ module.exports = {
             const userInUse = await User.findOne({
                 username
             });
-            if (userInUse) {
-                throw new Error("The username submitted is already in use");
-            }
+            if (userInUse) throw new UserInputError("The username submitted is already in use");
+            if (username.length > 25) throw new UserInputError("Usernames must be less than 26 characters");
             const emailInUse = await User.findOne({
                 email
             });
-            if (emailInUse) {
-                throw new Error("The email address submitted is already in use");
-            }
+            if (emailInUse) throw new Error("The email address submitted is already in use");
 
-            //Construct the user object to be 
+            //Construct the user object to be inserted
             var userObject = {
                 username,
                 email,
@@ -498,10 +583,15 @@ module.exports = {
             //Save new user to the database
             const newUser = await new User(userObject).save();
 
-            //Return auth token
-            return {
-                token: createToken(newUser, process.env.SECRET, "1hr")
-            };
+            //Construct and send email verification
+            var emailObject = registrationEmail;
+            const emailValidationToken = createToken(newUser, process.env.SECRET, "1d");
+            emailObject.to = email;
+            emailObject.text += 'www.BitcoinMaximalism.com/verify-email/' + emailValidationToken;
+            emailObject.html += '<a href="www.BitcoinMaximalism.com/verify-email/' + emailValidationToken + '">www.BitcoinMaximalism.com/verify-email/' + emailValidationToken + '</a>';
+            transporter.sendMail(emailObject);
+
+            return true;
         },
         submitOpinion: async (_, args, {
             Crypto,
@@ -515,11 +605,10 @@ module.exports = {
             if (!currentUser) throw new AuthenticationError('Log in or register to do this!');
             //if (!currentUser.emailValidated) throw new Error('Validate your email before doing this!');
             if (args.opinion.length > 280) throw new UserInputError('The maximum length of an opinion is 280 characters.');
-            /*const value = await Crypto.findOne({
+            const value = await Crypto.findOne({
                 ticker: 'BTC'
-            });
-            if (value.rate * Number(args.amount) < 1) throw new Error(`Donation amount to small! ($1 minimum aka ${1.01/result[0].rate} BTC)`);
-            */
+            }).valueUSD;
+            if (value * Number(args.amount) < 1) throw new Error(`Donation amount to small! ($1 minimum aka ${1.01/value} BTC)`);
 
             if (args.onModel === 'BulletPoint') {
 
@@ -614,7 +703,6 @@ module.exports = {
                     _id: args._id
                 });
 
-                opinion.createdBy = currentUser.username;
                 opinion.approved = args.approved;
                 opinion.approvedBy = currentUser.username;
                 opinion.approvalCommentary = args.approvalCommentary;

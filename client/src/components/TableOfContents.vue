@@ -14,7 +14,7 @@
   export default {
     data: () => {
       return {
-        getCurrentUser: null,
+        currentUser: null,
         getAllApprovedAndActiveProtagonisticRhetoric: [],
         getAllApprovedAndActiveAntagonisticRhetoric: [],
         metaSlug: "",
@@ -60,14 +60,14 @@
         this.loggedIn();
       },
       loggedIn() {
-        if (!this.getCurrentUser) this.$toasted.global.log_in();
+        if (!this.currentUser) this.$toasted.global.log_in();
       }
     },
     apollo: {
-      getCurrentUser: {
+      currentUser: {
         query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email
@@ -83,7 +83,7 @@
       getAllApprovedAndActiveProtagonisticRhetoric: {
         query: gql `
                     query getAllApprovedAndActiveProtagonisticRhetoric($pro: Boolean!) {
-                      getAllApprovedAndActiveRhetoric(pro: $pro) {
+                      allRhetoric(pro: $pro) {
                         _id
                         slug
                         title
@@ -94,12 +94,12 @@
                 variables: {
                   pro: true
                 },
-                update: data => data.getAllApprovedAndActiveRhetoric
+                update: data => data.allRhetoric
       },
       getAllApprovedAndActiveAntagonisticRhetoric: {
         query: gql `
                     query getAllApprovedAndActiveAntagonisticRhetoric($pro: Boolean!) {
-                      getAllApprovedAndActiveRhetoric(pro: $pro) {
+                      allRhetoric(pro: $pro) {
                         _id
                         slug
                         title
@@ -110,7 +110,7 @@
                 variables: {
                   pro: false
                 },
-                update: data => data.getAllApprovedAndActiveRhetoric
+                update: data => data.allRhetoric
       }
     }
   }

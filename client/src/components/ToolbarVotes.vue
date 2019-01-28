@@ -5,9 +5,9 @@
                 <font-awesome-icon icon="angle-up" />
             </span>
             <span class="amount-donated">
-                <span v-if="arrayItemProp.accruedVotes>0">+ {{toFixed(arrayItemProp.accruedVotes)}}</span>
-                <span v-if="arrayItemProp.accruedVotes<0">- {{toFixed(arrayItemProp.accruedVotes*-1)}}</span>
-                <span v-if="arrayItemProp.accruedVotes===0">{{toFixed(arrayItemProp.accruedVotes*-1)}}</span>
+                <span v-if="arrayItemProp.accruedVotes>0">+ {{arrayItemProp.accruedVotes | bitcoinAmount}}</span>
+                <span v-if="arrayItemProp.accruedVotes<0">- {{arrayItemProp.accruedVotes*-1 | bitcoinAmount}}</span>
+                <span v-if="arrayItemProp.accruedVotes===0">{{arrayItemProp.accruedVotes*-1 | bitcoinAmount}}</span>
             </span>
             <span class="icon" @click='initialize(false)' title="Downvote">
                 <font-awesome-icon icon="angle-down" />
@@ -76,10 +76,10 @@
         },
         data() {
             return {
-                getCurrentUser: null,
+                currentUser: null,
                 upvote: null,
-                getAmountDonatedSlugSpecific: 0,
-                getAmountDonatedModelSpecific: 0,
+                slugSpecificAmountDonated: 0,
+                docSpecificAmountDonated: 0,
                 slug: "",
                 submitted: null,
                 donationAmount: "",
@@ -97,9 +97,9 @@
             },
             totalDonationsQuery() {
                 if (this.arrayItemProp.__typename === "Rhetoric") {
-                    return this.getAmountDonatedSlugSpecific;
+                    return this.slugSpecificAmountDonated;
                 } else {
-                    return this.getAmountDonatedModelSpecific;
+                    return this.docSpecificAmountDonated;
                 }
 
             },
@@ -109,7 +109,7 @@
         },
         methods: {
             initialize(upvote) {
-                if (!this.getCurrentUser) {
+                if (!this.currentUser) {
                     this.$toasted.global.log_in();
                     //Remove token in localStorage
                     localStorage.setItem("token", "");
@@ -128,7 +128,7 @@
                 window.scrollTo(0, top);
             },
             submitVote(upVote) {
-                if (!this.getCurrentUser) {
+                if (!this.currentUser) {
                     this.$toasted.global.log_in();
                     //Remove token in localStorage
                     localStorage.setItem("token", "");
@@ -162,9 +162,6 @@
             setInvoiceURL(url) {
                 this.invoiceURL = url;
             },
-            toFixed(number) {
-                return number.toFixed(8);
-            },
             validAmount(value) {
                 if(value < 0) {
                     this.donationAmount *= -1;
@@ -191,10 +188,10 @@
             }
         },
         apollo: {
-            getCurrentUser: {
+            currentUser: {
                 query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email

@@ -1,3 +1,4 @@
+
 schema {
   query: Query
   mutation: Mutation
@@ -97,10 +98,10 @@ type Edit {
 type Donation {
     _id: ID
     dateCreated: String!
+    createdBy: String!
     slug: String!
     pro: Boolean!
     amount: Float!
-    username: String!
     documentID: ID!
     onModel: String!
     active: Boolean!
@@ -140,26 +141,37 @@ type Crypto {
 }
 
 type Query {
-    getCurrentUser: User
-    getRhetoricByMetaSlugAndSlug(pro: Boolean!, slug: String!): Rhetoric
-    getAllApprovedAndActiveRhetoric(pro: Boolean!): [Rhetoric]
-    getAmountDonatedSlugSpecific(pro: Boolean!, slug: String!): Float
-    getAmountDonatedModelSpecific(pro: Boolean!, slug: String!, onModel: String!, documentID: ID!): Float
-    getUnapprovedOpinions: [Opinion]
-    getUnapprovedEdits: [Edit]
-    getOpinionsModelSpecific(_id: String!, onModel: String!): [Opinion]
+    currentUser: User
+    userSpecificActivity: [Donation]
+
+    slugSpecificRhetoric(pro: Boolean!, slug: String!): Rhetoric
+    allRhetoric(pro: Boolean!): [Rhetoric]
+
+    slugSpecificAmountDonated(pro: Boolean!, slug: String!): Float
+    docSpecificAmountDonated(pro: Boolean!, slug: String!, onModel: String!, documentID: ID!): Float
+
+    allUnapprovedEdits: [Edit]
+
+    allUnapprovedOpinions: [Opinion]
+    topLastRandomOpinions(_id: String!, onModel: String!): [Opinion]
+    singleOpinion(_id: ID!): Opinion
 
     cryptoValue(ticker: String!): Float
-    getDonation(pro: Boolean, slug: String): [Donation!]
+
+    donation(pro: Boolean, slug: String): [Donation]
 }
 
 type Mutation {
-    setUserAllegiance(allegiance: String!): Token
     signinUser(email: String!, password: String!): Token
-    signupUser(username: String!, email: String!, password: String!): Token
+    signupUser(username: String!, email: String!, password: String!): Boolean
+    verifyEmail(token: String!): Token
+    resendEmail(email: String!): Boolean
+    setUserAllegiance(allegiance: String!): Token
+
     submitOpinion(amount: String!, documentID: ID!, onModel: String!, opinion: String!): String
-    approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
     submitVote(onModel: String!, documentID: ID!, amount: Float!, upVote: Boolean!): String
+
+    approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
 
     submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
     submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String

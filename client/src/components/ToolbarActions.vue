@@ -42,7 +42,7 @@
         },
         data() {
             return {
-                getCurrentUser: null,
+                currentUser: null,
                 viewOpinions: null,
                 viewEdits: null,
                 submitOpinion: null,
@@ -54,14 +54,14 @@
                 this[actionType] = null;
             },
             show(actionType) {
-                if(actionType.indexOf('submit') > -1 && !this.getCurrentUser) {
+                if(actionType.indexOf('submit') > -1 && !this.currentUser) {
                     this.$toasted.global.log_in();
                 } else {
                     this[actionType] = true;
                 }
             },
             initialize(actionType) {
-                this.getCurrentUser ? this[actionType] = true : this.$toasted.global.log_in();
+                this.currentUser ? this[actionType] = true : this.$toasted.global.log_in();
             }
         },
         components: {
@@ -71,10 +71,10 @@
             SubmitEdits
         },
         apollo: {
-            getCurrentUser: {
+            currentUser: {
                 query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email

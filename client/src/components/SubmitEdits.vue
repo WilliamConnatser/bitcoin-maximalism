@@ -93,7 +93,7 @@
         },
         data() {
             return {
-                getCurrentUser: null,
+                currentUser: null,
                 viewOpinions: null,
                 viewEdits: null,
                 donationAmount: 0,
@@ -117,10 +117,10 @@
             }
         },
         apollo: {
-            getCurrentUser: {
+            currentUser: {
                 query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email

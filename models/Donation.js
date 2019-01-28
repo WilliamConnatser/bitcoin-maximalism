@@ -8,7 +8,7 @@ const DonationSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
-    username: {
+    createdBy: {
         type: String,
         required: true
     },

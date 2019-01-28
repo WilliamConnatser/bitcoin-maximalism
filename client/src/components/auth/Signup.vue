@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Sign Up</h1>
-        <form @submit.prevent="signupUser">
+        <form v-if="!success" @submit.prevent="signupUser">
             <div class="block">
                 <label>Username</label>
                 <input type="text" v-model="username" autocomplete="username">
@@ -21,6 +21,7 @@
                 <h2>Sign In Here!</h2>
             </div>
         </form>
+        <span v-else>Please check your email for verification.</span>
     </div>
 </template>
 
@@ -33,7 +34,8 @@
             return {
                 username: "",
                 email: "",
-                password: ""
+                password: "",
+                success: false
             }
         },
         methods: {
@@ -42,9 +44,7 @@
                 this.$apollo.mutate({
                     mutation: gql `
                         mutation($username: String!, $email: String!, $password: String!) {
-                            signupUser(username: $username, email:$email, password:$password){
-                                token
-                            }
+                            signupUser(username: $username, email:$email, password:$password)
                         }
                     `,
                     variables: {
@@ -53,10 +53,7 @@
                         password: this.password
                     }
                 }).then(async ({data}) => {
-                    //Insert token into Local Storage
-                    await localStorage.setItem("token", data.signupUser.token);
-                    //Refresh the getCurrentUser query
-                    this.$apollo.queries.getCurrentUser.refetch();
+                    if(data.signupUser) this.success = true;
                 }).catch(error => {
                     // Error :\
                     // Error handled in main.js
@@ -64,9 +61,9 @@
             }
         },
         apollo: {
-            getCurrentUser: gql `
-                query getCurrentUser {
-                    getCurrentUser {
+            currentUser: gql `
+                query currentUser {
+                    currentUser {
                         _id
                         username
                         email

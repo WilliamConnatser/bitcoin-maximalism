@@ -1,6 +1,6 @@
-const getCurrentUser = gql `
-        query getCurrentUser {
-            getCurrentUser {
+const currentUser = gql `
+        query currentUser {
+            currentUser {
                 _id
                 username
                 email
@@ -188,3 +188,20 @@ const getAllAntagonisticRhetoric = gql `
             }
         }
     `
+
+const singleOpinion = gql `query singleOpinion($_id: ID!) {
+    singleOpinion(_id: $_id) {
+      _id
+      dateCreated
+      createdBy
+      slug
+      pro
+      opinion
+      approved
+      dateApproved
+      approvedBy
+      approvalCommentary
+      documentID
+      onModel
+    }
+  }`

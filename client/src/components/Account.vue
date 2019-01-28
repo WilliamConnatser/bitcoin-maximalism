@@ -1,12 +1,12 @@
 <template>
     <div class="section">
-        <Login v-if="!getCurrentUser" />
-        <div v-if="getCurrentUser">
+        <Login v-if="!currentUser" />
+        <div v-if="currentUser">
             <h1>Account Panel</h1>
-            <button id="signOut" v-if="getCurrentUser" @click="signoutUser">Signout</button>
+            <button id="signOut" v-if="currentUser" @click="signoutUser">Signout</button>
             <!--
             <div class="allegiance">
-                <p v-if="!getCurrentUser.allegiance">
+                <p v-if="!currentUser.allegiance">
                     You have not yet sworn allegiance to either faction. Your ancestors would be ashamed...
                 </p>
                 <p v-else>
@@ -24,10 +24,30 @@
                 </button>
             </div>
             -->
-            <div v-show="getCurrentUser.admin">
+            <ul>
+                <li v-for="donation in userSpecificActivity" :key="donation._id">
+                    <div>{{donation.dateCreated | formatDate}}</div>
+                    <div>Donation Status: {{status(donation)}} | Amount: {{donation.amount | bitcoinAmount}}</div>
+                    <span v-if="donation.votingDonation">
+                        <span v-if="donation.upVote">Upvote</span>
+                        <span v-else>Downvote</span>
+                    </span>
+                    <span v-else>Opinion</span>
+                    on {{donation.onModel}}
+                    (<span v-if="donation.pro">Protagonistic/{{donation.slug | stringifySlug}}</span>
+                    <span v-else>Antagonistic/{{donation.slug | stringifySlug}}</span>)
+                    <div v-if="donation.active && !donation.paid"><a :href="donation.invoiceURL">Pay Here!</a></div>
+                    <div v-else-if="!donation.active && !donation.paid">The amount of time alotted for this donation
+                        has passed. Please re-submit your submission.</div>
+                    <div v-if="!donation.votingDonation">
+                
+                    </div>
+                </li>
+            </ul>
+            <div v-show="currentUser.admin">
                 <h2>You so fancy! Look are you, Mr. Administrator...</h2>
                 <ul>
-                    <li v-for="unapprovedOpinion in getUnapprovedOpinions" :key="unapprovedOpinion._id">
+                    <li v-for="unapprovedOpinion in allUnapprovedOpinions" :key="unapprovedOpinion._id">
                         {{unapprovedOpinion}}
                         <textarea v-model="approvalCommentary[unapprovedOpinion._id]"></textarea>
                         <button @click="approveOpinion(unapprovedOpinion, true)">Approve</button>
@@ -50,21 +70,24 @@
         name: "Account",
         data() {
             return {
-                getCurrentUser: null,
-                getUnapprovedOpinions: null,
+                currentUser: null,
+                allUnapprovedOpinions: null,
                 approved: null,
-                approvalCommentary: []
+                approvalCommentary: [],
+                userSpecificActivity: []
             }
-        }/*,
-        computed: {
-            getAllegiance() {
-                if (this.getCurrentUser.maximalist) {
-                    return 'Bitcoin Maximalist';
-                } else {
-                    return 'Multicoinist';
-                }
-            }
-        }*/,
+        }
+        /*,
+                computed: {
+                    getAllegiance() {
+                        if (this.currentUser.maximalist) {
+                            return 'Bitcoin Maximalist';
+                        } else {
+                            return 'Multicoinist';
+                        }
+                    }
+                }*/
+        ,
         components: {
             Login
         },
@@ -76,35 +99,37 @@
                 await apolloClient.resetStore();
             },
             getStyle(allegiance) {
-                if (this.getCurrentUser.maximalist && allegiance === 'Maximalist') {
+                if (this.currentUser.maximalist && allegiance === 'Maximalist') {
                     return 'background-color: #41b883';
-                } else if (!this.getCurrentUser.maximalist && allegiance === 'Multicoinist') {
+                } else if (!this.currentUser.maximalist && allegiance === 'Multicoinist') {
                     return 'background-color: #41b883';
                 }
-            }/*,
-            setAllegiance(allegiance) {
-                //GraphQL Mutation
-                this.$apollo.mutate({
-                    mutation: gql `
-                        mutation($allegiance: String!) {
-                            setUserAllegiance(allegiance: $allegiance){
-                                token
-                            }
-                        }
-                    `,
-                    variables: {
-                        allegiance
-                    }
-                }).then(async ({data}) => {
-                    //Insert token into Local Storage
-                    await localStorage.setItem("token", data.setUserAllegiance.token);
-                    //Refresh the getCurrentUser query
-                    this.$apollo.queries.getCurrentUser.refetch();
-                }).catch(error => {
-                    // Error :\
-                    console.error(error);
-                });
-            }*/,
+            }
+            /*,
+                        setAllegiance(allegiance) {
+                            //GraphQL Mutation
+                            this.$apollo.mutate({
+                                mutation: gql `
+                                    mutation($allegiance: String!) {
+                                        setUserAllegiance(allegiance: $allegiance){
+                                            token
+                                        }
+                                    }
+                                `,
+                                variables: {
+                                    allegiance
+                                }
+                            }).then(async ({data}) => {
+                                //Insert token into Local Storage
+                                await localStorage.setItem("token", data.setUserAllegiance.token);
+                                //Refresh the currentUser query
+                                this.$apollo.queries.currentUser.refetch();
+                            }).catch(error => {
+                                // Error :\
+                                console.error(error);
+                            });
+                        }*/
+            ,
             approveOpinion(unapprovedOpinion, approved) {
                 //GraphQL Mutation
                 this.$apollo.mutate({
@@ -119,18 +144,23 @@
                         approvalCommentary: this.approvalCommentary[unapprovedOpinion._id]
                     }
                 }).then(() => {
-                    //Refresh the getCurrentUser query
-                    this.$apollo.queries.getUnapprovedOpinions.refetch();
+                    //Refresh the currentUser query
+                    this.$apollo.queries.allUnapprovedOpinions.refetch();
                 }).catch(error => {
                     // Error :\
                     console.error(error);
                 });
+            },
+            status(donation) {
+                if (!donation.active) return 'Inactive'
+                if (!donation.paid) return 'Unpaid'
+                if (donation.paid) return 'Paid'
             }
         },
         apollo: {
-            getCurrentUser: gql `
-                query getCurrentUser {
-                    getCurrentUser {
+            currentUser: gql `
+                query currentUser {
+                    currentUser {
                         _id
                         username
                         email
@@ -142,10 +172,10 @@
                     }
                 }
             `,
-            getUnapprovedOpinions: {
+            allUnapprovedOpinions: {
                 query: gql `
                     query {
-                        getUnapprovedOpinions {
+                        allUnapprovedOpinions {
                             _id
                             dateCreated
                             createdBy
@@ -161,12 +191,12 @@
                     }
                 `,
                 skip() {
-                    if(!this.getCurrentUser || this.getCurrentUser.admin === false) return true
+                    if (!this.currentUser || this.currentUser.admin === false) return true
                 }
             },
-            getUnapprovedEdits: {
+            allUnapprovedEdits: {
                 query: gql `query {
-                    getUnapprovedEdits {
+                    allUnapprovedEdits {
                         _id
                         dateCreated
                         createdBy
@@ -181,8 +211,28 @@
                     }
                 }`,
                 skip() {
-                    if(!this.getCurrentUser || this.getCurrentUser.admin === false) return true
+                    if (!this.currentUser || this.currentUser.admin === false) return true
                 }
+            },
+            userSpecificActivity: {
+                query: gql `query userSpecificActivity {
+                        userSpecificActivity {
+                            _id
+                            dateCreated
+                            createdBy
+                            slug
+                            pro
+                            amount
+                            documentID
+                            onModel
+                            active
+                            paid
+                            invoiceID
+                            invoiceURL
+                            votingDonation
+                            upVote
+                        }
+                    }`
             }
         }
     };

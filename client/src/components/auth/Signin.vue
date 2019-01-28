@@ -51,8 +51,8 @@
                 }) => {
                     //Insert token into Local Storage
                     await localStorage.setItem("token", data.signinUser.token);
-                    //Refresh the getCurrentUser query
-                    this.$apollo.queries.getCurrentUser.refetch();
+                    //Refresh the currentUser query
+                    this.$apollo.queries.currentUser.refetch();
                 }).catch(error => {
                     // Error :\
                     // Error handled in main.js
@@ -60,9 +60,9 @@
             }
         },
         apollo: {
-            getCurrentUser: gql `
-                query getCurrentUser {
-                    getCurrentUser {
+            currentUser: gql `
+                query currentUser {
+                    currentUser {
                         _id
                         username
                         email

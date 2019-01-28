@@ -54,7 +54,7 @@
         },
         data() {
             return {
-                getCurrentUser: null,
+                currentUser: null,
                 cryptoValue: 0,
                 viewOpinions: null,
                 viewEdits: null,
@@ -71,7 +71,7 @@
                 window.scrollTo(0, top);
             },
             submitOpinionToServer() {
-                if (!this.getCurrentUser) {
+                if (!this.currentUser) {
                     this.$toasted.global.log_in();
                     //Remove token in localStorage
                     localStorage.setItem("token", "");
@@ -136,10 +136,10 @@
             }
         },
         apollo: {
-            getCurrentUser: {
+            currentUser: {
                 query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email

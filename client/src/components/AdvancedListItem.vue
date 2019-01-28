@@ -30,7 +30,7 @@
         },
         data() {
             return {
-                getCurrentUser: {},
+                currentUser: {},
                 slug: ""
             }
         },
@@ -48,10 +48,10 @@
             }
         },
         apollo: {
-            getCurrentUser: {
+            currentUser: {
                 query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email

@@ -9,14 +9,16 @@
     <li>
       <router-link to="/rhetoric/antagonistic">Cons</router-link>
     </li>
+    <!--
     <li>
       <router-link to="/activity">Activity</router-link>
     </li>
+    -->
 
     <div class="right-nav">
       <li>
         <router-link to="/account">
-          <strong v-if="getCurrentUser">Account</strong>
+          <strong v-if="currentUser">Account</strong>
           <strong v-else>Log In</strong>
         </router-link>        
       </li>
@@ -31,14 +33,14 @@
     name: "Header",
     data() {
       return {
-        getCurrentUser: null
+        currentUser: null
       }
     },
     apollo: {
-      getCurrentUser: {
+      currentUser: {
         query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email

@@ -47,7 +47,7 @@
         },
         data() {
             return {
-                getCurrentUser: null,
+                currentUser: null,
                 viewOpinions: null,
                 viewEdits: null
             }
@@ -60,14 +60,14 @@
                 this[actionType] = true;
             },
             initialize(actionType) {
-                this.getCurrentUser ? this[actionType] = true : this.$toasted.global.log_in();
+                this.currentUser ? this[actionType] = true : this.$toasted.global.log_in();
             }
         },
         apollo: {
-            getCurrentUser: {
+            currentUser: {
                 query: gql `
-                    query getCurrentUser {
-                        getCurrentUser {
+                    query currentUser {
+                        currentUser {
                             _id
                             username
                             email

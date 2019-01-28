@@ -37,6 +37,25 @@ import {
 library.add(faAngleUp, faAngleDown, faComment, faPlusSquare, faMinusSquare, faPenSquare, faSearch);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
+//Create date filter
+import moment from 'moment';
+Vue.filter('formatDate', function (value) {
+    if (value) {
+        let newDate = new Date(value);
+        return moment(newDate.toISOString()).format('MM/DD/YYYY hh:mm')
+    }
+});
+
+Vue.filter('stringifySlug', function (value) {
+    return value.replace(/(-|^)([^-]?)/g, function (_, prep, letter) {
+        return (prep && ' ') + letter.toUpperCase();
+    });
+});
+
+Vue.filter('bitcoinAmount', function (value) {
+    return value.toFixed(8);
+});
+
 // register the plugin on vue
 import Toasted from 'vue-toasted';
 Vue.use(Toasted, {
@@ -56,51 +75,51 @@ Vue.toasted.register('log_in', 'You must log in or register before doing this', 
     duration: 5000,
     icon: 'fa-exclamation-circle',
     action: [{
-      text: 'Close',
-      onClick: (e, toastObject) => {
-        toastObject.goAway(0);
-      }
-    },{
-      text: 'Log in or Register',
-      push: '/account'
+        text: 'Close',
+        onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+        }
+    }, {
+        text: 'Log in or Register',
+        push: '/account'
     }]
-  });
+});
 
-  Vue.toasted.register('assign_allegiance', 'You must choose a faction on your Account Panel before doing this', {
+Vue.toasted.register('assign_allegiance', 'You must choose a faction on your Account Panel before doing this', {
     duration: 5000,
     icon: 'fa-exclamation-circle',
     action: [{
-      text: 'Close',
-      onClick: (e, toastObject) => {
-        toastObject.goAway(0);
-      }
-    },{
-      text: 'Choose a faction',
-      push: '/account'
+        text: 'Close',
+        onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+        }
+    }, {
+        text: 'Choose a faction',
+        push: '/account'
     }]
-  });
+});
 
-  Vue.toasted.register('invalid_donation_decimal', 'Donations may only contain a maximum of 8 decimal places', {
+Vue.toasted.register('invalid_donation_decimal', 'Donations may only contain a maximum of 8 decimal places', {
     duration: 5000,
     icon: 'fa-exclamation-circle',
     action: [{
-      text: 'Close',
-      onClick: (e, toastObject) => {
-        toastObject.goAway(0);
-      }
+        text: 'Close',
+        onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+        }
     }]
-  });
+});
 
-  Vue.toasted.register('invalid_donation_negative', 'Donations amounts may only be positive', {
+Vue.toasted.register('invalid_donation_negative', 'Donations amounts may only be positive', {
     duration: 5000,
     icon: 'fa-exclamation-circle',
     action: [{
-      text: 'Close',
-      onClick: (e, toastObject) => {
-        toastObject.goAway(0);
-      }
+        text: 'Close',
+        onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+        }
     }]
-  });
+});
 
 
 //Set the Apollo URI to what's stored in the now.json file if the app is being deployed
