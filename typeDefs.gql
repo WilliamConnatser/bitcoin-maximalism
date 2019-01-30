@@ -17,7 +17,7 @@ type Rhetoric {
     title: String!
     approved: Boolean!
     dateApproved: String
-    approvedBy: User
+    approvedBy: String
     approvalCommentary: String
     bulletPoints: [BulletPoint!]!
     resources: [Resource!]!
@@ -126,11 +126,9 @@ type User {
     dateCreated: String!
     username: String!@unique
     email: String!@unique
-    emailValidated: Boolean!
+    emailVerified: Boolean!
     active: Boolean!
     password: String!
-    allegiance: Boolean
-    maximalist: Boolean
     admin: Boolean!
 }
 
@@ -144,21 +142,25 @@ type Query {
     currentUser: User
     userSpecificActivity: [Donation]
 
-    slugSpecificRhetoric(pro: Boolean!, slug: String!): Rhetoric
+    argumentSpecificRhetoric(pro: Boolean!, slug: String!): Rhetoric
+    argumentSpecificAmountDonated(pro: Boolean!, slug: String!): Float
+    argumentSpecificDonations(pro: Boolean, slug: String): [Donation]
+
+    docIDSpecificDonation(_id: ID!): Donation
+    docIDSpecificAmountDonated(pro: Boolean!, slug: String!, onModel: String!, documentID: ID!): Float
+    docIDSpecificRhetoric(_id: ID!): Rhetoric
+    docIDSpecificBulletPoint(_id: ID!): BulletPoint
+    docIDSpecificResource(_id: ID!): Resource
+
     allRhetoric(pro: Boolean!): [Rhetoric]
-
-    slugSpecificAmountDonated(pro: Boolean!, slug: String!): Float
-    docSpecificAmountDonated(pro: Boolean!, slug: String!, onModel: String!, documentID: ID!): Float
-
     allUnapprovedEdits: [Edit]
-
     allUnapprovedOpinions: [Opinion]
+    
     topLastRandomOpinions(_id: String!, onModel: String!): [Opinion]
-    singleOpinion(_id: ID!): Opinion
+
+    donationSpecificOpinion(_id: ID!): Opinion
 
     cryptoValue(ticker: String!): Float
-
-    donation(pro: Boolean, slug: String): [Donation]
 }
 
 type Mutation {

@@ -7,7 +7,7 @@
                 <strong class="opinion-username">{{opinion.createdBy}}</strong>
             </div>
             <div>
-                {{opinion.originalDonation.amount | bitcoinAmount}} BTC
+                {{opinion.originalDonation.amount | formatBitcoinAmount}} BTC
             </div>
             {{opinion.opinion}}
         </li>
@@ -64,11 +64,9 @@
                             _id
                             username
                             email
-                            emailValidated
+                            emailVerified
                             active
                             admin
-                            allegiance
-                            maximalist
                         }
                     }
                 `
@@ -97,7 +95,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../sass/variables.scss";
+    @import "../../sass/variables.scss";
 
     .opinions {
         list-style-type: none;

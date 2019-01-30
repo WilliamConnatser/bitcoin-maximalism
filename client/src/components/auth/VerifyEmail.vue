@@ -91,11 +91,9 @@
                         _id
                         username
                         email
-                        emailValidated
+                        emailVerified
                         active
                         admin
-                        allegiance
-                        maximalist
                     }
                 }
             `

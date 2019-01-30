@@ -44,11 +44,9 @@
                             _id
                             username
                             email
-                            emailValidated
+                            emailVerified
                             active
                             admin
-                            allegiance
-                            maximalist
                         }
                     }
                 `
@@ -58,7 +56,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "../sass/variables";
+  @import "../../sass/variables";
 
   #menu {
     text-align: left;

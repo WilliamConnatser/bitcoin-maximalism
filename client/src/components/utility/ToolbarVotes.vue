@@ -5,9 +5,9 @@
                 <font-awesome-icon icon="angle-up" />
             </span>
             <span class="amount-donated">
-                <span v-if="arrayItemProp.accruedVotes>0">+ {{arrayItemProp.accruedVotes | bitcoinAmount}}</span>
-                <span v-if="arrayItemProp.accruedVotes<0">- {{arrayItemProp.accruedVotes*-1 | bitcoinAmount}}</span>
-                <span v-if="arrayItemProp.accruedVotes===0">{{arrayItemProp.accruedVotes*-1 | bitcoinAmount}}</span>
+                <span v-if="arrayItemProp.accruedVotes>0">+ {{arrayItemProp.accruedVotes | formatBitcoinAmount}}</span>
+                <span v-if="arrayItemProp.accruedVotes<0">- {{arrayItemProp.accruedVotes*-1 | formatBitcoinAmount}}</span>
+                <span v-if="arrayItemProp.accruedVotes===0">{{arrayItemProp.accruedVotes*-1 | formatBitcoinAmount}}</span>
             </span>
             <span class="icon" @click='initialize(false)' title="Downvote">
                 <font-awesome-icon icon="angle-down" />
@@ -66,7 +66,7 @@
     import gql from 'graphql-tag';
     import {
         defaultClient as apolloClient
-    } from '../main';
+    } from '../../apolloProvider';
 
     export default {
         name: "ToolbarVotes",
@@ -78,8 +78,8 @@
             return {
                 currentUser: null,
                 upvote: null,
-                slugSpecificAmountDonated: 0,
-                docSpecificAmountDonated: 0,
+                argumentSpecificAmountDonated: 0,
+                docIDSpecificAmountDonated: 0,
                 slug: "",
                 submitted: null,
                 donationAmount: "",
@@ -97,9 +97,9 @@
             },
             totalDonationsQuery() {
                 if (this.arrayItemProp.__typename === "Rhetoric") {
-                    return this.slugSpecificAmountDonated;
+                    return this.argumentSpecificAmountDonated;
                 } else {
-                    return this.docSpecificAmountDonated;
+                    return this.docIDSpecificAmountDonated;
                 }
 
             },
@@ -195,11 +195,9 @@
                             _id
                             username
                             email
-                            emailValidated
+                            emailVerified
                             active
                             admin
-                            allegiance
-                            maximalist
                         }
                     }
                 `
@@ -219,7 +217,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../sass/variables.scss";
+    @import "../../sass/variables.scss";
 
     .toolbar--votes {
         .icon {

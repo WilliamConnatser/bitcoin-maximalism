@@ -4,50 +4,26 @@
         <div v-if="currentUser">
             <h1>Account Panel</h1>
             <button id="signOut" v-if="currentUser" @click="signoutUser">Signout</button>
-            <!--
-            <div class="allegiance">
-                <p v-if="!currentUser.allegiance">
-                    You have not yet sworn allegiance to either faction. Your ancestors would be ashamed...
-                </p>
-                <p v-else>
-                    You have identified as a {{getAllegiance}}!
-                </p>
-                <div>
-                    All of your donations will go towards your sworn allegiance's
-                    <router-link to="/activity">score</router-link>.
-                </div>
-                <button class="allegiance-button" @click="setAllegiance('Maximalist')" :style="getStyle('Maximalist')">
-                    I identify as a Bitcoin Maximalist
-                </button>
-                <button class="allegiance-button" @click="setAllegiance('Multicoinist')" :style="getStyle('Multicoinist')">
-                    I identify as a Multicoinist
-                </button>
-            </div>
-            -->
-            <ul>
-                <li v-for="donation in userSpecificActivity" :key="donation._id">
+            <ul v-for="donation in userSpecificActivity" :key="donation._id" class="basic-list">
+                <li>
+                    Status: <strong>{{status(donation)}}</strong>
                     <div>{{donation.dateCreated | formatDate}}</div>
-                    <div>Donation Status: {{status(donation)}} | Amount: {{donation.amount | bitcoinAmount}}</div>
-                    <span v-if="donation.votingDonation">
-                        <span v-if="donation.upVote">Upvote</span>
-                        <span v-else>Downvote</span>
-                    </span>
-                    <span v-else>Opinion</span>
-                    on {{donation.onModel}}
-                    (<span v-if="donation.pro">Protagonistic/{{donation.slug | stringifySlug}}</span>
-                    <span v-else>Antagonistic/{{donation.slug | stringifySlug}}</span>)
-                    <div v-if="donation.active && !donation.paid"><a :href="donation.invoiceURL">Pay Here!</a></div>
-                    <div v-else-if="!donation.active && !donation.paid">The amount of time alotted for this donation
-                        has passed. Please re-submit your submission.</div>
-                    <div v-if="!donation.votingDonation">
-                
+                    {{donationFor(donation.votingDonation, donation.upVote)}}
+                    on <span v-html="argumentLink(donation)"></span>
+                    <div v-if="!donation.active && !donation.paid">The amount of time alotted for this donation has
+                        passed. Please re-submit your submission.</div>
+                    <div v-else-if="donation.paid">
+                        This donation was paid!
+                    </div>
+                    <div>
+                        <router-link :to="statusLink(donation)">View Status</router-link>
                     </div>
                 </li>
             </ul>
             <div v-show="currentUser.admin">
                 <h2>You so fancy! Look are you, Mr. Administrator...</h2>
-                <ul>
-                    <li v-for="unapprovedOpinion in allUnapprovedOpinions" :key="unapprovedOpinion._id">
+                <ul v-for="unapprovedOpinion in allUnapprovedOpinions" :key="unapprovedOpinion._id" class="basic-list">
+                    <li>
                         {{unapprovedOpinion}}
                         <textarea v-model="approvalCommentary[unapprovedOpinion._id]"></textarea>
                         <button @click="approveOpinion(unapprovedOpinion, true)">Approve</button>
@@ -60,10 +36,10 @@
 </template>
 
 <script>
-    import Login from './auth/Login';
+    import Login from '../auth/Login';
     import {
         defaultClient as apolloClient
-    } from '../main';
+    } from '../../apolloProvider';
     import gql from 'graphql-tag';
 
     export default {
@@ -76,22 +52,21 @@
                 approvalCommentary: [],
                 userSpecificActivity: []
             }
-        }
-        /*,
-                computed: {
-                    getAllegiance() {
-                        if (this.currentUser.maximalist) {
-                            return 'Bitcoin Maximalist';
-                        } else {
-                            return 'Multicoinist';
-                        }
-                    }
-                }*/
-        ,
+        },
         components: {
             Login
         },
         methods: {
+            statusLink(donation) {
+                return '/donation-status/' + donation._id;
+            },
+            argumentLink(donation) {
+                var metaSlug = "";
+                donation.pro ? metaSlug = 'protagonistic' : metaSlug = 'antagonistic';
+
+                return '<a href="/rhetoric/' + metaSlug + '/' + donation.slug + '">' + metaSlug + '/' + donation.slug +
+                    '</a>';
+            },
             signoutUser: async () => {
                 //Remove token in localStorage
                 localStorage.setItem("token", "");
@@ -155,6 +130,11 @@
                 if (!donation.active) return 'Inactive'
                 if (!donation.paid) return 'Unpaid'
                 if (donation.paid) return 'Paid'
+            },
+            donationFor(votingDonation, upVote) {
+                if (!votingDonation) return 'Opinion';
+                else if (upVote) return 'Upvote';
+                else return 'Downvote';
             }
         },
         apollo: {
@@ -164,11 +144,9 @@
                         _id
                         username
                         email
-                        emailValidated
+                        emailVerified
                         active
                         admin
-                        allegiance
-                        maximalist
                     }
                 }
             `,
@@ -191,7 +169,8 @@
                     }
                 `,
                 skip() {
-                    if (!this.currentUser || this.currentUser.admin === false) return true
+                    if (!this.currentUser || this.currentUser.admin === false) return true;
+                    if (this.$router.currentRoute.fullPath === '/account') return false;
                 }
             },
             allUnapprovedEdits: {
@@ -211,7 +190,8 @@
                     }
                 }`,
                 skip() {
-                    if (!this.currentUser || this.currentUser.admin === false) return true
+                    if (!this.currentUser || this.currentUser.admin === false) return true;
+                    if (this.$router.currentRoute.fullPath === '/account') return false;
                 }
             },
             userSpecificActivity: {
@@ -232,41 +212,16 @@
                             votingDonation
                             upVote
                         }
-                    }`
+                    }`,
+                skip() {
+                    if (!this.currentUser) return true
+                    if (this.$router.currentRoute.fullPath === '/account') return false;
+                }
             }
         }
     };
 </script>
 
 <style lang="scss" scoped>
-    @import "../sass/variables.scss";
-
-    .allegiance {
-        font-size: 2rem;
-        margin: 3rem;
-    }
-
-    button {
-        color: $color-white;
-        background-color: $color-green;
-        font-size: 1.5rem;
-        width: 75%;
-        height: 5rem;
-        padding: .5rem;
-        margin: .5rem;
-        border: 0.1rem solid $color-white;
-    }
-
-    p {
-        font-size: 3rem;
-    }
-
-    li {
-        margin-bottom: 3rem;
-    }
-
-    textarea {
-        width: 100%;
-        height: 5rem;
-    }
+    @import "../../sass/variables.scss";
 </style>

@@ -4,7 +4,7 @@ const currentUser = gql `
                 _id
                 username
                 email
-                emailValidated
+                emailVerified
                 active
                 admin
                 allegiance
@@ -189,8 +189,8 @@ const getAllAntagonisticRhetoric = gql `
         }
     `
 
-const singleOpinion = gql `query singleOpinion($_id: ID!) {
-    singleOpinion(_id: $_id) {
+const donationSpecificOpinion = gql `query donationSpecificOpinion($_id: ID!) {
+    donationSpecificOpinion(_id: $_id) {
       _id
       dateCreated
       createdBy

@@ -1,8 +1,6 @@
 <template>
-    <div class="Activity">
-
-            <h1>Recent Activity</h1>
-
+    <div class="activity">
+        <h1>Recent Activity</h1>
     </div>
 </template>
 
@@ -19,18 +17,16 @@
                             _id
                             username
                             email
-                            emailValidated
+                            emailVerified
                             active
                             admin
-                            allegiance
-                            maximalist
                         }
                     }
                 `
             },
-            slugSpecificAmountDonated: {
-                query: gql `query slugSpecificAmountDonated($pro: Boolean!, $slug: String!) {
-                                slugSpecificAmountDonated(pro: $pro, slug: $slug)
+            argumentSpecificAmountDonated: {
+                query: gql `query argumentSpecificAmountDonated($pro: Boolean!, $slug: String!) {
+                                argumentSpecificAmountDonated(pro: $pro, slug: $slug)
                             }
                         `,
                 variables() {
@@ -40,9 +36,9 @@
                     }
                 }
             },
-            docSpecificAmountDonated: {
-                query: gql `query docSpecificAmountDonated($pro: Boolean!, $slug: String!, $onModel: String!, $documentID: ID!) {
-                                docSpecificAmountDonated(pro: $pro, slug: $slug, onModel: $onModel, documentID: $documentID)
+            docIDSpecificAmountDonated: {
+                query: gql `query docIDSpecificAmountDonated($pro: Boolean!, $slug: String!, $onModel: String!, $documentID: ID!) {
+                                docIDSpecificAmountDonated(pro: $pro, slug: $slug, onModel: $onModel, documentID: $documentID)
                             }
                         `,
                 variables() {

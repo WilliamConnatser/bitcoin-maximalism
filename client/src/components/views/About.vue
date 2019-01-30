@@ -14,8 +14,7 @@
       badge of honor! There are many immensly nuanced arguments for and against Bitcoin Maximalism. The arguments
       outlined here are only meant to give you an unbiased introduction to the nuance surrounding them, so please do
       your own research because there is a lot more to learn beyond what's written in the slides and resources
-      contained
-      within.
+      contained within.
 
       <div id="disclaimer">
         * Considering a human built this web site, and wrote the content, it is technically impossible to be 100%
@@ -32,7 +31,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "../sass/variables";
+  @import "../../sass/variables";
 
   #intro {
     font-size: 2rem;

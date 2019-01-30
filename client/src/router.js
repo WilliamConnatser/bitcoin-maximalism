@@ -1,18 +1,20 @@
 import Vue from "vue";
-import Router from "vue-router";
-import About from "./components/About.vue";
-import Account from "./components/Account.vue";
+import VueRouter from "vue-router";
+
+import About from "./components/views/About.vue";
+import Account from "./components/views/Account.vue";
 import VerifyEmail from "./components/auth/VerifyEmail.vue";
-import TableOfContents from "./components/TableOfContents.vue";
-import Rhetoric from "./components/Rhetoric.vue";
-import Activity from "./components/Activity.vue";
-import Terms from "./components/Terms.vue";
-import Privacy from "./components/Privacy.vue";
-import PageNotFound from "./components/PageNotFound.vue"
+import TableOfContents from "./components/views/TableOfContents.vue";
+import Rhetoric from "./components/views/Rhetoric.vue";
+import Activity from "./components/views/Activity.vue";
+import Terms from "./components/views/Terms.vue";
+import Privacy from "./components/views/Privacy.vue";
+import PageNotFound from "./components/views/PageNotFound.vue"
+import DonationStatus from "./components/views/DonationStatus.vue"
 
-Vue.use(Router);
+Vue.use(VueRouter);
 
-export default new Router({
+export default new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [{
@@ -42,6 +44,10 @@ export default new Router({
     {
       path: "/activity",
       component: Activity
+    },
+    {
+      path: "/donation-status/:_id",
+      component: DonationStatus
     },
     {
       path: "/verify-email/:token",

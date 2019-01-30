@@ -1,29 +1,29 @@
 <template>
   <div>
-    <h1>{ {{metaSlug}} }</h1>
+    <h1>{{argumentSpecificRhetoric.title}}</h1>
     <ul>
-      <AdvancedListItem :metaSlug="metaSlug" :arrayProp="this.args" />
+      <AdvancedListItem :arrayProp="concatAndSort" :metaSlug="this.metaSlug" />
     </ul>
   </div>
 </template>
 
 <script>
   import gql from 'graphql-tag';
-  import AdvancedListItem from './AdvancedListItem';
+  import AdvancedListItem from '../utility/AdvancedListItem';
 
   export default {
-    data: () => {
-      return {
-        currentUser: null,
-        getAllApprovedAndActiveProtagonisticRhetoric: [],
-        getAllApprovedAndActiveAntagonisticRhetoric: [],
-        metaSlug: "",
-        slug: "",
-        pro: ""
-      }
-    },
+    name: "Rhetoric",
     components: {
       AdvancedListItem
+    },
+    data() {
+      return {
+        currentUser: {},
+        argumentSpecificRhetoric: {},
+        pro: "",
+        slug: "",
+        metaSlug: ""
+      }
     },
     created() {
       if (this.$route.params.metaSlug == "protagonistic") {
@@ -35,15 +35,6 @@
       this.metaSlug = this.$route.params.metaSlug;
       this.slug = this.$route.params.slug;
     },
-    computed: {
-      args() {
-        if (this.metaSlug == "protagonistic") {
-          return this.getAllApprovedAndActiveProtagonisticRhetoric;
-        } else {
-          return this.getAllApprovedAndActiveAntagonisticRhetoric;
-        }
-      }
-    },
     watch: {
       '$route'(to, from) {
         if (to.params.metaSlug == "protagonistic") {
@@ -51,8 +42,8 @@
         } else {
           this.pro = false;
         }
+        this.metaSlug = this.$route.params.metaSlug;
         this.slug = to.params.slug;
-        this.metaSlug = to.params.metaSlug;
       }
     },
     methods: {
@@ -63,6 +54,18 @@
         if (!this.currentUser) this.$toasted.global.log_in();
       }
     },
+    computed: {
+      concatAndSort: function() {
+        if (this.argumentSpecificRhetoric.bulletPoints && this.argumentSpecificRhetoric.resources) {
+          var result = this.argumentSpecificRhetoric.bulletPoints.concat(this.argumentSpecificRhetoric.resources);
+          return result.sort((a, b) => {
+            return b.accruedVotes - a.accruedVotes
+          });
+        } else {
+          return [];
+        }
+      }
+    },
     apollo: {
       currentUser: {
         query: gql `
@@ -71,59 +74,55 @@
                             _id
                             username
                             email
-                            emailValidated
+                            emailVerified
                             active
                             admin
-                            allegiance
-                            maximalist
                         }
                     }
                 `
       },
-      getAllApprovedAndActiveProtagonisticRhetoric: {
+      argumentSpecificRhetoric: {
         query: gql `
-                    query getAllApprovedAndActiveProtagonisticRhetoric($pro: Boolean!) {
-                      allRhetoric(pro: $pro) {
+                    query argumentSpecificRhetoric($pro: Boolean!, $slug: String!) {
+                      argumentSpecificRhetoric(pro:$pro, slug: $slug) {
                         _id
+                        dateCreated
+                        active
                         slug
+                        pro
                         title
+                        approved
                         accruedVotes
+                        bulletPoints {
+                            _id
+                            slug
+                            content
+                            accruedVotes
+                        }
+                        resources {
+                            _id
+                            slug
+                            title
+                            media
+                            link
+                            accruedVotes
+                        }
                       }
                     }
                 `,
-                variables: {
-                  pro: true
-                },
-                update: data => data.allRhetoric
-      },
-      getAllApprovedAndActiveAntagonisticRhetoric: {
-        query: gql `
-                    query getAllApprovedAndActiveAntagonisticRhetoric($pro: Boolean!) {
-                      allRhetoric(pro: $pro) {
-                        _id
-                        slug
-                        title
-                        accruedVotes
-                      }
-                    }
-                `,
-                variables: {
-                  pro: false
-                },
-                update: data => data.allRhetoric
+        variables() {
+          return {
+            pro: this.pro,
+            slug: this.slug
+          }
+        }
       }
     }
-  }
+  };
 </script>
 
 <style lang="scss" scoped>
-  @import "../sass/variables.scss";
-
-  .toolbar-icons {
-    font-size: 5rem;
-    margin: 1rem;
-  }
-
+  @import "../../sass/variables.scss";
 
   .rhetoric {
     max-width: 100rem;
@@ -152,24 +151,25 @@
       box-shadow: 0 .5rem 1rem rgba($color-dark-grey, .1)
     }
 
-    .link {
+    a {
       color: $color-white;
       text-transform: uppercase;
       text-decoration: none;
     }
 
     .toolbar {
-      &>span {
-        margin: 1rem;
+      &--top {
+        &>span {
+          margin: 1rem;
+        }
       }
-    }
 
-    .right-toolbar {
-      float: right;
-
-      &>* {
-        font-size: 2.5rem;
-        margin: 0rem 1rem;
+      &--bottom {
+        &>* {
+          font-size: 3rem;
+          font-weight: 600;
+          margin: 1rem 2rem;
+        }
       }
     }
   }

@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
-    emailValidated: {
+    emailVerified: {
         type: Boolean,
         required: true,
         default: false
@@ -33,14 +33,6 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
-    },
-    allegiance: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
-    maximalist: {
-        type: Boolean
     },
     admin: {
         type: Boolean,

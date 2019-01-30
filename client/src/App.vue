@@ -7,8 +7,8 @@
 </template>
 
 <script>
-    import Header from "./components/Header";
-    import Footer from "./components/Footer";
+    import Header from "./components/layout/Header";
+    import Footer from "./components/layout/Footer";
 
     export default {
         name: "app",
@@ -43,6 +43,12 @@
         box-sizing: border-box;
     }
 
+    h1 {
+        font-size: 4rem;
+        margin: 0rem;
+        padding: 0rem;
+    }
+
     #app {
         color: $color-white;
         background-color: $color-green;
@@ -50,7 +56,7 @@
 
     .view {
         min-height: $view-minimum-height;
-        padding: $view-padding-vertical $view-padding-horizontal;        
+        padding: $view-padding-vertical $view-padding-horizontal;
         font-size: 1.5rem;
     }
 </style>

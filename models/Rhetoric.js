@@ -34,8 +34,7 @@ const RhetoricSchema = new mongoose.Schema({
         type: Date
     },
     approvedBy: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'User'
+        type: String
     },
     approvalCommentary: {
         type: String

@@ -124,11 +124,9 @@
                             _id
                             username
                             email
-                            emailValidated
+                            emailVerified
                             active
                             admin
-                            allegiance
-                            maximalist
                         }
                     }
                 `
@@ -138,7 +136,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../sass/variables.scss";
+    @import "../../sass/variables.scss";
 
     .block {
         margin: 3rem;

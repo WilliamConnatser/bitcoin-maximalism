@@ -1,4 +1,4 @@
-var initData = {
+const initData = {
     rhetoric: [{
             slug: 'inflation',
             pro: true,

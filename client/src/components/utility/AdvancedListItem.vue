@@ -4,9 +4,9 @@
             <ToolbarVotes :arrayItemProp="arrayItem" :metaSlug="metaSlug" :slug="slug"/>
 
             <span v-if="arrayItem.__typename == 'BulletPoint'">{{arrayItem.content}}</span>
-            <a v-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link"><span class="media-type">{
+            <a v-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link" class="main-link"><span class="media-type">{
                     {{arrayItem.media}} } </span>{{arrayItem.title}}</a>
-            <router-link v-if="arrayItem.__typename == 'Rhetoric'" class="link" :to="urlGenerator(metaSlug, arrayItem.slug)">{{arrayItem.title}}</router-link>
+            <router-link v-if="arrayItem.__typename == 'Rhetoric'" :to="urlGenerator(metaSlug, arrayItem.slug)" class="main-link">{{arrayItem.title}}</router-link>
 
             <ToolbarActions v-if="arrayItem.__typename !=='Rhetoric'" :arrayItemProp="arrayItem" :metaSlug="metaSlug" />
         </li>
@@ -15,8 +15,8 @@
 
 <script>
     import gql from 'graphql-tag';
-    import ToolbarVotes from './ToolbarVotes';
-    import ToolbarActions from './ToolbarActions';
+    import ToolbarVotes from '../utility/ToolbarVotes';
+    import ToolbarActions from '../utility/ToolbarActions';
 
     export default {
         name: "AdvancedListItem",
@@ -55,11 +55,9 @@
                             _id
                             username
                             email
-                            emailValidated
+                            emailVerified
                             active
                             admin
-                            allegiance
-                            maximalist
                         }
                     }
                 `
@@ -67,47 +65,3 @@
         }
     };
 </script>
-
-<style lang="scss" scoped>
-    @import "../sass/variables.scss";
-
-    .advanced-list-item {
-        max-width: 100rem;
-        list-style-type: none;
-        font-size: 2rem;
-        margin: 2rem auto;
-        padding: 0rem .5rem;
-
-        border: solid;
-        border-color: $color-white;
-        border-radius: 2rem;
-
-        transition: all .2s;
-
-        &:hover {
-            transform: translateY(-.3rem);
-            box-shadow: 0 1rem 2rem rgba($color-dark-grey, .2);
-
-            &::after {
-                transform: scaleX(1.5) scaleY(1.7);
-                opacity: 0;
-            }
-        }
-
-        &:active {
-            transform: translateY(-.1rem);
-            box-shadow: 0 .5rem 1rem rgba($color-dark-grey, .1)
-        }
-
-        a {
-            color: $color-white;
-            text-transform: uppercase;
-            text-decoration: none;
-
-            .media-type {
-                font-weight: 700;
-                margin-right: 1rem;
-            }
-        }
-    }
-</style>
