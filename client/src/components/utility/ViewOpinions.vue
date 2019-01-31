@@ -93,24 +93,3 @@
         }
     };
 </script>
-
-<style lang="scss" scoped>
-    @import "../../sass/variables.scss";
-
-    .opinions {
-        list-style-type: none;
-
-        .opinion {
-            margin: 1rem;
-            padding: 1rem;
-
-            .opinion-label {
-                text-transform: uppercase;
-            }
-        }
-    }
-
-    .opinions {
-        margin: 5rem;
-    }
-</style>

@@ -4,11 +4,11 @@
         <form @submit.prevent="signinUser">
             <div class="block">
                 <label>Email</label>
-                <input type="email" v-model="email" autocomplete="email">
+                <input type="email" v-model="email" autocomplete="email" class="wide-input">
             </div>
             <div class="block">
                 <label>Password</label>
-                <input type="password" v-model="password" autocomplete="password">
+                <input type="password" v-model="password" autocomplete="password" class="wide-input">
             </div>
             <button type="submit">Login</button>
 
@@ -51,11 +51,7 @@
                 }) => {
                     //Insert token into Local Storage
                     await localStorage.setItem("token", data.signinUser.token);
-                    //Refresh the currentUser query
                     this.$apollo.queries.currentUser.refetch();
-                }).catch(error => {
-                    // Error :\
-                    // Error handled in main.js
                 })
             }
         },
@@ -78,37 +74,4 @@
 
 <style lang="scss" scoped>
     @import "../../sass/variables.scss";
-
-    input {
-        text-align: center;
-        display: inline-block;
-        width: 75%;
-        height: 4rem;
-        font-size: 1.5rem;
-        border: 0.1rem solid $color-white;
-    }
-
-    label {
-        text-align: center;
-        color: $color-white;
-        display: inline-block;
-        width: 80%;
-        font-size: 1.9rem;
-        font-weight: 200;
-    }
-
-    button {
-        color: $color-white;
-        background-color: $color-green;
-        font-size: 1.5rem;
-        width: 35%;
-        height: 4rem;
-        padding: .5rem;
-        margin-bottom: 4rem;
-        border: 0.1rem solid $color-dark-grey;
-    }
-
-    .block {
-        margin: 3rem;
-    }
 </style>

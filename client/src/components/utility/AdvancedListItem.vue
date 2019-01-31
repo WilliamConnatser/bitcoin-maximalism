@@ -37,11 +37,6 @@
         created() {
             this.slug = this.$route.params.slug;
         },
-        watch: {
-            '$route'(to, from) {
-                this.slug = to.params.slug;
-            }
-        },
         methods: {
             urlGenerator: (metaSlug, slug) => {
                 return `${metaSlug}/${slug}`

@@ -2,6 +2,11 @@
     <div>
         <h1>Donation Status</h1>
         <ul v-if="docIDSpecificDonation" class="basic-list">
+            <li v-if="docIDSpecificDonation.active && !docIDSpecificDonation.paid">
+                Get your friends to foot the bill! ;)
+                <SocialIcons />
+                <iframe :src="docIDSpecificDonation.invoiceURL" scrolling="no">Pay Here: {{docIDSpecificDonation.invoiceURL}}</iframe>
+            </li>
             <h2>Donation</h2>
             <li>
                 <strong>Date Created</strong>: {{ docIDSpecificDonation.dateCreated | formatDate}}
@@ -33,10 +38,9 @@
             <li>
                 <strong>Paid</strong>: {{ docIDSpecificDonation.paid }}
             </li>
-
         </ul>
         <ul v-if="donationSpecificOpinion" class="basic-list">
-            <h2>Applicable Opinion</h2>
+            <h2>Opinion</h2>
             <li>
                 <strong>Date Created</strong>: {{ donationSpecificOpinion.dateCreated | formatDate }}
             </li>
@@ -66,7 +70,7 @@
             </li>
         </ul>
         <ul v-if="docIDSpecificRhetoric" class="basic-list">
-            <h2>Applicable Argument</h2>
+            <h2>Argument</h2>
             <li>
                 <strong>Argument ID</strong>: {{ docIDSpecificRhetoric._id }}
             </li>
@@ -81,7 +85,7 @@
             </li>
         </ul>
         <ul v-if="docIDSpecificBulletPoint" class="basic-list">
-            <h2>Applicable BulletPoint</h2>
+            <h2>BulletPoint</h2>
             <li>
                 <strong>BulletPoint ID</strong>: {{ docIDSpecificBulletPoint._id }}
             </li>
@@ -96,7 +100,7 @@
             </li>
         </ul>
         <ul v-if="docIDSpecificResource" class="basic-list">
-            <h2>Applicable Resource</h2>
+            <h2>Resource</h2>
             <li>
                 <strong>Resource ID</strong>: {{ docIDSpecificResource._id }}
             </li>
@@ -121,9 +125,13 @@
 
 <script>
     import gql from 'graphql-tag';
+    import SocialIcons from '../utility/SocialIcons';
 
     export default {
         name: "DonationStatus",
+        components: {
+            SocialIcons
+        },
         data: () => {
             return {
                 docIDSpecificDonation: null,
@@ -151,18 +159,20 @@
             }
         },
         apollo: {
-            currentUser: gql `
-                query currentUser {
-                    currentUser {
-                        _id
-                        username
-                        email
-                        emailVerified
-                        active
-                        admin
+            currentUser: {
+                query: gql `
+                    query currentUser {
+                        currentUser {
+                            _id
+                            username
+                            email
+                            emailVerified
+                            active
+                            admin
+                        }
                     }
-                }
-            `,
+                `
+            },
             donationSpecificOpinion: {
                 query: gql `query donationSpecificOpinion($_id: ID!) {
                     donationSpecificOpinion(_id: $_id) {
@@ -195,28 +205,29 @@
             },
             docIDSpecificDonation: {
                 query: gql `query docIDSpecificDonation($_id: ID!) {
-                        docIDSpecificDonation(_id: $_id) {
-                            _id
-                            dateCreated
-                            createdBy
-                            slug
-                            pro
-                            amount
-                            documentID
-                            onModel
-                            active
-                            paid
-                            invoiceID
-                            invoiceURL
-                            votingDonation
-                            upVote
-                        }
-                    }`,
+                    docIDSpecificDonation(_id: $_id) {
+                        _id
+                        dateCreated
+                        createdBy
+                        slug
+                        pro
+                        amount
+                        documentID
+                        onModel
+                        active
+                        paid
+                        invoiceID
+                        invoiceURL
+                        votingDonation
+                        upVote
+                    }
+                }`,
                 variables() {
                     return {
                         _id: this.$route.params._id
                     }
-                }
+                },
+                pollInterval: 30000
             },
             docIDSpecificRhetoric: {
                 query: gql `query docIDSpecificRhetoric($_id: ID!) {

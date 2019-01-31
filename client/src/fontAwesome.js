@@ -27,8 +27,21 @@ import {
     faPlusSquare,
     faMinusSquare,
     faPenSquare,
-    faSearch
+    faSearch,
+    faEnvelopeSquare,
+    faSms,
+    faShareAltSquare,
+    faTimesCircle
 } from '@fortawesome/free-solid-svg-icons';
 
+import {
+    faFacebookSquare,
+    faTwitterSquare,
+    faRedditSquare,
+    faTelegram,
+    faWeibo,
+    faGithubSquare
+} from '@fortawesome/free-brands-svg-icons';
 
-library.add(faAngleUp, faAngleDown, faComment, faPlusSquare, faMinusSquare, faPenSquare, faSearch);
+
+library.add(faAngleUp, faAngleDown, faComment, faPlusSquare, faMinusSquare, faPenSquare, faSearch, faEnvelopeSquare, faTimesCircle, faFacebookSquare, faTwitterSquare, faRedditSquare, faTelegram, faWeibo, faSms, faGithubSquare, faShareAltSquare);

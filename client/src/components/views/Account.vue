@@ -53,6 +53,17 @@
                 userSpecificActivity: []
             }
         },
+        created() {
+            this.$apollo.queries.currentUser.refetch();
+            this.$apollo.queries.userSpecificActivity.refetch();
+        },
+        watch: {
+            currentUser: function(newUser, oldUser) {
+                if(newUser) {
+                    this.$apollo.queries.userSpecificActivity.refetch();
+                }
+            }
+        },
         components: {
             Login
         },
@@ -73,58 +84,30 @@
                 //End Apollo Client Session
                 await apolloClient.resetStore();
             },
-            getStyle(allegiance) {
-                if (this.currentUser.maximalist && allegiance === 'Maximalist') {
-                    return 'background-color: #41b883';
-                } else if (!this.currentUser.maximalist && allegiance === 'Multicoinist') {
-                    return 'background-color: #41b883';
-                }
-            }
-            /*,
-                        setAllegiance(allegiance) {
-                            //GraphQL Mutation
-                            this.$apollo.mutate({
-                                mutation: gql `
-                                    mutation($allegiance: String!) {
-                                        setUserAllegiance(allegiance: $allegiance){
-                                            token
-                                        }
-                                    }
-                                `,
-                                variables: {
-                                    allegiance
-                                }
-                            }).then(async ({data}) => {
-                                //Insert token into Local Storage
-                                await localStorage.setItem("token", data.setUserAllegiance.token);
-                                //Refresh the currentUser query
-                                this.$apollo.queries.currentUser.refetch();
-                            }).catch(error => {
-                                // Error :\
-                                console.error(error);
-                            });
-                        }*/
-            ,
-            approveOpinion(unapprovedOpinion, approved) {
-                //GraphQL Mutation
-                this.$apollo.mutate({
-                    mutation: gql `
+            approveOpinion: async function(unapprovedOpinion, approved) {
+                await this.$apollo.queries.currentUser.refetch();
+
+                if (this.currentUser.admin) {
+                    //GraphQL Mutation
+                    this.$apollo.mutate({
+                        mutation: gql `
                         mutation ($_id: ID!, $approved: Boolean!, $approvalCommentary: String!) {
                             approveOpinion(_id: $_id, approved:$approved, approvalCommentary: $approvalCommentary)
                         }
                     `,
-                    variables: {
-                        _id: unapprovedOpinion._id,
-                        approved,
-                        approvalCommentary: this.approvalCommentary[unapprovedOpinion._id]
-                    }
-                }).then(() => {
-                    //Refresh the currentUser query
-                    this.$apollo.queries.allUnapprovedOpinions.refetch();
-                }).catch(error => {
-                    // Error :\
-                    console.error(error);
-                });
+                        variables: {
+                            _id: unapprovedOpinion._id,
+                            approved,
+                            approvalCommentary: this.approvalCommentary[unapprovedOpinion._id]
+                        }
+                    }).then(() => {
+                        //Refresh the currentUser query
+                        this.$apollo.queries.allUnapprovedOpinions.refetch();
+                    }).catch(error => {
+                        // Error :\
+                        console.error(error);
+                    });
+                }
             },
             status(donation) {
                 if (!donation.active) return 'Inactive'
@@ -138,18 +121,20 @@
             }
         },
         apollo: {
-            currentUser: gql `
-                query currentUser {
-                    currentUser {
-                        _id
-                        username
-                        email
-                        emailVerified
-                        active
-                        admin
+            currentUser: {
+                query: gql `
+                    query currentUser {
+                        currentUser {
+                            _id
+                            username
+                            email
+                            emailVerified
+                            active
+                            admin
+                        }
                     }
-                }
-            `,
+                `
+            },
             allUnapprovedOpinions: {
                 query: gql `
                     query {
@@ -168,9 +153,8 @@
                         }
                     }
                 `,
-                skip() {
-                    if (!this.currentUser || this.currentUser.admin === false) return true;
-                    if (this.$router.currentRoute.fullPath === '/account') return false;
+                skip: async function() {
+                    if (this.currentUser == null || this.currentUser.admin) return true;
                 }
             },
             allUnapprovedEdits: {
@@ -189,9 +173,8 @@
                         approvalCommentary
                     }
                 }`,
-                skip() {
-                    if (!this.currentUser || this.currentUser.admin === false) return true;
-                    if (this.$router.currentRoute.fullPath === '/account') return false;
+                skip: async function() {
+                    if (this.currentUser === null || !this.currentUser.admin) return true;
                 }
             },
             userSpecificActivity: {
@@ -212,16 +195,8 @@
                             votingDonation
                             upVote
                         }
-                    }`,
-                skip() {
-                    if (!this.currentUser) return true
-                    if (this.$router.currentRoute.fullPath === '/account') return false;
-                }
+                    }`
             }
         }
     };
 </script>
-
-<style lang="scss" scoped>
-    @import "../../sass/variables.scss";
-</style>

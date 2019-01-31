@@ -27,6 +27,44 @@ $grid-width: 114rem;
 $gutter-vertical: 4rem;
 $gutter-horizontal: 3rem;
 
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+body,
+html {
+    //This defines what 1REM is
+    font-size: 62.5%;
+    font-family: "Lato", sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    text-align: center;
+
+    height: 100%;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 4rem;
+    margin: 0rem;
+    padding: 0rem;
+}
+
+#app {
+    color: $color-white;
+    background-color: $color-green;
+}
+
+.view {
+    min-height: $view-minimum-height;
+    padding: $view-padding-vertical $view-padding-horizontal;
+    font-size: 1.5rem;
+}
+
 @keyframes moveInLeft {
     0% {
         opacity: 0;
@@ -172,6 +210,108 @@ $gutter-horizontal: 3rem;
     }
 }
 
+.social-icons-small {
+    font-size: 2rem;
+    margin: 1px;
+}
+
+.social-icons-large {
+    font-size: 3rem;
+    margin: 1rem .5rem;
+}
+
+#menu {
+    position: relative;
+    text-align: left;
+    min-height: $header-minimum-height;
+    list-style-type: none;
+
+    .navigation {
+        display: inline-block;
+        padding: 0rem .5rem;
+    }
+
+    a {
+        color: $color-white;
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        text-decoration: none;
+    }
+
+    .social-header {
+        font-size: 2rem;
+        text-align: right;
+    }
+
+    .right-nav {
+        position: absolute;
+        right: 0;
+        top: 0;
+        margin: 0rem 1rem;
+
+        .social-icons-header {
+            font-size: 2rem;
+            margin: 0rem .5rem;
+        }
+    }
+}
+
+#footer {
+    min-height: $footer-minimum-height;
+    font-size: 1.25rem;
+    font-weight: 400;
+    list-style-type: none;
+    text-align: right;
+    margin-right: 1rem;
+
+    a {
+        color: $color-white;
+        text-decoration: none;
+    }
+
+    li {
+        display: inline-block;
+        padding: 0rem 0.25rem;
+    }
+}
+
+.toolbar--votes {
+    .icon {
+        font-size: 3rem;
+        font-weight: 600;
+        margin: 1rem 2rem;
+    }
+
+    .amount-donated {
+        font-size: 2rem;
+    }
+}
+
+.opinions {
+    list-style-type: none;
+    margin: 5rem;
+
+    .opinion {
+        margin: 1rem;
+        padding: 1rem;
+
+        .opinion-label {
+            text-transform: uppercase;
+        }
+    }
+}
+
+#intro {
+    font-size: 2rem;
+    max-width: 100rem;
+    margin: 2rem auto;
+
+    #disclaimer {
+      margin: 2rem;
+      font-size: 1.5rem;
+    }
+  }
+
 .small-text {
     font-size: 1.4rem;
 }
@@ -185,6 +325,7 @@ label {
     display: inline-block;
     width: 100%;
     font-size: 1.9rem;
+    font-weight: 300;
 }
 
 button {
@@ -210,6 +351,11 @@ input {
     background-color: $color-green;
 }
 
+.wide-input {
+    max-width: 30rem;
+    width: 95%;
+}
+
 textarea {
     text-align: center;
     display: inline-block;
@@ -220,4 +366,11 @@ textarea {
     border: 0.1rem solid $color-white;
     color: $color-white;
     background-color: $color-green;
+}
+
+iframe {
+    max-width: 100%;
+    width: 32rem;
+    height: 72rem;
+    border: 0;
 }

@@ -4,15 +4,15 @@
         <form v-if="!success" @submit.prevent="signupUser">
             <div class="block">
                 <label>Username</label>
-                <input type="text" v-model="username" autocomplete="username">
+                <input type="text" v-model="username" autocomplete="username" class="wide-input">
             </div>
             <div class="block">
                 <label>Email</label>
-                <input type="email" v-model="email" autocomplete="email">
+                <input type="email" v-model="email" autocomplete="email" class="wide-input">
             </div>
             <div class="block">
                 <label>Password</label>
-                <input type="password" v-model="password" autocomplete="password">
+                <input type="password" v-model="password" autocomplete="password" class="wide-input">
             </div>
             <button type="submit">Register</button> <br />
 
@@ -54,9 +54,6 @@
                     }
                 }).then(async ({data}) => {
                     if(data.signupUser) this.success = true;
-                }).catch(error => {
-                    // Error :\
-                    // Error handled in main.js
                 })
             }
         },

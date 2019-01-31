@@ -2,6 +2,10 @@
 import Vue from 'vue';
 import App from './App.vue';
 
+//Social sharing library
+var SocialSharing = require('vue-social-sharing'); 
+Vue.use(SocialSharing);
+
 //ZEIT Now and Environment Variables Imports
 require('now-env');
 

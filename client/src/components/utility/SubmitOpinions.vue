@@ -1,39 +1,32 @@
 <template>
-    <div ref="success">
-        <form v-if="!submitted" @submit.prevent="submitOpinionToServer()">
-            <div class="block">
-                <label>Donation Amount (BTC)</label>
-                <input type="text" v-model="donationAmount">
-                <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>
-                <div class="small-text">Your opinion is more (or less) likely to be seen depending on the donation's
-                    value. You may view the opinions on what you are commenting on to see the likelihood your
-                    opinion will be shown. Features may be implemented or deprecated in the future which reduce or
-                    increase the weight of your upvote or downvote.</div>
-            </div>
-            <div class="block">
-                <label>Opinion</label>
-                <textarea v-model="opinion" maxlength=280></textarea>
-                <div class="small-text">If published, opinions will never be altered. Submitting an opinion and making a donation does not guarantee that your
-                    opinion will be approved. We reserve the right to not publish an opinion for any reason we deem
-                    necessary, so please remain respectful of others and intellectually honest.
 
-                    All donations are non-binding, no products or services are guaranteed in lieu of a donation, and
-                    absolutely no refunds will be performed, whether your opinion is published- or not. By continuing
-                    you are agreeing to accept the <router-link to="/terms">Terms</router-link> &amp;
-                    <router-link to="/privacy">Privacy Policy</router-link>.
-                </div>
-                <button type="submit">I Agree</button>
-            </div>
-        </form>
-        <div id="success" v-else>
-            <h2>Success!</h2>
-
-            <div><iframe :src="invoiceURL" scrolling="no">Pay Here: {{invoiceURL}}</iframe></div>
-            If the donation is completed successfully, then your opinion has been submitted to the administrators for
-            review. From this point forward, you may track the status of the opinion you've submitted on the user
-            <router-link to="/account">Account Panel</router-link>.
+    <form @submit.prevent="submitOpinionToServer()">
+        <div class="block">
+            <label>Donation Amount (BTC)</label>
+            <input type="text" v-model="donationAmount">
+            <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>
+            <div class="small-text">Your opinion is more (or less) likely to be seen depending on the donation's
+                value. You may view the opinions on what you are commenting on to see the likelihood your
+                opinion will be shown. Features may be implemented or deprecated in the future which reduce or
+                increase the weight of your upvote or downvote.</div>
         </div>
-    </div>
+        <div class="block">
+            <label>Opinion</label>
+            <textarea v-model="opinion" maxlength=280></textarea>
+            <div class="small-text">If published, opinions will never be altered. Submitting an opinion and making a
+                donation does not guarantee that your
+                opinion will be approved. We reserve the right to not publish an opinion for any reason we deem
+                necessary, so please remain respectful of others and intellectually honest.
+
+                All donations are non-binding, no products or services are guaranteed in lieu of a donation, and
+                absolutely no refunds will be performed, whether your opinion is published- or not. By continuing
+                you are agreeing to accept the <router-link to="/terms">Terms</router-link> &amp;
+                <router-link to="/privacy">Privacy Policy</router-link>.
+            </div>
+            <button type="submit">I Agree</button>
+        </div>
+    </form>
+
 </template>
 
 <script>
@@ -55,7 +48,6 @@
                 viewEdits: null,
                 donationAmount: 0,
                 opinion: null,
-                submitted: null,
                 incoiceURL: null
             }
         },
@@ -65,13 +57,11 @@
                 var top = element.offsetTop;
                 window.scrollTo(0, top);
             },
-            submitOpinionToServer() {
+            submitOpinionToServer: async function() {
+                await this.$apollo.queries.currentUser.refetch();
+
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
-                    //Remove token in localStorage
-                    localStorage.setItem("token", "");
-                    //End Apollo Client Session
-                    apolloClient.resetStore();
                 } else {
                     //GraphQL Mutation
                     this.$apollo.mutate({
@@ -89,29 +79,25 @@
                     }).then(async ({
                         data
                     }) => {
-                        this.setInvoiceURL(data.submitOpinion);
-                        this.submitted = true;
+                        this.$router.push({
+                            path: '/donation-status/' + data.submitOpinion
+                        });
                     }).catch(error => {
                         // Error :\
                         // Error handled in main.js
                     });
                 }
             },
-            setInvoiceURL(url) {
-                this.invoiceURL = url;
-            },
             validAmount(value) {
                 if (isNaN(Number(value))) {
-                    this.donationAmount = this.donationAmount.replace(/\D/g,'');
+                    this.donationAmount = this.donationAmount.replace(/\D/g, '');
                     this.$toasted.global.invalid_donation_numbers_only();
-                }
-                else if(value < 0) {
+                } else if (value < 0) {
                     this.donationAmount *= -1;
                     this.$toasted.global.invalid_donation_negative();
                     return false;
-                }
-                else if (value.indexOf('.')<0) return true;
-                else if(value.toString().split(".")[1].length > 8) {
+                } else if (value.indexOf('.') < 0) return true;
+                else if (value.toString().split(".")[1].length > 8) {
                     this.donationAmount = Number(this.donationAmount).toFixed(8);
                     this.$toasted.global.invalid_donation_decimal();
                     return false;
@@ -121,14 +107,11 @@
             }
         },
         computed: {
-            computedAmount: function() {
+            computedAmount: function () {
                 return (Number(this.donationAmount) * this.cryptoValue).toFixed(2);
             }
         },
         watch: {
-            submitted(newValue) {
-                if (newValue) this.scrollToTop();
-            },
             donationAmount(newValue) {
                 this.validAmount(newValue);
             }
@@ -161,12 +144,3 @@
         }
     };
 </script>
-
-<style lang="scss" scoped>
-    @import "../../sass/variables.scss";
-
-    iframe {
-        width: 32rem;
-        height: 78rem;
-    }
-</style>

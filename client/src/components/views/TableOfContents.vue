@@ -55,65 +55,39 @@
         this.metaSlug = to.params.metaSlug;
       }
     },
-    methods: {
-      vote(upvote, rhetoric) {
-        this.loggedIn();
-      },
-      loggedIn() {
-        if (!this.currentUser) this.$toasted.global.log_in();
-      }
-    },
     apollo: {
-      currentUser: {
-        query: gql `
-                    query currentUser {
-                        currentUser {
-                            _id
-                            username
-                            email
-                            emailVerified
-                            active
-                            admin
-                        }
-                    }
-                `
-      },
       getAllApprovedAndActiveProtagonisticRhetoric: {
         query: gql `
-                    query getAllApprovedAndActiveProtagonisticRhetoric($pro: Boolean!) {
-                      allRhetoric(pro: $pro) {
-                        _id
-                        slug
-                        title
-                        accruedVotes
-                      }
-                    }
-                `,
-                variables: {
-                  pro: true
-                },
-                update: data => data.allRhetoric
+            query getAllApprovedAndActiveProtagonisticRhetoric($pro: Boolean!) {
+              allRhetoric(pro: $pro) {
+                _id
+                slug
+                title
+                accruedVotes
+              }
+            }
+        `,
+        variables: {
+          pro: true
+        },
+        update: data => (data.allRhetoric)
       },
       getAllApprovedAndActiveAntagonisticRhetoric: {
         query: gql `
-                    query getAllApprovedAndActiveAntagonisticRhetoric($pro: Boolean!) {
-                      allRhetoric(pro: $pro) {
-                        _id
-                        slug
-                        title
-                        accruedVotes
-                      }
-                    }
-                `,
-                variables: {
-                  pro: false
-                },
-                update: data => data.allRhetoric
+            query getAllApprovedAndActiveAntagonisticRhetoric($pro: Boolean!) {
+              allRhetoric(pro: $pro) {
+                _id
+                slug
+                title
+                accruedVotes
+              }
+            }
+        `,
+        variables: {
+          pro: false
+        },
+        update: data => (data.allRhetoric)
       }
     }
   }
 </script>
-
-<style lang="scss" scoped>
-  @import "../../sass/variables.scss";
-</style>

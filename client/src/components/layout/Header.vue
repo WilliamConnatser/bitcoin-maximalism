@@ -1,40 +1,56 @@
 <template>
-  <ul id="menu">
-    <li>
-      <router-link to="/" class="small">About</router-link>
-    </li>
-    <li>
-      <router-link to="/rhetoric/protagonistic">Pros</router-link>
-    </li>
-    <li>
-      <router-link to="/rhetoric/antagonistic">Cons</router-link>
-    </li>
-    <!--
-    <li>
-      <router-link to="/activity">Activity</router-link>
-    </li>
-    -->
-
-    <div class="right-nav">
-      <li>
-        <router-link to="/account">
-          <strong v-if="currentUser">Account</strong>
-          <strong v-else>Log In</strong>
-        </router-link>        
+  <nav>
+    <ul id="menu">
+      <li class="navigation">
+        <router-link to="/" class="small">About</router-link>
       </li>
-    </div>
-  </ul>
+      <li class="navigation">
+        <router-link to="/rhetoric/protagonistic">Pros</router-link>
+      </li>
+      <li class="navigation">
+        <router-link to="/rhetoric/antagonistic">Cons</router-link>
+      </li>
+
+      <div class="right-nav">
+        <li class="navigation">
+          <router-link to="/account">
+            <strong v-if="currentUser">Account</strong>
+            <strong v-else>Log In</strong>
+          </router-link>
+        </li>
+        <li v-if="!showSocial" @click="toggleSocial" class="navigation">
+          <font-awesome-icon icon="share-alt-square" class="social-icons-header" />
+        </li>
+        <li v-else @click="toggleSocial" class="navigation">
+          <font-awesome-icon icon="times-circle" class="social-icons-header" />
+        </li>
+      </div>
+      <li v-if="showSocial" class="social-header">
+        <SocialIcons />
+      </li>
+    </ul>
+  </nav>
 </template>
 
 <script>
   import gql from 'graphql-tag';
+  import SocialIcons from '../utility/SocialIcons'
 
   export default {
     name: "Header",
     data() {
       return {
-        currentUser: null
+        currentUser: null,
+        showSocial: false
       }
+    },
+    methods: {
+      toggleSocial() {
+        this.showSocial = !this.showSocial;
+      }
+    },
+    components: {
+      SocialIcons
     },
     apollo: {
       currentUser: {
@@ -54,31 +70,3 @@
     }
   };
 </script>
-
-<style lang="scss" scoped>
-  @import "../../sass/variables";
-
-  #menu {
-    text-align: left;
-    min-height: $header-minimum-height;
-    list-style-type: none;
-  }
-
-  li {
-    display: inline-block;
-    padding: 0rem .5rem;
-  }
-
-  a {
-    color: $color-white;
-    text-transform: uppercase;
-    font-size: 1.5rem;
-    text-decoration: none;
-  }
-
-  .right-nav {
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-</style>

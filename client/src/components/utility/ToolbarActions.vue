@@ -52,15 +52,14 @@
             cancel(actionType) {
                 this[actionType] = null;
             },
-            show(actionType) {
+            show: async function(actionType) {
+                if(actionType.indexOf('submit') > -1) await this.$apollo.queries.currentUser.refetch();
+
                 if(actionType.indexOf('submit') > -1 && !this.currentUser) {
                     this.$toasted.global.log_in();
                 } else {
                     this[actionType] = true;
                 }
-            },
-            initialize(actionType) {
-                this.currentUser ? this[actionType] = true : this.$toasted.global.log_in();
             }
         },
         components: {
@@ -87,7 +86,3 @@
         }
     };
 </script>
-
-<style lang="scss" scoped>
-    @import "../../sass/variables.scss";
-</style>

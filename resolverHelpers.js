@@ -125,10 +125,10 @@ const createOpinion = async (args, applicableDocument, donation, Opinion, curren
     }
 }
 
-const applyVote = async (args, applicableDocument) => {
+const applyVote = async (args, applicableDocument, amountPaid) => {
     try {
-        if (args.upVote) applicableDocument.accruedVotes += args.amount;
-        else if (!args.upVote) applicableDocument.accruedVotes -= args.amount;
+        if (args.upVote) applicableDocument.accruedVotes += amountPaid;
+        else if (!args.upVote) applicableDocument.accruedVotes -= amountPaid;
         return await applicableDocument.save();
 
     } catch (err) {
@@ -138,22 +138,28 @@ const applyVote = async (args, applicableDocument) => {
 
 const invoicePaid = async (invoice, donation, invoiceInterval, args, applicableDocument) => {
     try {
+        console.log('Checking on Invoice ID ' + invoice.id);
         const updatedInvoice = await btcPayClient.get_invoice(invoice.id);
+        console.log(updatedInvoice.status);
 
         //If they paid 95% of the amount due (give a little slack for fee discrepancy)
         if (updatedInvoice.amountPaid > (invoice.btcDue * .95)) {
+            donation.amount = updatedInvoice.amountPaid;
             donation.paid = true;
             donation.save();
-            clearInterval(invoiceInterval);
 
             //If it's a voting donation, then apply the votes to the applicable document
-            if (donation.votingDonation) applyVote(args, applicableDocument)
-        }
+            if (donation.votingDonation) applyVote(args, applicableDocument, updatedInvoice.amountPaid);
 
-        //Else If it has been over 15 minutes, and the invoice has expired
-        else if (updatedInvoice.status === 'expired') {
+            clearInterval(invoiceInterval);
+        } else if (updatedInvoice.status === 'expired') {
+            //Else If it has been over 15 minutes, and the invoice has expired
+
+            console.log('expired if statement triggered')
+
             donation.active = false;
             donation.save();
+            console.log('new donation', donation)
             clearInterval(invoiceInterval);
         }
 

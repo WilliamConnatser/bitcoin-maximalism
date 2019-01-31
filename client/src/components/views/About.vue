@@ -4,8 +4,6 @@
       An Objective* Overview of Bitcoin Maximalism
     </h1>
 
-    <br />
-
     <div id="intro">
       The term Bitcoin Maximalism was initially termed by Vitalik Buterin in a <a href="https://blog.ethereum.org/2014/11/20/bitcoin-maximalism-currency-platform-network-effects/">blog</a>
       post written on November 19, 2014, and has since been popularized throughout the cryptocurrency community
@@ -29,17 +27,3 @@
     name: "About"
   };
 </script>
-
-<style lang="scss" scoped>
-  @import "../../sass/variables";
-
-  #intro {
-    font-size: 2rem;
-    max-width: 100rem;
-    margin: 2rem auto;
-  }
-
-  #disclaimer {
-    margin: 2rem;
-  }
-</style>

@@ -170,8 +170,8 @@ type Mutation {
     resendEmail(email: String!): Boolean
     setUserAllegiance(allegiance: String!): Token
 
-    submitOpinion(amount: String!, documentID: ID!, onModel: String!, opinion: String!): String
-    submitVote(onModel: String!, documentID: ID!, amount: Float!, upVote: Boolean!): String
+    submitOpinion(amount: String!, documentID: ID!, onModel: String!, opinion: String!): ID
+    submitVote(onModel: String!, documentID: ID!, amount: Float!, upVote: Boolean!): ID
 
     approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
 

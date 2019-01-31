@@ -22,42 +22,26 @@
                 <span v-else>Downvote</span>
             </button>
 
-            <div ref="success">
-                <form v-if="!submitted" @submit.prevent="submitVote(upvote)">
-                    <div class="block">
-                        <label>Donation Amount (BTC)</label>
-                        <input id="donation-amount" type="text" v-model="donationAmount">
-                        <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>
-                        <div class="description">Your <span v-if="upvote">upvote</span><span v-else>downvote</span>
-                            will be weighted by an amount proportional to
-                            your donation, which is then compared to the amount of all other upvote and downvote
-                            donations for this specific {{arrayItemProp.__typename}}.
-                            Features may be implemented or deprecated in the future which reduce
-                            (or increase) the weight of your upvotes or downvotes.</div>
+            <form @submit.prevent="submitVote(upvote)">
+                <div class="block">
+                    <label>Donation Amount (BTC)</label>
+                    <input id="donation-amount" type="text" v-model="donationAmount">
+                    <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>
+                    <div class="small-text">Your <span v-if="upvote">upvote</span><span v-else>downvote</span>
+                        will be weighted by an amount proportional to
+                        your donation, which is then compared to the amount of all other upvote and downvote
+                        donations for this specific {{arrayItemProp.__typename}}.
+                        Features may be implemented or deprecated in the future which reduce
+                        (or increase) the weight of your upvotes or downvotes. All donations are non-binding. No products or services are guaranteed in lieu of a
+                        donation, and no refunds will be performed whether your upvote or downvote is tallied or
+                        not. By
+                        continuing you are agreeing to accept the <router-link to="/terms">Terms</router-link>
+                        &amp;
+                        <router-link to="/privacy">Privacy Policy</router-link>.
                     </div>
-                    <div class="block">
-                        <div class="description">
-                            All donations are non-binding. No products or services are guaranteed in lieu of a
-                            donation, and no refunds will be performed whether your upvote or downvote is tallied or
-                            not. By
-                            continuing you are agreeing to accept the <router-link to="/terms">Terms</router-link>
-                            &amp;
-                            <router-link to="/privacy">Privacy Policy</router-link>.
-                        </div>
-                    </div>
-                    <button type="submit">I Agree</button>
-                </form>
-                <div id="success" v-else>
-                    <h2>Success!</h2>
-                    
-                    <iframe :src="invoiceURL" scrolling="no">{{invoiceURL}}</iframe>
-
-                    If the donation is completed successfully, then your upvote or downvote should be attributed
-                    shortly.
-                    You may track the history of your upvotes and downvotes in the user <router-link to="/account">Account
-                        Panel</router-link>.
                 </div>
-            </div>
+                <button type="submit">I Agree</button>
+            </form>
         </div>
     </div>
 </template>
@@ -81,10 +65,8 @@
                 argumentSpecificAmountDonated: 0,
                 docIDSpecificAmountDonated: 0,
                 slug: "",
-                submitted: null,
                 donationAmount: "",
                 deActivate: true,
-                invoiceURL: ""
             }
         },
         computed: {
@@ -103,18 +85,16 @@
                 }
 
             },
-            computedAmount: function() {
+            computedAmount: function () {
                 return (this.donationAmount * this.cryptoValue).toFixed(2);
-            }        
+            }
         },
         methods: {
-            initialize(upvote) {
+            initialize: async function(upvote) {
+                await this.$apollo.queries.currentUser.refetch();
+
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
-                    //Remove token in localStorage
-                    localStorage.setItem("token", "");
-                    //End Apollo Client Session
-                    apolloClient.resetStore();
                 } else {
                     this.upvote = upvote;
                 }
@@ -127,13 +107,11 @@
                 var top = element.offsetTop;
                 window.scrollTo(0, top);
             },
-            submitVote(upVote) {
+            submitVote: async function(upVote) {
+                await this.$apollo.queries.currentUser.refetch();
+
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
-                    //Remove token in localStorage
-                    localStorage.setItem("token", "");
-                    //End Apollo Client Session
-                    apolloClient.resetStore();
                 } else {
                     //GraphQL Mutation
                     this.$apollo.mutate({
@@ -151,26 +129,24 @@
                     }).then(async ({
                         data
                     }) => {
-                        this.setInvoiceURL(data.submitVote)
-                        this.submitted = true;
+                        this.$router.push({
+                            path: '/donation-status/' + data.submitVote
+                        });
                     }).catch(error => {
                         // Error :\
                         // Error handled in main.js
                     });
                 }
             },
-            setInvoiceURL(url) {
-                this.invoiceURL = url;
-            },
             validAmount(value) {
-                if(value < 0) {
+                if (value < 0) {
                     this.donationAmount *= -1;
                     this.$toasted.global.invalid_donation_negative();
                     return false;
                 }
-                if(Math.floor(value) === value) return true;
-                if(value.indexOf('.') < 0) return true;
-                if(value.toString().split(".")[1].length > 8) {
+                if (Math.floor(value) === value) return true;
+                if (value.indexOf('.') < 0) return true;
+                if (value.toString().split(".")[1].length > 8) {
                     this.$toasted.global.invalid_donation_decimal();
                     this.donationAmount = Number(this.donationAmount).toFixed(8);
                     return false;
@@ -215,79 +191,3 @@
         }
     };
 </script>
-
-<style lang="scss" scoped>
-    @import "../../sass/variables.scss";
-
-    .toolbar--votes {
-        .icon {
-            font-size: 3rem;
-            font-weight: 600;
-            margin: 1rem 2rem;
-        }
-
-        .amount-donated {
-            font-size: 2rem;
-        }
-    }
-
-    .block {
-        margin: 3rem;
-    }
-
-    input {
-        text-align: center;
-        display: inline-block;
-        max-width: 65rem;
-        width: 90%;
-        height: 4rem;
-        border: 0.1rem solid $color-white;
-        color: $color-white;
-        background-color: $color-green;
-    }
-
-    #donation-amount {
-        font-size: 2rem;
-        max-width: 20rem;
-    }
-
-    textarea {
-        text-align: center;
-        display: inline-block;
-
-        width: 100%;
-        height: 30rem;
-        font-size: 2rem;
-        border: 0.1rem solid $color-white;
-        color: $color-white;
-        background-color: $color-green;
-    }
-
-    label {
-        color: $color-white;
-        display: inline-block;
-        width: 100%;
-        font-size: 1.9rem;
-    }
-
-    button {
-        color: $color-white;
-        background-color: $color-green;
-        font-size: 1.5rem;
-        width: 35%;
-        height: 5rem;
-        padding: .5rem;
-        margin: .5rem;
-        border: 0.1rem solid $color-white;
-    }
-
-    .description {
-        font-size: 1.5rem;
-    }
-    
-    iframe {
-        overflow: scroll;
-        width: 90vw;
-        height: 71rem;
-    }
-</style>
