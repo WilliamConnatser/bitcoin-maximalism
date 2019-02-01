@@ -15,10 +15,18 @@
         components: {
             Header,
             Footer
+        },
+        created(){
+            this.$toasted.global.accept_tos_privacy();
         }
     };
 </script>
 
 <style lang="scss">
-    @import "./sass/variables";
+    @import "./sass/base";
+    @import "./sass/components";
+    @import "./sass/forms";
+    @import "./sass/layout";
+    @import "./sass/typography";
+    @import "./sass/utility";
 </style>

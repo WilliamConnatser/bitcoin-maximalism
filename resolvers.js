@@ -21,6 +21,7 @@ const {
     createInvoice,
     createOpinion,
     createDonation,
+    validateDonationAmount,
     invoicePaid,
     parseError
 } = require('./resolverHelpers');
@@ -56,11 +57,11 @@ module.exports = {
                 }
                 //Return the user's previous donations in an array
                 return await Donation.find({
-                    createdBy: currentUser.username
-                })
-                .sort({
-                    dateCreated: 'desc'
-                });
+                        createdBy: currentUser.username
+                    })
+                    .sort({
+                        dateCreated: 'desc'
+                    });
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this user\'s activity'));
             }
@@ -445,9 +446,26 @@ module.exports = {
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while querying for opinions'));
             }
+        },
+        docIDSpecificOpinionCount: async (_, {
+            _id,
+            onModel
+        }, {
+            Opinion
+        }) => {
+            try {
+                return await Opinion.find({
+                    approved: true,
+                    documentID: _id,
+                    onModel
+                }).count();
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unkown error occurred while counting this document\'s opinions'));
+            }
         }
     },
     Mutation: {
+        /* Inactive for now
         addBulletPoint: async (_, {
             slug,
             pro,
@@ -516,6 +534,7 @@ module.exports = {
                 throw new ApolloError(parseError(err.message, 'An unknown error has occurred!'));
             }
         },
+        */
         signinUser: async (_, {
             email,
             password
@@ -648,11 +667,11 @@ module.exports = {
                 if (!currentUser) throw new AuthenticationError('log-in');
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
                 if (args.opinion.length > 280) throw new UserInputError('opinion-length');
+                if (args.onModel !== 'BulletPoint' && args.onModel !== 'Resource') throw new UserInputError('invalid-type');
                 const cryptoDoc = await Crypto.findOne({
                     ticker: 'BTC'
                 });
-                if (cryptoDoc.valueUSD * Number(args.amount) < 1) throw new UserInputError('donation-minimum');
-                if (args.onModel !== 'BulletPoint' && args.onModel !== 'Resource') throw new UserInputError('invalid-type');
+                validateDonationAmount(args.amount, cryptoDoc.valueUSD);
 
 
                 //Create Invoice, Donation document, and Opinion document
@@ -669,7 +688,6 @@ module.exports = {
                 //Check every 5 minutes to see if the invoice has been paid
                 var invoiceInterval;
                 invoiceInterval = setInterval(function () {
-                    console.log(interval)
                     invoicePaid(newInvoice, newDonation, invoiceInterval);
                 }, 30000);
 
@@ -688,7 +706,7 @@ module.exports = {
             currentUser
         }) => {
             // Args not destructed for easier passage to helper functions
-            // args destructed = {onModel: String!, documentID: ID!, amount: Float!, upVote: Boolean!}
+            // args destructed = {onModel: String!, documentID: ID!, amount: String!, upVote: Boolean!}
             try {
                 //Validation
                 if (!currentUser) throw new AuthenticationError('log-in');
@@ -697,7 +715,7 @@ module.exports = {
                 const cryptoDoc = await Crypto.findOne({
                     ticker: 'BTC'
                 })
-                if (cryptoDoc.valueUSD * Number(args.amount) < 1) throw new UserInputError('donation-minimum');
+                validateDonationAmount(args.amount, cryptoDoc.valueUSD);
 
                 //Create Invoice and Donation
                 args.votingDonation = true;
@@ -716,7 +734,6 @@ module.exports = {
                 //Check every 5 minutes to see if the invoice has been paid
                 var invoiceInterval;
                 invoiceInterval = setInterval(function () {
-                    console.log("interval")
                     invoicePaid(newInvoice, newDonation, invoiceInterval, args, applicableDocument);
                 }, 300000);
 

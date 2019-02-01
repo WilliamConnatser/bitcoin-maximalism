@@ -1,6 +1,6 @@
 <template>
 
-    <form @submit.prevent="submitOpinionToServer()">
+    <form @submit.prevent="submitOpinionToServer()" class="normal-text">
         <div class="block">
             <label>Donation Amount (BTC)</label>
             <input type="text" v-model="donationAmount">
@@ -31,9 +31,6 @@
 
 <script>
     import gql from 'graphql-tag';
-    import {
-        defaultClient as apolloClient
-    } from '../../apolloProvider';
 
     export default {
         name: "SubmitOpinions",
@@ -57,12 +54,12 @@
                 var top = element.offsetTop;
                 window.scrollTo(0, top);
             },
-            submitOpinionToServer: async function() {
+            submitOpinionToServer: async function () {
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
-                } else {
+                } else if (this.validAmount(this.donationAmount)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -83,8 +80,7 @@
                             path: '/donation-status/' + data.submitOpinion
                         });
                     }).catch(error => {
-                        // Error :\
-                        // Error handled in main.js
+                        // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
                 }
             },
@@ -92,12 +88,21 @@
                 if (isNaN(Number(value))) {
                     this.donationAmount = this.donationAmount.replace(/\D/g, '');
                     this.$toasted.global.invalid_donation_numbers_only();
+                    return false;
                 } else if (value < 0) {
                     this.donationAmount *= -1;
                     this.$toasted.global.invalid_donation_negative();
                     return false;
-                } else if (value.indexOf('.') < 0) return true;
-                else if (value.toString().split(".")[1].length > 8) {
+                } else if (Number(value) === 0) {
+                    this.$toasted.global.invalid_donation_nonzero();
+                    return false;
+                } if(value * this.cryptoValue < 1) { 
+                    this.$toasted.global.invalid_donation_minimum();
+                    return false;
+                } else if (value.indexOf('.') < 0) {
+                    //If no decimals, then no need to check for max decimals
+                    return true;
+                } else if (value.toString().split(".")[1].length > 8) {
                     this.donationAmount = Number(this.donationAmount).toFixed(8);
                     this.$toasted.global.invalid_donation_decimal();
                     return false;

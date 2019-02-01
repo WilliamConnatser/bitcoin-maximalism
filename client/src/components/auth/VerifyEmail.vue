@@ -56,9 +56,8 @@
                         path: '/account'
                     });
                 }).catch(error => {
-                    // Error :\
-                    // Error handled in main.js
-                })
+                    // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
+                });
             },
             resendEmail() {
                 //GraphQL Mutation
@@ -76,9 +75,8 @@
                 }) => {
                     this.resent = data.resendEmail;
                 }).catch(error => {
-                    // Error :\
-                    // Error handled in main.js
-                })
+                    // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
+                });
             }
         },
         created() {

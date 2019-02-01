@@ -138,33 +138,50 @@ const applyVote = async (args, applicableDocument, amountPaid) => {
 
 const invoicePaid = async (invoice, donation, invoiceInterval, args, applicableDocument) => {
     try {
-        console.log('Checking on Invoice ID ' + invoice.id);
         const updatedInvoice = await btcPayClient.get_invoice(invoice.id);
-        console.log(updatedInvoice.status);
 
         //If they paid 95% of the amount due (give a little slack for fee discrepancy)
         if (updatedInvoice.amountPaid > (invoice.btcDue * .95)) {
-            donation.amount = updatedInvoice.amountPaid;
+            donation.amount = Number(updatedInvoice.amountPaid);
             donation.paid = true;
             donation.save();
 
             //If it's a voting donation, then apply the votes to the applicable document
             if (donation.votingDonation) applyVote(args, applicableDocument, updatedInvoice.amountPaid);
-
             clearInterval(invoiceInterval);
+
         } else if (updatedInvoice.status === 'expired') {
             //Else If it has been over 15 minutes, and the invoice has expired
-
-            console.log('expired if statement triggered')
-
             donation.active = false;
             donation.save();
-            console.log('new donation', donation)
             clearInterval(invoiceInterval);
         }
 
     } catch (err) {
         throw new ApolloError(parseError(err.message, 'An unknown error occurred while checking the status of your invoice.'));
+    }
+}
+
+const validateDonationAmount = (donationAmount, bitcoinValue) => {
+    try {
+        if (isNaN(Number(donationAmount))) {
+            throw new UserInputError('donation-numeric');
+        } else if (donationAmount < 0) {
+            throw new UserInputError('donation-negative');
+        } else if (Number(donationAmount) === 0) {
+            throw new UserInputError('donation-nonzero');
+        } else if (donationAmount * bitcoinValue < 1) {
+            throw new UserInputError('donation-minimum');
+        } else if (donationAmount.indexOf('.') < 0) {
+            //If no decimals, then no need to check for max decimals
+            return true;
+        } else if (donationAmount.toString().split(".")[1].length > 8) {
+            throw new UserInputError('donation-decimals');
+        } else {
+            return true;
+        }
+    } catch (err) {
+        throw new ApolloError(parseError(err.message, 'An unknown error occurred while validating your donation amount.'));
     }
 }
 
@@ -174,7 +191,11 @@ const parseError = (error, unknownError) => {
     else if (error == 'verify-email') return 'Verify your email first';
     else if (error == 'invalid-password') return 'Invalid password';
     else if (error == 'opinion-length') return 'Opinions must be less than 280 characters';
-    else if (error == 'donation-minimum') return 'Donations must be at least $1 USD';
+    else if (error == 'donation-minimum') return 'Donation amount must be at least one US dollar';
+    else if (error == 'donation-numeric') return 'Donation amount must be numeric';
+    else if (error == 'donation-negative') return 'Donation amount must be positive';
+    else if (error == 'donation-nonzero') return 'Donation amount must be non-zero';
+    else if (error == 'donation-decimals') return 'Donation amount must only have one .';
     else if (error == 'invalid-token') return 'Invalid or expired token';
     else if (error == 'already-verified') return 'Email already verified';
     else if (error == 'username-taken') return 'This username is already taken';
@@ -191,6 +212,7 @@ module.exports = {
     createInvoice,
     createOpinion,
     createDonation,
+    validateDonationAmount,
     applyVote,
     invoicePaid,
     parseError

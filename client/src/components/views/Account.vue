@@ -1,17 +1,18 @@
 <template>
     <div class="section">
+        <h1 v-if="$apollo.loading">Loading...</h1>
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
             <h1>Account Panel</h1>
             <button id="signOut" v-if="currentUser" @click="signoutUser">Signout</button>
-            <ul v-for="donation in userSpecificActivity" :key="donation._id" class="basic-list">
+            <ul v-for="donation in userSpecificActivity" :key="donation._id" class="list normal-text">
                 <li>
                     Status: <strong>{{status(donation)}}</strong>
                     <div>{{donation.dateCreated | formatDate}}</div>
                     {{donationFor(donation.votingDonation, donation.upVote)}}
                     on <span v-html="argumentLink(donation)"></span>
                     <div v-if="!donation.active && !donation.paid">The amount of time alotted for this donation has
-                        passed. Please re-submit your submission.</div>
+                        passed.</div>
                     <div v-else-if="donation.paid">
                         This donation was paid!
                     </div>
@@ -58,8 +59,8 @@
             this.$apollo.queries.userSpecificActivity.refetch();
         },
         watch: {
-            currentUser: function(newUser, oldUser) {
-                if(newUser) {
+            currentUser: function (newUser) {
+                if (newUser) {
                     this.$apollo.queries.userSpecificActivity.refetch();
                 }
             }
@@ -78,13 +79,13 @@
                 return '<a href="/rhetoric/' + metaSlug + '/' + donation.slug + '">' + metaSlug + '/' + donation.slug +
                     '</a>';
             },
-            signoutUser: async () => {
+            signoutUser: () => {
                 //Remove token in localStorage
                 localStorage.setItem("token", "");
                 //End Apollo Client Session
-                await apolloClient.resetStore();
+                apolloClient.resetStore();
             },
-            approveOpinion: async function(unapprovedOpinion, approved) {
+            approveOpinion: async function (unapprovedOpinion, approved) {
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (this.currentUser.admin) {
@@ -104,8 +105,7 @@
                         //Refresh the currentUser query
                         this.$apollo.queries.allUnapprovedOpinions.refetch();
                     }).catch(error => {
-                        // Error :\
-                        console.error(error);
+                        // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
                 }
             },
@@ -153,7 +153,7 @@
                         }
                     }
                 `,
-                skip: async function() {
+                skip: async function () {
                     if (this.currentUser == null || this.currentUser.admin) return true;
                 }
             },
@@ -173,7 +173,7 @@
                         approvalCommentary
                     }
                 }`,
-                skip: async function() {
+                skip: async function () {
                     if (this.currentUser === null || !this.currentUser.admin) return true;
                 }
             },

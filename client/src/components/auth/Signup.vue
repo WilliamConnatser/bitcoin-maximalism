@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="normal-text">
         <h1>Sign Up</h1>
         <form v-if="!success" @submit.prevent="signupUser">
             <div class="block">
@@ -14,9 +14,9 @@
                 <label>Password</label>
                 <input type="password" v-model="password" autocomplete="password" class="wide-input">
             </div>
-            <button type="submit">Register</button> <br />
+            <button type="submit">Register</button>
 
-            <div @click="$emit('toggle-login')">
+            <div @click="$emit('toggle-login')" class="block">
                 Already Registered?
                 <h2>Sign In Here!</h2>
             </div>
@@ -52,9 +52,13 @@
                         email: this.email,
                         password: this.password
                     }
-                }).then(async ({data}) => {
-                    if(data.signupUser) this.success = true;
-                })
+                }).then(async ({
+                    data
+                }) => {
+                    if (data.signupUser) this.success = true;
+                }).catch(error => {
+                    // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
+                });
             }
         },
         apollo: {
@@ -73,40 +77,3 @@
         }
     };
 </script>
-
-<style lang="scss" scoped>
-    @import "../../sass/variables.scss";
-
-    input {
-        text-align: center;
-        display: inline-block;
-        width: 75vw;
-        height: 4rem;
-        font-size: 1.5rem;
-        border: 0.1rem solid $color-white;
-    }
-
-    label {
-        text-align: center;
-        color: $color-white;
-        display: inline-block;
-        width: 80vw;
-        font-size: 1.9rem;
-        font-weight: 200;
-    }
-
-    button {
-        color: $color-white;
-        background-color: $color-green;
-        font-size: 1.5rem;
-        width: 40vw;
-        height: 4rem;
-        padding: .5rem;
-        margin-bottom: 4rem;
-        border: 0.1rem solid $color-dark-grey;
-    }
-
-    .block {
-        margin: 3rem;
-    }
-</style>

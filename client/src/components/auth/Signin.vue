@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="normal-text">
         <h1>Sign In</h1>
         <form @submit.prevent="signinUser">
             <div class="block">
@@ -12,7 +12,7 @@
             </div>
             <button type="submit">Login</button>
 
-            <div @click="$emit('toggle-login')">
+            <div @click="$emit('toggle-login')" class="block">
                 Not Registered Yet?
                 <h2>Sign Up Here!</h2>
             </div>
@@ -33,26 +33,35 @@
         },
         methods: {
             signinUser() {
-                //GraphQL Mutation
-                this.$apollo.mutate({
-                    mutation: gql `
+                if (this.validateForm()) {
+                    //GraphQL Mutation
+                    this.$apollo.mutate({
+                        mutation: gql `
                         mutation($email:String!, $password: String!) {
                             signinUser(email: $email,password: $password) {
                                 token
                             }
                         }
                     `,
-                    variables: {
-                        email: this.email,
-                        password: this.password
-                    }
-                }).then(async ({
-                    data
-                }) => {
-                    //Insert token into Local Storage
-                    await localStorage.setItem("token", data.signinUser.token);
-                    this.$apollo.queries.currentUser.refetch();
-                })
+                        variables: {
+                            email: this.email,
+                            password: this.password
+                        }
+                    }).then(async ({
+                        data
+                    }) => {
+                        //Insert token into Local Storage
+                        await localStorage.setItem("token", data.signinUser.token);
+                        this.$apollo.queries.currentUser.refetch();
+                    }).catch(error => {
+                        // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
+                    });
+                }
+            },
+            validateForm() {
+                if (this.email.trim() === "") this.$toasted.global.email();
+                else if (this.password.trim() === "") this.$toasted.global.password();
+                else return true;
             }
         },
         apollo: {

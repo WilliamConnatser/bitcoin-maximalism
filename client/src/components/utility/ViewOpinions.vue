@@ -1,5 +1,6 @@
 <template>
-<div>
+<div class="normal-text">
+    <h1 v-if="$apollo.loading">Loading...</h1>
     <ul v-if="topLastRandomOpinions && topLastRandomOpinions[0]" class="opinions">
         <li v-for="(opinion, index) in topLastRandomOpinions" class="opinion" :key="index">
             <div>
@@ -12,7 +13,7 @@
             {{opinion.opinion}}
         </li>
     </ul>
-    <span class="no-opinions" v-if="!topLastRandomOpinions || !topLastRandomOpinions[0]">
+    <span class="block" v-if="!topLastRandomOpinions || !topLastRandomOpinions[0]">
         No one's commented on this yet...
     </span>
 </div>

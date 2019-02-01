@@ -1,6 +1,8 @@
 <template>
   <div>
     <h1>{ {{metaSlug}} }</h1>
+
+    <h1 v-if="$apollo.loading">Loading...</h1>
     <ul>
       <AdvancedListItem :metaSlug="metaSlug" :arrayProp="this.args" />
     </ul>
@@ -26,10 +28,14 @@
       AdvancedListItem
     },
     created() {
-      if (this.$route.params.metaSlug == "protagonistic") {
+      if (this.$route.params.metaSlug === "protagonistic") {
         this.pro = true;
-      } else {
+      } else if (this.$route.params.metaSlug === "antagonistic") {
         this.pro = false;
+      } else {
+        this.$router.push({
+          path: '/not-found'
+        });
       }
 
       this.metaSlug = this.$route.params.metaSlug;
@@ -37,15 +43,19 @@
     },
     computed: {
       args() {
-        if (this.metaSlug == "protagonistic") {
+        if (this.metaSlug === "protagonistic") {
           return this.getAllApprovedAndActiveProtagonisticRhetoric;
-        } else {
+        } else if (this.$route.params.metaSlug === "antagonistic") {
           return this.getAllApprovedAndActiveAntagonisticRhetoric;
+        } else {
+          this.$router.push({
+            path: '/not-found'
+          });
         }
       }
     },
     watch: {
-      '$route'(to, from) {
+      '$route'(to) {
         if (to.params.metaSlug == "protagonistic") {
           this.pro = true;
         } else {

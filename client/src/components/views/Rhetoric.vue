@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1 v-if="argumentSpecificRhetoric">{{argumentSpecificRhetoric.title}}</h1>
+    <h1 v-if="$apollo.loading">Loading...</h1>
     <ul>
       <AdvancedListItem v-if="argumentSpecificRhetoric" :arrayProp="concatAndSort" :metaSlug="this.metaSlug" />
     </ul>
@@ -28,8 +29,12 @@
     created() {
       if (this.$route.params.metaSlug == "protagonistic") {
         this.pro = true;
-      } else {
+      } else if (this.$route.params.metaSlug === "antagonistic") {
         this.pro = false;
+      } else {
+        this.$router.push({
+          path: '/not-found'
+        });
       }
 
       this.metaSlug = this.$route.params.metaSlug;
@@ -43,7 +48,7 @@
             return b.accruedVotes - a.accruedVotes
           });
         } else {
-          return [];
+          []
         }
       }
     },
@@ -98,7 +103,14 @@
           }
         },
         skip() {
-          if (this.slug === ""|| this.pro === "") return true;
+          if (this.slug === "" || this.pro === "") return true;
+        },
+        result(ApolloQueryResult, key) {
+          if (!ApolloQueryResult.data.argumentSpecificRhetoric) {
+            this.$router.push({
+              path: '/not-found'
+            });
+          }
         }
       }
     }

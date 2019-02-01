@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <button type="submit">I Agree</button>
+            <button type="submit block">I Agree</button>
         </form>
     </div>
 </template>
@@ -93,7 +93,7 @@
                 bulletPointContent: this.arrayItemProp.content,
                 resourceTitle: this.arrayItemProp.title,
                 resourceLink: this.arrayItemProp.link,
-                resourceMedia:  this.arrayItemProp.media,
+                resourceMedia: this.arrayItemProp.media,
                 submitted: null
             }
         },
@@ -102,11 +102,38 @@
                 var element = this.$refs.success;
                 var top = element.offsetTop;
                 window.scrollTo(0, top);
+            },
+            validAmount(value) {
+                if (isNaN(Number(value))) {
+                    this.donationAmount = this.donationAmount.replace(/\D/g, '');
+                    this.$toasted.global.invalid_donation_numbers_only();
+                    return false;
+                } else if (value < 0) {
+                    this.donationAmount *= -1;
+                    this.$toasted.global.invalid_donation_negative();
+                    return false;
+                } else if (Number(value) === 0) {
+                    this.$toasted.global.invalid_donation_nonzero();
+                    return false;
+                }
+                if (value * this.cryptoValue < 1) {
+                    this.$toasted.global.invalid_donation_minimum();
+                    return false;
+                } else if (value.indexOf('.') < 0) {
+                    //If no decimals, then no need to check for max decimals
+                    return true;
+                } else if (value.toString().split(".")[1].length > 8) {
+                    this.donationAmount = Number(this.donationAmount).toFixed(8);
+                    this.$toasted.global.invalid_donation_decimal();
+                    return false;
+                } else {
+                    return true;
+                }
             }
         },
         watch: {
-            submitted(newValue) {
-                if (newValue) this.scrollToTop();
+            donationAmount(value) {
+                this.validAmount(value);
             }
         },
         apollo: {

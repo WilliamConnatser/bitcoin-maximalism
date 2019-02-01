@@ -1,31 +1,33 @@
 <template>
   <nav>
-    <ul id="menu">
-      <li class="navigation">
+    <ul id="header">
+      <li class="inline-nav">
         <router-link to="/" class="small">About</router-link>
       </li>
-      <li class="navigation">
+      <li class="inline-nav">
         <router-link to="/rhetoric/protagonistic">Pros</router-link>
       </li>
-      <li class="navigation">
+      <li class="inline-nav">
         <router-link to="/rhetoric/antagonistic">Cons</router-link>
       </li>
 
       <div class="right-nav">
-        <li class="navigation">
+        <li class="inline-nav">
           <router-link to="/account">
             <strong v-if="currentUser">Account</strong>
             <strong v-else>Log In</strong>
           </router-link>
         </li>
-        <li v-if="!showSocial" @click="toggleSocial" class="navigation">
+
+        <li v-if="!showSocial" @click="toggleSocial" class="inline-nav">
           <font-awesome-icon icon="share-alt-square" class="social-icons-header" />
         </li>
-        <li v-else @click="toggleSocial" class="navigation">
+        <li v-else @click="toggleSocial" class="inline-nav">
           <font-awesome-icon icon="times-circle" class="social-icons-header" />
         </li>
       </div>
-      <li v-if="showSocial" class="social-header">
+
+      <li v-if="showSocial" class="social-dropdown">
         <SocialIcons />
       </li>
     </ul>

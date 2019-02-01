@@ -1,0 +1,63 @@
+@import './variables';
+
+#header {
+    position: relative;
+    text-align: left;
+    min-height: $header-minimum-height;
+    list-style-type: none;
+
+    .inline-nav {
+        display: inline-block;
+        padding: 0rem .5rem;
+    }
+
+    a {
+        color: $color-white;
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        text-decoration: none;
+    }
+
+    .right-nav {
+        position: absolute;
+        right: 0;
+        top: 0;
+        margin: 0.1rem 1rem;
+
+        .social-icons-header {
+            font-size: 2rem;
+        }
+    }
+
+    .social-dropdown {
+        text-align: right;
+    }
+}
+
+.view {
+    min-height: $view-minimum-height;
+    padding: $view-padding-vertical $view-padding-horizontal;
+}
+
+#footer {
+    min-height: $footer-minimum-height;
+    font-size: 1.25rem;
+    font-weight: 400;
+    list-style-type: none;
+    text-align: right;
+    margin-right: 1rem;
+
+    a {
+        color: $color-white;
+    }
+
+    li {
+        display: inline-block;
+        padding: 0rem 0.25rem;
+    }
+
+    .social-icons-small {
+        font-size: 2rem;
+        margin: 1px;
+    }
+}

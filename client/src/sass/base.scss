@@ -1,0 +1,26 @@
+@import './variables';
+
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+body,
+html {
+    //This defines what 1REM is 62.5% = 1px
+    font-size: 62.5%;
+
+    font-family: "Lato", sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    text-align: center;
+
+    color: $color-white;
+    background-color: $color-green;
+
+    height: 100%;
+    box-sizing: border-box;
+}

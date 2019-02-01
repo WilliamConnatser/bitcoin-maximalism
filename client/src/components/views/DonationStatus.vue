@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="normal-text">
         <h1>Donation Status</h1>
-        <ul v-if="docIDSpecificDonation" class="basic-list">
+        <ul v-if="docIDSpecificDonation" class="list">
             <li v-if="docIDSpecificDonation.active && !docIDSpecificDonation.paid">
                 Get your friends to foot the bill! ;)
                 <SocialIcons />
@@ -39,7 +39,7 @@
                 <strong>Paid</strong>: {{ docIDSpecificDonation.paid }}
             </li>
         </ul>
-        <ul v-if="donationSpecificOpinion" class="basic-list">
+        <ul v-if="donationSpecificOpinion" class="list">
             <h2>Opinion</h2>
             <li>
                 <strong>Date Created</strong>: {{ donationSpecificOpinion.dateCreated | formatDate }}
@@ -69,7 +69,7 @@
                 <strong>Opinion</strong>: {{ donationSpecificOpinion.opinion }}
             </li>
         </ul>
-        <ul v-if="docIDSpecificRhetoric" class="basic-list">
+        <ul v-if="docIDSpecificRhetoric" class="list">
             <h2>Argument</h2>
             <li>
                 <strong>Argument ID</strong>: {{ docIDSpecificRhetoric._id }}
@@ -84,7 +84,7 @@
                 <strong>Accrued Votes</strong>: {{ docIDSpecificRhetoric.accruedVotes }}
             </li>
         </ul>
-        <ul v-if="docIDSpecificBulletPoint" class="basic-list">
+        <ul v-if="docIDSpecificBulletPoint" class="list">
             <h2>BulletPoint</h2>
             <li>
                 <strong>BulletPoint ID</strong>: {{ docIDSpecificBulletPoint._id }}
@@ -99,7 +99,7 @@
                 <strong>Content</strong>: {{ docIDSpecificBulletPoint.content }}
             </li>
         </ul>
-        <ul v-if="docIDSpecificResource" class="basic-list">
+        <ul v-if="docIDSpecificResource" class="list">
             <h2>Resource</h2>
             <li>
                 <strong>Resource ID</strong>: {{ docIDSpecificResource._id }}

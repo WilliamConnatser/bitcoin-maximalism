@@ -13,7 +13,7 @@
                 <font-awesome-icon icon="angle-down" />
             </span>
         </div>
-        <div v-if="this.upvote !== null">
+        <div v-if="this.upvote !== null" class="normal-text">
             <h2 v-if="upvote">Submit an Upvote</h2>
             <h2 v-else>Submit a Downvote</h2>
             <button @click="cancel()">
@@ -32,7 +32,8 @@
                         your donation, which is then compared to the amount of all other upvote and downvote
                         donations for this specific {{arrayItemProp.__typename}}.
                         Features may be implemented or deprecated in the future which reduce
-                        (or increase) the weight of your upvotes or downvotes. All donations are non-binding. No products or services are guaranteed in lieu of a
+                        (or increase) the weight of your upvotes or downvotes. All donations are non-binding. No
+                        products or services are guaranteed in lieu of a
                         donation, and no refunds will be performed whether your upvote or downvote is tallied or
                         not. By
                         continuing you are agreeing to accept the <router-link to="/terms">Terms</router-link>
@@ -40,7 +41,9 @@
                         <router-link to="/privacy">Privacy Policy</router-link>.
                     </div>
                 </div>
-                <button type="submit">I Agree</button>
+                <div class="block">
+                    <button type="submit">I Agree</button>
+                </div>
             </form>
         </div>
     </div>
@@ -65,7 +68,7 @@
                 argumentSpecificAmountDonated: 0,
                 docIDSpecificAmountDonated: 0,
                 slug: "",
-                donationAmount: "",
+                donationAmount: 0,
                 deActivate: true,
             }
         },
@@ -90,7 +93,7 @@
             }
         },
         methods: {
-            initialize: async function(upvote) {
+            initialize: async function (upvote) {
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (!this.currentUser) {
@@ -107,16 +110,16 @@
                 var top = element.offsetTop;
                 window.scrollTo(0, top);
             },
-            submitVote: async function(upVote) {
+            submitVote: async function (upVote) {
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
-                } else {
+                } else if (this.validAmount(this.donationAmount)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                            mutation submitVote($onModel: String!, $documentID: ID!, $amount: Float!, $upVote: Boolean!) {
+                            mutation submitVote($onModel: String!, $documentID: ID!, $amount: String!, $upVote: Boolean!) {
                                 submitVote(onModel:$onModel, documentID:$documentID, amount:$amount, upVote: $upVote)
                             }
                         `,
@@ -133,22 +136,32 @@
                             path: '/donation-status/' + data.submitVote
                         });
                     }).catch(error => {
-                        // Error :\
-                        // Error handled in main.js
+                        // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
                 }
             },
             validAmount(value) {
-                if (value < 0) {
+                if (isNaN(Number(value))) {
+                    this.donationAmount = this.donationAmount.replace(/\D/g, '');
+                    this.$toasted.global.invalid_donation_numbers_only();
+                    return false;
+                } else if (value < 0) {
                     this.donationAmount *= -1;
                     this.$toasted.global.invalid_donation_negative();
                     return false;
+                } else if (Number(value) === 0) {
+                    this.$toasted.global.invalid_donation_nonzero();
+                    return false;
                 }
-                if (Math.floor(value) === value) return true;
-                if (value.indexOf('.') < 0) return true;
-                if (value.toString().split(".")[1].length > 8) {
-                    this.$toasted.global.invalid_donation_decimal();
+                if (value * this.cryptoValue < 1) {
+                    this.$toasted.global.invalid_donation_minimum();
+                    return false;
+                } else if (value.indexOf('.') < 0) {
+                    //If no decimals, then no need to check for max decimals
+                    return true;
+                } else if (value.toString().split(".")[1].length > 8) {
                     this.donationAmount = Number(this.donationAmount).toFixed(8);
+                    this.$toasted.global.invalid_donation_decimal();
                     return false;
                 } else {
                     return true;
@@ -156,9 +169,6 @@
             }
         },
         watch: {
-            submitted(newValue) {
-                if (newValue) this.scrollToTop();
-            },
             donationAmount(newValue) {
                 this.validAmount(newValue)
             }

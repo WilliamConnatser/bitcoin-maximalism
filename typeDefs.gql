@@ -148,6 +148,7 @@ type Query {
 
     docIDSpecificDonation(_id: ID!): Donation
     docIDSpecificAmountDonated(pro: Boolean!, slug: String!, onModel: String!, documentID: ID!): Float
+    docIDSpecificOpinionCount(onModel: String!, _id: ID!): Int
     docIDSpecificRhetoric(_id: ID!): Rhetoric
     docIDSpecificBulletPoint(_id: ID!): BulletPoint
     docIDSpecificResource(_id: ID!): Resource
@@ -168,14 +169,14 @@ type Mutation {
     signupUser(username: String!, email: String!, password: String!): Boolean
     verifyEmail(token: String!): Token
     resendEmail(email: String!): Boolean
-    setUserAllegiance(allegiance: String!): Token
 
     submitOpinion(amount: String!, documentID: ID!, onModel: String!, opinion: String!): ID
-    submitVote(onModel: String!, documentID: ID!, amount: Float!, upVote: Boolean!): ID
+    submitVote(onModel: String!, documentID: ID!, amount: String!, upVote: Boolean!): ID
 
     approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
 
-    submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
-    submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String
-    addBulletPoint(slug: String!, pro: Boolean!, content: String!): BulletPoint
+    #Inactive - conceptual - submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
+    #Inactive - conceptual -submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String
+    #Inactive - resolver written - addBulletPoint(slug: String!, pro: Boolean!, content: String!): BulletPoint
+    #Inactive - resolve written - setUserAllegiance(allegiance: String!): Token
 }
