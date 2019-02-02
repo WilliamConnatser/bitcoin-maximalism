@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 //Send email
 const {
     emailTransporter,
-    registrationEmail
+    registrationEmail,
+    passwordResetEmail
 } = require('./smtp');
 
 //BTCPayServer client
@@ -42,11 +43,26 @@ const sendRegistrationEmail = async user => {
         var emailObject = registrationEmail;
         const emailValidationToken = createToken(user, process.env.SECRET, "1d");
         emailObject.to = user.email;
-        emailObject.text += 'www.BitcoinMaximalism.com/verify-email/' + emailValidationToken;
-        emailObject.html += '<a href="www.BitcoinMaximalism.com/verify-email/' + emailValidationToken + '">www.BitcoinMaximalism.com/verify-email/' + emailValidationToken + '</a>';
+        emailObject.text += `www.BitcoinMaximalism.com/verify-email/${emailValidationToken}`;
+        emailObject.html += `<a href="www.BitcoinMaximalism.com/verify-email/${emailValidationToken}">Verify Email</a>`;
         emailTransporter.sendMail(emailObject);
     } catch (err) {
         throw new ApolloError(parseError(err.message, 'An unkown error occurred while sending email verification'));
+    }
+}
+
+const sendPasswordResetEmail = async user => {
+    try {
+        var emailObject = passwordResetEmail;
+        const emailValidationToken = createToken(user, process.env.SECRET, "1h");
+        emailObject.to = user.email;
+        emailObject.text += `www.BitcoinMaximalism.com/verify-password/${emailValidationToken}`;
+        emailObject.html += `<a href="www.BitcoinMaximalism.com/verify-password/${emailValidationToken}/">Verify Password</a>`;
+        
+        console.log(emailObject)
+        emailTransporter.sendMail(emailObject);
+    } catch (err) {
+        throw new ApolloError(parseError(err.message, 'An unkown error occurred while sending your password reset email'));
     }
 }
 
@@ -200,6 +216,7 @@ const parseError = (error, unknownError) => {
     else if (error == 'already-verified') return 'Email already verified';
     else if (error == 'username-taken') return 'This username is already taken';
     else if (error == 'username-length') return 'Usernames must be less than 26 characters';
+    else if (error == 'un-matching-password') return 'Passwords must match';
     else if (error == 'email-taken') return 'Email address already in use';
     else if (error == 'invalid-type') return 'Invalid type submitted';
     else if (error == 'admin') return 'You must be an admin';
@@ -209,6 +226,7 @@ const parseError = (error, unknownError) => {
 module.exports = {
     createToken,
     sendRegistrationEmail,
+    sendPasswordResetEmail,
     createInvoice,
     createOpinion,
     createDonation,

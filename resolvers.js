@@ -23,6 +23,8 @@ const {
     createDonation,
     validateDonationAmount,
     invoicePaid,
+    sendPasswordResetEmail,
+    sendRegistrationEmail,
     parseError
 } = require('./resolverHelpers');
 
@@ -571,8 +573,9 @@ module.exports = {
         }) => {
             try {
                 //Validation
-                const userObject = await jwt.verify(token, process.env.SECRET);
-                if (!userObject) throw new AuthenticationError('invalid-token')
+                const userObject = await jwt.verify(token, process.env.SECRET, function (err) {
+                    if (err) throw new AuthenticationError('invalid-token');
+                });
                 if (userObject.emailVerified) throw new UserInputError("already-verified");
 
                 //Update User document
@@ -591,7 +594,7 @@ module.exports = {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while verifying your email'));
             }
         },
-        resendEmail: async (_, {
+        resendRegistrationEmail: async (_, {
             email
         }, {
             User
@@ -610,6 +613,111 @@ module.exports = {
                 return true;
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while re-sending your verification email'));
+            }
+        },
+        startPasswordReset: async (_, {
+            email
+        }, {
+            User
+        }) => {
+            try {
+                //Validation
+                const user = await User.findOne({
+                    email
+                });
+                if (!user) throw new UserInputError("user-not-found");
+
+                //Construct and send email verification
+                sendPasswordResetEmail(user);
+                return true;
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while sending your password reset email'));
+            }
+        },
+        verifyPasswordReset: async (_, {
+            token
+        }, {
+            User
+        }) => {
+            try {
+
+                //Validation
+                try {
+                    var userObject = await jwt.verify(token, process.env.SECRET)
+                } catch(err) {
+                    throw new AuthenticationError('invalid-token');
+                }
+
+                //Update User document
+                var user = await User.findOne({
+                    username: userObject.username
+                });
+                if (!user) throw new AuthenticationError('user-not-found');
+
+                //Return token 
+                return {
+                    token: createToken(user, process.env.SECRET, "1hr")
+                }
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unkown error occurred while verifying your email'));
+            }
+        },
+        resendPasswordEmail: async (_, {
+            email
+        }, {
+            User
+        }) => {
+            try {
+                //Validation
+                const user = await User.findOne({
+                    email
+                });
+                if (!user) throw new UserInputError("user-not-found");
+
+                //Construct and send email verification
+                sendPasswordResetEmail(user);
+
+                return true;
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while re-sending your password reset email'));
+            }
+        },
+        resetPassword: async (_, {
+            token,
+            newPassword1,
+            newPassword2
+        }, {
+            User
+        }) => {
+            try {
+                
+                //Validation
+                try {
+                    var userObject = await jwt.verify(token, process.env.SECRET)
+                } catch(err) {
+                    throw new AuthenticationError('invalid-token');
+                }
+
+                //Update User document
+                var user = await User.findOne({
+                    username: userObject.username
+                });
+                if (!user) throw new AuthenticationError('user-not-found');
+
+                if(newPassword1 === newPassword2) {
+                    user.password = newPassword1;
+                    await user.save();
+                } else {
+                    throw new UserInputError('un-matching-passwords');
+                }
+
+                //Return token 
+                return {
+                    token: createToken(user, process.env.SECRET, "1hr")
+                }
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unkown error occurred while updating your password'));
             }
         },
         signupUser: async (_, {

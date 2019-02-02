@@ -1,17 +1,21 @@
 <template>
-    <div>
+    <div class="normal-text">
         <h1>Verifying Email...</h1>
 
-        <div v-if="!success">
-            If you have a slow connection, then please wait for your token to be validated. <br />
-            If you're seeing this, then your email validation token is either invalid or expired. <br />
-            Please request a new validation email below:
+        <div v-if="!success && $apollo.loading">
+            Please wait for your token to be validated.
+        </div>
+        <div v-else>
+            Your email validation token is either invalid or expired. Please request a new validation email
+            below:
         </div>
 
         <form v-if="!resent" @submit.prevent="resendEmail">
-            <label for="email">What email did you sign up with?</label>
-            <input v-model="email" type="email">
-            <button type="submit">Resend Validation Email</button>
+            <div class="block">
+                <label for="email">Account Email</label>
+                <input v-model="email" type="email" class="wide-input">
+            </div>
+            <button type="submit" class="wide-button">Resend Validation Email</button>
         </form>
         <span v-else>A verification email has been resent.</span>
     </div>
@@ -24,6 +28,7 @@
         name: "VerifyEmail",
         data: () => {
             return {
+                currentUser: null,
                 success: false,
                 email: "",
                 resent: false
@@ -63,8 +68,8 @@
                 //GraphQL Mutation
                 this.$apollo.mutate({
                     mutation: gql `
-                        mutation resendEmail($email: String!){
-                            resendEmail(email: $email)
+                        mutation resendRegistrationEmail($email: String!){
+                            resendRegistrationEmail(email: $email)
                         }
                     `,
                     variables: {
@@ -73,7 +78,7 @@
                 }).then(async ({
                     data
                 }) => {
-                    this.resent = data.resendEmail;
+                    this.resent = data.resendRegistrationEmail;
                 }).catch(error => {
                     // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                 });
@@ -82,56 +87,30 @@
         created() {
             this.verifyEmail();
         },
-        apollo: {
-            currentUser: gql `
-                query currentUser {
-                    currentUser {
-                        _id
-                        username
-                        email
-                        emailVerified
-                        active
-                        admin
-                    }
+        watch: {
+            currentUser(newValue) {
+                if(newValue.emailVerified) {
+                    this.$router.push({
+                        path: '/account'
+                    });
                 }
-            `
+            }
+        },
+        apollo: {
+            currentUser: {
+                query: gql `
+                    query currentUser {
+                        currentUser {
+                            _id
+                            username
+                            email
+                            emailVerified
+                            active
+                            admin
+                        }
+                    }
+                `
+            }
         }
     };
 </script>
-
-<style lang="scss" scoped>
-    @import "../../sass/variables.scss";
-
-    form>* {
-        margin: 1rem;
-    }
-
-    input {
-        text-align: center;
-        display: inline-block;
-        width: 75vw;
-        height: 4rem;
-        font-size: 1.5rem;
-        border: 0.1rem solid $color-white;
-    }
-
-    label {
-        text-align: center;
-        color: $color-white;
-        display: inline-block;
-        width: 80vw;
-        font-size: 1.9rem;
-        font-weight: 300;
-    }
-
-    button {
-        color: $color-white;
-        background-color: $color-green;
-        font-size: 1.5rem;
-        width: 40vw;
-        height: 4rem;
-        padding: .5rem;
-        margin-bottom: 4rem;
-        border: 0.1rem solid $color-dark-grey;
-    }
-</style>

@@ -168,7 +168,12 @@ type Mutation {
     signinUser(email: String!, password: String!): Token
     signupUser(username: String!, email: String!, password: String!): Boolean
     verifyEmail(token: String!): Token
-    resendEmail(email: String!): Boolean
+    resendRegistrationEmail(email: String!): Boolean
+
+    startPasswordReset(email: String!): Boolean
+    verifyPasswordReset(token: String!): Token
+    resendPasswordEmail(email: String!): Boolean
+    resetPassword(token: String!, newPassword1: String!, newPassword2: String!): Token
 
     submitOpinion(amount: String!, documentID: ID!, onModel: String!, opinion: String!): ID
     submitVote(onModel: String!, documentID: ID!, amount: String!, upVote: Boolean!): ID

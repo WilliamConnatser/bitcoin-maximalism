@@ -8,8 +8,10 @@
             </div>
             <div class="block">
                 <label>Password</label>
-                <input type="password" v-model="password" autocomplete="password" class="wide-input">
+                <input type="password" v-model="password" autocomplete="password" class="wide-input"> <br/>
+                <router-link to="/reset-password">Forgot Password?</router-link>
             </div>
+                        
             <button type="submit">Login</button>
 
             <div @click="$emit('toggle-login')" class="block">

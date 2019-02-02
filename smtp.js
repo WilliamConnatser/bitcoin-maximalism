@@ -27,7 +27,17 @@ const registrationEmail = {
     html: 'Thanks for registering for <a href="www.BitcoinMaximalism.com">BitcoinMaximalism.com</a>!! Please confirm your email address by navigating to: ' //html body
 };
 
+//Default Password Reset
+const passwordResetEmail = {
+    from: '"Bitcoin Maximalism" <admin@BitcoinMaximalism.com>', //sender address
+    to: "bar@example.com, baz@example.com", //list of receivers
+    subject: "Password Reset for BitcoinMaximalism.com", //Subject line
+    text: "Someone has requested a password reset for BitcoinMaximalism.com!! Please continue by navigating to: ", //plain text body
+    html: 'Someone has requested a password reset for <a href="www.BitcoinMaximalism.com">BitcoinMaximalism.com</a>!! Please continue by navigating to: ' //html body
+};
+
 module.exports = {
     emailTransporter,
-    registrationEmail
+    registrationEmail,
+    passwordResetEmail
 };

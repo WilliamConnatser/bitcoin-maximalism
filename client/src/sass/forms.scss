@@ -21,11 +21,6 @@ input {
     background-color: $color-green;
 }
 
-.wide-input {
-    max-width: 30rem;
-    width: 95%;
-}
-
 textarea {
     text-align: center;
     display: inline-block;
@@ -47,4 +42,14 @@ button {
     padding: .5rem;
     margin: .5rem;
     border: 0.1rem solid $color-white;
+}
+
+.wide-input {
+    max-width: 30rem;
+    width: 95%;
+}
+
+.wide-button {
+    max-width: 30rem;
+    width: 75%;
 }

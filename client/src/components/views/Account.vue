@@ -1,5 +1,5 @@
 <template>
-    <div class="section">
+    <div>
         <h1 v-if="$apollo.loading">Loading...</h1>
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
