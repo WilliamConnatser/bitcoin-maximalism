@@ -12,9 +12,6 @@ const {
     UserInputError,
 } = require('apollo-server');
 
-//BTCPay server config
-const client = require('./btcpay');
-
 //Resolver helpers
 const {
     createToken,
@@ -41,31 +38,43 @@ module.exports = {
                 }
                 //Return the user object
                 return await User.findOne({
-                    username: currentUser.username
-                });
+                        username: currentUser.username
+                    })
+                    .populate({
+                        path: 'donations',
+                        model: 'Donation'
+                    })
+                    .populate({
+                        path: 'certificates',
+                        model: 'Certificate'
+                    })
+                    .populate({
+                        path: 'opinions',
+                        model: 'Opinion'
+                    })
+                    .populate({
+                        path: 'votes',
+                        model: 'Vote'
+                    })
+                    .populate({
+                        path: 'edits',
+                        model: 'Edit'
+                    })
+                    .populate({
+                        path: 'bulletPoints',
+                        model: 'BulletPoint'
+                    })
+                    .populate({
+                        path: 'resources',
+                        model: 'Resource'
+                    })
+                    .populate({
+                        path: 'rhetoric',
+                        model: 'Rhetoric'
+                    });
+
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this user'));
-            }
-        },
-        userSpecificActivity: async (_, args, {
-            Donation,
-            currentUser
-        }) => {
-            // args not in use... args parsed = { }
-            try {
-                //Return null if no user is logged in
-                if (!currentUser) {
-                    return null;
-                }
-                //Return the user's previous donations in an array
-                return await Donation.find({
-                        createdBy: currentUser.username
-                    })
-                    .sort({
-                        dateCreated: 'desc'
-                    });
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this user\'s activity'));
             }
         },
         cryptoValue: async (_, {
@@ -87,10 +96,11 @@ module.exports = {
             Rhetoric
         }) => {
             // args not deconstructed to make it easier to pass into Query
-            // args destructed = { pro: Boolean, slug: String }
+            // args destructed = { metaSlug: String, slug: String }
             try {
-                //Only return approved arguments
+                //Only return active and approved arguments
                 args.approved = true;
+                args.active = true;
 
                 const rhetoric = await Rhetoric
                     .findOne(args)
@@ -99,49 +109,64 @@ module.exports = {
                         model: 'BulletPoint'
                     })
                     .populate({
+                        path: 'bulletPoints.votes',
+                        model: 'Vote'
+                    })
+                    .populate({
+                        path: 'bulletPoints.votes.createdBy',
+                        model: 'User'
+                    })
+                    .populate({
                         path: 'resources',
                         model: 'Resource'
+                    })
+                    .populate({
+                        path: 'resources.votes',
+                        model: 'Vote'
+                    })
+                    .populate({
+                        path: 'resources.votes.createdBy',
+                        model: 'User'
+                    })
+                    .populate({
+                        path: 'votes',
+                        model: 'Vote'
+                    })
+                    .populate({
+                        path: 'votes.createdBy',
+                        model: 'User'
                     });
 
                 return rhetoric;
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching argument-specific rhetoric'));
             }
         },
         allRhetoric: async (_, {
-            pro
+            metaSlug
         }, {
             Rhetoric
         }) => {
             try {
                 const rhetoric = await Rhetoric
                     .find({
-                        pro: pro,
+                        metaSlug,
                         approved: true,
                         active: true
                     })
                     .populate({
-                        path: 'bulletPoints',
-                        model: 'BulletPoint',
-                        match: {
-                            approved: true,
-                            active: true
-                        }
+                        path: 'votes',
+                        model: 'Vote'
                     })
                     .populate({
-                        path: 'resources',
-                        model: 'Resource',
-                        match: {
-                            approved: true,
-                            active: true
-                        }
-                    })
-                    .sort({
-                        accruedVotes: 'desc'
-                    })
+                        path: 'votes.createdBy',
+                        model: 'User'
+                    });
 
                 return rhetoric;
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching all rhetoric'));
             }
         },
@@ -149,7 +174,7 @@ module.exports = {
             Donation
         }) => {
             // args not destructed to make it easier to pass into Query
-            // args destructed = { pro: Boolean, slug: String }
+            // args destructed = { metaSlug: String, slug: String }
             try {
                 const donations = await Donation.find(args).sort({
                     value: 'desc'
@@ -176,7 +201,7 @@ module.exports = {
             Donation
         }) => {
             // args not destructed to make it easier to pass into Query
-            // args destructed = { pro: Boolean, slug: String }
+            // args destructed = { metaSlug: String, slug: String }
             try {
                 //Only return paid donations
                 args.paid = true;
@@ -201,7 +226,7 @@ module.exports = {
             Donation
         }) => {
             // args not destructed to make it easier to pass into Query
-            // args destructed = { pro: Boolean, slug: String, onModel: String, documentID: ID }
+            // args destructed = { metaSlug: String, slug: String, onModel: String, documentID: ID }
             try {
                 //Only return paid donations
                 args.paid = true;
@@ -359,92 +384,112 @@ module.exports = {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching unapproved opinions'));
             }
         },
-        topLastRandomOpinions: async (_, {
+        docIDSpecificOpinions: async (_, {
             _id,
-            onModel
+            onModel,
+            sortType,
+            sortDirection,
+            index
         }, {
             Opinion
         }) => {
-            // async query functions run simultaneously with Promise.all in the return statement
+            // the amount of opinions returned from this response is limited to save resources and bandwidth
+            // index then used to load more comments if the user wants to view more
             try {
 
-                //Opinion with the biggest donation
-                const topOpinion = async () => {
-
-                    //Populate an array with Donation info
-                    const answer = await Opinion.find({
-                        approved: true,
-                        documentID: _id,
-                        onModel
-                    }).populate({
-                        path: 'originalDonation',
-                        model: 'Donation'
-                    });
-
-                    //Helper to track max value and index
-                    var max = {
-                        index: null,
-                        value: 0
+                if (index < 0) throw new UserInputError('invalid-sort-index');
+                if (sortDirection) {
+                    if (sortDirection !== 'ascending' && sortDirection !== 'descending') {
+                        throw new UserInputError('invalid-sort-order');
                     }
-
-                    //For each array item, see if it's the biggest
-                    await answer.forEach(function (answerItems, i) {
-                        if (answerItems.originalDonation.amount > max.value) {
-                            max.index = i;
-                            max.value = answerItems.originalDonation.amount
-                        }
-                    })
-
-                    return answer[max.index];
                 }
 
-                //Opinion approved last
-                const lastOpinion = async () => {
-
-                    //Populate an array with Donation info
-                    //Sort by approval date
-                    //Limit to one entry (IE... the last opinion approved due to sort)
-                    const answer = await Opinion.find({
+                if (sortType === 'dateCreated') {
+                    var opinions = await Opinion.find({
                             approved: true,
                             documentID: _id,
                             onModel
-                        }).populate({
-                            path: 'originalDonation',
-                            model: 'Donation'
+                        })
+                        .populate({
+                            path: 'votes',
+                            model: 'Vote'
+                        })
+                        .populate({
+                            path: 'votes.createdBy',
+                            model: 'User'
                         })
                         .sort({
-                            dateApproved: 'desc'
+                            [sort]: sortDirection
                         })
-                        .limit(1);
+                        .limit(index + 10);
+                } else if (sortType === 'votes') {
 
-                    return answer[0];
+
+                    function calculateVotes(voteArray) {
+                        var upVotes = 0;
+                        var downVotes = 0
+                        voteArray.forEach(vote => {
+                            if (vote.upVotes) upVotes += vote.createdBy.accruedDonations;
+                            else downVotes += vote.createdBy.accruedDonations;
+                        });
+
+                        return upVotes + downVotes;
+                    }
+
+                    function sortArrayByVoteDescending(rhetoricArray) {
+                        return rhetoricArray.sort((a, b) => {
+                            return calculateVotes(b.votes) - calculateVotes(a.votes);
+                        });
+                    }
+
+                    function sortArrayByVoteAscending(rhetoricArray) {
+                        return rhetoricArray.sort((a, b) => {
+                            return calculateVotes(a.votes) - calculateVotes(b.votes);
+                        });
+                    }
+
+                    var opinions = await Opinion.find({
+                            approved: true,
+                            documentID: _id,
+                            onModel
+                        })
+                        .populate({
+                            path: 'votes',
+                            model: 'Vote'
+                        })
+                        .populate({
+                            path: 'votes.createdBy',
+                            model: 'User'
+                        });
+
+                    if (sortDirection === 'descending') {
+                        opinions = await sortArrayByVoteDescending(opinions).slice(0, index + 10);
+                    } else {
+                        opinions = await sortArrayByVoteAscending(opinions).slice(0, index + 10);
+                    }
+
+                } else if (sortType === 'random') {
+                    var opinions = await Opinion.find({
+                            approved: true,
+                            documentID: _id,
+                            onModel
+                        })
+                        .populate({
+                            path: 'votes',
+                            model: 'Vote'
+                        })
+                        .populate({
+                            path: 'votes.createdBy',
+                            model: 'User'
+                        })
+                        .limit(index + 10);
+
+                } else {
+                    throw new UserInputError('invalid-sort-type');
                 }
 
-                //Random opinion
-                const randomOpinion = async () => {
+                return opinions;
 
-                    //Populate an array of Opinions with Donation info
-                    const opinionArray = await Opinion.find({
-                        approved: true,
-                        documentID: _id,
-                        onModel
-                    }).populate({
-                        path: 'originalDonation',
-                        model: 'Donation'
-                    });
-
-                    //Return a random array item
-                    return opinionArray[Math.floor(Math.random() * opinionArray.length)];
-                }
-
-                //Await for all queries above to complete
-                return await Promise.all([
-                    topOpinion(),
-                    lastOpinion(),
-                    randomOpinion()
-                ]).then(returnValue => {
-                    return returnValue;
-                });
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while querying for opinions'));
             }
@@ -460,7 +505,7 @@ module.exports = {
                     approved: true,
                     documentID: _id,
                     onModel
-                }).count();
+                }).countDocuments();
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while counting this document\'s opinions'));
             }
@@ -572,15 +617,17 @@ module.exports = {
             User
         }) => {
             try {
+                var userObjectFromToken = {}
                 //Validation
-                const userObject = await jwt.verify(token, process.env.SECRET, function (err) {
+                const userObject = await jwt.verify(token, process.env.SECRET, function (err, userObject) {
                     if (err) throw new AuthenticationError('invalid-token');
+                    userObjectFromToken = userObject
                 });
-                if (userObject.emailVerified) throw new UserInputError("already-verified");
+                if (userObjectFromToken.emailVerified) throw new UserInputError("already-verified");
 
                 //Update User document
                 var user = await User.findOne({
-                    username: userObject.username
+                    username: userObjectFromToken.username
                 });
                 if (!user) throw new AuthenticationError('user-not-found');
                 user.emailVerified = true;
@@ -591,6 +638,7 @@ module.exports = {
                     token: createToken(user, process.env.SECRET, "1hr")
                 }
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while verifying your email'));
             }
         },
@@ -645,7 +693,7 @@ module.exports = {
                 //Validation
                 try {
                     var userObject = await jwt.verify(token, process.env.SECRET)
-                } catch(err) {
+                } catch (err) {
                     throw new AuthenticationError('invalid-token');
                 }
 
@@ -691,11 +739,11 @@ module.exports = {
             User
         }) => {
             try {
-                
+
                 //Validation
                 try {
                     var userObject = await jwt.verify(token, process.env.SECRET)
-                } catch(err) {
+                } catch (err) {
                     throw new AuthenticationError('invalid-token');
                 }
 
@@ -705,7 +753,7 @@ module.exports = {
                 });
                 if (!user) throw new AuthenticationError('user-not-found');
 
-                if(newPassword1 === newPassword2) {
+                if (newPassword1 === newPassword2) {
                     user.password = newPassword1;
                     await user.save();
                 } else {
@@ -753,7 +801,7 @@ module.exports = {
                 const newUser = await new User(userObject).save();
 
                 //Construct and send email verification
-                sendRegistrationEmail(user);
+                sendRegistrationEmail(newUser);
 
                 return true;
             } catch (err) {
@@ -872,7 +920,7 @@ module.exports = {
                 opinion.approvedBy = currentUser.username;
                 opinion.approvalCommentary = approvalCommentary;
                 opinion.dateApproved = new Date();
-                opinion.save()
+                opinion.save();
 
                 return true;
 

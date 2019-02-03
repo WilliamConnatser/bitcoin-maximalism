@@ -8,6 +8,11 @@ const BulletPointSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     active: {
         type: Boolean,
         required: true,
@@ -17,8 +22,8 @@ const BulletPointSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    pro: {
-        type: Boolean,
+    metaSlug: {
+        type: String,
         required: true
     },
     content: {
@@ -52,14 +57,11 @@ const BulletPointSchema = new mongoose.Schema({
         default: [],
         ref: 'Opinion'
     },
-    originalDonation: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Donation'
-    },
-    accruedVotes: {
-        type: Number,
+    votes: {
+        type: [mongoose.Schema.Types.ObjectId],
         required: true,
-        default: 0
+        default: [],
+        ref: 'Vote'
     }
 });
 

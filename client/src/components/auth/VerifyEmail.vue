@@ -5,7 +5,7 @@
         <div v-if="!success && $apollo.loading">
             Please wait for your token to be validated.
         </div>
-        <div v-else>
+        <div v-else-if="!resent">
             Your email validation token is either invalid or expired. Please request a new validation email
             below:
         </div>
@@ -36,6 +36,7 @@
         },
         methods: {
             verifyEmail() {
+                console.log(this.$route.params.token)
                 //GraphQL Mutation
                 this.$apollo.mutate({
                     mutation: gql `

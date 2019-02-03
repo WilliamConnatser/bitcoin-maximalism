@@ -9,7 +9,8 @@ const DonationSchema = new mongoose.Schema({
         default: Date.now
     },
     createdBy: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     ticker: {
@@ -20,23 +21,6 @@ const DonationSchema = new mongoose.Schema({
     amount: {
         type: Number,
         required: true
-    },
-    slug: {
-        type: String,
-        required: true
-    },
-    pro: {
-        type: Boolean,
-        required: true
-    },
-    documentID: {
-        type: mongoose.Schema.Types.ObjectId,
-        refPath: 'onModel',
-        required: true
-    },
-    onModel: {
-        type: String,
-        enum: ['BulletPoint', 'Opinion', 'Resource', 'Rhetoric', 'Certificate', 'User', 'Edit']
     },
     active: {
         type: Boolean,
@@ -56,13 +40,17 @@ const DonationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    votingDonation: {
+    accruing: {
         type: Boolean,
-        required: true,
-        default: false
+        required: true
     },
-    upVote: {
-        type: Boolean
+    onModel: {
+        type: String,
+        enum: ['Certificate', 'User'],
+        required: true
+    },
+    documentID: {
+        type: String
     }
 });
 

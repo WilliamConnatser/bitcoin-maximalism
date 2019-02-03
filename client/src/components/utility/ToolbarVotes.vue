@@ -5,9 +5,9 @@
                 <font-awesome-icon icon="angle-up" />
             </span>
             <span class="amount-donated">
-                <span v-if="arrayItemProp.accruedVotes>0">+ {{arrayItemProp.accruedVotes | formatBitcoinAmount}}</span>
-                <span v-if="arrayItemProp.accruedVotes<0">- {{arrayItemProp.accruedVotes*-1 | formatBitcoinAmount}}</span>
-                <span v-if="arrayItemProp.accruedVotes===0">{{arrayItemProp.accruedVotes*-1 | formatBitcoinAmount}}</span>
+                <span v-if="calculateVotes(arrayItemProp.votes)>0">+ {{calculateVotes(arrayItemProp.votes) | formatBitcoinAmount}}</span>
+                <span v-else-if="calculateVotes(arrayItemProp.votes)<0">- {{calculateVotes(arrayItemProp.votes)*-1 | formatBitcoinAmount}}</span>
+                <span v-else-if="calculateVotes(arrayItemProp.votes)===0">{{calculateVotes(arrayItemProp.votes)*-1 | formatBitcoinAmount}}</span>
             </span>
             <span class="icon" @click='initialize(false)' title="Downvote">
                 <font-awesome-icon icon="angle-down" />
@@ -58,8 +58,7 @@
     export default {
         name: "ToolbarVotes",
         props: {
-            arrayItemProp: Object,
-            metaSlug: String
+            arrayItemProp: Object
         },
         data() {
             return {
@@ -67,7 +66,6 @@
                 upvote: null,
                 argumentSpecificAmountDonated: 0,
                 docIDSpecificAmountDonated: 0,
-                slug: "",
                 donationAmount: 0,
                 deActivate: true,
             }
@@ -90,6 +88,12 @@
             },
             computedAmount: function () {
                 return (this.donationAmount * this.cryptoValue).toFixed(2);
+            },
+            slug() {
+                return this.$route.params.slug;
+            },
+            metaSlug() {
+                return this.$route.params.metaSlug;
             }
         },
         methods: {
@@ -166,6 +170,16 @@
                 } else {
                     return true;
                 }
+            },
+            calculateVotes(voteArray) {
+                var upVotes = 0;
+                var downVotes = 0
+                voteArray.forEach(vote => {
+                    if (vote.upVotes) upVotes += vote.createdBy.accruedDonations;
+                    else downVotes += vote.createdBy.accruedDonations;
+                });
+
+                return upVotes + downVotes;
             }
         },
         watch: {

@@ -11,7 +11,7 @@ Almost all Mongoose, Apollo, and GraphQL logic is located server-side in the pro
 ```
 typedefs.gql = Defines aliases for GraphQL Models
 /models/Todo.js = Defines GraphQL models (aka. schemas)
-server.js = MongoDB, Mongoose, and Apollo GraphQL initialization
+index.js = MongoDB, Mongoose, and Apollo GraphQL initialization
 resolvers.js = GraphQL resolvers which use Mongoose to interact with MongoDB
 now.json = ZEIT Configuration and additional Environment Variables
 ```

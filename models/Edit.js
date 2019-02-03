@@ -9,15 +9,16 @@ const EditSchema = new mongoose.Schema({
         default: Date.now
     },
     createdBy: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     slug: {
         type: String,
         required: true,
     },
-    pro: {
-        type: Boolean,
+    metaSlug: {
+        type: String,
         required: true
     },
     oldDocumentID: {
@@ -49,9 +50,11 @@ const EditSchema = new mongoose.Schema({
     approvalCommentary: {
         type: String
     },
-    originalDonation: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Donation'
+    votes: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Vote',
+        required: true,
+        default: []
     }
 });
 

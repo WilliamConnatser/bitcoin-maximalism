@@ -1,26 +1,87 @@
 <template>
-    <div>
+    <div class="normal-text">
         <h1 v-if="$apollo.loading">Loading...</h1>
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
             <h1>Account Panel</h1>
+            Current Influence: {{currentUser.accruedDonations | formatBitcoinAmount}} <br />
             <button id="signOut" v-if="currentUser" @click="signoutUser">Signout</button>
-            <ul v-for="donation in userSpecificActivity" :key="donation._id" class="list normal-text">
-                <li>
-                    Status: <strong>{{status(donation)}}</strong>
-                    <div>{{donation.dateCreated | formatDate}}</div>
-                    {{donationFor(donation.votingDonation, donation.upVote)}}
-                    on <span v-html="argumentLink(donation)"></span>
-                    <div v-if="!donation.active && !donation.paid">The amount of time alotted for this donation has
-                        passed.</div>
-                    <div v-else-if="donation.paid">
-                        This donation was paid!
-                    </div>
-                    <div>
-                        <router-link :to="statusLink(donation)">View Status</router-link>
-                    </div>
-                </li>
-            </ul>
+
+            <div v-if="currentUser.certificates.length>0" class="block">
+                <h2>Certificates</h2>
+                <ul v-for="certificate in currentUser.certificates" :key="certificate._id" class="list">
+                    <li>
+                        {{_id}}
+                        {{dateCreated}}
+                        {{createdBy.username}}
+                        {{active}}
+                        {{activeUntil}}
+                        {{name}}
+                        {{protagonistic}}
+                        {{donationID}}
+                    </li>
+                </ul>
+            </div>
+
+            <div v-if="currentUser.donations.length>0" class="block">
+                <h2>Donations</h2>
+                <ul v-for="donation in currentUser.donations" :key="donation._id" class="list">
+                    <li>
+                        Status: <strong>{{status(donation)}}</strong>
+                        <div>{{donation.dateCreated | formatDate}}</div>
+                        {{donationFor(donation.votingDonation, donation.upVote)}}
+                        on <span v-html="argumentLink(donation)"></span>
+                        <div v-if="!donation.active && !donation.paid">The amount of time alotted for this donation has
+                            passed.</div>
+                        <div v-else-if="donation.paid">
+                            This donation was paid!
+                        </div>
+                        <div>
+                            <router-link :to="statusLink(donation)">View Status</router-link>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div v-if="currentUser.opinions.length>0" class="block">
+                <h2>Opinions</h2>
+                <ul v-for="opinion in currentUser.opinions" :key="opinion._id" class="list">
+                    <li>
+                        {{_id}}
+                        {{dateCreated}}
+                        {{createdBy.username}}
+                        {{slug}}
+                        {{metaSlug}}
+                        {{opinion}}
+                        {{onModel}}
+                        {{documentID}}
+                        {{approved}}
+                        {{censored}}
+                        {{censoredBy}}
+                        {{censoredCommentary}}
+                        {{votes}}
+                    </li>
+                </ul>
+            </div>
+
+            <div v-if="currentUser.votes.length>0" class="block">
+                <h2>Votes</h2>
+                <ul v-for="vote in currentUser.votes" :key="vote._id" class="list">
+                    <li>
+                        {{_id}}
+                        {{dateCreated}}
+                        {{createdBy._id}}
+                        {{createdBy.username}}
+                        {{createdBy.accruedDonations}}
+                        {{slug}}
+                        {{metaSlug}}
+                        {{onModel}}
+                        {{documentID}}
+                        {{upVote}}
+                    </li>
+                </ul>
+            </div>
+
             <div v-show="currentUser.admin">
                 <h2>You so fancy! Look are you, Mr. Administrator...</h2>
                 <ul v-for="unapprovedOpinion in allUnapprovedOpinions" :key="unapprovedOpinion._id" class="basic-list">
@@ -50,20 +111,11 @@
                 currentUser: null,
                 allUnapprovedOpinions: null,
                 approved: null,
-                approvalCommentary: [],
-                userSpecificActivity: []
+                approvalCommentary: []
             }
         },
         created() {
             this.$apollo.queries.currentUser.refetch();
-            this.$apollo.queries.userSpecificActivity.refetch();
-        },
-        watch: {
-            currentUser: function (newUser) {
-                if (newUser) {
-                    this.$apollo.queries.userSpecificActivity.refetch();
-                }
-            }
         },
         components: {
             Login
@@ -131,6 +183,72 @@
                             emailVerified
                             active
                             admin
+                            accruedDonations
+                            certificates {
+                                _id
+                                dateCreated
+                                createdBy {
+                                    username
+                                }
+                                active
+                                activeUntil
+                                name
+                                protagonistic
+                                donationID {
+                                    _id
+                                    amount
+                                    paid
+                                }
+                            }
+                            donations {
+                                _id
+                                dateCreated
+                                amount
+                                active
+                                paid
+                                accruing
+                                onModel
+                                documentID
+                            }
+                            opinions {
+                                _id
+                                dateCreated
+                                createdBy {
+                                    username
+                                }
+                                slug
+                                metaSlug
+                                opinion
+                                onModel
+                                documentID
+                                approved
+                                censored
+                                censoredBy
+                                censoredCommentary
+                                votes {
+                                    _id
+                                    dateCreated
+                                    createdBy {
+                                        _id
+                                        username
+                                        accruedDonations
+                                    }
+                                }
+                            }
+                            votes {
+                                _id
+                                dateCreated
+                                createdBy {
+                                    _id
+                                    username
+                                    accruedDonations
+                                }
+                                slug
+                                metaSlug
+                                onModel
+                                documentID
+                                upVote
+                            }
                         }
                     }
                 `
@@ -141,20 +259,32 @@
                         allUnapprovedOpinions {
                             _id
                             dateCreated
-                            createdBy
+                            createdBy {
+                                username
+                            }
                             slug
-                            pro
+                            metaSlug
                             opinion
-                            approved
                             onModel
                             documentID
-                            approvedBy
-                            approvalCommentary
+                            approved
+                            censored
+                            censoredBy
+                            censoredCommentary
+                            votes {
+                                _id
+                                dateCreated
+                                createdBy {
+                                    _id
+                                    username
+                                    accruedDonations
+                                }
+                            }
                         }
                     }
                 `,
                 skip: async function () {
-                    if (this.currentUser == null || this.currentUser.admin) return true;
+                    if (this.currentUser == null || !this.currentUser.admin) return true;
                 }
             },
             allUnapprovedEdits: {
@@ -164,7 +294,7 @@
                         dateCreated
                         createdBy
                         slug
-                        pro
+                        macroSlug
                         oldDocumentID
                         newDocumentID
                         approved
@@ -176,26 +306,6 @@
                 skip: async function () {
                     if (this.currentUser === null || !this.currentUser.admin) return true;
                 }
-            },
-            userSpecificActivity: {
-                query: gql `query userSpecificActivity {
-                        userSpecificActivity {
-                            _id
-                            dateCreated
-                            createdBy
-                            slug
-                            pro
-                            amount
-                            documentID
-                            onModel
-                            active
-                            paid
-                            invoiceID
-                            invoiceURL
-                            votingDonation
-                            upVote
-                        }
-                    }`
             }
         }
     };

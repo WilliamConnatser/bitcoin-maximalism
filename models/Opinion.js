@@ -9,15 +9,16 @@ const OpinionSchema = new mongoose.Schema({
         default: Date.now
     },
     createdBy: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     slug: {
         type: String,
         required: true
     },
-    pro: {
-        type: Boolean,
+    metaSlug: {
+        type: String,
         required: true
     },
     opinion: {
@@ -27,15 +28,20 @@ const OpinionSchema = new mongoose.Schema({
     approved: {
         type: Boolean,
         required: true,
+        default: true,
+    },
+    censored: {
+        type: Boolean,
+        required: true,
         default: false
     },
-    dateApproved: {
+    dateCensored: {
         type: Date
     },
-    approvedBy: {
+    censoredBy: {
         type: String
     },
-    approvalCommentary: {
+    censoredCommentary: {
         type: String
     },
     documentID: {
@@ -45,12 +51,14 @@ const OpinionSchema = new mongoose.Schema({
     },
     onModel: {
         type: String,
-        enum: ['BulletPoint', 'Edit', 'Resource', 'Rhetoric'],
+        enum: ['BulletPoint', 'Resource', 'Rhetoric'],
         required: true
     },
-    originalDonation: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Donation'
+    votes: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        ref: 'Vote',
+        default: []
     }
 });
 

@@ -16,15 +16,14 @@ const {
     ApolloError
 } = require('apollo-server');
 
-const createToken = (user, secret, expiresIn) => {
+const createToken = ({
+    username,
+    email,
+    admin,
+    emailVerified
+}, secret, expiresIn) => {
+    console.log(username, email, admin, emailVerified)
     try {
-        const {
-            username,
-            email,
-            admin,
-            emailVerified
-        } = user;
-
         return jwt.sign({
             username,
             email,
@@ -58,7 +57,7 @@ const sendPasswordResetEmail = async user => {
         emailObject.to = user.email;
         emailObject.text += `www.BitcoinMaximalism.com/verify-password/${emailValidationToken}`;
         emailObject.html += `<a href="www.BitcoinMaximalism.com/verify-password/${emailValidationToken}/">Verify Password</a>`;
-        
+
         console.log(emailObject)
         emailTransporter.sendMail(emailObject);
     } catch (err) {
@@ -219,6 +218,9 @@ const parseError = (error, unknownError) => {
     else if (error == 'un-matching-password') return 'Passwords must match';
     else if (error == 'email-taken') return 'Email address already in use';
     else if (error == 'invalid-type') return 'Invalid type submitted';
+    else if (error == 'invalid-sort-index') return 'Invalid number requested';
+    else if (error == 'invalid-sort-type') return 'Invalid sort type';
+    else if (error == 'invalid-sort-order') return 'Invalid sort order';
     else if (error == 'admin') return 'You must be an admin';
     else return unknownError;
 }

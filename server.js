@@ -23,6 +23,7 @@ const Certificate = require('./models/Certificate');
 const Donation = require('./models/Donation');
 const BulletPoint = require('./models/BulletPoint');
 const User = require('./models/User');
+const Vote = require('./models/Vote');
 const Crypto = require('./models/Crypto');
 
 //Needed to authenticate the token sent from the client
@@ -61,7 +62,7 @@ const getUser = async (token) => {
     if (token) {
         try {
             return await jwt.verify(token, process.env.SECRET);
-        } catch {
+        } catch(err) {
             return null;
         }
     }
@@ -92,6 +93,7 @@ const server = new ApolloServer({
             Donation,
             BulletPoint,
             User,
+            Vote,
             Crypto,
             currentUser: await getUser(token),
             operationName

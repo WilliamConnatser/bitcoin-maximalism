@@ -3,7 +3,7 @@
     <h1 v-if="argumentSpecificRhetoric">{{argumentSpecificRhetoric.title}}</h1>
     <h1 v-if="$apollo.loading">Loading...</h1>
     <ul>
-      <AdvancedListItem v-if="argumentSpecificRhetoric" :arrayProp="concatAndSort" :metaSlug="this.metaSlug" />
+      <AdvancedListItem v-if="argumentSpecificRhetoric" :arrayProp="concatAndSort" />
     </ul>
   </div>
 </template>
@@ -20,36 +20,47 @@
     data() {
       return {
         currentUser: null,
-        argumentSpecificRhetoric: null,
-        pro: "",
-        slug: "",
-        metaSlug: null
+        argumentSpecificRhetoric: null
       }
     },
     created() {
-      if (this.$route.params.metaSlug == "protagonistic") {
-        this.pro = true;
-      } else if (this.$route.params.metaSlug === "antagonistic") {
-        this.pro = false;
-      } else {
+      if (this.$route.params.metaSlug == !"protagonistic" && this.$route.params.metaSlug !== "antagonistic") {
         this.$router.push({
           path: '/not-found'
         });
       }
-
-      this.metaSlug = this.$route.params.metaSlug;
-      this.slug = this.$route.params.slug;
     },
     computed: {
       concatAndSort: function () {
         if (this.argumentSpecificRhetoric.bulletPoints && this.argumentSpecificRhetoric.resources) {
-          var result = this.argumentSpecificRhetoric.bulletPoints.concat(this.argumentSpecificRhetoric.resources);
-          return result.sort((a, b) => {
-            return b.accruedVotes - a.accruedVotes
-          });
+          var concatArray = this.argumentSpecificRhetoric.bulletPoints.concat(this.argumentSpecificRhetoric.resources);
+          return this.sortArrayByVote(concatArray);
         } else {
-          []
+          return []
         }
+      },
+      metaSlug() {
+        return this.$route.params.metaSlug;
+      },
+      slug() {
+        return this.$route.params.slug;
+      }
+    },
+    methods: {
+      calculateVotes(voteArray) {
+        var upVotes = 0;
+        var downVotes = 0
+        voteArray.forEach(vote => {
+          if (vote.upVotes) upVotes += vote.createdBy.accruedDonations;
+          else downVotes += vote.createdBy.accruedDonations;
+        });
+
+        return upVotes + downVotes;
+      },
+      sortArrayByVote(rhetoricArray) {
+        return rhetoricArray.sort((a, b) => {
+          return this.calculateVotes(b.votes) - this.calculateVotes(a.votes);
+        });
       }
     },
     apollo: {
@@ -69,21 +80,28 @@
       },
       argumentSpecificRhetoric: {
         query: gql `
-            query argumentSpecificRhetoric($pro: Boolean!, $slug: String!) {
-              argumentSpecificRhetoric(pro:$pro, slug: $slug) {
+            query argumentSpecificRhetoric($metaSlug: String!, $slug: String!) {
+              argumentSpecificRhetoric(metaSlug:$metaSlug, slug: $slug) {
                 _id
                 dateCreated
                 active
                 slug
-                pro
+                metaSlug
                 title
                 approved
-                accruedVotes
                 bulletPoints {
                     _id
                     slug
                     content
-                    accruedVotes
+                    votes {
+                      _id
+                      dateCreated
+                      createdBy {
+                        _id
+                        username
+                        accruedDonations
+                      }
+                    }
                 }
                 resources {
                     _id
@@ -91,19 +109,33 @@
                     title
                     media
                     link
-                    accruedVotes
+                    votes {
+                      _id
+                      dateCreated
+                      createdBy {
+                        _id
+                        username
+                        accruedDonations
+                      }
+                    }
+                }
+                votes {
+                  _id
+                  dateCreated
+                  createdBy {
+                    _id
+                    username
+                    accruedDonations
+                  }
                 }
               }
             }
         `,
         variables() {
           return {
-            pro: this.pro,
+            metaSlug: this.metaSlug,
             slug: this.slug
           }
-        },
-        skip() {
-          if (this.slug === "" || this.pro === "") return true;
         },
         result(ApolloQueryResult, key) {
           if (!ApolloQueryResult.data.argumentSpecificRhetoric) {

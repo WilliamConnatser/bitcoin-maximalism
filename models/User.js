@@ -24,11 +24,6 @@ const UserSchema = new mongoose.Schema({
         required: true,
         default: false
     },
-    active: {
-        type: Boolean,
-        required: true,
-        default: true
-    },
     password: {
         type: String,
         required: true,
@@ -38,6 +33,80 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
+    },
+    active: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
+    banned: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    bannedReason: {
+        type: String
+    },
+    bannedUntil: {
+        type: Date
+    },
+    certified: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    certificates: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Certificate'
+    },
+    donations: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Donation'
+    },
+    accruedDonations: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    opinions: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Opinion'
+    },
+    votes: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Vote',
+        required: true,
+        default: []
+    },
+    edits: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Edit'
+    },
+    bulletPoints: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'BulletPoint'
+    },
+    resources: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Resource'
+    },
+    rhetoric: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Rhetoric'
     }
 });
 

@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 //Define Model Schema
-const CertificateSchema = new mongoose.Schema({
+const VoteSchema = new mongoose.Schema({
     dateCreated: {
         type: Date,
         required: true,
@@ -13,29 +13,26 @@ const CertificateSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    active: {
-        type: Boolean,
-        required: true,
-        default: true
-    },
-    activeUntil: {
-        type: Date,
-        required: true
-    },
-    name: {
+    slug: {
         type: String,
-        required: true,
-        trim: true
-    },
-    protagonistic: {
-        type: Boolean,
         required: true
     },
-    donationID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Donation',
+    metaSlug: {
+        type: String,
+        required: true
+    },
+    onModel: {
+        type: String,
+        required: true
+    },
+    documentID: {
+        type: String,
+        required: true
+    },
+    upVote: {
+        type: Boolean,
         required: true
     }
 });
 
-module.exports = mongoose.model('Certificate', CertificateSchema);
+module.exports = mongoose.model('Vote', VoteSchema);

@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 
-import About from "./components/views/About.vue";
+import Intro from "./components/views/Intro.vue";
 import Account from "./components/views/Account.vue";
 import VerifyEmail from "./components/auth/VerifyEmail.vue";
 import VerifyPassword from "./components/auth/VerifyPassword.vue";
@@ -20,7 +20,7 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [{
       path: "/",
-      component: About
+      component: Intro
     },
     {
       path: "/rhetoric/:metaSlug",

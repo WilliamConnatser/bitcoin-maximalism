@@ -11,9 +11,10 @@ type Token {
 type Rhetoric {
     _id: ID
     dateCreated: String!
+    createdBy: User!
     active: Boolean!
     slug: String!
-    pro: Boolean!
+    metaSlug: String!
     title: String!
     approved: Boolean!
     dateApproved: String
@@ -23,16 +24,16 @@ type Rhetoric {
     resources: [Resource!]!
     opinions: [Opinion!]!
     edits: [Edit!]!
-    originalDonation: Donation
-    accruedVotes: Float!
+    votes: [Vote!]!
 }
 
 type BulletPoint {
     _id: ID
     dateCreated: String!
+    createdBy: User!
     active: Boolean!
     slug: String!
-    pro: Boolean!
+    metaSlug: String!
     content: String!
     approved: Boolean!
     dateApproved: String
@@ -40,16 +41,16 @@ type BulletPoint {
     approvalCommentary: String
     edits: [Edit!]!
     opinions: [Opinion!]!
-    originalDonation: Donation
-    accruedVotes: Float
+    votes: [Vote!]!
 }
 
 type Resource {
     _id: ID
-    dateCreated: String!
+    dateCreated: User!
+    createdBy: User!
     active: Boolean!
     slug: String!
-    pro: Boolean!
+    metaSlug: String!
     title: String!
     media: String!
     link: String!
@@ -59,32 +60,32 @@ type Resource {
     approvalCommentary: String
     edits: [Edit!]!
     opinions: [Opinion!]!
-    originalDonation: Donation
-    accruedVotes: Float
+    votes: [Vote!]!
 }
 
 type Opinion {
     _id: ID
     dateCreated: String!
-    createdBy: String!
+    createdBy: User!
     slug: String!
-    pro: Boolean!
+    metaSlug: String!
     opinion: String!
     approved: Boolean!
-    dateApproved: String
-    approvedBy: String
-    approvalCommentary: String
+    censored: Boolean!
+    dateCensored: String
+    censoredBy: String
+    censoredCommentary: String
     documentID: ID!
     onModel: String!
-    originalDonation: Donation!
+    votes: [Vote!]!
 }
 
 type Edit {
     _id: ID
     dateCreated: String!
-    createdBy: String!
+    createdBy: User!
     slug: String!
-    pro: Boolean!
+    metaSlug: String!
     oldDocumentID: ID!
     newDocumentID: ID!
     onModel: String!
@@ -92,33 +93,44 @@ type Edit {
     dateApproved: String
     approvedBy: String
     approvalCommentary: String
-    originalDonation: Donation!
+    votes: [Vote!]!
 }
 
 type Donation {
     _id: ID
     dateCreated: String!
-    createdBy: String!
-    slug: String!
-    pro: Boolean!
+    createdBy: User!
+    ticker: String!
     amount: Float!
-    documentID: ID!
-    onModel: String!
-    active: Boolean!
+    active: Boolean! #Unpaid donations will be inactive aka. false
     paid: Boolean!
     invoiceID: String!
     invoiceURL: String!
-    votingDonation: Boolean
-    upVote: Boolean
+    accruing: Boolean! #If the donation is attributable towards total donated for upvotes/downvotes
+    onModel: String! #The model the donation is applicable to
+    documentID: ID! #only really used if non-acruuing vote to buy certificates etc.
 }
 
 type Certificate {
     _id: ID
     dateCreated: String!
+    createdBy: User!
     active: Boolean!
+    activeUntil: String! #Date the certificate is active for
     name: String!
-    pro: Boolean!
-    originalDonation: Donation!
+    protagonistic: Boolean
+    donationID: Donation!
+}
+
+type Vote {
+    _id: ID
+    dateCreated: String!
+    createdBy: User!
+    slug: String!
+    metaSlug: String!
+    onModel: String!
+    documentID: ID!
+    upVote: Boolean! #false if downvote, true if upvote
 }
 
 type User {
@@ -127,9 +139,22 @@ type User {
     username: String!@unique
     email: String!@unique
     emailVerified: Boolean!
-    active: Boolean!
     password: String!
     admin: Boolean!
+    active: Boolean! #If user wants to deactive their account any make previous actions anonymous
+    banned: Boolean! #If user is banned
+    bannedReason: String
+    bannedUntil: String #Timestamp user is banned until
+    certified: Boolean!
+    certificates: [Certificate!]!
+    donations: [Donation!]! #Array containing donation document IDs
+    accruedDonations: Float! #Total amount user has donated (including any boosts), updated when payment is successfuly proccessed
+    opinions: [Opinion!]!
+    votes: [Vote!]!
+    edits: [Edit!]!
+    rhetoric: [Rhetoric!]!
+    bulletPoints: [BulletPoint!]!
+    resources: [Resource!]!
 }
 
 type Crypto {
@@ -142,22 +167,21 @@ type Query {
     currentUser: User
     userSpecificActivity: [Donation]
 
-    argumentSpecificRhetoric(pro: Boolean!, slug: String!): Rhetoric
-    argumentSpecificAmountDonated(pro: Boolean!, slug: String!): Float
-    argumentSpecificDonations(pro: Boolean, slug: String): [Donation]
+    argumentSpecificRhetoric(metaSlug: String!, slug: String!): Rhetoric
+    argumentSpecificAmountDonated(metaSlug: String!, slug: String!): Float
+    argumentSpecificDonations(metaSlug: String, slug: String): [Donation]
 
     docIDSpecificDonation(_id: ID!): Donation
-    docIDSpecificAmountDonated(pro: Boolean!, slug: String!, onModel: String!, documentID: ID!): Float
+    docIDSpecificAmountDonated(metaSlug: String!, slug: String!, onModel: String!, documentID: ID!): Float
+    docIDSpecificOpinions(_id: String!, onModel: String!, sortType: String!, sortDirection: String, index: Int!): [Opinion]
     docIDSpecificOpinionCount(onModel: String!, _id: ID!): Int
     docIDSpecificRhetoric(_id: ID!): Rhetoric
     docIDSpecificBulletPoint(_id: ID!): BulletPoint
     docIDSpecificResource(_id: ID!): Resource
 
-    allRhetoric(pro: Boolean!): [Rhetoric]
+    allRhetoric(metaSlug: String!): [Rhetoric]
     allUnapprovedEdits: [Edit]
     allUnapprovedOpinions: [Opinion]
-    
-    topLastRandomOpinions(_id: String!, onModel: String!): [Opinion]
 
     donationSpecificOpinion(_id: ID!): Opinion
 
@@ -182,6 +206,6 @@ type Mutation {
 
     #Inactive - conceptual - submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
     #Inactive - conceptual -submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String
-    #Inactive - resolver written - addBulletPoint(slug: String!, pro: Boolean!, content: String!): BulletPoint
+    #Inactive - resolver written - addBulletPoint(slug: String!, metaSlug: String!, content: String!): BulletPoint
     #Inactive - resolve written - setUserAllegiance(allegiance: String!): Token
 }

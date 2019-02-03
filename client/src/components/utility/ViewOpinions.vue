@@ -1,19 +1,21 @@
 <template>
 <div class="normal-text">
     <h1 v-if="$apollo.loading">Loading...</h1>
-    <ul v-if="topLastRandomOpinions && topLastRandomOpinions[0]" class="opinions">
-        <li v-for="(opinion, index) in topLastRandomOpinions" class="opinion" :key="index">
+    <ul v-if="docIDSpecificOpinions && docIDSpecificOpinions[0]" class="opinions">
+        <button class="opinions-sort-button">Sort by Votes</button>
+        <button class="opinions-sort-button">Sort By Date</button>
+        <button class="opinions-sort-button">Random Sort</button>
+        <li v-for="(opinion, _id) in docIDSpecificOpinions" class="opinion" :key="_id">
             <div>
-                <strong class="opinion-label">{{title(index)}}: </strong>
-                <strong class="opinion-username">{{opinion.createdBy}}</strong>
+                {{opinion.dateCreated | formatDate }}
+                <strong class="opinion-username">{{opinion.createdBy.username}}</strong>
             </div>
             <div>
-                {{opinion.originalDonation.amount | formatBitcoinAmount}} BTC
+                {{opinion.opinion}}
             </div>
-            {{opinion.opinion}}
         </li>
     </ul>
-    <span class="block" v-if="!topLastRandomOpinions || !topLastRandomOpinions[0]">
+    <span class="block" v-if="!$apollo.loading && (!docIDSpecificOpinions || !docIDSpecificOpinions[0])">
         No one's commented on this yet...
     </span>
 </div>
@@ -72,22 +74,33 @@
                     }
                 `
             },
-            topLastRandomOpinions: {
-                query: gql `query topLastRandomOpinions ($_id: String!, $onModel: String!) {
-                    topLastRandomOpinions(_id: $_id, onModel: $onModel) {
+            docIDSpecificOpinions: {
+                query: gql `query docIDSpecificOpinions ($_id: String!, $onModel: String!, $sortType: String!, $sortDirection: String, $index: Int!) {
+                    docIDSpecificOpinions(_id: $_id, onModel: $onModel, sortType: $sortType, sortDirection: $sortDirection, index: $index) {
                         _id
-                        createdBy
-                        dateApproved
+                        dateCreated
+                        createdBy {
+                            username
+                        }                      
                         opinion
-                        originalDonation {
-                            amount
+                        votes {
+                            _id
+                            dateCreated
+                            createdBy {
+                                _id
+                                username
+                                accruedDonations
+                            }
                         }
                     }
                 }`,
                 variables() {
                     return {
                         _id: this.arrayItemProp._id,
-                        onModel: this.arrayItemProp.__typename
+                        onModel: this.arrayItemProp.__typename,
+                        sortType: 'votes',
+                        sortDirection: 'descending',
+                        index: 0
                     }
                 }
             }

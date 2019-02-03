@@ -8,6 +8,11 @@ const RhetoricSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     active: {
         type: Boolean,
         required: true,
@@ -17,8 +22,8 @@ const RhetoricSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    pro: {
-        type: Boolean,
+    metaSlug: {
+        type: String,
         required: true
     },
     title: {
@@ -63,14 +68,11 @@ const RhetoricSchema = new mongoose.Schema({
         default: [],
         ref: 'Edit'
     },
-    originalDonation: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Donation'
-    },
-    accruedVotes: {
-        type: Number,
+    votes: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Vote',
         required: true,
-        default: 0
+        default: []
     }
 });
 

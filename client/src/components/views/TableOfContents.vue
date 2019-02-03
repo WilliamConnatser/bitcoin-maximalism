@@ -4,7 +4,7 @@
 
     <h1 v-if="$apollo.loading">Loading...</h1>
     <ul>
-      <AdvancedListItem :metaSlug="metaSlug" :arrayProp="this.args" />
+      <AdvancedListItem :arrayProp="this.args" />
     </ul>
   </div>
 </template>
@@ -18,83 +18,101 @@
       return {
         currentUser: null,
         getAllApprovedAndActiveProtagonisticRhetoric: [],
-        getAllApprovedAndActiveAntagonisticRhetoric: [],
-        metaSlug: "",
-        slug: "",
-        pro: ""
+        getAllApprovedAndActiveAntagonisticRhetoric: []
       }
     },
     components: {
       AdvancedListItem
     },
-    created() {
-      if (this.$route.params.metaSlug === "protagonistic") {
-        this.pro = true;
-      } else if (this.$route.params.metaSlug === "antagonistic") {
-        this.pro = false;
-      } else {
-        this.$router.push({
-          path: '/not-found'
-        });
-      }
-
-      this.metaSlug = this.$route.params.metaSlug;
-      this.slug = this.$route.params.slug;
-    },
     computed: {
       args() {
         if (this.metaSlug === "protagonistic") {
-          return this.getAllApprovedAndActiveProtagonisticRhetoric;
+          return this.sortArrayByVote(this.getAllApprovedAndActiveProtagonisticRhetoric);
         } else if (this.$route.params.metaSlug === "antagonistic") {
-          return this.getAllApprovedAndActiveAntagonisticRhetoric;
+          return this.sortArrayByVote(this.getAllApprovedAndActiveAntagonisticRhetoric);
         } else {
-          this.$router.push({
-            path: '/not-found'
-          });
+          this.forwardTo404();
         }
+      },
+      metaSlug() {
+        return this.$route.params.metaSlug;
+      },
+      slug() {
+        return this.$route.params.slug;
       }
     },
-    watch: {
-      '$route'(to) {
-        if (to.params.metaSlug == "protagonistic") {
-          this.pro = true;
-        } else {
-          this.pro = false;
-        }
-        this.slug = to.params.slug;
-        this.metaSlug = to.params.metaSlug;
+    methods: {
+      forwardTo404() {
+        this.$router.push({
+          path: '/not-found'
+        });
+      },
+      calculateVotes(voteArray) {
+        var upVotes = 0;
+        var downVotes = 0
+        voteArray.forEach(vote => {
+          if (vote.upVotes) upVotes += vote.createdBy.accruedDonations;
+          else downVotes += vote.createdBy.accruedDonations;
+        });
+
+        return upVotes + downVotes;
+      },
+      sortArrayByVote(rhetoricArray) {
+        return rhetoricArray.sort((a, b) => {
+          return this.calculateVotes(b.votes) - this.calculateVotes(a.votes);
+        });
       }
     },
     apollo: {
       getAllApprovedAndActiveProtagonisticRhetoric: {
         query: gql `
-            query getAllApprovedAndActiveProtagonisticRhetoric($pro: Boolean!) {
-              allRhetoric(pro: $pro) {
+            query getAllApprovedAndActiveProtagonisticRhetoric($metaSlug: String!) {
+              allRhetoric(metaSlug: $metaSlug) {
                 _id
                 slug
                 title
-                accruedVotes
+                votes {
+                  _id
+                  dateCreated
+                  createdBy {
+                    _id
+                    username
+                    accruedDonations
+                  }
+                }
               }
             }
         `,
-        variables: {
-          pro: true
+        variables() {
+          return {
+            metaSlug: this.$route.params.metaSlug
+          }
         },
         update: data => (data.allRhetoric)
       },
       getAllApprovedAndActiveAntagonisticRhetoric: {
         query: gql `
-            query getAllApprovedAndActiveAntagonisticRhetoric($pro: Boolean!) {
-              allRhetoric(pro: $pro) {
+            query getAllApprovedAndActiveAntagonisticRhetoric($metaSlug: String!) {
+              allRhetoric(metaSlug: $metaSlug) {
                 _id
                 slug
                 title
-                accruedVotes
+                votes {
+                  _id
+                  dateCreated
+                  createdBy {
+                    _id
+                    username
+                    accruedDonations
+                  }
+                }
               }
             }
         `,
-        variables: {
-          pro: false
+        variables() {
+          return {
+            metaSlug: this.$route.params.metaSlug
+          }
         },
         update: data => (data.allRhetoric)
       }

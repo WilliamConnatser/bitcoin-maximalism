@@ -4,43 +4,37 @@ const initData = require('./initData');
 //BTCPayServer client
 const btcPayClient = require('./btcpay');
 
-//Mongoose Models
-const Rhetoric = require('./models/Rhetoric');
-const Edit = require('./models/Edit');
-const Opinion = require('./models/Opinion');
-const Resource = require('./models/Resource');
-const Certificate = require('./models/Certificate');
-const Donation = require('./models/Donation');
-const BulletPoint = require('./models/BulletPoint');
-const User = require('./models/User');
-const Crypto = require('./models/Crypto');
-
 const startup = async models => {
     async function originalInitialization() {
-        //Initialize the database on the first start up
+        //Initialize the database on the first start up by inserting initData
+        await models.User.findOne({}, async (err, result) => {
+            if (!result) {
+                const newUser = await new models.User(initData.adminUser).save();
+            }
+        });
         await models.BulletPoint.findOne({}, async (err, result) => {
-            if (!result) await models.BulletPoint.collection.insertMany(initData.bulletPoint)
+            if (!result) await models.BulletPoint.insertMany(initData.bulletPoint)
         });
         await models.Resource.findOne({}, async (err, result) => {
-            if (!result) await models.Resource.collection.insertMany(initData.resource)
+            if (!result) await models.Resource.insertMany(initData.resource)
         });
         await models.Rhetoric.findOne({}, async (err, result) => {
-            if (!result) await models.Rhetoric.collection.insertMany(initData.rhetoric)
+            if (!result) await models.Rhetoric.insertMany(initData.rhetoric)
         });
     }
 
     function populateBulletPoints() {
         models.BulletPoint.find({}, async (err, results) => {
             for (const bulletPoint of results) {
-                Rhetoric.findOne({
+                models.Rhetoric.findOne({
                     slug: bulletPoint.slug,
-                    pro: bulletPoint.pro
+                    metaSlug: bulletPoint.metaSlug
                 }, async (err, rhetoric) => {
                     var arrayToCompare = rhetoric.bulletPoints.map(function (v) {
                         return v.toString();
                     });
                     if (bulletPoint !== undefined) {
-                        if (bulletPoint.slug === rhetoric.slug && bulletPoint.pro === rhetoric.pro) {
+                        if (bulletPoint.slug === rhetoric.slug && bulletPoint.metaSlug === rhetoric.metaSlug) {
                             if (arrayToCompare.indexOf(bulletPoint._id.toString()) < 0) {
                                 rhetoric.bulletPoints.push(bulletPoint._id);
                                 rhetoric.save();
@@ -55,15 +49,15 @@ const startup = async models => {
     function populateResources() {
         models.Resource.find({}, async (err, results) => {
             for (const resource of results) {
-                Rhetoric.findOne({
+                models.Rhetoric.findOne({
                     slug: resource.slug,
-                    pro: resource.pro
+                    metaSlug: resource.metaSlug
                 }, async (err, rhetoric) => {
                     var arrayToCompare = rhetoric.resources.map(function (v) {
                         return v.toString();
                     });
                     if (resource !== undefined) {
-                        if (resource.slug === rhetoric.slug && resource.pro === rhetoric.pro) {
+                        if (resource.slug === rhetoric.slug && resource.metaSlug === rhetoric.metaSlug) {
                             if (arrayToCompare.indexOf(resource._id.toString()) < 0) {
                                 rhetoric.resources.push(resource._id);
                                 rhetoric.save();
@@ -78,16 +72,16 @@ const startup = async models => {
     function populateResourceRhetoric() {
         models.Resource.find({}, (err, results) => {
             for (const resource of results) {
-                Rhetoric.findOne({
+                models.Rhetoric.findOne({
                     slug: "resources",
-                    pro: resource.pro
+                    metaSlug: resource.metaSlug
                 }, (err, rhetoric) => {
 
                     var arrayToCompare = rhetoric.resources.map(function (v) {
                         return v.toString();
                     });
                     if (resource !== undefined) {
-                        if (resource.pro === rhetoric.pro) {
+                        if (resource.metaSlug === rhetoric.metaSlug) {
                             if (arrayToCompare.indexOf(resource._id.toString()) < 0) {
                                 rhetoric.resources.push(resource._id);
                                 rhetoric.save();
@@ -108,7 +102,7 @@ const startup = async models => {
         btcPayClient.get_rates('BTC_USD', process.env.BTCPAY_STOREID)
             .then(async function (rates) {
 
-                var cryptoDoc = await Crypto.findOne({
+                var cryptoDoc = await models.Crypto.findOne({
                     ticker: 'BTC'
                 });
 
@@ -120,7 +114,7 @@ const startup = async models => {
                 } else {
 
                     var id = require('mongodb').ObjectID();
-                    const newCrypto = new Crypto({
+                    const newCrypto = new models.Crypto({
                         _id: id,
                         ticker: 'BTC',
                         valueUSD: Number(rates[0].rate)

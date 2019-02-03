@@ -47,8 +47,7 @@
     export default {
         name: "ToolbarActions",
         props: {
-            arrayItemProp: Object,
-            metaSlug: String
+            arrayItemProp: Object
         },
         data() {
             return {
@@ -72,6 +71,14 @@
                 } else {
                     this[actionType] = true;
                 }
+            }
+        },
+        computed: {
+            slug() {
+                return this.$route.params.slug;
+            },
+            metaSlug() {
+                return this.$route.params.metaSlug;
             }
         },
         components: {

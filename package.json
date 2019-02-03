@@ -4,17 +4,15 @@
   "description": "BitcoinMaximalism.com is an unbiased and interactive overview of Bitcoin Maximalism.",
   "main": "server.js",
   "scripts": {
-    "server": "nodemon server.js",
+    "start": "nodemon server.js",
     "client": "cd client && npm run serve",
-    "dev": "concurrently --names \"server,client\" \"npm run server --silent\" \"npm run client --silent\"",
-    "start": "NODE_ENV=production node server"
+    "dev": "concurrently --names \"start,client\" \"npm run start --silent\" \"npm run client --silent\""
   },
   "keywords": [
-    "vue",
-    "vuex",
-    "apollo",
-    "graphql",
-    "mongoDB"
+    "Bitcoin",
+    "Crypto",
+    "Bitcoin Maximalism",
+    "BTCPay"
   ],
   "author": "William Connatser",
   "license": "ISC",

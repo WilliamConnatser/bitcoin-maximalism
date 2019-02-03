@@ -14,11 +14,16 @@
     list-style-type: none;
     margin: 5rem;
 
+    &-sort-button {
+        width: 30%;
+        margin: 0rem;
+    }
+
     .opinion {
         margin: 1rem;
         padding: 1rem;
 
-        .opinion-label {
+        .opinion-username {
             text-transform: uppercase;
         }
     }
