@@ -1,12 +1,12 @@
 <template>
     <div class="normal-text">
-        <h1>Verifying Email...</h1>
+        <h1>Verify Email</h1>
 
         <div v-if="!success && $apollo.loading">
             Please wait for your token to be validated.
         </div>
         <div v-else-if="!resent">
-            Your email validation token is either invalid or expired. Please request a new validation email
+            Your email verification token is either invalid or expired. Please request a new verification email
             below:
         </div>
 
@@ -15,7 +15,7 @@
                 <label for="email">Account Email</label>
                 <input v-model="email" type="email" class="wide-input">
             </div>
-            <button type="submit" class="wide-button">Resend Validation Email</button>
+            <button type="submit" class="wide-button">Resend Verification Email</button>
         </form>
         <span v-else>A verification email has been resent.</span>
     </div>
@@ -36,7 +36,6 @@
         },
         methods: {
             verifyEmail() {
-                console.log(this.$route.params.token)
                 //GraphQL Mutation
                 this.$apollo.mutate({
                     mutation: gql `

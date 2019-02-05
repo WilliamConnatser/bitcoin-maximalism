@@ -40,18 +40,39 @@
         },
         methods: {
             signupUser() {
-                //GraphQL Mutation
-                this.$apollo.mutate({
-                    mutation: gql `
+                var query = {};
+                var variables = {}
+                if (localStorage.ref) {
+                    query = gql `
+                        mutation($username: String!, $email: String!, $password: String!, $ref: ID!) {
+                            signupUser(username: $username, email:$email, password:$password, ref: $ref)
+                        }
+                    `
+                    variables = {
+                        username: this.username,
+                        email: this.email,
+                        password: this.password,
+                        ref: localStorage.ref
+                    }
+
+                } else {
+                    query = gql `
                         mutation($username: String!, $email: String!, $password: String!) {
                             signupUser(username: $username, email:$email, password:$password)
                         }
-                    `,
-                    variables: {
+                    `
+
+                    variables = {
                         username: this.username,
                         email: this.email,
                         password: this.password
                     }
+                }
+
+                //GraphQL Mutation
+                this.$apollo.mutate({
+                    mutation: query,
+                    variables: variables
                 }).then(async ({
                     data
                 }) => {

@@ -8,14 +8,18 @@ const VoteSchema = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    dateUpdated: {
+        type: Date,
+        required: true,
+        default: Date.now
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     slug: {
-        type: String,
-        required: true
+        type: String
     },
     metaSlug: {
         type: String,

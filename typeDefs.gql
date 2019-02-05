@@ -67,7 +67,7 @@ type Opinion {
     _id: ID
     dateCreated: String!
     createdBy: User!
-    slug: String!
+    slug: String
     metaSlug: String!
     opinion: String!
     approved: Boolean!
@@ -102,13 +102,15 @@ type Donation {
     createdBy: User!
     ticker: String!
     amount: Float!
-    active: Boolean! #Unpaid donations will be inactive aka. false
+    active: Boolean! # Unpaid donations will be inactive aka. false
     paid: Boolean!
     invoiceID: String!
     invoiceURL: String!
-    accruing: Boolean! #If the donation is attributable towards total donated for upvotes/downvotes
-    onModel: String! #The model the donation is applicable to
-    documentID: ID! #only really used if non-acruuing vote to buy certificates etc.
+    accruing: Boolean! # If the donation is attributable towards total donated for upvotes/downvotes
+    onModel: String! # The model the donation is applicable to
+    documentID: ID! # Only really used if non-acruuing vote to buy certificates etc
+    bonusPercentage: Float # The bonus percentage applied to their original donation
+    preBonusAmount: Float! # The donation amount before the bonus was applied
 }
 
 type Certificate {
@@ -116,7 +118,7 @@ type Certificate {
     dateCreated: String!
     createdBy: User!
     active: Boolean!
-    activeUntil: String! #Date the certificate is active for
+    activeUntil: String! # Date the certificate is active for
     name: String!
     protagonistic: Boolean
     donationID: Donation!
@@ -125,12 +127,13 @@ type Certificate {
 type Vote {
     _id: ID
     dateCreated: String!
+    dateUpdated: String!
     createdBy: User!
-    slug: String!
+    slug: String
     metaSlug: String!
     onModel: String!
     documentID: ID!
-    upVote: Boolean! #false if downvote, true if upvote
+    upVote: Boolean! # False if downvote, true if upvote
 }
 
 type User {
@@ -141,20 +144,22 @@ type User {
     emailVerified: Boolean!
     password: String!
     admin: Boolean!
-    active: Boolean! #If user wants to deactive their account any make previous actions anonymous
-    banned: Boolean! #If user is banned
+    active: Boolean! # If user wants to deactive their account any make previous actions anonymous
+    banned: Boolean! # If user is banned
     bannedReason: String
-    bannedUntil: String #Timestamp user is banned until
+    bannedUntil: String # Timestamp user is banned until
     certified: Boolean!
     certificates: [Certificate!]!
-    donations: [Donation!]! #Array containing donation document IDs
-    accruedDonations: Float! #Total amount user has donated (including any boosts), updated when payment is successfuly proccessed
+    donations: [Donation!]! # Array containing donation document IDs
+    accruedDonations: Float! # Total amount user has donated (including any boosts), updated when payment is successfuly proccessed
     opinions: [Opinion!]!
     votes: [Vote!]!
     edits: [Edit!]!
     rhetoric: [Rhetoric!]!
     bulletPoints: [BulletPoint!]!
     resources: [Resource!]!
+    referrals: [User!]! # Users this user has referred
+    referredBy: User # User that referred this user
 }
 
 type Crypto {
@@ -183,14 +188,12 @@ type Query {
     allUnapprovedEdits: [Edit]
     allUnapprovedOpinions: [Opinion]
 
-    donationSpecificOpinion(_id: ID!): Opinion
-
     cryptoValue(ticker: String!): Float
 }
 
 type Mutation {
     signinUser(email: String!, password: String!): Token
-    signupUser(username: String!, email: String!, password: String!): Boolean
+    signupUser(username: String!, email: String!, password: String!, ref: ID): Boolean
     verifyEmail(token: String!): Token
     resendRegistrationEmail(email: String!): Boolean
 
@@ -199,13 +202,13 @@ type Mutation {
     resendPasswordEmail(email: String!): Boolean
     resetPassword(token: String!, newPassword1: String!, newPassword2: String!): Token
 
-    submitOpinion(amount: String!, documentID: ID!, onModel: String!, opinion: String!): ID
-    submitVote(onModel: String!, documentID: ID!, amount: String!, upVote: Boolean!): ID
+    submitOpinion(onModel: String!, documentID: ID!, opinion: String!): Float
+    submitVote(onModel: String!, documentID: ID!, upVote: Boolean!): Float
 
     approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
 
     #Inactive - conceptual - submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
     #Inactive - conceptual -submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String
     #Inactive - resolver written - addBulletPoint(slug: String!, metaSlug: String!, content: String!): BulletPoint
-    #Inactive - resolve written - setUserAllegiance(allegiance: String!): Token
+    #Inactive - resolver written - setUserAllegiance(allegiance: String!): Token
 }

@@ -9,7 +9,7 @@
                     {{arrayItem.media}} } </span>{{arrayItem.title}}</a>
             <router-link v-if="arrayItem.__typename == 'Rhetoric'" :to="urlGenerator(metaSlug, arrayItem.slug)" class="fancy-link normal-text">{{arrayItem.title}}</router-link>
 
-            <ToolbarActions v-if="arrayItem.__typename !=='Rhetoric'" :arrayItemProp="arrayItem" />
+            <ToolbarActions :arrayItemProp="arrayItem" />
         </li>
     </div>
 </template>

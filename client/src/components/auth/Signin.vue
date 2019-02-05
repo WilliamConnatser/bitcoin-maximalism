@@ -8,10 +8,10 @@
             </div>
             <div class="block">
                 <label>Password</label>
-                <input type="password" v-model="password" autocomplete="password" class="wide-input"> <br/>
+                <input type="password" v-model="password" autocomplete="password" class="wide-input"> <br />
                 <router-link to="/reset-password">Forgot Password?</router-link>
             </div>
-                        
+
             <button type="submit">Login</button>
 
             <div @click="$emit('toggle-login')" class="block">
@@ -76,6 +76,72 @@
                         emailVerified
                         active
                         admin
+                        accruedDonations
+                        certificates {
+                            _id
+                            dateCreated
+                            createdBy {
+                                username
+                            }
+                            active
+                            activeUntil
+                            name
+                            protagonistic
+                            donationID {
+                                _id
+                                amount
+                                paid
+                            }
+                        }
+                        donations {
+                            _id
+                            dateCreated
+                            amount
+                            active
+                            paid
+                            accruing
+                            onModel
+                            documentID
+                        }
+                        opinions {
+                            _id
+                            dateCreated
+                            createdBy {
+                                username
+                            }
+                            slug
+                            metaSlug
+                            opinion
+                            onModel
+                            documentID
+                            approved
+                            censored
+                            censoredBy
+                            censoredCommentary
+                            votes {
+                                _id
+                                dateCreated
+                                createdBy {
+                                    _id
+                                    username
+                                    accruedDonations
+                                }
+                            }
+                        }
+                        votes {
+                            _id
+                            dateCreated
+                            createdBy {
+                                _id
+                                username
+                                accruedDonations
+                            }
+                            slug
+                            metaSlug
+                            onModel
+                            documentID
+                            upVote
+                        }
                     }
                 }
             `

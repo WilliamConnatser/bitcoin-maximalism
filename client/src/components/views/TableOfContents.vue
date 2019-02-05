@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h1>{ {{metaSlug}} }</h1>
+    <h1 class="title">{ {{metaSlug}} }</h1>
 
-    <h1 v-if="$apollo.loading">Loading...</h1>
+    <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
     <ul>
       <AdvancedListItem :arrayProp="this.args" />
     </ul>
@@ -23,6 +23,12 @@
     },
     components: {
       AdvancedListItem
+    },
+    created() {
+      this.$root.$on('votedOnTOS', () => {
+        this.$apollo.queries.getAllApprovedAndActiveProtagonisticRhetoric.refetch();
+        this.$apollo.queries.getAllApprovedAndActiveAntagonisticRhetoric.refetch();
+      });
     },
     computed: {
       args() {
@@ -48,14 +54,12 @@
         });
       },
       calculateVotes(voteArray) {
-        var upVotes = 0;
-        var downVotes = 0
+        var cumulativeVote = 0;
         voteArray.forEach(vote => {
-          if (vote.upVotes) upVotes += vote.createdBy.accruedDonations;
-          else downVotes += vote.createdBy.accruedDonations;
+          if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
+          else cumulativeVote -= vote.createdBy.accruedDonations;
         });
-
-        return upVotes + downVotes;
+        return cumulativeVote;
       },
       sortArrayByVote(rhetoricArray) {
         return rhetoricArray.sort((a, b) => {
@@ -74,6 +78,7 @@
                 votes {
                   _id
                   dateCreated
+                  upVote
                   createdBy {
                     _id
                     username
@@ -100,6 +105,7 @@
                 votes {
                   _id
                   dateCreated
+                  upVote
                   createdBy {
                     _id
                     username

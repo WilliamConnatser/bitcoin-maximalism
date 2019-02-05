@@ -35,9 +35,16 @@
 <script>
     export default {
         name: "SocialIcons",
+        props: {
+            currentUser: Object
+        },
         computed: {
             currentURL() {
-                return 'https://www.BitcoinMaximalism.com' + this.$route.path;
+                if(this.currentUser) {
+                    return `https://www.BitcoinMaximalism.com${this.$route.path}?ref=${this.currentUser._id}`;
+                } else {
+                    return `https://www.BitcoinMaximalism.com${this.$route.path}`;
+                }
             }
         }
     };

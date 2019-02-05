@@ -17,16 +17,21 @@
             Footer
         },
         created(){
+            //Accept ToS and Privacy Policy
             this.$toasted.global.accept_tos_privacy();
+            //Set Referral Cookie
+            if(this.$route.query && this.$route.query.ref) {
+                if(!localStorage.ref) localStorage.setItem("ref", this.$route.query.ref);
+            }
         }
     };
 </script>
 
 <style lang="scss">
     @import "./sass/base";
-    @import "./sass/components";
     @import "./sass/forms";
-    @import "./sass/layout";
+    @import "./sass/layouts";
     @import "./sass/typography";
-    @import "./sass/utility";
+    @import "./sass/variables";
+    @import "./sass/utilities";
 </style>

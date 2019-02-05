@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 
+import About from "./components/views/About.vue";
 import Intro from "./components/views/Intro.vue";
 import Account from "./components/views/Account.vue";
 import VerifyEmail from "./components/auth/VerifyEmail.vue";
@@ -10,8 +11,9 @@ import TableOfContents from "./components/views/TableOfContents.vue";
 import Rhetoric from "./components/views/Rhetoric.vue";
 import Terms from "./components/views/Terms.vue";
 import Privacy from "./components/views/Privacy.vue";
-import PageNotFound from "./components/views/PageNotFound.vue"
-import DonationStatus from "./components/views/DonationStatus.vue"
+import PageNotFound from "./components/views/PageNotFound.vue";
+import DonationStatus from "./components/views/DonationStatus.vue";
+import SubmitDonation from "./components/views/SubmitDonation.vue";
 
 Vue.use(Router);
 
@@ -20,6 +22,9 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [{
       path: "/",
+      component: About
+    }, {
+      path: "/introduction",
       component: Intro
     },
     {
@@ -41,6 +46,10 @@ export default new Router({
     {
       path: "/privacy",
       component: Privacy
+    },
+    {
+      path: "/submit-donation",
+      component: SubmitDonation
     },
     {
       path: "/donation-status/:_id",

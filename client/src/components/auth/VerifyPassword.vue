@@ -1,6 +1,6 @@
 <template>
     <div class="normal-text">
-        <h1>Verifying Pasword...</h1>
+        <h1>Reset Pasword</h1>
 
         <div v-if="!validated && $apollo.loading">
             Please wait for your token to be validated.

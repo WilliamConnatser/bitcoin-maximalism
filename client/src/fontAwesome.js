@@ -27,13 +27,16 @@ import {
     faSquare,
     faPlusSquare,
     faMinusSquare,
+    faCheckSquare,
     faPenSquare,
     faSearch,
     faEnvelopeSquare,
     faSms,
     faShareAltSquare,
     faTimesCircle,
-    faExclamationCircle
+    faExclamationCircle,
+    faSortAmountUp,
+    faSortAmountDown
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -46,4 +49,4 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 
 
-library.add(faAngleUp, faAngleDown, faComment, faSquare, faPlusSquare, faMinusSquare, faPenSquare, faSearch, faEnvelopeSquare, faTimesCircle, faExclamationCircle, faFacebookSquare, faTwitterSquare, faRedditSquare, faTelegram, faWeibo, faSms, faGithubSquare, faShareAltSquare);
+library.add(faAngleUp, faAngleDown, faComment, faSquare, faPlusSquare, faMinusSquare, faCheckSquare, faPenSquare, faSearch, faEnvelopeSquare, faTimesCircle, faExclamationCircle, faSortAmountUp, faSortAmountDown, faFacebookSquare, faTwitterSquare, faRedditSquare, faTelegram, faWeibo, faSms, faGithubSquare, faShareAltSquare);

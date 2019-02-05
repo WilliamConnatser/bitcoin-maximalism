@@ -12,6 +12,7 @@ import ApolloClient from 'apollo-boost';
 import resolvers from './localState/resolvers';
 import defaults from './localState/defaults';
 import typeDefs from './localState/typeDefs';
+import VueRouter from 'vue-router';
 
 //Tie VueApollo to Vue
 Vue.use(VueApollo);
@@ -32,11 +33,11 @@ export const defaultClient = new ApolloClient({
     fetchOptions: {
         credentials: "include"
     },
-    clientState: {
+    /*clientState: {
         defaults,
-        resolvers,
+        resolvers,      //LOCAL STATE NOT CURRENTLY IN USE
         typeDefs
-    },
+    },*/
     //Triggered with every request
     request: operation => {
         //If no token in local storage, then add it
@@ -55,11 +56,18 @@ export const defaultClient = new ApolloClient({
         graphQLErrors,
         networkError
     }) => {
+        console.log(operation)
         //operations object not currently in use, but stores query/mutation data the error occurred on
         if (networkError) Vue.toasted.show(networkError.message);
         if (graphQLErrors) {
             for (let err of graphQLErrors) {
-                Vue.toasted.show(err.message);
+                if(err.message == 'verify-email') {
+                    Vue.toasted.global.verify_email();
+                } else if(err.message == 'log-in') {
+                    Vue.toasted.global.log_in();
+                } else {
+                    Vue.toasted.show(err.message);
+                }
             }
         }
     }

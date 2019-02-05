@@ -14,8 +14,7 @@ const OpinionSchema = new mongoose.Schema({
         required: true
     },
     slug: {
-        type: String,
-        required: true
+        type: String
     },
     metaSlug: {
         type: String,

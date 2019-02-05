@@ -1,13 +1,12 @@
 <template>
     <div class="normal-text">
-        <div>
-            <div class="action-icon-group">
-                <strong v-if="this.viewOpinions !== null" @click="cancel('viewOpinions')" class="action-count small-text">X</strong>
-                <strong v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="action-count small-text">{{docIDSpecificOpinionCount}}</strong>
-                <font-awesome-icon icon="comment" title="View Opinions" class="action-icon"/>
-            </div>
-            
-            <!--
+        <div class="list-action-toolbar">
+            <strong v-if="this.viewOpinions !== null" @click="cancel('viewOpinions')" class="action-count small-text">X</strong>
+            <strong v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="action-count small-text">{{docIDSpecificOpinionCount}}</strong>
+            <font-awesome-icon icon="comment" title="View Opinions" class="action-icon" />
+        </div>
+
+        <!--
             <div class="action-icon-group">
                 <strong v-if="this.viewEdits !== null" @click="cancel('viewEdits')" class="action-count small-text">X</strong>
                 <strong v-else @click="show('viewEdits'), cancel('viewOpinions'), cancel('submitEdit')" class="action-count small-text">{{docIDSpecificOpinionCount}}</strong>
@@ -15,7 +14,6 @@
                 <font-awesome-icon v-else icon="square" title="View Edits" class="action-icon" />
             </div>
             -->
-        </div>
 
         <div v-if="this.viewOpinions !== null">
             <button v-if="this.submitOpinion === null" @click="show('submitOpinion')">Submit Opinion</button>
@@ -68,6 +66,8 @@
 
                 if (actionType.indexOf('submit') > -1 && !this.currentUser) {
                     this.$toasted.global.log_in();
+                } else if (actionType.indexOf('submit') > -1 && !this.currentUser.emailVerified) {
+                    this.$toasted.global.verify_email();
                 } else {
                     this[actionType] = true;
                 }

@@ -36,8 +36,7 @@ module.exports = {
                 if (!currentUser) {
                     return null;
                 }
-                //Return the user object
-                return await User.findOne({
+                const user = await User.findOne({
                         username: currentUser.username
                     })
                     .populate({
@@ -46,34 +45,41 @@ module.exports = {
                     })
                     .populate({
                         path: 'certificates',
-                        model: 'Certificate'
+                        model: 'Certificate',
+                        populate: {
+                            path: 'createdBy',
+                            model: 'User'
+                        },
+                        populate: {
+                            path: 'donationID',
+                            model: 'Donation'
+                        }
                     })
                     .populate({
                         path: 'opinions',
-                        model: 'Opinion'
+                        model: 'Opinion',
+                        populate: {
+                            path: 'votes',
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User'
+                            }
+                        }
                     })
                     .populate({
                         path: 'votes',
-                        model: 'Vote'
-                    })
-                    .populate({
-                        path: 'edits',
-                        model: 'Edit'
-                    })
-                    .populate({
-                        path: 'bulletPoints',
-                        model: 'BulletPoint'
-                    })
-                    .populate({
-                        path: 'resources',
-                        model: 'Resource'
-                    })
-                    .populate({
-                        path: 'rhetoric',
-                        model: 'Rhetoric'
+                        model: 'Vote',
+                        populate: {
+                            path: 'createdBy',
+                            model: 'User'
+                        }
                     });
 
+                    return user;
+
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this user'));
             }
         },
@@ -106,40 +112,39 @@ module.exports = {
                     .findOne(args)
                     .populate({
                         path: 'bulletPoints',
-                        model: 'BulletPoint'
-                    })
-                    .populate({
-                        path: 'bulletPoints.votes',
-                        model: 'Vote'
-                    })
-                    .populate({
-                        path: 'bulletPoints.votes.createdBy',
-                        model: 'User'
+                        model: 'BulletPoint',
+                        populate: {
+                            path: 'votes',
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User'
+                            }
+                        }
                     })
                     .populate({
                         path: 'resources',
-                        model: 'Resource'
-                    })
-                    .populate({
-                        path: 'resources.votes',
-                        model: 'Vote'
-                    })
-                    .populate({
-                        path: 'resources.votes.createdBy',
-                        model: 'User'
+                        model: 'Resource',
+                        populate: {
+                            path: 'votes',
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User'
+                            }
+                        }
                     })
                     .populate({
                         path: 'votes',
-                        model: 'Vote'
-                    })
-                    .populate({
-                        path: 'votes.createdBy',
-                        model: 'User'
+                        model: 'Vote',
+                        populate: {
+                            path: 'createdBy',
+                            model: 'User'
+                        }
                     });
 
                 return rhetoric;
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching argument-specific rhetoric'));
             }
         },
@@ -157,31 +162,16 @@ module.exports = {
                     })
                     .populate({
                         path: 'votes',
-                        model: 'Vote'
-                    })
-                    .populate({
-                        path: 'votes.createdBy',
-                        model: 'User'
+                        model: 'Vote',
+                        populate: {
+                            path: 'createdBy',
+                            model: 'User'
+                        }
                     });
 
                 return rhetoric;
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching all rhetoric'));
-            }
-        },
-        argumentSpecificDonations: async (_, args, {
-            Donation
-        }) => {
-            // args not destructed to make it easier to pass into Query
-            // args destructed = { metaSlug: String, slug: String }
-            try {
-                const donations = await Donation.find(args).sort({
-                    value: 'desc'
-                });
-                return donations;
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching these argument-specific donations'));
             }
         },
         docIDSpecificDonation: async (_, {
@@ -195,31 +185,6 @@ module.exports = {
                 })
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this donation by ID'));
-            }
-        },
-        argumentSpecificAmountDonated: async (_, args, {
-            Donation
-        }) => {
-            // args not destructed to make it easier to pass into Query
-            // args destructed = { metaSlug: String, slug: String }
-            try {
-                //Only return paid donations
-                args.paid = true;
-
-                //Helper variable to aggregate value
-                var aggregateValue = 0;
-
-                //Get applicable donations
-                const donations = await Donation.find(args);
-
-                //For each applicable donation add the amount to the total
-                donations.forEach(donation => {
-                    aggregateValue += donation.amount;
-                });
-
-                return aggregateValue;
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching the total amount donated for this argument'));
             }
         },
         docIDSpecificAmountDonated: async (_, args, {
@@ -245,20 +210,6 @@ module.exports = {
                 return aggregateValue;
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching the total amount donated for this document'));
-            }
-        },
-        donationSpecificOpinion: async (_, {
-            _id
-        }, {
-            Opinion
-        }) => {
-            try {
-                const opinion = await Opinion.findOne({
-                    originalDonation: _id
-                })
-                return opinion;
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this opinion by donation ID'));
             }
         },
         docIDSpecificRhetoric: async (_, {
@@ -405,6 +356,7 @@ module.exports = {
                 }
 
                 if (sortType === 'dateCreated') {
+
                     var opinions = await Opinion.find({
                             approved: true,
                             documentID: _id,
@@ -412,28 +364,30 @@ module.exports = {
                         })
                         .populate({
                             path: 'votes',
-                            model: 'Vote'
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User'
+                            }
                         })
                         .populate({
-                            path: 'votes.createdBy',
+                            path: 'createdBy',
                             model: 'User'
                         })
                         .sort({
-                            [sort]: sortDirection
+                            dateCreated: sortDirection
                         })
                         .limit(index + 10);
+
                 } else if (sortType === 'votes') {
 
-
                     function calculateVotes(voteArray) {
-                        var upVotes = 0;
-                        var downVotes = 0
+                        var cumulativeVote = 0;
                         voteArray.forEach(vote => {
-                            if (vote.upVotes) upVotes += vote.createdBy.accruedDonations;
-                            else downVotes += vote.createdBy.accruedDonations;
+                            if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
+                            else cumulativeVote -= vote.createdBy.accruedDonations;
                         });
-
-                        return upVotes + downVotes;
+                        return cumulativeVote;
                     }
 
                     function sortArrayByVoteDescending(rhetoricArray) {
@@ -455,35 +409,24 @@ module.exports = {
                         })
                         .populate({
                             path: 'votes',
-                            model: 'Vote'
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User'
+                            }
                         })
                         .populate({
-                            path: 'votes.createdBy',
+                            path: 'createdBy',
                             model: 'User'
                         });
 
                     if (sortDirection === 'descending') {
-                        opinions = await sortArrayByVoteDescending(opinions).slice(0, index + 10);
+                        opinions = await sortArrayByVoteDescending(opinions)
                     } else {
-                        opinions = await sortArrayByVoteAscending(opinions).slice(0, index + 10);
+                        opinions = await sortArrayByVoteAscending(opinions)
                     }
 
-                } else if (sortType === 'random') {
-                    var opinions = await Opinion.find({
-                            approved: true,
-                            documentID: _id,
-                            onModel
-                        })
-                        .populate({
-                            path: 'votes',
-                            model: 'Vote'
-                        })
-                        .populate({
-                            path: 'votes.createdBy',
-                            model: 'User'
-                        })
-                        .limit(index + 10);
-
+                    opinions = opinions.slice(0, (index + 10));
                 } else {
                     throw new UserInputError('invalid-sort-type');
                 }
@@ -549,38 +492,6 @@ module.exports = {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while creating this BulletPoint'));
             }
         },
-        setUserAllegiance: async (_, {
-            allegiance
-        }, {
-            User,
-            currentUser
-        }) => {
-            try {
-                if (!currentUser) throw new AuthenticationError('log-in');
-                if (!currentUser.admin) throw new AuthenticationError('admin');
-                if (!user.emailVerified) throw new ForbiddenError('verify-email');
-
-                var newUser = await User.findOne({
-                    username: currentUser.username
-                }, function (err, user) {
-
-                    if (allegiance === "Maximalist") {
-                        user.maximalist = true;
-                    } else {
-                        user.maximalist = false;
-                    }
-
-                    user.allegiance = true;
-                    user.save();
-                });
-
-                return {
-                    token: createToken(newUser, process.env.SECRET, "1hr")
-                }
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unknown error has occurred!'));
-            }
-        },
         */
         signinUser: async (_, {
             email,
@@ -607,7 +518,6 @@ module.exports = {
                     token: createToken(user, process.env.SECRET, '1hr')
                 }
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while signing in'));
             }
         },
@@ -638,7 +548,6 @@ module.exports = {
                     token: createToken(user, process.env.SECRET, "1hr")
                 }
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while verifying your email'));
             }
         },
@@ -652,8 +561,8 @@ module.exports = {
                 const user = await User.findOne({
                     email
                 });
-                if (!user) throw new UserInputError("user-not-found");
-                if (user.emailVerified) throw new UserInputError("already-verified");
+                if (!user) throw new UserInputError('user-not-found');
+                if (user.emailVerified) throw new UserInputError('already-verified');
 
                 //Construct and send email verification
                 sendRegistrationEmail(user);
@@ -673,7 +582,8 @@ module.exports = {
                 const user = await User.findOne({
                     email
                 });
-                if (!user) throw new UserInputError("user-not-found");
+                if (!user) throw new UserInputError('user-not-found');
+                if(!user.emailVerified) throw new AuthenticationError('verify-email')
 
                 //Construct and send email verification
                 sendPasswordResetEmail(user);
@@ -702,6 +612,7 @@ module.exports = {
                     username: userObject.username
                 });
                 if (!user) throw new AuthenticationError('user-not-found');
+                if(!user.emailVerified) throw new AuthenticationError('verify-email')
 
                 //Return token 
                 return {
@@ -771,7 +682,8 @@ module.exports = {
         signupUser: async (_, {
             username,
             email,
-            password
+            password,
+            ref
         }, {
             User
         }) => {
@@ -787,11 +699,17 @@ module.exports = {
                 });
                 if (emailInUse) throw new UserInputError("email-taken");
 
+                if(ref) {
+                    var referredBy = await User.findOne({_id: ref})
+                    if (referredBy === undefined) throw new UserInputError("invalid-referral");
+                }
+
                 //Construct the user object to be inserted
                 var userObject = {
                     username,
                     email,
-                    password
+                    password,
+                    referredBy: ref
                 }
                 //If this is the first user registering, then make them an Admin
                 if (await User.findOne() == undefined) {
@@ -799,6 +717,12 @@ module.exports = {
                 }
                 //Save new user to the database
                 const newUser = await new User(userObject).save();
+
+                //Save the new user's ID in the referrer's referrals array
+                if(ref) {
+                    referredBy.referrals.push(newUser._id);
+                    referredBy.save();
+                }
 
                 //Construct and send email verification
                 sendRegistrationEmail(newUser);
@@ -808,93 +732,156 @@ module.exports = {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while creating your user'));
             }
         },
-        submitOpinion: async (_, args, {
-            Crypto,
-            Donation,
+        submitOpinion: async (_, {
+            onModel,
+            documentID,
+            opinion
+        }, {
+            Rhetoric,
             Opinion,
             BulletPoint,
             Resource,
+            User,
             currentUser
         }) => {
-            // Args not destructed for easier passage to helper functions
-            // Args destructed = {amount: String!, documentID: ID!, onModel: String!, opinion: String!}
             try {
                 //Validation
                 if (!currentUser) throw new AuthenticationError('log-in');
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
-                if (args.opinion.length > 280) throw new UserInputError('opinion-length');
-                if (args.onModel !== 'BulletPoint' && args.onModel !== 'Resource') throw new UserInputError('invalid-type');
-                const cryptoDoc = await Crypto.findOne({
-                    ticker: 'BTC'
-                });
-                validateDonationAmount(args.amount, cryptoDoc.valueUSD);
+                if (opinion.length > 280) throw new UserInputError('opinion-length');
+                if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric') throw new UserInputError('invalid-type');
+                //TODO: Write helper function: ValidateOpinion(opinion)
 
 
                 //Create Invoice, Donation document, and Opinion document
                 var applicableDocument = {};
-                (args.onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
-                    _id: args.documentID
-                }): applicableDocument = await Resource.findOne({
-                    _id: args.documentID
+                (onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
+                        _id: documentID
+                    }): (onModel === 'Resource') ? applicableDocument = await Resource.findOne({
+                        _id: documentID
+                    }) :
+                    applicableDocument = await Rhetoric.findOne({
+                        _id: documentID
+                    });
+
+                var userDocument = await User.findOne({
+                    _id: currentUser._id
                 });
-                const newInvoice = await createInvoice(args, currentUser, args.onModel);
-                const newDonation = await createDonation(args, applicableDocument, newInvoice, Donation, currentUser);
-                await createOpinion(args, applicableDocument, newDonation, Opinion, currentUser);
 
-                //Check every 5 minutes to see if the invoice has been paid
-                var invoiceInterval;
-                invoiceInterval = setInterval(function () {
-                    invoicePaid(newInvoice, newDonation, invoiceInterval);
-                }, 30000);
+                if (!applicableDocument) throw new UserInputError('invalid-document');
+                if (!userDocument) throw new UserInputError('user-not-found');
 
-                //Return donation ID
-                return newDonation._id;
+                var opinionObject = {
+                    _id: require('mongodb').ObjectID(),
+                    dateCreated: new Date(),
+                    createdBy: currentUser._id,
+                    metaSlug: applicableDocument.metaSlug,
+                    onModel,
+                    documentID,
+                    opinion,
+                    approved: true,
+                    censored: false,
+                    votes: []
+                };
+
+                if (onModel !== 'Rhetoric') {
+                    opinionObject.slug = applicableDocument.slug;
+                }
+
+                //Save the Opinion document and the User document
+                const newOpinion = await new Opinion(opinionObject).save();
+                userDocument.opinions.push(newOpinion);
+                userDocument.save();
+
+                return currentUser.accruedDonations;
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this opinion'));
             }
         },
-        submitVote: async (_, args, {
-            Crypto,
-            Donation,
+        submitVote: async (_, {
+            onModel,
+            documentID,
+            upVote
+        }, {
+            Vote,
             BulletPoint,
             Resource,
             Rhetoric,
+            Opinion,
+            User,
             currentUser
         }) => {
-            // Args not destructed for easier passage to helper functions
-            // args destructed = {onModel: String!, documentID: ID!, amount: String!, upVote: Boolean!}
             try {
                 //Validation
                 if (!currentUser) throw new AuthenticationError('log-in');
-                if (args.onModel !== 'BulletPoint' && args.onModel !== 'Resource' && args.onModel !== 'Rhetoric') throw new UserInputError('invalid-type');
+                if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric' && onModel !== 'Opinion') throw new UserInputError('invalid-type');
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
-                const cryptoDoc = await Crypto.findOne({
-                    ticker: 'BTC'
-                })
-                validateDonationAmount(args.amount, cryptoDoc.valueUSD);
 
-                //Create Invoice and Donation
-                args.votingDonation = true;
+                //Get document being voted on & the user document
                 var applicableDocument = {};
-                (args.onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
-                        _id: args.documentID
-                    }): (args.onModel === 'Resource') ? applicableDocument = await Resource.findOne({
-                        _id: args.documentID
-                    }) :
-                    applicableDocument = await Rhetoric.findOne({
-                        _id: args.documentID
-                    });
-                const newInvoice = await createInvoice(args, currentUser, args.onModel);
-                const newDonation = await createDonation(args, applicableDocument, newInvoice, Donation, currentUser);
+                (onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
+                    _id: documentID
+                }): (onModel === 'Resource') ? applicableDocument = await Resource.findOne({
+                    _id: documentID
+                }) : (onModel === 'Rhetoric') ? applicableDocument = await Rhetoric.findOne({
+                    _id: documentID
+                }) : applicableDocument = await Opinion.findOne({
+                    _id: documentID
+                });
 
-                //Check every 5 minutes to see if the invoice has been paid
-                var invoiceInterval;
-                invoiceInterval = setInterval(function () {
-                    invoicePaid(newInvoice, newDonation, invoiceInterval, args, applicableDocument);
-                }, 300000);
+                var userDocument = await User.findOne({
+                    _id: currentUser._id
+                });
 
-                //Return donation ID
-                return newDonation._id;
+                if (!applicableDocument) throw new UserInputError('invalid-document');
+                if (!userDocument) throw new UserInputError('user-not-found');
+
+                //See if the user has already voted for this document.
+                var oldVote = await Vote.findOne({
+                    createdBy: currentUser._id,
+                    onModel,
+                    documentID
+                });
+
+                //If the user's already voted on this document then update their vote
+                //Else create a new vote document, and insert the ID into the applicableDocument.votes and userDocument.votes arrays
+                if (oldVote) {
+                    if (oldVote.upVote === upVote) {
+                        if (upVote) throw new UserInputError('already-upvoted');
+                        else throw new UserInputError('already-downvoted');
+                    } else {
+                        oldVote.upVote = upVote;
+                        oldVote.dateUpdated = new Date();
+                        oldVote.save();
+                    }
+                } else {
+
+                    var voteObject = {
+                        _id: require('mongodb').ObjectID(),
+                        dateCreated: new Date(),
+                        dateUpdated: new Date(),
+                        createdBy: currentUser._id,
+                        metaSlug: applicableDocument.metaSlug,
+                        onModel,
+                        documentID,
+                        upVote
+                    }
+                    if (applicableDocument.__typename !== 'Rhetoric') {
+                        voteObject.slug = applicableDocument.slug;
+                    }
+                    const newVote = await new Vote(voteObject).save();
+
+                    userDocument.votes.push(newVote._id);
+                    userDocument.save();
+
+                    applicableDocument.votes.push(newVote._id);
+                    applicableDocument.save();
+
+                }
+
+                //Return vote weight
+                return userDocument.accruedDonations;
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this vote'));
             }
@@ -931,3 +918,43 @@ module.exports = {
         }
     }
 }
+
+/*
+    Some of this logic will be used to attribute donations to accounts Saved for l8tr
+    try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (args.onModel !== 'BulletPoint' && args.onModel !== 'Resource' && args.onModel !== 'Rhetoric') throw new UserInputError('invalid-type');
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+                const cryptoDoc = await Crypto.findOne({
+                    ticker: 'BTC'
+                })
+                validateDonationAmount(args.amount, cryptoDoc.valueUSD);
+
+                //Create Invoice and Donation
+                args.votingDonation = true;
+                var applicableDocument = {};
+                (args.onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
+                        _id: args.documentID
+                    }): (args.onModel === 'Resource') ? applicableDocument = await Resource.findOne({
+                        _id: args.documentID
+                    }) :
+                    applicableDocument = await Rhetoric.findOne({
+                        _id: args.documentID
+                    });
+                const newInvoice = await createInvoice(args, currentUser, args.onModel);
+                const newDonation = await createDonation(args, applicableDocument, newInvoice, Donation, currentUser);
+
+                //Check every 5 minutes to see if the invoice has been paid
+                var invoiceInterval;
+                invoiceInterval = setInterval(function () {
+                    invoicePaid(newInvoice, newDonation, invoiceInterval, args, applicableDocument);
+                }, 300000);
+
+                //Return donation ID
+                return newDonation._id;
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this vote'));
+            }
+
+            */

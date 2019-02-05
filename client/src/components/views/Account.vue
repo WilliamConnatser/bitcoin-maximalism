@@ -1,27 +1,17 @@
 <template>
     <div class="normal-text">
-        <h1 v-if="$apollo.loading">Loading...</h1>
+        <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
-            <h1>Account Panel</h1>
-            Current Influence: {{currentUser.accruedDonations | formatBitcoinAmount}} <br />
-            <button id="signOut" v-if="currentUser" @click="signoutUser">Signout</button>
-
-            <div v-if="currentUser.certificates.length>0" class="block">
-                <h2>Certificates</h2>
-                <ul v-for="certificate in currentUser.certificates" :key="certificate._id" class="list">
-                    <li>
-                        {{_id}}
-                        {{dateCreated}}
-                        {{createdBy.username}}
-                        {{active}}
-                        {{activeUntil}}
-                        {{name}}
-                        {{protagonistic}}
-                        {{donationID}}
-                    </li>
-                </ul>
+            <div class="block">
+                <h1>Account Panel</h1>
+                <router-link to="/submit-donation" v-if="currentUser"><button>Add Influence</button></router-link>
+                <button v-if="currentUser" @click="signoutUser">Signout</button> <br />
+                Current Influence: {{currentUser.accruedDonations | formatBitcoinAmount}} BTC <br />
             </div>
+            {{currentUser.username}} Referral Link:<br />
+            <a :href="refLink">{{refLink}}</a> <br />
+            <SocialIcons :currentUser="currentUser" />
 
             <div v-if="currentUser.donations.length>0" class="block">
                 <h2>Donations</h2>
@@ -47,19 +37,19 @@
                 <h2>Opinions</h2>
                 <ul v-for="opinion in currentUser.opinions" :key="opinion._id" class="list">
                     <li>
-                        {{_id}}
-                        {{dateCreated}}
-                        {{createdBy.username}}
-                        {{slug}}
-                        {{metaSlug}}
-                        {{opinion}}
-                        {{onModel}}
-                        {{documentID}}
-                        {{approved}}
-                        {{censored}}
-                        {{censoredBy}}
-                        {{censoredCommentary}}
-                        {{votes}}
+                        {{opinion._id}}
+                        {{opinion.dateCreated}}
+                        {{opinion.createdBy.username}}
+                        {{opinion.slug}}
+                        {{opinion.metaSlug}}
+                        {{opinion.opinion}}
+                        {{opinion.onModel}}
+                        {{opinion.documentID}}
+                        {{opinion.approved}}
+                        {{opinion.censored}}
+                        {{opinion.censoredBy}}
+                        {{opinion.censoredCommentary}}
+                        {{opinion.votes}}
                     </li>
                 </ul>
             </div>
@@ -68,30 +58,17 @@
                 <h2>Votes</h2>
                 <ul v-for="vote in currentUser.votes" :key="vote._id" class="list">
                     <li>
-                        {{_id}}
-                        {{dateCreated}}
-                        {{createdBy._id}}
-                        {{createdBy.username}}
-                        {{createdBy.accruedDonations}}
-                        {{slug}}
-                        {{metaSlug}}
-                        {{onModel}}
-                        {{documentID}}
-                        {{upVote}}
+                        {{vote.dateCreated | formatDate}}
+                        <span v-if="vote.upVote">Upvote +{{vote.createdBy.accruedDonations | formatBitcoinAmount}}</span>
+                        <span v-else>Downvote -{{vote.createdBy.accruedDonations | formatBitcoinAmount}}</span>
+                        on {{vote.onModel}}
+                        <router-link :to="argumentLink(vote)">{{argumentLink(vote)}}</router-link>
                     </li>
                 </ul>
             </div>
 
             <div v-show="currentUser.admin">
                 <h2>You so fancy! Look are you, Mr. Administrator...</h2>
-                <ul v-for="unapprovedOpinion in allUnapprovedOpinions" :key="unapprovedOpinion._id" class="basic-list">
-                    <li>
-                        {{unapprovedOpinion}}
-                        <textarea v-model="approvalCommentary[unapprovedOpinion._id]"></textarea>
-                        <button @click="approveOpinion(unapprovedOpinion, true)">Approve</button>
-                        <button @click="approveOpinion(unapprovedOpinion, false)">Deny</button>
-                    </li>
-                </ul>
             </div>
         </div>
     </div>
@@ -99,6 +76,7 @@
 
 <script>
     import Login from '../auth/Login';
+    import SocialIcons from '../utility/SocialIcons'
     import {
         defaultClient as apolloClient
     } from '../../apolloProvider';
@@ -118,48 +96,26 @@
             this.$apollo.queries.currentUser.refetch();
         },
         components: {
-            Login
+            Login,
+            SocialIcons
+        },
+        computed: {
+            refLink() {
+                return `https://www.BitcoinMaximalism.com/?ref=${this.currentUser._id}`
+            }
         },
         methods: {
             statusLink(donation) {
-                return '/donation-status/' + donation._id;
+                return `/donation-status/${donation._id}`;
             },
-            argumentLink(donation) {
-                var metaSlug = "";
-                donation.pro ? metaSlug = 'protagonistic' : metaSlug = 'antagonistic';
-
-                return '<a href="/rhetoric/' + metaSlug + '/' + donation.slug + '">' + metaSlug + '/' + donation.slug +
-                    '</a>';
+            argumentLink(doc) {
+                return `/rhetoric/${doc.metaSlug}/${doc.slug}`;
             },
             signoutUser: () => {
                 //Remove token in localStorage
                 localStorage.setItem("token", "");
                 //End Apollo Client Session
                 apolloClient.resetStore();
-            },
-            approveOpinion: async function (unapprovedOpinion, approved) {
-                await this.$apollo.queries.currentUser.refetch();
-
-                if (this.currentUser.admin) {
-                    //GraphQL Mutation
-                    this.$apollo.mutate({
-                        mutation: gql `
-                        mutation ($_id: ID!, $approved: Boolean!, $approvalCommentary: String!) {
-                            approveOpinion(_id: $_id, approved:$approved, approvalCommentary: $approvalCommentary)
-                        }
-                    `,
-                        variables: {
-                            _id: unapprovedOpinion._id,
-                            approved,
-                            approvalCommentary: this.approvalCommentary[unapprovedOpinion._id]
-                        }
-                    }).then(() => {
-                        //Refresh the currentUser query
-                        this.$apollo.queries.allUnapprovedOpinions.refetch();
-                    }).catch(error => {
-                        // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
-                    });
-                }
             },
             status(donation) {
                 if (!donation.active) return 'Inactive'
@@ -170,6 +126,33 @@
                 if (!votingDonation) return 'Opinion';
                 else if (upVote) return 'Upvote';
                 else return 'Downvote';
+            },
+            validAmount(value) {
+                if (isNaN(Number(value))) {
+                    this.donationAmount = this.donationAmount.replace(/\D/g, '');
+                    this.$toasted.global.invalid_donation_numbers_only();
+                    return false;
+                } else if (value < 0) {
+                    this.donationAmount *= -1;
+                    this.$toasted.global.invalid_donation_negative();
+                    return false;
+                } else if (Number(value) === 0) {
+                    this.$toasted.global.invalid_donation_nonzero();
+                    return false;
+                }
+                if (value * this.cryptoValue < 1) {
+                    this.$toasted.global.invalid_donation_minimum();
+                    return false;
+                } else if (value.indexOf('.') < 0) {
+                    //If no decimals, then no need to check for max decimals
+                    return true;
+                } else if (value.toString().split(".")[1].length > 8) {
+                    this.donationAmount = Number(this.donationAmount).toFixed(8);
+                    this.$toasted.global.invalid_donation_decimal();
+                    return false;
+                } else {
+                    return true;
+                }
             }
         },
         apollo: {
@@ -184,22 +167,6 @@
                             active
                             admin
                             accruedDonations
-                            certificates {
-                                _id
-                                dateCreated
-                                createdBy {
-                                    username
-                                }
-                                active
-                                activeUntil
-                                name
-                                protagonistic
-                                donationID {
-                                    _id
-                                    amount
-                                    paid
-                                }
-                            }
                             donations {
                                 _id
                                 dateCreated
@@ -213,9 +180,6 @@
                             opinions {
                                 _id
                                 dateCreated
-                                createdBy {
-                                    username
-                                }
                                 slug
                                 metaSlug
                                 opinion
@@ -252,60 +216,6 @@
                         }
                     }
                 `
-            },
-            allUnapprovedOpinions: {
-                query: gql `
-                    query {
-                        allUnapprovedOpinions {
-                            _id
-                            dateCreated
-                            createdBy {
-                                username
-                            }
-                            slug
-                            metaSlug
-                            opinion
-                            onModel
-                            documentID
-                            approved
-                            censored
-                            censoredBy
-                            censoredCommentary
-                            votes {
-                                _id
-                                dateCreated
-                                createdBy {
-                                    _id
-                                    username
-                                    accruedDonations
-                                }
-                            }
-                        }
-                    }
-                `,
-                skip: async function () {
-                    if (this.currentUser == null || !this.currentUser.admin) return true;
-                }
-            },
-            allUnapprovedEdits: {
-                query: gql `query {
-                    allUnapprovedEdits {
-                        _id
-                        dateCreated
-                        createdBy
-                        slug
-                        macroSlug
-                        oldDocumentID
-                        newDocumentID
-                        approved
-                        onModel
-                        approvedBy
-                        approvalCommentary
-                    }
-                }`,
-                skip: async function () {
-                    if (this.currentUser === null || !this.currentUser.admin) return true;
-                }
             }
         }
     };

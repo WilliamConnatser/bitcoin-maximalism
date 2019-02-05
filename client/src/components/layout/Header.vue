@@ -5,6 +5,9 @@
         <router-link to="/" class="small">About</router-link>
       </li>
       <li class="inline-nav">
+        <router-link to="/introduction" class="small">Intro</router-link>
+      </li>
+      <li class="inline-nav">
         <router-link to="/rhetoric/protagonistic">Pros</router-link>
       </li>
       <li class="inline-nav">
@@ -28,7 +31,7 @@
       </div>
 
       <li v-if="showSocial" class="social-dropdown">
-        <SocialIcons />
+        <SocialIcons :currentUser="currentUser" />
       </li>
     </ul>
   </nav>

@@ -17,18 +17,21 @@ const {
 } = require('apollo-server');
 
 const createToken = ({
+    _id,
     username,
     email,
     admin,
-    emailVerified
+    emailVerified,
+    accruedDonations
 }, secret, expiresIn) => {
-    console.log(username, email, admin, emailVerified)
     try {
         return jwt.sign({
+            _id,
             username,
             email,
             admin,
-            emailVerified
+            emailVerified,
+            accruedDonations
         }, secret, {
             expiresIn
         });
@@ -201,9 +204,12 @@ const validateDonationAmount = (donationAmount, bitcoinValue) => {
 }
 
 const parseError = (error, unknownError) => {
-    if (error == 'log-in') return 'Log in first';
+    //Known errors which return a slug have special notifications in the onError property inside /client/apolloProvider.js
+    if (error == 'log-in') return 'log-in';
+    else if (error == 'already-upvoted') return 'You already upvoted this';
+    else if (error == 'already-downvoted') return 'You already downvoted this';
     else if (error == 'user-not-found') return 'User not found';
-    else if (error == 'verify-email') return 'Verify your email first';
+    else if (error == 'verify-email') return 'verify-email';
     else if (error == 'invalid-password') return 'Invalid password';
     else if (error == 'opinion-length') return 'Opinions must be less than 280 characters';
     else if (error == 'donation-minimum') return 'Donation amount must be at least one US dollar';
@@ -217,6 +223,8 @@ const parseError = (error, unknownError) => {
     else if (error == 'username-length') return 'Usernames must be less than 26 characters';
     else if (error == 'un-matching-password') return 'Passwords must match';
     else if (error == 'email-taken') return 'Email address already in use';
+    else if (error == 'invalid-referral') return 'Invalid referral link, clear your cookies';
+    else if (error == 'invalid-document') return 'Invalid document submitted';
     else if (error == 'invalid-type') return 'Invalid type submitted';
     else if (error == 'invalid-sort-index') return 'Invalid number requested';
     else if (error == 'invalid-sort-type') return 'Invalid sort type';

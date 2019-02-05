@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1 v-if="argumentSpecificRhetoric">{{argumentSpecificRhetoric.title}}</h1>
-    <h1 v-if="$apollo.loading">Loading...</h1>
+    <h1 v-if="argumentSpecificRhetoric" class="title">{{argumentSpecificRhetoric.title}}</h1>
+    <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
     <ul>
       <AdvancedListItem v-if="argumentSpecificRhetoric" :arrayProp="concatAndSort" />
     </ul>
@@ -24,11 +24,15 @@
       }
     },
     created() {
-      if (this.$route.params.metaSlug == !"protagonistic" && this.$route.params.metaSlug !== "antagonistic") {
+      if (this.$route.params.metaSlug !== "protagonistic" && this.$route.params.metaSlug !== "antagonistic") {
         this.$router.push({
           path: '/not-found'
         });
       }
+
+      this.$root.$on('votedOnRhetoric', () => {
+        this.$apollo.queries.argumentSpecificRhetoric.refetch();
+      });
     },
     computed: {
       concatAndSort: function () {
@@ -48,14 +52,12 @@
     },
     methods: {
       calculateVotes(voteArray) {
-        var upVotes = 0;
-        var downVotes = 0
+        var cumulativeVote = 0;
         voteArray.forEach(vote => {
-          if (vote.upVotes) upVotes += vote.createdBy.accruedDonations;
-          else downVotes += vote.createdBy.accruedDonations;
+          if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
+          else cumulativeVote -= vote.createdBy.accruedDonations;
         });
-
-        return upVotes + downVotes;
+        return cumulativeVote;
       },
       sortArrayByVote(rhetoricArray) {
         return rhetoricArray.sort((a, b) => {
@@ -96,6 +98,7 @@
                     votes {
                       _id
                       dateCreated
+                      upVote
                       createdBy {
                         _id
                         username
@@ -112,21 +115,13 @@
                     votes {
                       _id
                       dateCreated
+                      upVote
                       createdBy {
                         _id
                         username
                         accruedDonations
                       }
                     }
-                }
-                votes {
-                  _id
-                  dateCreated
-                  createdBy {
-                    _id
-                    username
-                    accruedDonations
-                  }
                 }
               }
             }

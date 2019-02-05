@@ -107,6 +107,16 @@ const UserSchema = new mongoose.Schema({
         required: true,
         default: [],
         ref: 'Rhetoric'
+    },
+    referrals: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'User'
+    },
+    referredBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 });
 

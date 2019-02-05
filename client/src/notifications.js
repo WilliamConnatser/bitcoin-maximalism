@@ -135,6 +135,20 @@ Vue.toasted.register('invalid_donation_numbers_only', 'Donations may only contai
     }]
 });
 
+Vue.toasted.register('opinion_length', 'Opinions must be 280 characters or less', {
+    duration: 5000,
+    position: 'bottom-center',
+    fullWidth: true,
+    fitToScreen: true,
+    singleton: true,
+    action: [{
+        text: 'Close',
+        onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+        }
+    }]
+});
+
 Vue.toasted.register('email', 'Enter an email', {
     duration: 5000,
     position: 'bottom-center',
@@ -163,7 +177,21 @@ Vue.toasted.register('password', 'Enter a password', {
     }]
 });
 
-Vue.toasted.register('accept_tos_privacy', 'By using this website you are agreeing to our Terms of Service and Privacy Policy.', {
+Vue.toasted.register('vote_success', 'Vote submitted successfully', {
+    duration: 5000,
+    position: 'bottom-center',
+    fullWidth: true,
+    fitToScreen: true,
+    singleton: true,
+    action: [{
+        text: 'Close',
+        onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+        }
+    }]
+});
+
+Vue.toasted.register('accept_tos', 'You must accept the Terms of Service and Privacy Policy.', {
     duration: null,
     position: 'bottom-center',
     fullWidth: true,
@@ -171,7 +199,40 @@ Vue.toasted.register('accept_tos_privacy', 'By using this website you are agreei
     singleton: true,
     action: [
         {
-            text: 'Terms of Service',
+            text: 'Close',
+            onClick: (e, toastObject) => {
+                toastObject.goAway(0);
+            }
+        }
+    ]
+});
+
+Vue.toasted.register('verify_email', 'Verify your email first.', {
+    duration: 5000,
+    position: 'bottom-center',
+    fullWidth: true,
+    fitToScreen: true,
+    singleton: true,
+    action: [{
+        text: 'Request Email',
+        push: '/verify-email/null'
+    },{
+        text: 'Close',
+        onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+        }
+    }]
+});
+
+Vue.toasted.register('accept_tos_privacy', 'Like cookies? By continuing you are agreeing to our Terms and Privacy Policy.', {
+    duration: null,
+    position: 'bottom-center',
+    fullWidth: true,
+    fitToScreen: true,
+    singleton: true,
+    action: [
+        {
+            text: 'Terms',
             push: '/terms'
         },
         {

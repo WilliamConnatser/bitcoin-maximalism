@@ -16,7 +16,21 @@ h1 {
     text-decoration: none;
 }
 
+.uppercase {
+    text-transform: uppercase;
+}
+
 .media-type {
     font-weight: 700;
     margin-right: 1rem;
+}
+
+hr {
+    color: $color-white;
+    border: 1;
+    border-color: $color-white;
+}
+
+.loading {
+    animation: throb .5s infinite;
 }
