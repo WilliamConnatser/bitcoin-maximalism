@@ -2,6 +2,8 @@
 
 Stack: Vue + Vue Router + Apollo GraphQL + Mongoose + MongoDB
 
-Please report all application-related bugs and issues via Github.
+## Open Beta:
 
-Any donation or moderation-related issues can be done privately at admin@BitcoinMaximalism.com
+Please report technical and bug issues via Github by creating an issue.
+
+Please report donation and account issues via Email: admin@BitcoinMaximalism.com
