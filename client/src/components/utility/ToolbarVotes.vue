@@ -33,19 +33,10 @@
         data() {
             return {
                 currentUser: null,
-                argumentSpecificAmountDonated: 0,
-                docIDSpecificAmountDonated: 0
+                cryptoValue: null
             }
         },
         computed: {
-            totalDonationsQuery() {
-                if (this.arrayItemProp.__typename === "Rhetoric") {
-                    return this.argumentSpecificAmountDonated;
-                } else {
-                    return this.docIDSpecificAmountDonated;
-                }
-
-            },
             slug() {
                 return this.$route.params.slug;
             },
@@ -68,9 +59,7 @@
                     this.$apollo.mutate({
                         mutation: gql `
                             mutation submitVote($onModel: String!, $documentID: ID!, $upVote: Boolean!) {
-                                submitVote(onModel:$onModel, documentID:$documentID, upVote: $upVote) {
-                                    _id
-                                }
+                                submitVote(onModel:$onModel, documentID:$documentID, upVote: $upVote)
                             }
                         `,
                         variables: {

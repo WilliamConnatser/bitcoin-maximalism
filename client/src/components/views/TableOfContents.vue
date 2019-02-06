@@ -16,8 +16,8 @@
   export default {
     data: () => {
       return {
-        getAllApprovedAndActiveProtagonisticRhetoric: [],
-        getAllApprovedAndActiveAntagonisticRhetoric: []
+        protagonisticRhetoric: [],
+        antagonisticRhetoric: []
       }
     },
     components: {
@@ -26,9 +26,9 @@
     computed: {
       args() {
         if (this.metaSlug === "protagonistic") {
-          return this.sortArrayByVote(this.getAllApprovedAndActiveProtagonisticRhetoric);
+          return this.sortArrayByVote(this.protagonisticRhetoric);
         } else if (this.$route.params.metaSlug === "antagonistic") {
-          return this.sortArrayByVote(this.getAllApprovedAndActiveAntagonisticRhetoric);
+          return this.sortArrayByVote(this.antagonisticRhetoric);
         } else {
           this.forwardTo404();
         }
@@ -61,16 +61,16 @@
       },
       updateQuery() {
         if (this.metaSlug === 'protagonistic') {
-          this.$apollo.queries.getAllApprovedAndActiveProtagonisticRhetoric.refetch();
+          this.$apollo.queries.protagonisticRhetoric.refetch();
         } else {
-          this.$apollo.queries.getAllApprovedAndActiveAntagonisticRhetoric.refetch();
+          this.$apollo.queries.antagonisticRhetoric.refetch();
         }
       }
     },
     apollo: {
-      getAllApprovedAndActiveProtagonisticRhetoric: {
+      protagonisticRhetoric: {
         query: gql `
-            query getAllApprovedAndActiveProtagonisticRhetoric($metaSlug: String!) {
+            query protagonisticRhetoric($metaSlug: String!) {
               allRhetoric(metaSlug: $metaSlug) {
                 _id
                 slug
@@ -93,11 +93,18 @@
             metaSlug: this.$route.params.metaSlug
           }
         },
-        update: data => (data.allRhetoric)
+        update: data => (data.allRhetoric),
+        skip() {
+          if (this.$route.params.metaSlug === "protagonistic" && !this.$route.params.slug) {
+            return false;
+          } else {
+            return true;
+          }
+        }
       },
-      getAllApprovedAndActiveAntagonisticRhetoric: {
+      antagonisticRhetoric: {
         query: gql `
-            query getAllApprovedAndActiveAntagonisticRhetoric($metaSlug: String!) {
+            query antagonisticRhetoric($metaSlug: String!) {
               allRhetoric(metaSlug: $metaSlug) {
                 _id
                 slug
@@ -120,7 +127,14 @@
             metaSlug: this.$route.params.metaSlug
           }
         },
-        update: data => (data.allRhetoric)
+        update: data => (data.allRhetoric),
+        skip() {
+          if (this.$route.params.metaSlug === "antagonistic" && !this.$route.params.slug) {
+            return false;
+          } else {
+            return true;
+          }
+        }
       }
     }
   }

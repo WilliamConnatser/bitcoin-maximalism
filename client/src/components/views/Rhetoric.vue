@@ -137,6 +137,13 @@
               path: '/not-found'
             });
           }
+        },
+        skip() {
+          if (!this.$route.params.slug) {
+            return true;
+          } else {
+            return false;
+          }
         }
       }
     }

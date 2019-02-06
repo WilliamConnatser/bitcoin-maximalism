@@ -40,8 +40,10 @@
         },
         methods: {
             signupUser() {
+
                 var query = {};
-                var variables = {}
+                var variables = {};
+
                 if (localStorage.ref) {
                     query = gql `
                         mutation($username: String!, $email: String!, $password: String!, $ref: ID!) {
@@ -61,7 +63,6 @@
                             signupUser(username: $username, email:$email, password:$password)
                         }
                     `
-
                     variables = {
                         username: this.username,
                         email: this.email,
@@ -81,20 +82,6 @@
                     // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                 });
             }
-        },
-        apollo: {
-            currentUser: gql `
-                query currentUser {
-                    currentUser {
-                        _id
-                        username
-                        email
-                        emailVerified
-                        active
-                        admin
-                    }
-                }
-            `
         }
     };
 </script>

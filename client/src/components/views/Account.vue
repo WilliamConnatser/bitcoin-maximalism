@@ -63,7 +63,7 @@
                             </div>
                             {{opinion.opinion}}
                             <div>
-                                <router-link :to="argumentLink(opinion.metaSlug, opinion.slug)" class="small-text">{{argumentLink(opinion.metaSlug,opinion.slug)}}</router-link>
+                                <router-link :to="argumentLink(opinion.metaSlug, opinion.slug)">{{argumentLink(opinion.metaSlug,opinion.slug)}}</router-link>
                             </div>
                             <div v-if="opinion.censored">
                                 <div v-if="!approved">
@@ -93,7 +93,7 @@
                                 <span v-if="vote.upVote">Upvote +{{currentUser.accruedDonations | formatBitcoinAmount}}</span>
                                 <span v-else>Downvote -{{currentUser.accruedDonations | formatBitcoinAmount}}</span>
                             </div>
-                            <router-link :to="argumentLink(vote.metaSlug, vote.slug)" class="small-text">{{argumentLink(vote.metaSlug, vote.slug)}}</router-link>
+                            <router-link :to="argumentLink(vote.metaSlug, vote.slug)">{{argumentLink(vote.metaSlug, vote.slug)}}</router-link>
                         </li>
                     </ul>
                 </div>

@@ -169,22 +169,14 @@ type Crypto {
 
 type Query {
     currentUser: User
-    userSpecificActivity: [Donation]
-
-    argumentSpecificRhetoric(metaSlug: String!, slug: String!): Rhetoric
-    argumentSpecificAmountDonated(metaSlug: String!, slug: String!): Float
-    argumentSpecificDonations(metaSlug: String, slug: String): [Donation]
 
     docIDSpecificDonation(_id: ID!): Donation
-    docIDSpecificAmountDonated(metaSlug: String!, slug: String!, onModel: String!, documentID: ID!): Float
     docIDSpecificOpinions(_id: String!, onModel: String!, sortType: String!, sortDirection: String, index: Int!): [Opinion]
     docIDSpecificOpinionCount(onModel: String!, _id: ID!): Int
-    docIDSpecificRhetoric(_id: ID!): Rhetoric
-    docIDSpecificBulletPoint(_id: ID!): BulletPoint
-    docIDSpecificResource(_id: ID!): Resource
     docIDSpecificVotes(onModel: String!, _id: ID!): [Vote]
 
     allRhetoric(metaSlug: String!): [Rhetoric]
+    argumentSpecificRhetoric(metaSlug: String!, slug: String!): Rhetoric
 
     cryptoValue(ticker: String!): Float
 }
@@ -201,11 +193,14 @@ type Mutation {
     resetPassword(token: String!, newPassword1: String!, newPassword2: String!): Token
 
     submitOpinion(onModel: String!, documentID: ID!, opinion: String!): Float
-    submitVote(onModel: String!, documentID: ID!, upVote: Boolean!): Vote
+    submitVote(onModel: String!, documentID: ID!, upVote: Boolean!): Float
     submitDonation(amount: String!): ID
 
     #Inactive - conceptual - submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
     #Inactive - conceptual -submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String
+    #Inactive - conceptual - submitEditRhetoric
+    #Inactive - conceptual - addResource
+    #Inactive - conceptual - addRhetoric
     #Inactive - resolver written - addBulletPoint(slug: String!, metaSlug: String!, content: String!): BulletPoint
     #Inactive - resolver written - setUserAllegiance(allegiance: String!): Token
     #Inactive - resolve written - approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean

@@ -37,6 +37,10 @@ module.exports = {
                 }
                 const user = await User.findOne({
                         username: currentUser.username
+                    },null, {
+                        $fields: {
+                            password: false
+                        }
                     })
                     .populate({
                         path: 'donations',
@@ -104,7 +108,14 @@ module.exports = {
                             model: 'Vote',
                             populate: {
                                 path: 'createdBy',
-                                model: 'User'
+                                model: 'User',
+                                options: {
+                                    fields: {
+                                        _id: true,
+                                        username: true,
+                                        accruedDonations: true
+                                    }
+                                }
                             }
                         }
                     })
@@ -116,7 +127,14 @@ module.exports = {
                             model: 'Vote',
                             populate: {
                                 path: 'createdBy',
-                                model: 'User'
+                                model: 'User',
+                                options: {
+                                    fields: {
+                                        _id: true,
+                                        username: true,
+                                        accruedDonations: true
+                                    }
+                                }
                             }
                         }
                     })
@@ -125,7 +143,14 @@ module.exports = {
                         model: 'Vote',
                         populate: {
                             path: 'createdBy',
-                            model: 'User'
+                            model: 'User',
+                            options: {
+                                fields: {
+                                    _id: true,
+                                    username: true,
+                                    accruedDonations: true
+                                }
+                            }
                         }
                     });
 
@@ -151,7 +176,14 @@ module.exports = {
                         model: 'Vote',
                         populate: {
                             path: 'createdBy',
-                            model: 'User'
+                            model: 'User',
+                            options: {
+                                fields: {
+                                    _id: true,
+                                    username: true,
+                                    accruedDonations: true
+                                }
+                            }
                         }
                     });
 
@@ -167,86 +199,19 @@ module.exports = {
             currentUser
         }) => {
             try {
-                if(!_id) throw new UserInputError('invalid-id');
+                if (!_id) throw new UserInputError('invalid-id');
                 //Donation info has to do with financial privacy, so only the user should be able to access their own donations.
                 if (!currentUser) throw new AuthenticationError('log-in');
                 const donation = await Donation.findOne({
                     _id
                 });
-                if(!donation) throw new UserInputError('invalid-id');
+                if (!donation) throw new UserInputError('invalid-id');
                 if (donation.createdBy.toString() !== currentUser._id) throw new AuthenticationError('unauthorized');
 
                 else return donation;
 
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this donation'));
-            }
-        },
-        docIDSpecificAmountDonated: async (_, args, {
-            Donation
-        }) => {
-            // args not destructed to make it easier to pass into Query
-            // args destructed = { metaSlug: String, slug: String, onModel: String, documentID: ID }
-            try {
-                //Only return paid donations
-                args.paid = true;
-
-                //Helper variable to aggregate value
-                var aggregateValue = 0;
-
-                //Get applicable donations
-                const donations = await Donation.find(args);
-
-                //For each applicable donation add the amount to the total
-                donations.forEach(donation => {
-                    aggregateValue += donation.amount;
-                });
-
-                return aggregateValue;
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching the total amount donated for this document'));
-            }
-        },
-        docIDSpecificRhetoric: async (_, {
-            _id
-        }, {
-            Rhetoric
-        }) => {
-            try {
-                const rhetoric = await Rhetoric.findOne({
-                    _id
-                })
-                return rhetoric;
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this rhetoric by donation ID'));
-            }
-        },
-        docIDSpecificBulletPoint: async (_, {
-            _id
-        }, {
-            BulletPoint
-        }) => {
-            try {
-                const bulletPoint = await BulletPoint.findOne({
-                    _id
-                })
-                return bulletPoint;
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this bulletpoint by donation ID'));
-            }
-        },
-        docIDSpecificResource: async (_, {
-            _id
-        }, {
-            Resource
-        }) => {
-            try {
-                const resource = await Resource.findOne({
-                    _id
-                })
-                return resource;
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this resource by donation ID'));
             }
         },
         docIDSpecificOpinions: async (_, {
@@ -281,12 +246,26 @@ module.exports = {
                             model: 'Vote',
                             populate: {
                                 path: 'createdBy',
-                                model: 'User'
+                                model: 'User',
+                                options: {
+                                    fields: {
+                                        _id: true,
+                                        username: true,
+                                        accruedDonations: true
+                                    }
+                                }
                             }
                         })
                         .populate({
                             path: 'createdBy',
-                            model: 'User'
+                            model: 'User',
+                            options: {
+                                fields: {
+                                    _id: true,
+                                    username: true,
+                                    accruedDonations: true
+                                }
+                            }
                         })
                         .sort({
                             dateCreated: sortDirection
@@ -326,12 +305,26 @@ module.exports = {
                             model: 'Vote',
                             populate: {
                                 path: 'createdBy',
-                                model: 'User'
+                                model: 'User',
+                                options: {
+                                    fields: {
+                                        _id: true,
+                                        username: true,
+                                        accruedDonations: true
+                                    }
+                                }
                             }
                         })
                         .populate({
                             path: 'createdBy',
-                            model: 'User'
+                            model: 'User',
+                            options: {
+                                fields: {
+                                    _id: true,
+                                    username: true,
+                                    accruedDonations: true
+                                }
+                            }
                         });
 
                     if (sortDirection === 'descending') {
@@ -379,7 +372,14 @@ module.exports = {
                     onModel
                 }).populate({
                     path: 'createdBy',
-                    model: 'User'
+                    model: 'User',
+                    options: {
+                        fields: {
+                            _id: true,
+                            username: true,
+                            accruedDonations: true
+                        }
+                    }
                 });
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while counting this document\'s opinions'));
@@ -775,7 +775,8 @@ module.exports = {
                     applicableDocument.votes.push(newVote._id);
                     applicableDocument.save();
 
-                    return newVote;
+                    //Not in use
+                    return userDocument.accruedDonations;
                 }
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this vote'));

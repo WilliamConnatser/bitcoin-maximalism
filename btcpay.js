@@ -7,15 +7,14 @@ const BTCPayClient = new btcpay.BTCPayClient(process.env.BTCPAY_URL, keypair, {
 
 module.exports = BTCPayClient;
 
-
 /*
 Only need to run the following once during initial pairing
 It will output a code that needs to be inserted into the environment details now.json under the key PAIRCODE
 
-client
-  .pair_client(<PAIRCODE?)
+BTCPayClient
+  .pair_client(process.env.BTCPAY_PAIRCODE)
   .then(res => console.log(res))
-  .catch(err => console.log(err))
+  .catch(err => console.log(err));
 
 
   EXAMPLE BTCPAY SERVER RESPONSES:

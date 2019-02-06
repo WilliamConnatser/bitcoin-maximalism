@@ -30,7 +30,8 @@
         data: () => {
             return {
                 email: "",
-                password: ""
+                password: "",
+                currentUser: null
             }
         },
         methods: {
@@ -68,56 +69,47 @@
         },
         apollo: {
             currentUser: gql `
-                query currentUser {
-                    currentUser {
-                        _id
-                        username
-                        email
-                        emailVerified
-                        active
-                        admin
-                        accruedDonations
-                        certificates {
+                    query currentUser {
+                        currentUser {
                             _id
-                            dateCreated
-                            createdBy {
-                                username
-                            }
+                            username
+                            email
+                            emailVerified
                             active
-                            activeUntil
-                            name
-                            protagonistic
-                            donationID {
+                            admin
+                            accruedDonations
+                            donations {
                                 _id
+                                dateCreated
                                 amount
+                                active
                                 paid
+                                accruing
+                                onModel
+                                documentID
                             }
-                        }
-                        donations {
-                            _id
-                            dateCreated
-                            amount
-                            active
-                            paid
-                            accruing
-                            onModel
-                            documentID
-                        }
-                        opinions {
-                            _id
-                            dateCreated
-                            createdBy {
-                                username
+                            opinions {
+                                _id
+                                dateCreated
+                                slug
+                                metaSlug
+                                opinion
+                                onModel
+                                documentID
+                                approved
+                                censored
+                                censoredBy
+                                censoredCommentary
+                                votes {
+                                    _id
+                                    dateCreated
+                                    createdBy {
+                                        _id
+                                        username
+                                        accruedDonations
+                                    }
+                                }
                             }
-                            slug
-                            metaSlug
-                            opinion
-                            onModel
-                            documentID
-                            approved
-                            censored
-                            censoredBy
-                            censoredCommentary
                             votes {
                                 _id
                                 dateCreated
@@ -126,25 +118,15 @@
                                     username
                                     accruedDonations
                                 }
+                                slug
+                                metaSlug
+                                onModel
+                                documentID
+                                upVote
                             }
-                        }
-                        votes {
-                            _id
-                            dateCreated
-                            createdBy {
-                                _id
-                                username
-                                accruedDonations
-                            }
-                            slug
-                            metaSlug
-                            onModel
-                            documentID
-                            upVote
                         }
                     }
-                }
-            `
+                `
         }
     };
 </script>
