@@ -18,7 +18,7 @@
         <ul v-if="docIDSpecificOpinions && docIDSpecificOpinions[0]">
             <li v-for="(opinion, forLoopIndex) in docIDSpecificOpinions" :key="forLoopIndex" class="opinion">
                 <div>
-                    <ToolbarVotes :arrayItemProp="opinion" />
+                    <ToolbarVotes :arrayItemProp="opinion" v-on:vote-opinion="updateOpinions" />
                     <strong class="uppercase">{{opinion.createdBy.username}}</strong>
                     {{opinion.dateCreated | formatDate }}
                 </div>
@@ -63,11 +63,7 @@
         },
         created() {
             this.$apollo.queries.docIDSpecificOpinions.refetch();
-
-            this.$root.$on('votedOnOpinion', () => {
-                this.$apollo.queries.docIDSpecificOpinions.refetch();
-                this.$apollo.queries.docIDSpecificOpinionCount.refetch();
-            });
+            this.$apollo.queries.docIDSpecificOpinionCount.refetch();
         },
         methods: {
             cancel(actionType) {
@@ -98,6 +94,10 @@
             },
             loadMore() {
                 this.index += 10;
+            },
+            updateOpinions() {
+                this.$apollo.queries.docIDSpecificOpinions.refetch();
+                this.$apollo.queries.docIDSpecificOpinionCount.refetch();
             }
         },
         computed: {

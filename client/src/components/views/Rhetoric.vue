@@ -3,7 +3,7 @@
     <h1 v-if="argumentSpecificRhetoric" class="title">{{argumentSpecificRhetoric.title}}</h1>
     <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
     <ul>
-      <AdvancedListItem v-if="argumentSpecificRhetoric" :arrayProp="concatAndSort" />
+      <AdvancedListItem v-if="argumentSpecificRhetoric" :arrayProp="concatAndSort" v-on:vote-rhetoric="updateQuery" />
     </ul>
   </div>
 </template>
@@ -29,10 +29,6 @@
           path: '/not-found'
         });
       }
-
-      this.$root.$on('votedOnRhetoric', () => {
-        this.$apollo.queries.argumentSpecificRhetoric.refetch();
-      });
     },
     computed: {
       concatAndSort: function () {
@@ -63,6 +59,9 @@
         return rhetoricArray.sort((a, b) => {
           return this.calculateVotes(b.votes) - this.calculateVotes(a.votes);
         });
+      },
+      updateQuery() {
+        this.$apollo.queries.argumentSpecificRhetoric.refetch();
       }
     },
     apollo: {

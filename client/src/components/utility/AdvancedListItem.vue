@@ -28,15 +28,7 @@
             ToolbarVotes,
             ToolbarActions
         },
-        data() {
-            return {
-                currentUser: null
-            }
-        },
         computed: {
-            slug() {
-                return this.$route.params.slug;
-            },
             metaSlug() {
                 return this.$route.params.metaSlug;
             }
@@ -44,22 +36,6 @@
         methods: {
             urlGenerator: (metaSlug, slug) => {
                 return `${metaSlug}/${slug}`
-            }
-        },
-        apollo: {
-            currentUser: {
-                query: gql `
-                    query currentUser {
-                        currentUser {
-                            _id
-                            username
-                            email
-                            emailVerified
-                            active
-                            admin
-                        }
-                    }
-                `
             }
         }
     };

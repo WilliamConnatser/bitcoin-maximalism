@@ -9,7 +9,7 @@
                     formatBitcoinAmount}}</span>
                 <span v-else-if="calculateVotes(arrayItemProp.votes)<0">- {{calculateVotes(arrayItemProp.votes)*-1 |
                     formatBitcoinAmount}}</span>
-                <span v-else-if="calculateVotes(arrayItemProp.votes)===0">{{calculateVotes(arrayItemProp.votes) |
+                <span v-else-if="calculateVotes(arrayItemProp.votes)===0">{{calculateVotes(arrayItemProp.votes)*-1 |
                     formatBitcoinAmount}}</span>
             </span>
             <span class="icon" @click='submitVote(false)' title="Downvote">
@@ -82,9 +82,11 @@
                         data
                     }) => {
                         if (this.arrayItemProp.__typename === 'Rhetoric') {
-                            this.$root.$emit('votedOnTOS');
-                        } else if (this.arrayItemProp.__typename !== 'Opinion') {
-                            this.$root.$emit('votedOnRhetoric');
+                            this.$parent.$emit('vote-tos');
+                        } else if (this.arrayItemProp.__typename === 'Opinion') {
+                            this.$emit('vote-opinion');
+                        } else {
+                            this.$parent.$emit('vote-rhetoric');
                         }
                         this.$toasted.global.vote_success();
                     }).catch(error => {

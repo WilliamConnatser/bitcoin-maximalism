@@ -9,9 +9,9 @@
     "deploy": "npm run build && now --public && now alias"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.13",
-    "@fortawesome/free-brands-svg-icons": "^5.7.0",
-    "@fortawesome/free-solid-svg-icons": "^5.7.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.14",
+    "@fortawesome/free-brands-svg-icons": "^5.7.1",
+    "@fortawesome/free-solid-svg-icons": "^5.7.1",
     "@fortawesome/vue-fontawesome": "^0.1.5",
     "@vue/cli": "^3.4.0",
     "apollo-boost": "^0.1.27",
@@ -22,8 +22,8 @@
     "prerender-spa-plugin": "^3.4.0",
     "qrcode": "^1.3.3",
     "textticker": "0.0.4",
-    "vue": "^2.5.22",
-    "vue-apollo": "^3.0.0-beta.27",
+    "vue": "^2.6.2",
+    "vue-apollo": "^3.0.0-beta.28",
     "vue-fontawesome": "0.0.2",
     "vue-router": "^3.0.2",
     "vue-social-sharing": "^2.3.3",
@@ -34,7 +34,7 @@
     "@vue/cli-plugin-babel": "^3.4.0",
     "@vue/cli-plugin-eslint": "^3.4.0",
     "@vue/cli-service": "^3.4.0",
-    "vue-template-compiler": "^2.5.22"
+    "vue-template-compiler": "^2.6.2"
   },
   "eslintConfig": {
     "root": true,

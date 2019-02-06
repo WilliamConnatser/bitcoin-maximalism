@@ -63,8 +63,6 @@ module.exports = {
                         }
                     });
 
-                    console.log(user.opinions[0])
-
                 return user;
 
             } catch (err) {

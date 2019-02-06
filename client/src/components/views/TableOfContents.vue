@@ -4,7 +4,7 @@
 
     <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
     <ul>
-      <AdvancedListItem :arrayProp="this.args" />
+      <AdvancedListItem :arrayProp="this.args" v-on:vote-tos="updateQuery" />
     </ul>
   </div>
 </template>
@@ -16,19 +16,12 @@
   export default {
     data: () => {
       return {
-        currentUser: null,
         getAllApprovedAndActiveProtagonisticRhetoric: [],
         getAllApprovedAndActiveAntagonisticRhetoric: []
       }
     },
     components: {
       AdvancedListItem
-    },
-    created() {
-      this.$root.$on('votedOnTOS', () => {
-        this.$apollo.queries.getAllApprovedAndActiveProtagonisticRhetoric.refetch();
-        this.$apollo.queries.getAllApprovedAndActiveAntagonisticRhetoric.refetch();
-      });
     },
     computed: {
       args() {
@@ -65,6 +58,13 @@
         return rhetoricArray.sort((a, b) => {
           return this.calculateVotes(b.votes) - this.calculateVotes(a.votes);
         });
+      },
+      updateQuery() {
+        if (this.metaSlug === 'protagonistic') {
+          this.$apollo.queries.getAllApprovedAndActiveProtagonisticRhetoric.refetch();
+        } else {
+          this.$apollo.queries.getAllApprovedAndActiveAntagonisticRhetoric.refetch();
+        }
       }
     },
     apollo: {
