@@ -38,9 +38,23 @@
             Refer your friends and receive a <strong>10% lifetime influence bonus</strong> proportional to each of
             their donations!
 
-            <h1 class="medium-margin uppercase">
+            <h1 class="medium-margin uppercase fancy-link">
                 <router-link to="/account"> Register Here</router-link>
             </h1>
+        </div>
+        <h1>Open Beta:</h1>
+        <div class="medium-margin">
+            <a href="https://github.com/WilliamConnatser/bitcoin-maximalism-v2" target="_blank" rel="noopener">
+                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'github-square' }" class="extra-large-social-icons fancy-link" />
+            </a> <br/>
+            Please report technical and bug issues via Github by creating an issue.
+        </div>
+
+        <div class="medium-margin">
+            <a href="mailto:admin@BitcoinMaximalism.com" target="_blank" rel="noopener">
+                <font-awesome-icon :icon="{ prefix: 'fas', iconName: 'envelope-square' }" class="extra-large-social-icons fancy-link" />
+            </a> <br/>
+            Please report donation and account issues via Email.
         </div>
     </div>
 </template>

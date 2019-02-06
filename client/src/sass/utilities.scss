@@ -69,8 +69,20 @@
     }
 }
 
-.social-icons-large {
+.large-social-icons {
     font-size: 3rem;
+    margin: 1rem .5rem;
+
+    animation: moveInRight .5s;
+    transition: all .2s;
+
+    &:hover {
+        transform: skewY(1deg) skewX(2deg) scale(1.2);
+    }
+}
+
+.extra-large-social-icons {
+    font-size: 7rem;
     margin: 1rem .5rem;
 
     animation: moveInRight .5s;

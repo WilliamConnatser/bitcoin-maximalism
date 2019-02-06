@@ -8,25 +8,25 @@
                     inline-template>
         <div>
             <network network="twitter">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'twitter-square' }" class="social-icons-large" />
+                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'twitter-square' }" class="large-social-icons" />
             </network>
             <network network="facebook">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook-square' }" class="social-icons-large" />
+                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook-square' }" class="large-social-icons" />
             </network>
             <network network="reddit">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'reddit-square' }" class="social-icons-large" />
+                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'reddit-square' }" class="large-social-icons" />
             </network>
             <network network="telegram">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'telegram' }" class="social-icons-large" />
+                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'telegram' }" class="large-social-icons" />
             </network>
             <network network="weibo">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'weibo' }" class="social-icons-large" />
+                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'weibo' }" class="large-social-icons" />
             </network>
             <network network="email">
-                <font-awesome-icon icon="envelope-square" class="social-icons-large" />
+                <font-awesome-icon icon="envelope-square" class="large-social-icons" />
             </network>
             <network network="sms">
-                <font-awesome-icon icon="sms" class="social-icons-large" />
+                <font-awesome-icon icon="sms" class="large-social-icons" />
             </network>
         </div>
     </social-sharing>
