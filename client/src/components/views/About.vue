@@ -1,6 +1,6 @@
 <template>
     <div class="container normal-text">
-        <div class="block">
+        <div class="medium-margin">
             <h1>
                 What?
             </h1>
@@ -10,7 +10,7 @@
             to the website.
         </div>
 
-        <div class="block">
+        <div class="medium-margin">
             <h1>
                 Why?
             </h1>
@@ -20,7 +20,7 @@
             Bitcoin donations.
         </div>
 
-        <div class="block">
+        <div class="medium-margin">
             <h1>
                 How?
             </h1>
@@ -29,7 +29,7 @@
             will be added to your account. You may make an unlimited amount of donations in order to boost your influence.
         </div>
 
-        <div class="block">
+        <div class="medium-margin">
             <h1>
                 When?
             </h1>
@@ -38,12 +38,10 @@
             Refer your friends and receive a <strong>10% lifetime influence bonus</strong> proportional to each of
             their donations!
 
-            <h1 class="block uppercase">
+            <h1 class="medium-margin uppercase">
                 <router-link to="/account"> Register Here</router-link>
             </h1>
         </div>
-
-
     </div>
 </template>
 

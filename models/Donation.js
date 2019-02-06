@@ -26,8 +26,7 @@ const DonationSchema = new mongoose.Schema({
         type: Number
     },
     preBonusAmount: {
-        type: Number,
-        required: true
+        type: Number
     },
     active: {
         type: Boolean,

@@ -2,11 +2,11 @@
     <div class="normal-text">
         <h1>Sign In</h1>
         <form @submit.prevent="signinUser">
-            <div class="block">
+            <div class="medium-margin">
                 <label>Email</label>
                 <input type="email" v-model="email" autocomplete="email" class="wide-input">
             </div>
-            <div class="block">
+            <div class="medium-margin">
                 <label>Password</label>
                 <input type="password" v-model="password" autocomplete="password" class="wide-input"> <br />
                 <router-link to="/reset-password">Forgot Password?</router-link>
@@ -14,7 +14,7 @@
 
             <button type="submit">Login</button>
 
-            <div @click="$emit('toggle-login')" class="block">
+            <div @click="$emit('toggle-login')" class="medium-margin">
                 Not Registered Yet?
                 <h2>Sign Up Here!</h2>
             </div>

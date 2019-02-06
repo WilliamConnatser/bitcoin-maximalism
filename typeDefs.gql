@@ -1,4 +1,3 @@
-
 schema {
   query: Query
   mutation: Mutation
@@ -102,15 +101,15 @@ type Donation {
     createdBy: User!
     ticker: String!
     amount: Float!
-    active: Boolean! # Unpaid donations will be inactive aka. false
+    active: Boolean! # Unpaid donations will be false
     paid: Boolean!
     invoiceID: String!
     invoiceURL: String!
     accruing: Boolean! # If the donation is attributable towards total donated for upvotes/downvotes
     onModel: String! # The model the donation is applicable to
-    documentID: ID! # Only really used if non-acruuing vote to buy certificates etc
+    documentID: ID # Only really used if non-acruuing vote to buy certificates etc
     bonusPercentage: Float # The bonus percentage applied to their original donation
-    preBonusAmount: Float! # The donation amount before the bonus was applied
+    preBonusAmount: Float # The donation amount before the bonus was applied
 }
 
 type Certificate {
@@ -183,10 +182,9 @@ type Query {
     docIDSpecificRhetoric(_id: ID!): Rhetoric
     docIDSpecificBulletPoint(_id: ID!): BulletPoint
     docIDSpecificResource(_id: ID!): Resource
+    docIDSpecificVotes(onModel: String!, _id: ID!): [Vote]
 
     allRhetoric(metaSlug: String!): [Rhetoric]
-    allUnapprovedEdits: [Edit]
-    allUnapprovedOpinions: [Opinion]
 
     cryptoValue(ticker: String!): Float
 }
@@ -203,12 +201,12 @@ type Mutation {
     resetPassword(token: String!, newPassword1: String!, newPassword2: String!): Token
 
     submitOpinion(onModel: String!, documentID: ID!, opinion: String!): Float
-    submitVote(onModel: String!, documentID: ID!, upVote: Boolean!): Float
-
-    approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
+    submitVote(onModel: String!, documentID: ID!, upVote: Boolean!): Vote
+    submitDonation(amount: String!): ID
 
     #Inactive - conceptual - submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
     #Inactive - conceptual -submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String
     #Inactive - resolver written - addBulletPoint(slug: String!, metaSlug: String!, content: String!): BulletPoint
     #Inactive - resolver written - setUserAllegiance(allegiance: String!): Token
+    #Inactive - resolve written - approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
 }

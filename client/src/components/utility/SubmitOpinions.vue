@@ -1,7 +1,7 @@
 <template>
     <div>
         <form v-if="!submitted" @submit.prevent="submitOpinion()" class="normal-text">
-            <div class="block">
+            <div class="medium-margin">
                 <label>Your Opinion</label>
                 <textarea v-model="opinion" maxlength=280></textarea>
                 <div class="small-text">
@@ -11,7 +11,7 @@
                 <button type="submit">I Agree</button>
             </div>
         </form>
-        <div v-else class="block">
+        <div v-else class="medium-margin">
             Your opinion was submitted successfully.
         </div>
     </div>

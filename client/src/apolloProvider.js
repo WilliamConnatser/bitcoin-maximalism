@@ -8,11 +8,12 @@ require('now-env');
 import VueApollo from 'vue-apollo';
 import ApolloClient from 'apollo-boost';
 
-//Apollo Local State
-import resolvers from './localState/resolvers';
-import defaults from './localState/defaults';
-import typeDefs from './localState/typeDefs';
-import VueRouter from 'vue-router';
+/*
+//Apollo Local State (NOT IN USE)
+import resolvers from '../localState/resolvers';
+import defaults from '../localState/defaults';
+import typeDefs from '../localState/typeDefs';
+*/
 
 //Tie VueApollo to Vue
 Vue.use(VueApollo);
@@ -56,7 +57,6 @@ export const defaultClient = new ApolloClient({
         graphQLErrors,
         networkError
     }) => {
-        console.log(operation)
         //operations object not currently in use, but stores query/mutation data the error occurred on
         if (networkError) Vue.toasted.show(networkError.message);
         if (graphQLErrors) {

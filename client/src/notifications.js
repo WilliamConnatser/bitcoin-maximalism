@@ -149,6 +149,23 @@ Vue.toasted.register('opinion_length', 'Opinions must be 280 characters or less'
     }]
 });
 
+Vue.toasted.register('no_influence', 'You don\'t have any influence. Add influence in your Account Panel by making a donation', {
+    duration: 5000,
+    position: 'bottom-center',
+    fullWidth: true,
+    fitToScreen: true,
+    singleton: true,
+    action: [, {
+        text: 'Account Panel',
+        push: '/account'
+    },{
+        text: 'Close',
+        onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+        }
+    }]
+});
+
 Vue.toasted.register('email', 'Enter an email', {
     duration: 5000,
     position: 'bottom-center',

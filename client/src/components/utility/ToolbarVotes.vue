@@ -9,7 +9,7 @@
                     formatBitcoinAmount}}</span>
                 <span v-else-if="calculateVotes(arrayItemProp.votes)<0">- {{calculateVotes(arrayItemProp.votes)*-1 |
                     formatBitcoinAmount}}</span>
-                <span v-else-if="calculateVotes(arrayItemProp.votes)===0">{{calculateVotes(arrayItemProp.votes)*-1 |
+                <span v-else-if="calculateVotes(arrayItemProp.votes)===0">{{calculateVotes(arrayItemProp.votes) |
                     formatBitcoinAmount}}</span>
             </span>
             <span class="icon" @click='submitVote(false)' title="Downvote">
@@ -61,12 +61,16 @@
                     this.$toasted.global.log_in();
                 }  else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
+                }  else if (!this.currentUser.accruedDonations === 0) {
+                    this.$toasted.global.no_influence();
                 } else {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
                             mutation submitVote($onModel: String!, $documentID: ID!, $upVote: Boolean!) {
-                                submitVote(onModel:$onModel, documentID:$documentID, upVote: $upVote)
+                                submitVote(onModel:$onModel, documentID:$documentID, upVote: $upVote) {
+                                    _id
+                                }
                             }
                         `,
                         variables: {
@@ -111,6 +115,7 @@
                             emailVerified
                             active
                             admin
+                            accruedDonations
                         }
                     }
                 `

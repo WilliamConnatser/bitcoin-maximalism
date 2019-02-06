@@ -10,11 +10,11 @@
         </div>
         <div v-else-if="validated && !reset">
             <form @submit.prevent="resetPassword">
-                <div class="block">
+                <div class="medium-margin">
                     <label for="newPassword1">Password</label>
                     <input type="password" v-model="newPassword1">
                 </div>
-                <div class="block">
+                <div class="medium-margin">
                     <label for="newPassword1">Re-Enter Password</label>
                 <input type="password" v-model="newPassword2">
                 </div>
@@ -26,7 +26,7 @@
         </div>
 
         <form v-if="!resent && !validated && !$apollo.loading" @submit.prevent="resendEmail">
-            <div class="block">
+            <div class="medium-margin">
                 <label for="email">Account Email</label>
                 <input v-model="email" type="email" class="wide-input">
             </div>

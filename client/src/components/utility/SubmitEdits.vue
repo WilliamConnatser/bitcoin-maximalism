@@ -1,7 +1,7 @@
 <template>
     <div ref="success">
         <form @submit.prevent="submitted=true">
-            <div class="block">
+            <div class="medium-margin">
                 <label>Donation Amount (BTC)</label>
                 <input id="donation-amount" type="text" v-model="donationAmount">
                 <div class="small-text">
@@ -13,21 +13,21 @@
             </div>
 
             <div v-if="arrayItemProp.__typename == 'Resource'">
-                <div class="block">
+                <div class="medium-margin">
                     <label>Title</label>
                     <input type="text" v-model="resourceTitle">
                     <div class="description">
                         The title of the resource.
                     </div>
                 </div>
-                <div class="block">
+                <div class="medium-margin">
                     <label>Link</label>
                     <input type="url" v-model="resourceLink">
                     <div class="description">
                         The link to the resource.
                     </div>
                 </div>
-                <div class="block">
+                <div class="medium-margin">
                     <label>Media Type</label>
                     <input type="text" v-model="resourceMedia">
                     <div class="description">
@@ -35,7 +35,7 @@
                     </div>
                 </div>
 
-                <div class="block">
+                <div class="medium-margin">
                     <div class="small-text">
                         Submitting an edit and making a donation does not guarantee that your
                         edit will be approved. We reserve the right to not publish an edit or alter your edit for any
@@ -50,14 +50,14 @@
             </div>
 
             <div v-if="arrayItemProp.__typename == 'BulletPoint'">
-                <div class="block">
+                <div class="medium-margin">
                     <label>Content</label>
                     <textarea v-model="bulletPointContent" maxlength=280></textarea>
                     <div class="small-text">
                         The content of the argument.
                     </div>
                 </div>
-                <div class="block">
+                <div class="medium-margin">
                     <div class="small-text">
                         Submitting an edit and making a donation does not guarantee that your
                         edit will be approved. We reserve the right to not publish an edit or alter your edit for any
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <button type="submit block">I Agree</button>
+            <button type="submit medium-margin">I Agree</button>
         </form>
     </div>
 </template>

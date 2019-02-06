@@ -62,7 +62,7 @@ const getUser = async (token) => {
     if (token) {
         try {
             return await jwt.verify(token, process.env.SECRET);
-        } catch(err) {
+        } catch (err) {
             return null;
         }
     }
@@ -73,10 +73,13 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     //Make errors pretty
-    formatError: error => ({
-        name: error.name,
-        message: error.message
-    }),
+    formatError: error => {
+        console.log(error);
+        return {
+            name: error.name,
+            message: error.message
+        }
+    },
     //Controls what's accessible via each resolvers' context
     context: async ({
         req

@@ -2,26 +2,26 @@
     <div class="normal-text">
         <h1>Sign Up</h1>
         <form v-if="!success" @submit.prevent="signupUser">
-            <div class="block">
+            <div class="medium-margin">
                 <label>Username</label>
                 <input type="text" v-model="username" autocomplete="username" class="wide-input">
             </div>
-            <div class="block">
+            <div class="medium-margin">
                 <label>Email</label>
                 <input type="email" v-model="email" autocomplete="email" class="wide-input">
             </div>
-            <div class="block">
+            <div class="medium-margin">
                 <label>Password</label>
                 <input type="password" v-model="password" autocomplete="password" class="wide-input">
             </div>
             <button type="submit">Register</button>
 
-            <div @click="$emit('toggle-login')" class="block">
+            <div @click="$emit('toggle-login')" class="medium-margin">
                 Already Registered?
                 <h2>Sign In Here!</h2>
             </div>
         </form>
-        <span v-else>Please check your email for verification.</span>
+        <span v-else>Please check your email for verification. If you didn't receive it, then you may request a new one <router-link to="/verify-email/eyJhbGci">here</router-link>.</span>
     </div>
 </template>
 

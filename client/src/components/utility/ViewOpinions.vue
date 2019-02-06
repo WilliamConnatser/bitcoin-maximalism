@@ -27,9 +27,10 @@
                 </div>
                 <hr v-if="docIDSpecificOpinions.length-1!==forLoopIndex">
             </li>
-            <button @click="loadMore()" v-if="docIDSpecificOpinionCount>index+10" class="block">Load More Opinions</button>
+            <button @click="loadMore()" v-if="docIDSpecificOpinionCount>index+10" class="medium-margin">Load More
+                Opinions</button>
         </ul>
-        <div class="block" v-if="!$apollo.loading && (!docIDSpecificOpinions || !docIDSpecificOpinions[0])">
+        <div class="medium-margin" v-if="!$apollo.loading && (!docIDSpecificOpinions || !docIDSpecificOpinions[0])">
             No one's commented on this yet...
         </div>
     </div>
@@ -62,6 +63,11 @@
         },
         created() {
             this.$apollo.queries.docIDSpecificOpinions.refetch();
+
+            this.$root.$on('votedOnOpinion', () => {
+                this.$apollo.queries.docIDSpecificOpinions.refetch();
+                this.$apollo.queries.docIDSpecificOpinionCount.refetch();
+            });
         },
         methods: {
             cancel(actionType) {

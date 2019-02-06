@@ -16,7 +16,6 @@ const {
 const {
     createToken,
     createInvoice,
-    createOpinion,
     createDonation,
     validateDonationAmount,
     invoicePaid,
@@ -44,18 +43,6 @@ module.exports = {
                         model: 'Donation'
                     })
                     .populate({
-                        path: 'certificates',
-                        model: 'Certificate',
-                        populate: {
-                            path: 'createdBy',
-                            model: 'User'
-                        },
-                        populate: {
-                            path: 'donationID',
-                            model: 'Donation'
-                        }
-                    })
-                    .populate({
                         path: 'opinions',
                         model: 'Opinion',
                         populate: {
@@ -76,10 +63,11 @@ module.exports = {
                         }
                     });
 
-                    return user;
+                    console.log(user.opinions[0])
+
+                return user;
 
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this user'));
             }
         },
@@ -177,14 +165,23 @@ module.exports = {
         docIDSpecificDonation: async (_, {
             _id
         }, {
-            Donation
+            Donation,
+            currentUser
         }) => {
             try {
-                return await Donation.findOne({
+                if(!_id) throw new UserInputError('invalid-id');
+                //Donation info has to do with financial privacy, so only the user should be able to access their own donations.
+                if (!currentUser) throw new AuthenticationError('log-in');
+                const donation = await Donation.findOne({
                     _id
-                })
+                });
+                if(!donation) throw new UserInputError('invalid-id');
+                if (donation.createdBy.toString() !== currentUser._id) throw new AuthenticationError('unauthorized');
+
+                else return donation;
+
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this donation by ID'));
+                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this donation'));
             }
         },
         docIDSpecificAmountDonated: async (_, args, {
@@ -252,87 +249,6 @@ module.exports = {
                 return resource;
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this resource by donation ID'));
-            }
-        },
-        allUnapprovedOpinions: async (_, args, {
-            Donation,
-            Opinion,
-            currentUser
-        }) => {
-            // args not in use... destructed = { }
-            try {
-                //Validation
-                if (!currentUser) throw new AuthenticationError('log-in');
-                if (!currentUser.admin) throw new ForbiddenError('admin');
-
-                //Get unapproved opinions that have not been denied
-                var unapprovedAndPaidOpinions = [];
-                const allUnapprovedOpinions = await Opinion.find({
-                    approved: false,
-                    approvedBy: {
-                        $exists: false
-                    }
-                });
-
-                //For each unapproved opinion
-                await allUnapprovedOpinions.forEach(async opinion => {
-
-                    //See if the applicable donation was paid
-                    const donation = await Donation.findOne({
-                        _id: opinion.originalDonation
-                    });
-
-                    //TODO delete exclamation mark in production
-                    if (!donation.paid) {
-                        unapprovedAndPaidOpinions.push(opinion);
-                    }
-                });
-
-                return unapprovedAndPaidOpinions;
-
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching unapproved opinions'));
-            }
-        },
-        allUnapprovedEdits: async (_, args, {
-            Donation,
-            Edit,
-            currentUser
-        }) => {
-            // args not in use... destructed = { }
-            try {
-                //Validation
-                if (!currentUser) throw new AuthenticationError('log-in');
-                if (!currentUser.admin) throw new ForbiddenError('admin');
-
-                //Get all unapproved edits that have not already been denied
-                var unapprovedAndPaidEdits = [];
-                const allUnapprovedEdits = await Edit.find({
-                    approved: false,
-                    approvedBy: {
-                        $exists: false
-                    }
-                });
-
-                //For each array item
-                await allUnapprovedEdits.forEach(edit => {
-
-                    //See if the applicable donation was paid
-                    const donationPaid = Donation.findOne({
-                        _id: edit.originalDonation
-                    }).paid;
-
-                    //TODO delete exclamation mark in production
-                    if (!donationPaid) {
-                        unapprovedAndPaidEdits.push(edit);
-                    }
-                });
-
-                //Return Unapproved and Paid edits in an Array
-                return unapprovedAndPaidEdits;
-
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching unapproved opinions'));
             }
         },
         docIDSpecificOpinions: async (_, {
@@ -452,47 +368,27 @@ module.exports = {
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while counting this document\'s opinions'));
             }
+        },
+        docIDSpecificVotes: async (_, {
+            _id,
+            onModel
+        }, {
+            Vote
+        }) => {
+            try {
+                return await Vote.find({
+                    documentID: _id,
+                    onModel
+                }).populate({
+                    path: 'createdBy',
+                    model: 'User'
+                });
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unkown error occurred while counting this document\'s opinions'));
+            }
         }
     },
     Mutation: {
-        /* Inactive for now
-        addBulletPoint: async (_, {
-            slug,
-            pro,
-            content
-        }, {
-            BulletPoint,
-            currentUser
-        }) => {
-            try {
-                //Validation
-                if (!currentUser) throw new AuthenticationError('log-in');
-                if (!currentUser.admin) throw new ForbiddenError('admin');
-                if (!user.emailVerified) throw new ForbiddenError('verify-email');
-
-                const bulletPoint = await BulletPoint.findOne({
-                    content
-                });
-                if (bulletPoint) {
-                    throw new UserInputError('This BulletPoint already exists in the database');
-                }
-
-                //Create BulletPoint document
-                var id = require('mongodb').ObjectID();
-                const newBulletPoint = await new BulletPoint({
-                    _id: id,
-                    slug,
-                    pro,
-                    content,
-                    approved: true
-                }).save();
-
-                return newBulletPoint;
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while creating this BulletPoint'));
-            }
-        },
-        */
         signinUser: async (_, {
             email,
             password
@@ -583,7 +479,7 @@ module.exports = {
                     email
                 });
                 if (!user) throw new UserInputError('user-not-found');
-                if(!user.emailVerified) throw new AuthenticationError('verify-email')
+                if (!user.emailVerified) throw new AuthenticationError('verify-email')
 
                 //Construct and send email verification
                 sendPasswordResetEmail(user);
@@ -612,7 +508,7 @@ module.exports = {
                     username: userObject.username
                 });
                 if (!user) throw new AuthenticationError('user-not-found');
-                if(!user.emailVerified) throw new AuthenticationError('verify-email')
+                if (!user.emailVerified) throw new AuthenticationError('verify-email')
 
                 //Return token 
                 return {
@@ -699,9 +595,12 @@ module.exports = {
                 });
                 if (emailInUse) throw new UserInputError("email-taken");
 
-                if(ref) {
-                    var referredBy = await User.findOne({_id: ref})
-                    if (referredBy === undefined) throw new UserInputError("invalid-referral");
+                var referredBy = null;
+                if (ref) {
+                    referredBy = await User.findOne({
+                        _id: ref
+                    });
+                    if (!referredBy) throw new UserInputError("invalid-referral");
                 }
 
                 //Construct the user object to be inserted
@@ -719,7 +618,7 @@ module.exports = {
                 const newUser = await new User(userObject).save();
 
                 //Save the new user's ID in the referrer's referrals array
-                if(ref) {
+                if (ref) {
                     referredBy.referrals.push(newUser._id);
                     referredBy.save();
                 }
@@ -729,6 +628,7 @@ module.exports = {
 
                 return true;
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while creating your user'));
             }
         },
@@ -768,7 +668,7 @@ module.exports = {
                     _id: currentUser._id
                 });
 
-                if (!applicableDocument) throw new UserInputError('invalid-document');
+                if (!applicableDocument) throw new UserInputError('invalid-id');
                 if (!userDocument) throw new UserInputError('user-not-found');
 
                 var opinionObject = {
@@ -795,7 +695,6 @@ module.exports = {
 
                 return currentUser.accruedDonations;
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this opinion'));
             }
         },
@@ -878,43 +777,50 @@ module.exports = {
                     applicableDocument.votes.push(newVote._id);
                     applicableDocument.save();
 
+                    return newVote;
                 }
-
-                //Return vote weight
-                return userDocument.accruedDonations;
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this vote'));
             }
         },
-        approveOpinion: async (_, {
-            _id,
-            approved,
-            approvalCommentary
+        submitDonation: async (_, {
+            amount
         }, {
-            Opinion,
+            Crypto,
+            User,
             currentUser
         }) => {
             try {
                 //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
-                if (!currentUser.admin) throw new ForbiddenError('admin');
+                const bitcoinValue = await Crypto.findOne({
+                    ticker: 'BTC'
+                }).valueUSD;
+                validateDonationAmount(amount, bitcoinValue);
 
-                //Update Opinion document
-                const opinion = await Opinion.findOne({
-                    _id
+                const userDocument = await User.findOne({
+                    _id: currentUser._id
                 });
-                opinion.approved = approved;
-                opinion.approvedBy = currentUser.username;
-                opinion.approvalCommentary = approvalCommentary;
-                opinion.dateApproved = new Date();
-                opinion.save();
+                if (!userDocument) throw new UserInputError('user-not-found');
 
-                return true;
+                const newInvoice = await createInvoice(amount, currentUser);
+                const newDonation = await createDonation(amount, newInvoice, currentUser, userDocument);
 
+                userDocument.donations.push(newDonation._id);
+                userDocument.save();
+
+                //Check every 5 minutes to see if the invoice has been paid
+                var invoiceInterval;
+                invoiceInterval = setInterval(function () {
+                    invoicePaid(newInvoice, newDonation, invoiceInterval, userDocument);
+                }, 30000);
+
+                //Return donation ID
+                return newDonation._id;
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while approving this opinion'));
             }
-
         }
     }
 }
@@ -958,3 +864,73 @@ module.exports = {
             }
 
             */
+
+
+/* Inactive for now
+        addBulletPoint: async (_, {
+            slug,
+            pro,
+            content
+        }, {
+            BulletPoint,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (!currentUser.admin) throw new ForbiddenError('admin');
+                if (!user.emailVerified) throw new ForbiddenError('verify-email');
+
+                const bulletPoint = await BulletPoint.findOne({
+                    content
+                });
+                if (bulletPoint) {
+                    throw new UserInputError('This BulletPoint already exists in the database');
+                }
+
+                //Create BulletPoint document
+                var id = require('mongodb').ObjectID();
+                const newBulletPoint = await new BulletPoint({
+                    _id: id,
+                    slug,
+                    pro,
+                    content,
+                    approved: true
+                }).save();
+
+                return newBulletPoint;
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unkown error occurred while creating this BulletPoint'));
+            }
+        },
+        approveOpinion: async (_, {
+            _id,
+            approved,
+            approvalCommentary
+        }, {
+            Opinion,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+                if (!currentUser.admin) throw new ForbiddenError('admin');
+
+                //Update Opinion document
+                const opinion = await Opinion.findOne({
+                    _id
+                });
+                opinion.approved = approved;
+                opinion.approvedBy = currentUser.username;
+                opinion.approvalCommentary = approvalCommentary;
+                opinion.dateApproved = new Date();
+                opinion.save();
+
+                return true;
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while approving this opinion'));
+            }
+
+        }
+        */

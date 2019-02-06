@@ -13,7 +13,7 @@
     your own research because there is a lot more to learn beyond what's written in the slides and resources
     contained within.
 
-    <div class="small-text block">
+    <div class="small-text medium-margin">
       * Considering a human built this web site, and wrote the content, it is technically impossible to be 100%
       objective, but the human did give a good amount of effort in order to remain impartial.
     </div>

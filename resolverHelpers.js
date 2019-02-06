@@ -16,6 +16,19 @@ const {
     ApolloError
 } = require('apollo-server');
 
+//MongoDB / Mongoose dependency & Models
+const mongoose = require('mongoose');
+const Rhetoric = require('./models/Rhetoric');
+const Edit = require('./models/Edit');
+const Opinion = require('./models/Opinion');
+const Resource = require('./models/Resource');
+const Certificate = require('./models/Certificate');
+const Donation = require('./models/Donation');
+const BulletPoint = require('./models/BulletPoint');
+const User = require('./models/User');
+const Vote = require('./models/Vote');
+const Crypto = require('./models/Crypto');
+
 const createToken = ({
     _id,
     username,
@@ -68,104 +81,84 @@ const sendPasswordResetEmail = async user => {
     }
 }
 
-const createInvoice = async (args, currentUser, transactionType) => {
+const createInvoice = async (amount, currentUser) => {
     try {
-        var objectToInsert = {
-            price: args.amount,
+        var invoiceObject = {
+            price: amount,
             currency: 'BTC',
             buyer: {
                 name: currentUser.username,
                 email: currentUser.email
-            }
+            },
+            itemDesc: `${amount} BTC donation by ${currentUser.username}`
         }
 
-        if (transactionType === 'Opinion') {
-            objectToInsert.itemDesc = `${args.amount} BTC donation for ${currentUser.username}'s opinion on the ${args.onModel} ${args.documentID}: "${args.opinion}"`
-        } else if (transactionType === 'Vote') {
-            if (args.upVote) {
-                var vote = "Upvote";
-            } else {
-                var vote = "Downvote";
-            }
-            objectToInsert.itemDesc = `${args.amount} BTC donation for ${currentUser.username}'s ${vote} on the ${args.onModel} ${args.documentID}`
-        }
-
-        return await btcPayClient.create_invoice(objectToInsert);
+        return await btcPayClient.create_invoice(invoiceObject);
 
     } catch (err) {
-        throw new ApolloError(parseError(err.message, 'An unknown error occurred while interacting with the BTCPay server.'));
+        throw new ApolloError(parseError(err.message, 'An unknown error occurred while creating the invoice'));
     }
 }
 
-const createDonation = async (args, applicableDocument, invoice, Donation, currentUser) => {
+const createDonation = async (amount, invoice, currentUser, applicableDocument) => {
 
     try {
-        var objectToInsert = {
+        console.log(applicableDocument)
+        var donationObject = {
             _id: require('mongodb').ObjectID(),
             invoiceID: invoice.id,
             invoiceURL: invoice.url,
-            onModel: args.onModel,
-            documentID: args.documentID,
-            createdBy: currentUser.username,
-            amount: args.amount,
-            slug: applicableDocument.slug,
-            pro: applicableDocument.pro,
-            votingDonation: false
+            createdBy: currentUser._id
         }
 
-        if (args.votingDonation) {
-            objectToInsert.votingDonation = true;
-            objectToInsert.upVote = args.upVote;
+        //If the document is a User document, then it's an accruing donation towards influence weight
+        if (applicableDocument.username) {
+            donationObject.accruing = true;
+            donationObject.onModel = 'User';
+
+            //Bonus Percentage for Open Beta
+            //There may be Bonus Percentages for purchasing items or subscriptions in the future
+            donationObject.bonusPercentage = 0.25;
+            donationObject.preBonusAmount = Number(amount);
+            donationObject.amount = amount * (donationObject.bonusPercentage + 1);
+
+        } else {
+            //Document ID is only assigned for non-accruing donations (IE. purchases of items, subscriptions, etc)
+            //TODO: create extra conditional on fields of applicableDocument to see what type it is. For now, we assume it's a certificate
+            donationObject.onModel = 'Certificate';
+            donationObject.documentID = applicableDocument._id;
+            donationObject.accruing = false;
+            donationObject.amount = amount;
         }
 
-        return await new Donation(objectToInsert).save();
+        return await new Donation(donationObject).save();
+
     } catch (err) {
         throw new ApolloError(parseError(err.message, 'An unknown error occurred while creating the donation.'));
     }
 }
 
-const createOpinion = async (args, applicableDocument, donation, Opinion, currentUser) => {
-
-    try {
-        return await new Opinion({
-            _id: require('mongodb').ObjectID(),
-            createdBy: currentUser.username,
-            slug: applicableDocument.slug,
-            pro: applicableDocument.pro,
-            opinion: args.opinion,
-            documentID: args.documentID,
-            onModel: args.onModel,
-            originalDonation: donation._id
-        }).save();
-
-    } catch (err) {
-        throw new ApolloError(parseError(err.message, 'An unknown error occurred while creating the opinion.'));
-    }
-}
-
-const applyVote = async (args, applicableDocument, amountPaid) => {
-    try {
-        if (args.upVote) applicableDocument.accruedVotes += amountPaid;
-        else if (!args.upVote) applicableDocument.accruedVotes -= amountPaid;
-        return await applicableDocument.save();
-
-    } catch (err) {
-        throw new ApolloError(parseError(err.message, 'An unknown error occurred while applying your vote.'));
-    }
-}
-
-const invoicePaid = async (invoice, donation, invoiceInterval, args, applicableDocument) => {
+const invoicePaid = async (invoice, donation, invoiceInterval, applicableDocument) => {
     try {
         const updatedInvoice = await btcPayClient.get_invoice(invoice.id);
-
-        //If they paid 95% of the amount due (give a little slack for fee discrepancy)
-        if (updatedInvoice.amountPaid > (invoice.btcDue * .95)) {
-            donation.amount = Number(updatedInvoice.amountPaid);
+        //If the invoice was paid. Allow 5% leeway for user error having to do with fees
+        //TODO: On production, changed to a greater than sign
+        if (updatedInvoice.amountPaid < invoice.btcDue * 0.95) {
             donation.paid = true;
-            donation.save();
 
-            //If it's a voting donation, then apply the votes to the applicable document
-            if (donation.votingDonation) applyVote(args, applicableDocument, updatedInvoice.amountPaid);
+            //If the document is a User document, then it's an accruing donation towards influence weight
+            if (applicableDocument.username) {
+                //TODO: Replace line in production
+                //donation.preBonusAmount = Number(updatedInvoice.amountPaid);
+                donation.preBonusAmount = Number(donation.preBonusAmount);
+                donation.amount = donation.preBonusAmount * (donation.bonusPercentage + 1);
+                adjustDonationInfluence(await donation.save());
+
+            } else {
+                donation.amount = Number(updatedInvoice.amountPaid);
+                donation.save();
+            }
+
             clearInterval(invoiceInterval);
 
         } else if (updatedInvoice.status === 'expired') {
@@ -174,9 +167,85 @@ const invoicePaid = async (invoice, donation, invoiceInterval, args, applicableD
             donation.save();
             clearInterval(invoiceInterval);
         }
-
     } catch (err) {
         throw new ApolloError(parseError(err.message, 'An unknown error occurred while checking the status of your invoice.'));
+    }
+}
+
+const adjustUserInfluence = async user => {
+    try {
+        var accruedDonations = 0;
+
+        console.log(user.username, "influence adjustment in process")
+
+        user.donations.forEach(donation => {
+            if (donation.paid) {
+                accruedDonations += donation.amount;
+            }
+        });
+
+        user.referrals.forEach(referredUser => {
+            console.log("referred: ", referredUser)
+            referredUser.donations.forEach(donation => {
+                console.log("donation: ", donation)
+                if (donation.paid) {
+                    accruedDonations += donation.amount * 0.1;
+                }
+            });
+        });
+        console.log('new influence = ' + accruedDonations);
+
+        user.accruedDonations = accruedDonations;
+        user.save();
+
+    } catch (err) {
+        throw new ApolloError(parseError(err.message, 'An unknown error occurred while adjusting your influence'));
+    }
+}
+
+const adjustDonationInfluence = async donation => {
+    try {
+        const donationUser = await User.findOne({
+                _id: donation.createdBy
+            })
+            .populate({
+                path: 'donations',
+                model: 'Donation'
+            })
+            .populate({
+                path: 'referredBy',
+                model: 'User'
+            })
+            .populate({
+                path: 'referrals',
+                model: 'User',
+                populate: {
+                    path: 'donations',
+                    model: 'Donation'
+                }
+            });
+        adjustUserInfluence(donationUser);
+
+        if (donationUser.referredBy) {
+            const referralUser = await User.findOne({
+                    _id: donationUser.referredBy
+                })
+                .populate({
+                    path: 'donations',
+                    model: 'Donation'
+                })
+                .populate({
+                    path: 'referrals',
+                    model: 'User',
+                    populate: {
+                        path: 'donations',
+                        model: 'Donation'
+                    }
+                });
+            adjustUserInfluence(referralUser);
+        }
+    } catch (err) {
+        throw new ApolloError(parseError(err.message, 'An unknown error occurred while adjusting your influence'));
     }
 }
 
@@ -224,12 +293,13 @@ const parseError = (error, unknownError) => {
     else if (error == 'un-matching-password') return 'Passwords must match';
     else if (error == 'email-taken') return 'Email address already in use';
     else if (error == 'invalid-referral') return 'Invalid referral link, clear your cookies';
-    else if (error == 'invalid-document') return 'Invalid document submitted';
+    else if (error == 'invalid-id') return 'Invalid document ID submitted';
     else if (error == 'invalid-type') return 'Invalid type submitted';
     else if (error == 'invalid-sort-index') return 'Invalid number requested';
     else if (error == 'invalid-sort-type') return 'Invalid sort type';
     else if (error == 'invalid-sort-order') return 'Invalid sort order';
     else if (error == 'admin') return 'You must be an admin';
+    else if (error == 'unauthorized') return 'You are not authorized to view this';
     else return unknownError;
 }
 
@@ -238,10 +308,8 @@ module.exports = {
     sendRegistrationEmail,
     sendPasswordResetEmail,
     createInvoice,
-    createOpinion,
     createDonation,
     validateDonationAmount,
-    applyVote,
     invoicePaid,
     parseError
 };

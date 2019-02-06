@@ -73,6 +73,7 @@ button {
     padding: .5rem;
     margin: .5rem;
     border: 0.1rem solid $color-white;
+    outline: none;
 }
 
 .wide-input {
@@ -90,4 +91,9 @@ button {
     max-width: 20rem;
     margin: 0rem;
     height: 3rem;
+}
+
+.selected-button {
+    background-color: $color-white;
+    color: $color-green;
 }

@@ -3,68 +3,103 @@
         <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
-            <div class="block">
-                <h1>Account Panel</h1>
-                <router-link to="/submit-donation" v-if="currentUser"><button>Add Influence</button></router-link>
-                <button v-if="currentUser" @click="signoutUser">Signout</button> <br />
-                Current Influence: {{currentUser.accruedDonations | formatBitcoinAmount}} BTC <br />
+            <div>
+                <div>
+                    <h1>Account Panel</h1>
+                    <router-link to="/submit-donation"><button>Add Influence</button></router-link>
+                    <button @click="signoutUser">Signout</button>
+                </div>
+                <div>
+                    Influence: {{currentUser.accruedDonations | formatBitcoinAmount}}
+                </div>
+                Referral Link: <a :href="refLink" class="small-text">{{refLink}}</a>
+                <SocialIcons :currentUser="currentUser" />
             </div>
-            {{currentUser.username}} Referral Link:<br />
-            <a :href="refLink">{{refLink}}</a> <br />
-            <SocialIcons :currentUser="currentUser" />
 
-            <div v-if="currentUser.donations.length>0" class="block">
+            <h1>History</h1>
+            <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')">Donations</button>
+            <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')">Opinions</button>
+            <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')">Votes</button>
+
+            <div v-if="historyTab === 'Donation'" class="medium-margin">
                 <h2>Donations</h2>
-                <ul v-for="donation in currentUser.donations" :key="donation._id" class="list">
-                    <li>
-                        Status: <strong>{{status(donation)}}</strong>
-                        <div>{{donation.dateCreated | formatDate}}</div>
-                        {{donationFor(donation.votingDonation, donation.upVote)}}
-                        on <span v-html="argumentLink(donation)"></span>
-                        <div v-if="!donation.active && !donation.paid">The amount of time alotted for this donation has
-                            passed.</div>
-                        <div v-else-if="donation.paid">
-                            This donation was paid!
-                        </div>
-                        <div>
-                            <router-link :to="statusLink(donation)">View Status</router-link>
-                        </div>
-                    </li>
-                </ul>
+                <div v-if="currentUser.donations.length>0">
+                    <ul v-for="donation in currentUser.donations" :key="donation._id" class="list">
+                        <li>
+                            <div><strong>{{donation.dateCreated | formatDate}}</strong></div>
+                            <div>Donation For: {{donationFor(donation.accruing, donation.onModel)}}</div>
+                            Status: <strong>{{status(donation)}}</strong>
+                            <div v-if="!donation.active && !donation.paid">
+                                This invoice expired without payment.
+                            </div>
+                            <div v-else-if="donation.paid">
+                                This donation was paid!
+                            </div>
+                            <div>
+                                <router-link :to="statusLink(donation)" class="uppercase">Info</router-link>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div v-else>
+                    You haven't made any donations yet.
+                </div>
             </div>
 
-            <div v-if="currentUser.opinions.length>0" class="block">
+            <div v-if="historyTab === 'Opinion'" class="medium-margin">
                 <h2>Opinions</h2>
-                <ul v-for="opinion in currentUser.opinions" :key="opinion._id" class="list">
-                    <li>
-                        {{opinion._id}}
-                        {{opinion.dateCreated}}
-                        {{opinion.createdBy.username}}
-                        {{opinion.slug}}
-                        {{opinion.metaSlug}}
-                        {{opinion.opinion}}
-                        {{opinion.onModel}}
-                        {{opinion.documentID}}
-                        {{opinion.approved}}
-                        {{opinion.censored}}
-                        {{opinion.censoredBy}}
-                        {{opinion.censoredCommentary}}
-                        {{opinion.votes}}
-                    </li>
-                </ul>
+                <div v-if="currentUser.opinions.length>0">
+                    <ul v-for="opinion in currentUser.opinions" :key="opinion._id" class="list">
+                        <li>
+                            <strong>{{opinion.dateCreated | formatDate}}</strong>
+                            <div>
+                                Influence:
+                                <span v-if="calculateVotes(opinion.votes)>0">+ {{calculateVotes(opinion.votes) |
+                                    formatBitcoinAmount}}</span>
+                                <span v-else-if="calculateVotes(opinion.votes)<0">- {{calculateVotes(opinion.votes)*-1
+                                    | formatBitcoinAmount}}</span>
+                                <span v-else-if="calculateVotes(opinion.votes)===0">{{calculateVotes(opinion.votes) |
+                                    formatBitcoinAmount}}</span>
+                            </div>
+                            {{opinion.opinion}}
+                            <div>
+                                <router-link :to="argumentLink(opinion.metaSlug, opinion.slug)" class="small-text">{{argumentLink(opinion.metaSlug,opinion.slug)}}</router-link>
+                            </div>
+                            <div v-if="opinion.censored">
+                                <div v-if="!approved">
+                                    Removed From Website
+                                </div>
+                                <div v-else>
+                                    Edited By Administrators
+                                </div>
+                                Done By: {{opinion.censoredBy}} <br/>
+                                Notes: {{opinion.censoredCommentary}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div v-else>
+                    You haven't submitted any opinions yet.
+                </div>
             </div>
 
-            <div v-if="currentUser.votes.length>0" class="block">
+            <div v-if="historyTab === 'Vote'" class="medium-margin">
                 <h2>Votes</h2>
-                <ul v-for="vote in currentUser.votes" :key="vote._id" class="list">
-                    <li>
-                        {{vote.dateCreated | formatDate}}
-                        <span v-if="vote.upVote">Upvote +{{vote.createdBy.accruedDonations | formatBitcoinAmount}}</span>
-                        <span v-else>Downvote -{{vote.createdBy.accruedDonations | formatBitcoinAmount}}</span>
-                        on {{vote.onModel}}
-                        <router-link :to="argumentLink(vote)">{{argumentLink(vote)}}</router-link>
-                    </li>
-                </ul>
+                <div v-if="currentUser.votes.length>0">
+                    <ul v-for="vote in currentUser.votes" :key="vote._id" class="list">
+                        <li>
+                            <div><strong>{{vote.dateCreated | formatDate}}</strong></div>
+                            <div>
+                                <span v-if="vote.upVote">Upvote +{{currentUser.accruedDonations | formatBitcoinAmount}}</span>
+                                <span v-else>Downvote -{{currentUser.accruedDonations | formatBitcoinAmount}}</span>
+                            </div>
+                            <router-link :to="argumentLink(vote.metaSlug, vote.slug)" class="small-text">{{argumentLink(vote.metaSlug, vote.slug)}}</router-link>
+                        </li>
+                    </ul>
+                </div>
+                <div v-else>
+                    You haven't submitted any votes yet.
+                </div>
             </div>
 
             <div v-show="currentUser.admin">
@@ -89,7 +124,8 @@
                 currentUser: null,
                 allUnapprovedOpinions: null,
                 approved: null,
-                approvalCommentary: []
+                approvalCommentary: [],
+                historyTab: 'Donation'
             }
         },
         created() {
@@ -108,8 +144,12 @@
             statusLink(donation) {
                 return `/donation-status/${donation._id}`;
             },
-            argumentLink(doc) {
-                return `/rhetoric/${doc.metaSlug}/${doc.slug}`;
+            argumentLink(metaSlug, slug) {
+                if (slug !== null) {
+                    return `/rhetoric/${metaSlug}/${slug}`;
+                } else {
+                    return `/rhetoric/${metaSlug}`;
+                }
             },
             signoutUser: () => {
                 //Remove token in localStorage
@@ -122,10 +162,9 @@
                 if (!donation.paid) return 'Unpaid'
                 if (donation.paid) return 'Paid'
             },
-            donationFor(votingDonation, upVote) {
-                if (!votingDonation) return 'Opinion';
-                else if (upVote) return 'Upvote';
-                else return 'Downvote';
+            donationFor(accruing, onModel) {
+                if (accruing) return 'Influence';
+                else if (onModel === 'Certificate') return 'Certificate';
             },
             validAmount(value) {
                 if (isNaN(Number(value))) {
@@ -153,6 +192,21 @@
                 } else {
                     return true;
                 }
+            },
+            toggleHistoryTab(tabName) {
+                this.historyTab = tabName;
+            },
+            tabButtonStyle(tabName) {
+                if (tabName === this.historyTab) return "small-button selected-button";
+                else return "small-button";
+            },
+            calculateVotes(voteArray) {
+                var cumulativeVote = 0;
+                voteArray.forEach(vote => {
+                    if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
+                    else cumulativeVote -= vote.createdBy.accruedDonations;
+                });
+                return cumulativeVote;
             }
         },
         apollo: {

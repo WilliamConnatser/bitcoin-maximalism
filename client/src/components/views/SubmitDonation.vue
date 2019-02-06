@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submitOpinionToServer()" class="normal-text">
+    <form @submit.prevent="submitDonation()" class="normal-text">
         <h1>Submit Donation</h1>
         <label>Donation Amount (BTC)</label>
         <input type="text" v-model="donationAmount">
@@ -10,9 +10,9 @@
             services are guaranteed in lieu of a donation, and absolutely no refunds will be performed. Please
             refer to our Privacy Policy and Terms of Service for more details.
         </div>
-        <div class="block">
-            I have read and agree to the <router-link to="/terms">Terms</router-link> &amp; <router-link to="/privacy">Privacy
-                Policy</router-link>
+        <div class="medium-margin">
+            I have read and agree to the <router-link to="/terms">Terms</router-link> &amp;
+            <router-link to="/privacy">Privacy Policy</router-link>
             <label @click="toggleCheck()" for="agree" class="checkbox">
                 <input type="checkbox" name="agree" class=".checkbox">
                 <font-awesome-icon v-if="!checked" icon="square" title="Unchecked" class="checkbox__icon" />
@@ -40,7 +40,7 @@
             }
         },
         methods: {
-            submitOpinionToServer: async function () {
+            submitDonation: async function () {
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (!this.currentUser) {
@@ -54,21 +54,18 @@
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                            mutation submitOpinion($amount: String!, $documentID: ID!, $onModel: String!, $opinion: String!){
-                                submitOpinion(amount: $amount, documentID: $documentID, onModel: $onModel, opinion: $opinion)
+                            mutation submitDonation($amount: String!){
+                                submitDonation(amount: $amount)
                             }
                         `,
                         variables: {
-                            amount: this.donationAmount,
-                            documentID: this.arrayItemProp._id,
-                            onModel: this.arrayItemProp.__typename,
-                            opinion: this.opinion
+                            amount: this.donationAmount
                         }
                     }).then(async ({
                         data
                     }) => {
                         this.$router.push({
-                            path: '/donation-status/' + data.submitOpinion
+                            path: '/donation-status/' + data.submitDonation
                         });
                     }).catch(error => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
@@ -122,11 +119,7 @@
                     query currentUser {
                         currentUser {
                             _id
-                            username
-                            email
                             emailVerified
-                            active
-                            admin
                         }
                     }
                 `

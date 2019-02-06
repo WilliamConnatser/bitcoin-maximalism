@@ -3,7 +3,7 @@
         <h1>Reset Password</h1>
 
         <form v-if="!reset" @submit.prevent="startPasswordReset">
-            <div class="block">
+            <div class="medium-margin">
                 <label for="email">Account Email</label>
                 <input v-model="email" type="email" class="wide-input">
             </div>
