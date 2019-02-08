@@ -104,8 +104,14 @@ const server = new ApolloServer({
     }
 });
 
+//Needed for development environment
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 8000;
+}
+
 //Start the Apollo GraphQL Server
-server.listen().then(({
+server.listen({ port }).then(({
     url
 }) => {
     //Print the URL to the terminal to access the GraphQL Playground

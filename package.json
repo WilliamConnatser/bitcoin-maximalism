@@ -16,6 +16,9 @@
   ],
   "author": "William Connatser",
   "license": "ISC",
+  "engines": {
+    "node": "10.13"
+  },
   "dependencies": {
     "apollo-link-state": "^0.4.2",
     "apollo-server": "^2.3.3",
