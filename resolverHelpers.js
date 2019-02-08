@@ -14,7 +14,7 @@ const btcPayClient = require('./btcpay');
 //Apollo errors
 const {
     ApolloError
-} = require('apollo-server');
+} = require('apollo-server-express');
 
 //MongoDB / Mongoose dependency & Models
 const mongoose = require('mongoose');

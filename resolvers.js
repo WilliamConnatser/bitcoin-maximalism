@@ -10,7 +10,7 @@ const {
     AuthenticationError,
     ForbiddenError,
     UserInputError,
-} = require('apollo-server');
+} = require('apollo-server-express');
 
 //Resolver helpers
 const {

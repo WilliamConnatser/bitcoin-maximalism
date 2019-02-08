@@ -19,7 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "apollo-link-state": "^0.4.2",
-    "apollo-server": "^2.3.3",
+    "apollo-server-express": "^2.4.0",
     "bcrypt": "^3.0.3",
     "btcpay": "github:btcpayserver/node-btcpay",
     "graphql": "^0.13.2",
