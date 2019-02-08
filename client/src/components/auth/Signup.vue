@@ -78,7 +78,7 @@
                     data
                 }) => {
                     if (data.signupUser) this.success = true;
-                }).catch(error => {
+                }).catch(() => {
                     // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                 });
             }

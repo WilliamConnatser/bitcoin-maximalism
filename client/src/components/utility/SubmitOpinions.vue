@@ -53,11 +53,9 @@
                             onModel: this.arrayItemProp.__typename,
                             opinion: this.opinion
                         }
-                    }).then(async ({
-                        data
-                    }) => {
+                    }).then(() => {
                         this.submitted = true;
-                    }).catch(error => {
+                    }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
                 }

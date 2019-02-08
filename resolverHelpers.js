@@ -14,7 +14,7 @@ const btcPayClient = require('./btcpay');
 //Apollo errors
 const {
     ApolloError
-} = require('apollo-server-express');
+} = require('apollo-server');
 
 //MongoDB / Mongoose dependency & Models
 const mongoose = require('mongoose');
@@ -103,7 +103,6 @@ const createInvoice = async (amount, currentUser) => {
 const createDonation = async (amount, invoice, currentUser, applicableDocument) => {
 
     try {
-        console.log(applicableDocument)
         var donationObject = {
             _id: require('mongodb').ObjectID(),
             invoiceID: invoice.id,
@@ -138,19 +137,16 @@ const createDonation = async (amount, invoice, currentUser, applicableDocument) 
     }
 }
 
-const invoicePaid = async (invoice, donation, invoiceInterval, applicableDocument) => {
+const invoicePaid = async (donation, applicableDocument) => {
     try {
-        const updatedInvoice = await btcPayClient.get_invoice(invoice.id);
+        const updatedInvoice = await btcPayClient.get_invoice(donation.invoiceID);
         //If the invoice was paid. Allow 5% leeway for user error having to do with fees
-        //TODO: On production, change to a greater than sign
-        if (updatedInvoice.amountPaid > invoice.btcDue * 0.95) {
+        if (Number(updatedInvoice.btcPaid) > donation.preBonusAmount * 0.95) {
             donation.paid = true;
 
             //If the document is a User document, then it's an accruing donation towards influence weight
             if (applicableDocument.username) {
-                //TODO: Replace line in production
-                donation.preBonusAmount = Number(updatedInvoice.amountPaid);
-                //donation.preBonusAmount = Number(donation.preBonusAmount);
+                donation.preBonusAmount = Number(updatedInvoice.btcPaid);
                 donation.amount = donation.preBonusAmount * (donation.bonusPercentage + 1);
                 adjustDonationInfluence(await donation.save());
 
@@ -159,14 +155,16 @@ const invoicePaid = async (invoice, donation, invoiceInterval, applicableDocumen
                 donation.save();
             }
 
-            clearInterval(invoiceInterval);
+            return true;
 
         } else if (updatedInvoice.status === 'expired') {
             //Else If it has been over 15 minutes, and the invoice has expired
             donation.active = false;
             donation.save();
-            clearInterval(invoiceInterval);
         }
+
+        return false;
+
     } catch (err) {
         throw new ApolloError(parseError(err.message, 'An unknown error occurred while checking the status of your invoice.'));
     }
@@ -176,8 +174,6 @@ const adjustUserInfluence = async user => {
     try {
         var accruedDonations = 0;
 
-        console.log(user.username, "influence adjustment in process")
-
         user.donations.forEach(donation => {
             if (donation.paid) {
                 accruedDonations += donation.amount;
@@ -185,15 +181,12 @@ const adjustUserInfluence = async user => {
         });
 
         user.referrals.forEach(referredUser => {
-            console.log("referred: ", referredUser)
             referredUser.donations.forEach(donation => {
-                console.log("donation: ", donation)
                 if (donation.paid) {
-                    accruedDonations += donation.amount * 0.1;
+                    accruedDonations += donation.amount * 0.25;
                 }
             });
         });
-        console.log('new influence = ' + accruedDonations);
 
         user.accruedDonations = accruedDonations;
         user.save();
@@ -300,7 +293,10 @@ const parseError = (error, unknownError) => {
     else if (error == 'invalid-sort-order') return 'Invalid sort order';
     else if (error == 'admin') return 'You must be an admin';
     else if (error == 'unauthorized') return 'You are not authorized to view this';
-    else return unknownError;
+    else {
+        console.log(error);
+        return unknownError;
+    }
 }
 
 module.exports = {

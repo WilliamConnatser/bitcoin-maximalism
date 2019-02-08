@@ -155,7 +155,7 @@ Vue.toasted.register('no_influence', 'You don\'t have any influence. Add influen
     fullWidth: true,
     fitToScreen: true,
     singleton: true,
-    action: [, {
+    action: [{
         text: 'Account Panel',
         push: '/account'
     },{

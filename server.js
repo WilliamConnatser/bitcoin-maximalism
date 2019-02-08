@@ -10,7 +10,7 @@ const typeDefs = fs.readFileSync(filePath, 'utf-8');
 //GraphQL dependencies and resolvers
 const {
     ApolloServer
-} = require('apollo-server-express');
+} = require('apollo-server');
 const resolvers = require('./resolvers');
 
 //MongoDB / Mongoose dependency & Models
@@ -105,7 +105,7 @@ const server = new ApolloServer({
 });
 
 //Start the Apollo GraphQL Server
-server.listen({ port: process.env.PORT || 4000 }).then(({
+server.listen().then(({
     url
 }) => {
     //Print the URL to the terminal to access the GraphQL Playground

@@ -81,7 +81,7 @@
                     this.$router.push({
                         path: '/account'
                     });
-                }).catch(error => {
+                }).catch(() => {
                     // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                 });
             },
@@ -107,7 +107,7 @@
                     this.validated = true;
                     //Refresh the currentUser query
                     await this.$apollo.queries.currentUser.refetch();
-                }).catch(error => {
+                }).catch(() => {
                     // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                 });
             },
@@ -122,11 +122,9 @@
                     variables: {
                         email: this.email
                     }
-                }).then(async ({
-                    data
-                }) => {
+                }).then(() => {
                     this.resent = true
-                }).catch(error => {
+                }).catch(() => {
                     // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                 });
             }

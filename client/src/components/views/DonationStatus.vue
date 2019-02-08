@@ -6,6 +6,9 @@
             <h2>Donation</h2>
             <li v-if="docIDSpecificDonation.active && !docIDSpecificDonation.paid">
                 <iframe :src="docIDSpecificDonation.invoiceURL" scrolling="no">Pay Here: {{docIDSpecificDonation.invoiceURL}}</iframe>
+                <div>
+                    <button @click="refetchCheckDonation()">Donation Paid</button>
+                </div>
             </li>
             <li>
                 <strong>Date Created</strong>: {{ docIDSpecificDonation.dateCreated | formatDate}}
@@ -51,7 +54,8 @@
         name: "DonationStatus",
         data: () => {
             return {
-                docIDSpecificDonation: null
+                docIDSpecificDonation: null,
+                checkDonation: null
             }
         },
         methods: {
@@ -59,6 +63,9 @@
                 var linkString = '/rhetoric/' + metaSlug;
                 if(slug) linkString += '/' + slug;
                 return linkString;
+            },
+            refetchCheckDonation() {
+                this.$apollo.queries.checkDonation.refetch();
             }
         },
         computed: {
@@ -79,6 +86,26 @@
                         }
                     }
                 `
+            },
+            checkDonation: {
+                query: gql `query checkDonation($_id: ID!) {
+                    checkDonation(_id: $_id)
+                }`,
+                variables() {
+                    return {
+                        _id: this.$route.params._id
+                    }
+                },
+                skip(){
+                    if(!this.$route.params || !this.$route.params._id) return true
+                    else return false
+                },
+                result({data}){
+                    if(data.checkDonation && !this.docIDSpecificDonation.paid) {
+                        this.$apollo.queries.docIDSpecificDonation.refetch();
+                    }
+                },
+                pollInterval: 30000
             },
             docIDSpecificDonation: {
                 query: gql `query docIDSpecificDonation($_id: ID!) {
@@ -107,12 +134,10 @@
                     else return false
                 },
                 result({data}){
-                    console.log(data)
-                    if(!data.docIDSpecificDonation.active) {
-                        this.$apollo.queries.docIDSpecificDonation.stopPolling();
+                    if(data.docIDSpecificDonation.paid) {
+                        this.$apollo.queries.checkDonation.stopPolling();
                     }
-                },
-                pollInterval: 30000
+                }
             }
         }
     };

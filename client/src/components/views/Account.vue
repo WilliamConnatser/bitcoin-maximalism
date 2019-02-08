@@ -1,6 +1,5 @@
 <template>
     <div class="normal-text">
-        <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
             <div>
@@ -20,6 +19,8 @@
             <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')">Donations</button>
             <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')">Opinions</button>
             <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')">Votes</button>
+
+            <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
 
             <div v-if="historyTab === 'Donation'" class="medium-margin">
                 <h2>Donations</h2>

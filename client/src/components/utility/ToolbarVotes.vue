@@ -21,9 +21,6 @@
 
 <script>
     import gql from 'graphql-tag';
-    import {
-        defaultClient as apolloClient
-    } from '../../apolloProvider';
 
     export default {
         name: "ToolbarVotes",
@@ -67,9 +64,7 @@
                             onModel: this.arrayItemProp.__typename,
                             upVote
                         }
-                    }).then(async ({
-                        data
-                    }) => {
+                    }).then(() => {
                         if (this.arrayItemProp.__typename === 'Rhetoric') {
                             this.$parent.$emit('vote-tos');
                         } else if (this.arrayItemProp.__typename === 'Opinion') {
@@ -78,7 +73,7 @@
                             this.$parent.$emit('vote-rhetoric');
                         }
                         this.$toasted.global.vote_success();
-                    }).catch(error => {
+                    }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
                 }

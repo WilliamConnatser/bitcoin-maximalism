@@ -60,7 +60,7 @@
                     this.$router.push({
                         path: '/account'
                     });
-                }).catch(error => {
+                }).catch(() => {
                     // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                 });
             },
@@ -79,7 +79,7 @@
                     data
                 }) => {
                     this.resent = data.resendRegistrationEmail;
-                }).catch(error => {
+                }).catch(() => {
                     // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                 });
             }

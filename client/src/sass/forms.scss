@@ -93,6 +93,12 @@ button {
     height: 3rem;
 }
 
+.large-button {
+    height: 8rem;
+    max-width: 25rem;
+    width: 55%;
+}
+
 .selected-button {
     background-color: $color-white;
     color: $color-green;

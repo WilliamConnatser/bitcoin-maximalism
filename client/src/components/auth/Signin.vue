@@ -14,6 +14,8 @@
 
             <button type="submit">Login</button>
 
+            <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
+
             <div @click="$emit('toggle-login')" class="medium-margin">
                 Not Registered Yet?
                 <h2>Sign Up Here!</h2>
@@ -56,7 +58,7 @@
                         //Insert token into Local Storage
                         await localStorage.setItem("token", data.signinUser.token);
                         this.$apollo.queries.currentUser.refetch();
-                    }).catch(error => {
+                    }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
                 }

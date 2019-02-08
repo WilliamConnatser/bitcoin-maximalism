@@ -15,7 +15,6 @@
 </template>
 
 <script>
-    import gql from 'graphql-tag';
     import ToolbarVotes from '../utility/ToolbarVotes';
     import ToolbarActions from '../utility/ToolbarActions';
 

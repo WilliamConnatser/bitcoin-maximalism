@@ -67,7 +67,7 @@
                         this.$router.push({
                             path: '/donation-status/' + data.submitDonation
                         });
-                    }).catch(error => {
+                    }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
                 }

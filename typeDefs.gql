@@ -177,6 +177,7 @@ type Query {
 
     allRhetoric(metaSlug: String!): [Rhetoric]
     argumentSpecificRhetoric(metaSlug: String!, slug: String!): Rhetoric
+    checkDonation(_id: ID!): Boolean
 
     cryptoValue(ticker: String!): Float
 }

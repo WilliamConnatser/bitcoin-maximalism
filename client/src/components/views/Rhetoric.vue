@@ -131,7 +131,7 @@
             slug: this.slug
           }
         },
-        result(ApolloQueryResult, key) {
+        result(ApolloQueryResult) {
           if (!ApolloQueryResult.data.argumentSpecificRhetoric) {
             this.$router.push({
               path: '/not-found'

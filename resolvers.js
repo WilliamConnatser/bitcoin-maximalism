@@ -10,7 +10,7 @@ const {
     AuthenticationError,
     ForbiddenError,
     UserInputError,
-} = require('apollo-server-express');
+} = require('apollo-server');
 
 //Resolver helpers
 const {
@@ -212,6 +212,39 @@ module.exports = {
 
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this donation'));
+            }
+        },
+        checkDonation: async (_, {
+            _id
+        }, {
+            Donation,
+            User,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+
+                const userDocument = await User.findOne({
+                    _id: currentUser._id
+                });
+                if (!userDocument) throw new UserInputError('user-not-found');
+
+                const donationDocument = await Donation.findOne({
+                    _id
+                });
+                if (!donationDocument) throw new UserInputError('user-not-found');
+                
+                if(donationDocument.paid) {
+                    return true;
+                } else {
+                    const donationPaid =  await invoicePaid(donationDocument, userDocument);
+                    return donationPaid;
+                }
+                 
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while checking this donation'));
             }
         },
         docIDSpecificOpinions: async (_, {
@@ -626,7 +659,6 @@ module.exports = {
 
                 return true;
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while creating your user'));
             }
         },
@@ -808,12 +840,6 @@ module.exports = {
 
                 userDocument.donations.push(newDonation._id);
                 userDocument.save();
-
-                //Check every 5 minutes to see if the invoice has been paid
-                var invoiceInterval;
-                invoiceInterval = setInterval(function () {
-                    invoicePaid(newInvoice, newDonation, invoiceInterval, userDocument);
-                }, 30000);
 
                 //Return donation ID
                 return newDonation._id;

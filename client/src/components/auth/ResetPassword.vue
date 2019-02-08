@@ -37,11 +37,9 @@
                     variables: {
                         email: this.email
                     }
-                }).then(async ({
-                    data
-                }) => {
+                }).then(() => {
                     this.reset = true
-                }).catch(error => {
+                }).catch(() => {
                     // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                 });
             }

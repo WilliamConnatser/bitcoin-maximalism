@@ -18,18 +18,11 @@ import typeDefs from '../localState/typeDefs';
 //Tie VueApollo to Vue
 Vue.use(VueApollo);
 
-//Set the Apollo URI to what's stored in the now.json file if the app is being deployed
-var apolloURI = ''
-if (process.env.DEPLOYING !== "false") {
-    apolloURI = 'http://localhost:4000/graphql'
-} else {
-    apolloURI = process.env.GRAPHQL_URI;
-}
-
 //Setup ApolloClient (exported so it can be Imported into the Vuex Store)
 export const defaultClient = new ApolloClient({
-    //Set URI
-    uri: apolloURI,
+    //TODO: Set URI to 'http://localhost:4000/graphql' in development
+    //In production, use the URI returned after deploying the backend
+    uri: 'https://bitcoin-maximalism-server-8oli3x6eo.now.sh/graphql',
     //Include Auth Token
     fetchOptions: {
         credentials: "include"
@@ -53,11 +46,10 @@ export const defaultClient = new ApolloClient({
     },
     //Catches all errors
     onError: ({
-        operation,
+        //operation,      operations stores query/mutation data the error occurred on
         graphQLErrors,
         networkError
     }) => {
-        //operations object not currently in use, but stores query/mutation data the error occurred on
         if (networkError) Vue.toasted.show(networkError.message);
         if (graphQLErrors) {
             for (let err of graphQLErrors) {
