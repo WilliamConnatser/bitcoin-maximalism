@@ -37,8 +37,15 @@
             </h1>
             Now! Feel free to take the site for a test drive! Please keep in mind this service is in open beta, so
             please let us know if you come accross any issues. All donations received during our Open Beta will be
-            given a <strong>25% influence bonus</strong>. Refer your friends and receive a <strong>25% lifetime
-            influence bonus</strong> proportional to each of their donations!
+            given a <strong>25% influence bonus</strong>. Refer your friends and receive a <strong>25% permanent
+            influence bonus</strong> that's proportional to each of their donations!
+
+            <!--Right now!! Feel free to take the site for a test drive! Please keep in mind this service is in open beta,
+            so please let us know if you come accross any issues. All donations received during our Open Beta will be
+            given an automatic <strong>25% influence bonus</strong>. Pay with The Lightning Network and recieve
+            another <strong>25% influence bonus</strong> on top of that! Refer your friends and receive a
+            <strong>25% bonus</strong> influence bonus proportional to each of their donations! We accept both regular
+            and Lightning Network Bitcoin transactions.-->
         </div>
         
         <div class="medium-margin">

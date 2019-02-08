@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "client": "cd client && npm run serve",
-    "dev": "concurrently --names \"start,client\" \"npm run start --silent\" \"npm run client --silent\""
+    "dev": "concurrently --names \"start,client\" \"npm run start --silent\" \"npm run client --silent\"",
+    "deploy": "git push heroku master"
   },
   "keywords": [
     "Bitcoin",

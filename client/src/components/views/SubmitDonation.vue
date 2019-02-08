@@ -19,6 +19,11 @@
                 <font-awesome-icon v-else icon="check-square" title="Checked" class="checkbox__icon" />
             </label>
             <button type="submit">Submit Donation</button>
+            <div>
+                <!--The current maximum donation for a Bitcoin transaction on The Lightning Network is $10 due to payment
+                channel restrictions. If you would like to donate more than that, then please use a noremal Bitcoin
+                transaction.-->
+            </div>
         </div>
     </form>
 </template>
