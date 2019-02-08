@@ -4,9 +4,10 @@
   "description": "BitcoinMaximalism.com is an unbiased and interactive overview of Bitcoin Maximalism.",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "server.js",
+    "startdev": "nodemon server.js",
     "client": "cd client && npm run serve",
-    "dev": "concurrently --names \"start,client\" \"npm run start --silent\" \"npm run client --silent\""
+    "dev": "concurrently --names \"startdev,client\" \"npm run startdev --silent\" \"npm run client --silent\""
   },
   "keywords": [
     "Bitcoin",
