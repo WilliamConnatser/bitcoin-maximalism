@@ -6,7 +6,8 @@
             </h1>
             A highly-specific social media platform based solely on the nuance surrounding the Bitcoin Maximalism and
             Multicoinism investment theses. Each participants' influence is directly proportional to the amount of
-            Bitcoins donated. Don't want to donate? Share your referral link to gain influence from those that do,
+            Bitcoins donated. A user's upvotes and downvotes are weighted proportionally to the amount they've
+            donated. Don't want to donate? Share your referral link to gain influence from those that do,
             or simply write high quality opinions which are likely to get uploaded.
         </div>
 
@@ -17,8 +18,8 @@
             Most social media platforms where such discussions are taking place are unfortunately filled with
             bots, sockpuppets, spam, and other low-value content. BitcoinMaximalism.com is an attempt to filter
             out such noise by adding a Sybil-resistant mechanism which entails gaining influence on the site through
-            Bitcoin donations. A user's upvotes and downvotes are weighted proportionally to the amount they've
-            donated.
+            Bitcoin donations, and by providing curated rhetoric which organizes the discussion and helps keep
+            participants on topic.
         </div>
 
         <div class="medium-margin">
@@ -37,15 +38,8 @@
             </h1>
             Now! Feel free to take the site for a test drive! Please keep in mind this service is in open beta, so
             please let us know if you come accross any issues. All donations received during our Open Beta will be
-            given a <strong>25% influence bonus</strong>. Refer your friends and receive a <strong>25% permanent
-            influence bonus</strong> that's proportional to each of their donations!
-
-            <!--Right now!! Feel free to take the site for a test drive! Please keep in mind this service is in open beta,
-            so please let us know if you come accross any issues. All donations received during our Open Beta will be
-            given an automatic <strong>25% influence bonus</strong>. Pay with The Lightning Network and recieve
-            another <strong>25% influence bonus</strong> on top of that! Refer your friends and receive a
-            <strong>25% bonus</strong> influence bonus proportional to each of their donations! We accept both regular
-            and Lightning Network Bitcoin transactions.-->
+            given a <strong>25% influence bonus</strong>. Refer your friends and receive a <strong>10%
+            influence bonus</strong> that's permanently proportional to each of their donations!
         </div>
         
         <div class="medium-margin">

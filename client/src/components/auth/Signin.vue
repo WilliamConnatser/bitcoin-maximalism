@@ -16,7 +16,7 @@
 
             <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
 
-            <div @click="$emit('toggle-login')" class="medium-margin">
+            <div @click="$emit('toggle-login')" class="medium-margin pointer-cursor">
                 Not Registered Yet?
                 <h2>Sign Up Here!</h2>
             </div>

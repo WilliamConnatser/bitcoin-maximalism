@@ -93,9 +93,13 @@
     }
 }
 
-iframe {
+.btcpay-iframe {
     max-width: 100%;
     width: 32rem;
     height: 72rem;
     border: 0;
+}
+
+.pointer-cursor {
+    cursor: pointer;
 }

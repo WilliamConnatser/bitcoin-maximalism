@@ -183,7 +183,7 @@ const adjustUserInfluence = async user => {
         user.referrals.forEach(referredUser => {
             referredUser.donations.forEach(donation => {
                 if (donation.paid) {
-                    accruedDonations += donation.amount * 0.25;
+                    accruedDonations += donation.amount * 0.1;
                 }
             });
         });

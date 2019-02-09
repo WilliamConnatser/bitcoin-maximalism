@@ -5,8 +5,10 @@
         <ul v-if="docIDSpecificDonation" class="list">
             <h2>Donation</h2>
             <li v-if="docIDSpecificDonation.active && !docIDSpecificDonation.paid">
-                <iframe :src="docIDSpecificDonation.invoiceURL" scrolling="no">Pay Here: {{docIDSpecificDonation.invoiceURL}}</iframe>
-                <div>
+                <iframe :src="docIDSpecificDonation.invoiceURL" scrolling="no" class="btcpay-iframe">
+                    Pay Here: {{docIDSpecificDonation.invoiceURL}}
+                </iframe>
+                <div class="medium-margin">
                     <button @click="refetchCheckDonation()">Donation Paid</button>
                 </div>
             </li>
