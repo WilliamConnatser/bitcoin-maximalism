@@ -3,7 +3,7 @@
         <h1>Terms and Conditions</h1>
 
         <p>
-            <b>Agreement between User and www.BitcoinMaximalism.com</b><br />
+            <h2>Agreement between User and www.BitcoinMaximalism.com</h2>
             Welcome to www.BitcoinMaximalism.com. The www.BitcoinMaximalism.com website (the "Site") is comprised
             of various web pages operated by YOLO International LLC ("YOLO"). www.BitcoinMaximalism.com is offered
             to you conditioned on your acceptance without modification of the terms, conditions, and notices
@@ -12,7 +12,7 @@
         </p>
 
         <p>
-            <b>Do Your Own Research</b><br />
+            <h2>Do Your Own Research</h2>
             YOLO is an advocate of users doing their own research by informing oneself through many of the
             independent resources that are freely available. The Site is not meant to be a definitive guide, but
             instead an introductory outline of some of the nuances surrounding Bitcoin Maximalism and
@@ -22,7 +22,7 @@
         </p>
 
         <p>
-            <b>Forward-Looking Statements</b><br />
+            <h2>Forward-Looking Statements</h2>
             www.BitcoinMaximalism.com is an Informational Site that contains subjective, speculative and
             forward-looking statements which may or may not be based on historical facts. This provision is
             intended to provide the neccessary, meaningful and cautionary statements identifying important factors
@@ -44,7 +44,7 @@
         </p>
 
         <p>
-            <b>No Guarantee of Accuracy</b><br />
+            <h2>No Guarantee of Accuracy</h2>
             YOLO agrees to work dilligently to ensure that all forward-looking statements on the Site are
             thoroughly vetted with our users' best intentions in mind, and will make every effort within the best
             of our abilities to ensure that the said statements are true and candid. However there are no
@@ -67,7 +67,7 @@
         </p>
 
         <p>
-            <b>Potential For Bias</b><br />
+            <h2>Potential For Bias</h2>
             As of the drafting of these terms, YOLO, its affiliates, others that contributed research to
             information contained within the Site, and others that we have shared our research with (collectively,
             the “Researchers”) may have long or short positions in and may own options on any cryptocurrencies
@@ -82,7 +82,7 @@
         </p>
 
         <p>
-            <b>Not Investment Advice</b><br />
+            <h2>Not Investment Advice</h2>
             Any investment involves substantial risks, including, but not limited to, pricing volatility,
             inadequate liquidity, and the potential complete loss of principal. The Site's informational content
             only represents a best efforts estimate of the potential fundamental valuation of any specific
@@ -93,7 +93,7 @@
         </p>
 
         <p>
-            <b>Donations Are Non-Binding And Non-Refundable</b><br />
+            <h2>Donations Are Non-Binding And Non-Refundable</h2>
             By making a donation to YOLO by sending the Site value in any certain cryptocurrency address provided,
             or through any other forms of payment, you are explicitly agreeing that any value conveyed is to be
             considered as charitable donations that are not subject to refund under any circumstances. All
@@ -107,7 +107,7 @@
         </p>
 
         <p>
-            <b>Not Responsible For Users' Statements</b><br />
+            <h2>Not Responsible For Users' Statements</h2>
             Any statements made and published on the Site which are contained within the opinions of our users
             are to be considered as being their own views which entirely of their own, and are not neccessarily
             shared nor endorsed by YOLO. YOLO must not be held responsible for any statements made by our users,
@@ -116,13 +116,13 @@
         </p>
 
         <p>
-            <b>Privacy</b><br />
+            <h2>Privacy</h2>
             Your use of www.BitcoinMaximalism.com is subject to YOLO's Privacy Policy. Please review our Privacy
             Policy, which also governs the Site and informs users of our data collection practices.
         </p>
 
         <p>
-            <b>Electronic Communications</b><br />
+            <h2>Electronic Communications</h2>
             Visiting www.BitcoinMaximalism.com or sending emails to YOLO constitutes electronic communications. You
             consent to receive electronic communications and you agree that all agreements, notices, disclosures
             and other communications that we provide to you electronically, via email and on the Site, satisfy any
@@ -130,21 +130,21 @@
         </p>
 
         <p>
-            <b>Children Under Thirteen</b><br />
+            <h2>Children Under Thirteen</h2>
             YOLO does not knowingly collect, either online or offline, personal information from persons under the
             age of thirteen. If you are under 18, you may use www.BitcoinMaximalism.com only with permission of a
             parent or guardian.
         </p>
 
         <p>
-            <b>Cancellation/Refund Policy</b><br />
+            <h2>Cancellation/Refund Policy</h2>
             Under no circumstances will donations to YOLO be considered anything other than charitable donations.
             Donations of which are not (and will not ever be) subject to refunds, and there are no guarantees of
             services provided in return of said donations, expressed or implied.
         </p>
 
         <p>
-            <b>Links to Third Party Sites/Third Party Services</b><br />
+            <h2>Links to Third Party Sites/Third Party Services</h2>
             www.BitcoinMaximalism.com may contain links to other websites ("Linked Sites"). The Linked Sites are
             not under the control of YOLO, and YOLO is not responsible for the contents of any Linked Site,
             including without limitation any link contained in a Linked Site, or any changes or updates to a Linked
@@ -161,7 +161,7 @@
         </p>
 
         <p>
-            <b>No Unlawful or Prohibited Use/Intellectual Property</b><br />
+            <h2>No Unlawful or Prohibited Use/Intellectual Property</h2>
             You are granted a non-exclusive, non-transferable, revocable license to access and use
             www.BitcoinMaximalism.com strictly in accordance with these terms of use. As a condition of your use of
             the Site, you warrant to YOLO that you will not use the Site for any purpose that is unlawful or
@@ -192,7 +192,7 @@
         </p>
 
         <p>
-            <b>Use of Communication Services</b><br />
+            <h2>Use of Communication Services</h2>
             The Site may contain bulletin board services, chat areas, news groups, forums, communities, personal
             web pages, calendars, and/or other message or communication facilities designed to enable you to
             communicate with the public at large or with a group (collectively, "Communication Services"). You
@@ -249,7 +249,7 @@
         </p>
 
         <p>
-            <b>Materials Provided to www.BitcoinMaximalism.com or Posted on Any YOLO Web Page</b><br />
+            <h2>Materials Provided to www.BitcoinMaximalism.com or Posted on Any YOLO Web Page</h2>
             YOLO does not claim ownership of the materials you provide to www.BitcoinMaximalism.com (including
             feedback and suggestions) or post, upload, input or submit to any YOLO Site or our associated services
             (collectively "Submissions"). However, by posting, uploading, inputting, providing or submitting your
@@ -274,7 +274,7 @@
         </p>
 
         <p>
-            <b>International Users</b><br />
+            <h2>International Users</h2>
             The Service is controlled, operated and administered by YOLO from our offices within the USA. If you
             access the Service from a location outside the USA, you are responsible for compliance with all local
             laws. You agree that you will not use the YOLO Content accessed through www.BitcoinMaximalism.com in
@@ -282,7 +282,7 @@
         </p>
 
         <p>
-            <b>Indemnification</b><br />
+            <h2>Indemnification</h2>
             You agree to indemnify, defend and hold harmless YOLO, its officers, directors, employees, agents and
             third parties, for any losses, costs, liabilities and expenses (including reasonable attorney's fees)
             relating to or arising out of your use of or inability to use the Site or services, any user postings
@@ -294,7 +294,7 @@
         </p>
 
         <p>
-            <b>Arbitration</b><br />
+            <h2>Arbitration</h2>
             In the event the parties are not able to resolve any dispute between them arising out of or concerning
             these Terms and Conditions, or any provisions hereof, whether in contract, tort, or otherwise at law or
             in equity for damages or any other relief, then such dispute shall be resolved only by final and
@@ -313,7 +313,7 @@
         </p>
 
         <p>
-            <b>Class Action Waiver</b><br />
+            <h2>Class Action Waiver</h2>
             Any arbitration under these Terms and Conditions will take place on an individual basis; class
             arbitrations and class/representative/collective actions are not permitted. THE PARTIES AGREE THAT A
             PARTY MAY BRING CLAIMS AGAINST THE OTHER ONLY IN EACH'S INDIVIDUAL CAPACITY, AND NOT AS A PLAINTIFF OR
@@ -324,7 +324,7 @@
         </p>
 
         <p>
-            <b>Liability Disclaimer</b><br />
+            <h2>Liability Disclaimer</h2>
             THE INFORMATION, SOFTWARE, PRODUCTS, AND SERVICES INCLUDED IN OR AVAILABLE THROUGH THE SITE MAY INCLUDE
             INACCURACIES OR TYPOGRAPHICAL ERRORS. CHANGES ARE PERIODICALLY ADDED TO THE INFORMATION HEREIN. YOLO
             International LLC AND/OR ITS SUPPLIERS MAY MAKE IMPROVEMENTS AND/OR CHANGES IN THE SITE AT ANY TIME.
@@ -356,7 +356,7 @@
         </p>
 
         <p>
-            <b>Termination/Access Restriction</b><br />
+            <h2>Termination/Access Restriction</h2>
             YOLO reserves the right, in its sole discretion, to terminate your access to the Site and the related
             services or any portion thereof at any time, without notice. To the maximum extent permitted by law,
             this agreement is governed by the laws of the State of Texas and you hereby consent to the exclusive
@@ -390,14 +390,14 @@
         </p>
 
         <p>
-            <b>Changes to Terms</b><br />
+            <h2>Changes to Terms</h2>
             YOLO reserves the right, in its sole discretion, to change the Terms under which
             www.BitcoinMaximalism.com is offered. The most current version of the Terms will supersede all previous
             versions. YOLO encourages you to periodically review the Terms to stay informed of our updates.
         </p>
 
         <p>
-            <b>Contact Us</b><br />
+            <h2>Contact Us</h2>
             YOLO welcomes your questions or comments regarding the Terms:
         </p>
 
