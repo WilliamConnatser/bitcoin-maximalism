@@ -1,5 +1,5 @@
 <template>
-    <div class="normal-text">
+    <main class="normal-text">
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
             <div>
@@ -15,12 +15,12 @@
                 <SocialIcons :currentUser="currentUser" />
             </div>
 
-            <h1>History</h1>
+            <h2>Account History</h2>
             <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')">Donations</button>
             <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')">Opinions</button>
             <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')">Votes</button>
 
-            <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
+            <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
             <div v-if="historyTab === 'Donation'" class="medium-margin">
                 <h2>Donations</h2>
@@ -107,7 +107,7 @@
                 <h2>You so fancy! Look are you, Mr. Administrator...</h2>
             </div>
         </div>
-    </div>
+    </main>
 </template>
 
 <script>

@@ -2,7 +2,7 @@
   <section>
     <h1 class="title">{ {{metaSlug}} }</h1>
 
-    <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
+    <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
     <ul>
       <AdvancedListItem :arrayProp="this.args" v-on:vote-tos="updateQuery" />
     </ul>

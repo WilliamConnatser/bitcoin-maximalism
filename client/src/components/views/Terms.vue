@@ -401,16 +401,16 @@
             YOLO welcomes your questions or comments regarding the Terms:
         </p>
 
-        <p>
+        <address>
             YOLO International LLC<br />
             3206 Longmire Drive Suite A42<br />
             College Station, Texas 77845
-        </p>
+        </address>
 
-        <p>
+        <address>
             Email Address:<br />
             admin@BitcoinMaximalism.com
-        </p>
+        </address>
 
         <p>
             Effective as of September 28, 2018

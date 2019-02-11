@@ -1,9 +1,10 @@
 <template>
-  <div class="container normal-text">
+  <main class="container normal-text">
     <h1>
       An Objective* Overview of Bitcoin Maximalism
     </h1>
 
+    <p>
     The term Bitcoin Maximalism was initially termed by Vitalik Buterin in a <a href="https://blog.ethereum.org/2014/11/20/bitcoin-maximalism-currency-platform-network-effects/">blog</a>
     post written on November 19, 2014, and has since been popularized throughout the cryptocurrency community
     to describe ardent Bitcoin supporters. Bitcoin Maximalism was originally coined as a sort of derogatory name for
@@ -12,12 +13,13 @@
     outlined here are only meant to give you an unbiased introduction to the nuance surrounding them, so please do
     your own research because there is a lot more to learn beyond what's written in the slides and resources
     contained within.
+    </p>
 
-    <div class="small-text medium-margin">
+    <p class="small-text medium-margin">
       * Considering a human built this web site, and wrote the content, it is technically impossible to be 100%
       objective, but the human did give a good amount of effort in order to remain impartial.
-    </div>
-  </div>
+    </p>
+  </main>
 </template>
 
 <script>

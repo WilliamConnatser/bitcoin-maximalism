@@ -14,7 +14,7 @@
 
             <button type="submit">Login</button>
 
-            <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
+            <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
             <div class="medium-margin">
                 <a href="#" @click="$emit('toggle-login')" class="fancy-link">
                     Not Registered Yet?

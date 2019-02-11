@@ -1,7 +1,7 @@
 <template>
-    <div class="normal-text">
+    <main class="normal-text">
         <h1>Donation Status</h1>
-        <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
+        <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
         <ul v-if="docIDSpecificDonation" class="list">
             <h2>Donation</h2>
             <li v-if="docIDSpecificDonation.active && !docIDSpecificDonation.paid">
@@ -43,10 +43,10 @@
                 <strong>Invoice ID</strong>: <a :href="docIDSpecificDonation.invoiceURL">{{ docIDSpecificDonation.invoiceID }}</a>
             </li>
         </ul>
-        <div v-else-if="!$apollo.loading" class="block">
-            <h1>Unauthorized</h1>
+        <div v-else-if="!$apollo.loading" class="medium-margin">
+            <h2>You're not authorized to view this</h2>
         </div>
-    </div>
+    </main>
 </template>
 
 <script>

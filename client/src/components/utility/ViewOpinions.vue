@@ -13,7 +13,7 @@
                 title="Ascending" />
         </button>
 
-        <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
+        <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
         <ul v-if="docIDSpecificOpinions && docIDSpecificOpinions[0]">
             <li v-for="(opinion, forLoopIndex) in docIDSpecificOpinions" :key="forLoopIndex" class="opinion">

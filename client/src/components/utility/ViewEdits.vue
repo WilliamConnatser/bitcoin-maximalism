@@ -1,6 +1,6 @@
 <template>
     <ul class="opinions">
-        <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
+        <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
         <li id="top" class="opinion">
             <div>
                 <strong class="opinion-label">Last: </strong>
