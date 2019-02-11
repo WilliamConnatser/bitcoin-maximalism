@@ -91,8 +91,9 @@
             },
             checkDonation: {
                 query: gql `query checkDonation($_id: ID!) {
-                    checkDonation(_id: $_id)
-                }`,
+                        checkDonation(_id: $_id)
+                    }
+                `,
                 variables() {
                     return {
                         _id: this.$route.params._id

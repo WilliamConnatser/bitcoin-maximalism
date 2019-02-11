@@ -8,25 +8,25 @@
                     inline-template>
         <div>
             <network network="twitter">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'twitter-square' }" class="large-social-icons" />
+                <a href="#"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'twitter-square' }" class="large-social-icons" /></a>
             </network>
             <network network="facebook">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook-square' }" class="large-social-icons" />
+                <a href="#"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook-square' }" class="large-social-icons" /></a>
             </network>
             <network network="reddit">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'reddit-square' }" class="large-social-icons" />
+                <a href="#"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'reddit-square' }" class="large-social-icons" /></a>
             </network>
             <network network="telegram">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'telegram' }" class="large-social-icons" />
+                <a href="#"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'telegram' }" class="large-social-icons" /></a>
             </network>
             <network network="weibo">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'weibo' }" class="large-social-icons" />
+                <a href="#"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'weibo' }" class="large-social-icons" /></a>
             </network>
             <network network="email">
-                <font-awesome-icon icon="envelope-square" class="large-social-icons" />
+                <a href="#"><font-awesome-icon icon="envelope-square" class="large-social-icons" /></a>
             </network>
             <network network="sms">
-                <font-awesome-icon icon="sms" class="large-social-icons" />
+                <a href="#"><font-awesome-icon icon="sms" class="large-social-icons" /></a>
             </network>
         </div>
     </social-sharing>

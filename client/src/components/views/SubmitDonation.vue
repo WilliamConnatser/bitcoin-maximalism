@@ -4,27 +4,24 @@
         <label>Donation Amount (BTC)</label>
         <input type="text" v-model="donationAmount">
         <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>
-        <div class="small-text">The influence of your upvotes and downvotes will change proportionally with the
+        <p class="small-text">The influence of your upvotes and downvotes will change proportionally with the
             amount you've donated. Features may be implemented (or deprecated) in the future which reduce (or
             increase) the weight of your upvotes or downvotes. All donations are non-binding, no products or
             services are guaranteed in lieu of a donation, and absolutely no refunds will be performed. Please
             refer to our Privacy Policy and Terms of Service for more details.
-        </div>
+        </p>
         <div class="medium-margin">
-            I have read and agree to the <router-link to="/terms">Terms</router-link> &amp;
-            <router-link to="/privacy">Privacy Policy</router-link>
             <label @click="toggleCheck()" for="agree" class="checkbox">
                 <input type="checkbox" name="agree" class=".checkbox">
                 <font-awesome-icon v-if="!checked" icon="square" title="Unchecked" class="checkbox__icon" />
                 <font-awesome-icon v-else icon="check-square" title="Checked" class="checkbox__icon" />
             </label>
-            <button type="submit">Submit Donation</button>
-            <div>
-                <!--The current maximum donation for a Bitcoin transaction on The Lightning Network is $10 due to payment
-                channel restrictions. If you would like to donate more than that, then please use a noremal Bitcoin
-                transaction.-->
-            </div>
+            I have read and agree to the <router-link to="/terms">Terms</router-link> &amp;
+            <router-link to="/privacy">Privacy Policy</router-link>
         </div>
+        <div class="medium-margin">
+            <button type="submit">Submit Donation</button>
+        </div>        
     </form>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-    <ul id="footer">
+    <footer id="footer">
         <li>&copy; YOLO International LLC</li>
         <li>
             <router-link to="/terms">Terms</router-link>
@@ -22,7 +22,7 @@
                 <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook-square' }" class="small-social-icons" />
             </a>
         </li>
-    </ul>
+    </footer>
 </template>
 
 <script>

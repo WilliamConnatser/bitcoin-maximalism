@@ -194,6 +194,20 @@ Vue.toasted.register('password', 'Enter a password', {
     }]
 });
 
+Vue.toasted.register('username', 'Enter a username', {
+    duration: 5000,
+    position: 'bottom-center',
+    fullWidth: true,
+    fitToScreen: true,
+    singleton: true,
+    action: [{
+        text: 'Close',
+        onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+        }
+    }]
+});
+
 Vue.toasted.register('vote_success', 'Vote submitted successfully', {
     duration: 5000,
     position: 'bottom-center',

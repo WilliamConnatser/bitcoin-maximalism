@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <section>
     <h1 class="title">{ {{metaSlug}} }</h1>
 
     <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
     <ul>
       <AdvancedListItem :arrayProp="this.args" v-on:vote-tos="updateQuery" />
     </ul>
-  </div>
+  </section>
 </template>
 
 <script>

@@ -21,7 +21,7 @@ Vue.use(VueApollo);
 //Setup ApolloClient (exported so it can be Imported into the Vuex Store)
 export const defaultClient = new ApolloClient({
     //TODO: Set URI to 'http://localhost:4000/graphql' in development
-    //Current Now URI: https://bitcoin-maximalism-server-8oli3x6eo.now.sh
+    //Production URI: 'https://bitcoinmaximalism.herokuapp.com/graphql'
     //In production, use the URI returned after deploying the backend
     uri: 'https://bitcoinmaximalism.herokuapp.com/graphql',
     //Include Auth Token

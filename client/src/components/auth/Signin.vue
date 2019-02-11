@@ -15,10 +15,11 @@
             <button type="submit">Login</button>
 
             <h1 v-if="$apollo.loading" class="loading">Loading...</h1>
-
-            <div @click="$emit('toggle-login')" class="medium-margin pointer-cursor">
-                Not Registered Yet?
-                <h2>Sign Up Here!</h2>
+            <div class="medium-margin">
+                <a href="#" @click="$emit('toggle-login')" class="fancy-link">
+                    Not Registered Yet?
+                    <h2>Sign Up Here!</h2>
+                </a>
             </div>
         </form>
     </div>

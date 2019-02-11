@@ -1,6 +1,6 @@
 <template>
-  <nav>
-    <ul id="header">
+  <header>
+    <nav id="header">
       <li class="inline-nav">
         <router-link to="/" class="small">About</router-link>
       </li>
@@ -31,10 +31,11 @@
       </div>
 
       <li v-if="showSocial" class="social-dropdown">
-        <SocialIcons :currentUser="currentUser" />
+        <a href="#">
+          <SocialIcons :currentUser="currentUser" /></a>
       </li>
-    </ul>
-  </nav>
+    </nav>
+  </header>
 </template>
 
 <script>

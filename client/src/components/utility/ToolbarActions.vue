@@ -1,10 +1,10 @@
 <template>
     <div class="normal-text">
-        <div class="list-action-toolbar">
+        <a href="#" class="fancy-link list-action-toolbar">
             <strong v-if="this.viewOpinions !== null" @click="cancel('viewOpinions')" class="action-count small-text">X</strong>
             <strong v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="action-count small-text">{{docIDSpecificOpinionCount}}</strong>
             <font-awesome-icon icon="comment" title="View Opinions" class="action-icon" />
-        </div>
+        </a>
 
         <!--
             <div class="action-icon-group">

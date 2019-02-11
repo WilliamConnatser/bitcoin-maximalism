@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <section>
         <li class="list" v-for="arrayItem in arrayProp" :key="arrayItem._id">
             <ToolbarVotes :arrayItemProp="arrayItem" />
 
@@ -11,7 +11,7 @@
 
             <ToolbarActions :arrayItemProp="arrayItem" />
         </li>
-    </div>
+    </section>
 </template>
 
 <script>

@@ -70,7 +70,7 @@ module.exports = {
                 return user;
 
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this user'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching this user'));
             }
         },
         cryptoValue: async (_, {
@@ -85,7 +85,7 @@ module.exports = {
                 });
                 return value.valueUSD;
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching the value of this cryptocurrency'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching the value of this cryptocurrency'));
             }
         },
         argumentSpecificRhetoric: async (_, args, {
@@ -156,7 +156,7 @@ module.exports = {
 
                 return rhetoric;
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching argument-specific rhetoric'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching argument-specific rhetoric'));
             }
         },
         allRhetoric: async (_, {
@@ -189,7 +189,7 @@ module.exports = {
 
                 return rhetoric;
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching all rhetoric'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching all rhetoric'));
             }
         },
         docIDSpecificDonation: async (_, {
@@ -211,7 +211,7 @@ module.exports = {
                 else return donation;
 
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while fetching this donation'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching this donation'));
             }
         },
         checkDonation: async (_, {
@@ -374,7 +374,7 @@ module.exports = {
                 return opinions;
 
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while querying for opinions'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while querying for opinions'));
             }
         },
         docIDSpecificOpinionCount: async (_, {
@@ -390,7 +390,7 @@ module.exports = {
                     onModel
                 }).countDocuments();
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while counting this document\'s opinions'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while counting this document\'s opinions'));
             }
         },
         docIDSpecificVotes: async (_, {
@@ -415,7 +415,7 @@ module.exports = {
                     }
                 });
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while counting this document\'s opinions'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while counting this document\'s opinions'));
             }
         }
     },
@@ -445,7 +445,7 @@ module.exports = {
                     token: createToken(user, process.env.SECRET, '1hr')
                 }
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while signing in'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while signing in'));
             }
         },
         verifyEmail: async (_, {
@@ -475,7 +475,7 @@ module.exports = {
                     token: createToken(user, process.env.SECRET, "1hr")
                 }
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while verifying your email'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while verifying your email'));
             }
         },
         resendRegistrationEmail: async (_, {
@@ -546,7 +546,7 @@ module.exports = {
                     token: createToken(user, process.env.SECRET, "1hr")
                 }
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while verifying your email'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while verifying your email'));
             }
         },
         resendPasswordEmail: async (_, {
@@ -603,7 +603,7 @@ module.exports = {
                     token: createToken(user, process.env.SECRET, "1hr")
                 }
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while updating your password'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while updating your password'));
             }
         },
         signupUser: async (_, {
@@ -925,7 +925,7 @@ module.exports = {
 
                 return newBulletPoint;
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unkown error occurred while creating this BulletPoint'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while creating this BulletPoint'));
             }
         },
         approveOpinion: async (_, {

@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="list-vote-toolbar">
-            <span class="icon" @click='submitVote(true)' title="Upvote">
+            <a href="#" class="icon fancy-link" @click='submitVote(true)' title="Upvote">
                 <font-awesome-icon icon="angle-up" />
-            </span>
+            </a>
             <span class="amount-donated">
                 <span v-if="calculateVotes(arrayItemProp.votes)>0">+ {{calculateVotes(arrayItemProp.votes) |
                     formatBitcoinAmount}}</span>
@@ -12,9 +12,9 @@
                 <span v-else-if="calculateVotes(arrayItemProp.votes)===0">{{calculateVotes(arrayItemProp.votes)*-1 |
                     formatBitcoinAmount}}</span>
             </span>
-            <span class="icon" @click='submitVote(false)' title="Downvote">
+            <a href="#" class="icon fancy-link" @click='submitVote(false)' title="Downvote">
                 <font-awesome-icon icon="angle-down" />
-            </span>
+            </a>
         </div>
     </div>
 </template>
