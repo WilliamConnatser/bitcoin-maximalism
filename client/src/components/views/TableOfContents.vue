@@ -3,7 +3,7 @@
     <h1 class="title">
       {
       <span v-if="metaSlug">{{metaSlug}}</span>
-      <span v-else>all arguments</span>
+      <span v-else>arguments</span>
       }
     </h1>
 

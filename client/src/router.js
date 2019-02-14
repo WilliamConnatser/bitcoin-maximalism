@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 
+import Activity from "./components/views/Activity.vue";
 import About from "./components/views/About.vue";
 import Intro from "./components/views/Intro.vue";
 import Account from "./components/views/Account.vue";
@@ -38,6 +39,10 @@ export default new Router({
     {
       path: "/arguments/:metaSlug/:slug",
       component: Arguments
+    },
+    {
+      path: "/activity",
+      component: Activity
     },
     {
       path: "/account",

@@ -1,29 +1,32 @@
 <template>
   <header>
-    <nav id="header">
+    <nav id="header" class="small-text">
       <li class="inline-nav">
-        <router-link to="/" class="small">About</router-link>
+        <router-link to="/" class="fancy-link">About</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/introduction" class="small">Intro</router-link>
+        <router-link to="/introduction" class="fancy-link">Intro</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/arguments">Arguments</router-link>
+        <router-link to="/arguments" class="fancy-link">Arguments</router-link>
+      </li>
+      <li class="inline-nav">
+        <router-link to="/activity" class="fancy-link">Activity</router-link>
       </li>
 
       <div class="right-nav">
         <li class="inline-nav">
-          <router-link to="/account">
+          <router-link to="/account" class="fancy-link normal-text">
             <strong v-if="currentUser">Account</strong>
             <strong v-else>Log In</strong>
           </router-link>
         </li>
 
         <li v-if="!showSocial" @click="toggleSocial" class="inline-nav">
-          <font-awesome-icon icon="share-alt-square" class="social-icons-header" />
+          <font-awesome-icon icon="share-alt-square" class="social-icons-header large-text" />
         </li>
         <li v-else @click="toggleSocial" class="inline-nav">
-          <font-awesome-icon icon="times-circle" class="social-icons-header" />
+          <font-awesome-icon icon="times-circle" class="social-icons-header large-text" />
         </li>
       </div>
 

@@ -1,15 +1,15 @@
 <template>
     <div class="normal-text">
         <a href="#" class="fancy-link list-action-toolbar">
-            <strong v-if="this.viewOpinions !== null" @click="cancel('viewOpinions')" class="action-count small-text">X</strong>
-            <strong v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="action-count small-text">{{docIDSpecificOpinionCount}}</strong>
+            <strong v-if="this.viewOpinions !== null" @click="cancel('viewOpinions')" class="action-count extra-small-text">X</strong>
+            <strong v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="action-count extra-small-text">{{docIDSpecificOpinionCount}}</strong>
             <font-awesome-icon icon="comment" title="View Opinions" class="action-icon" />
         </a>
 
         <!--
             <div class="action-icon-group">
-                <strong v-if="this.viewEdits !== null" @click="cancel('viewEdits')" class="action-count small-text">X</strong>
-                <strong v-else @click="show('viewEdits'), cancel('viewOpinions'), cancel('submitEdit')" class="action-count small-text">{{docIDSpecificOpinionCount}}</strong>
+                <strong v-if="this.viewEdits !== null" @click="cancel('viewEdits')" class="action-count extra-small-text">X</strong>
+                <strong v-else @click="show('viewEdits'), cancel('viewOpinions'), cancel('submitEdit')" class="action-count extra-small-text">{{docIDSpecificOpinionCount}}</strong>
                 <font-awesome-icon v-if="this.viewEdits === null" icon="pen-square" title="View Edits" class="action-icon" />
                 <font-awesome-icon v-else icon="square" title="View Edits" class="action-icon" />
             </div>

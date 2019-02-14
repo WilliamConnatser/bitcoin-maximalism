@@ -4,7 +4,7 @@
         <label>Donation Amount (BTC)</label>
         <input type="text" v-model="donationAmount">
         <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>
-        <p class="small-text">The influence of your upvotes and downvotes will change proportionally with the
+        <p class="extra-small-text">The influence of your upvotes and downvotes will change proportionally with the
             amount you've donated. Features may be implemented (or deprecated) in the future which reduce (or
             increase) the weight of your upvotes or downvotes. All donations are non-binding, no products or
             services are guaranteed in lieu of a donation, and absolutely no refunds will be performed. Please

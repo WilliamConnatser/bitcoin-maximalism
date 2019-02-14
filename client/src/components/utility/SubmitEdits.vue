@@ -4,7 +4,7 @@
             <div class="medium-margin">
                 <label>Donation Amount (BTC)</label>
                 <input id="donation-amount" type="text" v-model="donationAmount">
-                <div class="small-text">
+                <div class="extra-small-text">
                     Your edit is more (or less) likely to be reviewed depending on the donation's value.
                     Please keep in mind the amount of time it may take to validate what you are submitting.
                     For example, if your edit needs to be researched and analyzed, then the donation could be more,
@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="medium-margin">
-                    <div class="small-text">
+                    <div class="extra-small-text">
                         Submitting an edit and making a donation does not guarantee that your
                         edit will be approved. We reserve the right to not publish an edit or alter your edit for any
                         reason we deem necessary, so please remain respectful of others and intellectually honest.
@@ -53,12 +53,12 @@
                 <div class="medium-margin">
                     <label>Content</label>
                     <textarea v-model="bulletPointContent" maxlength=280></textarea>
-                    <div class="small-text">
+                    <div class="extra-small-text">
                         The content of the argument.
                     </div>
                 </div>
                 <div class="medium-margin">
-                    <div class="small-text">
+                    <div class="extra-small-text">
                         Submitting an edit and making a donation does not guarantee that your
                         edit will be approved. We reserve the right to not publish an edit or alter your edit for any
                         reason we deem necessary, so please remain respectful of others and intellectually honest.

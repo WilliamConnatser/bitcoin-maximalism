@@ -5,27 +5,27 @@
     text-align: left;
     min-height: $header-minimum-height;
     list-style-type: none;
+    padding: 1rem;
+
+    @media screen and (max-width: $breakpoint-small) {
+        padding-top: 5rem;
+    }
 
     .inline-nav {
         display: inline-block;
         padding: 0rem .5rem;
     }
 
-    a {
-        color: $color-white;
-        text-transform: uppercase;
-        font-size: 1.5rem;
-        text-decoration: none;
-    }
-
     .right-nav {
+        display: flex;
         position: absolute;
         right: 0;
         top: 0;
-        margin: 0.1rem 1rem;
+        margin: 0 1rem;
+        padding: 1rem;
 
         .social-icons-header {
-            font-size: 2rem;
+            margin-left: 1rem;
         }
     }
 
@@ -46,10 +46,7 @@
 
 #footer {
     min-height: $footer-minimum-height;
-    font-size: 1.25rem;
-    font-weight: 400;
     list-style-type: none;
-    text-align: right;
     margin-right: 1rem;
 
     a {
@@ -60,11 +57,10 @@
         display: inline-block;
         padding: 0rem 0.25rem;
     }
+}
 
-    .small-social-icons {
-        font-size: 2rem;
-        margin: 1px;
-    }
+.small-margin {
+    margin: 1rem;
 }
 
 .medium-margin {

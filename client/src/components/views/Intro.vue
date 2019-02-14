@@ -15,7 +15,7 @@
     contained within.
     </p>
 
-    <p class="small-text medium-margin">
+    <p class="extra-small-text medium-margin">
       * Considering a human built this web site, and wrote the content, it is technically impossible to be 100%
       objective, but the human did give a good amount of effort in order to remain impartial.
     </p>

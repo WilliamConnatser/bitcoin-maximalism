@@ -11,7 +11,7 @@
                 <div>
                     Influence: {{currentUser.accruedDonations | formatBitcoinAmount}}
                 </div>
-                Referral Link: <a :href="refLink" class="small-text">{{refLink}}</a>
+                Referral Link: <a :href="refLink" class="extra-small-text">{{refLink}}</a>
                 <SocialIcons :currentUser="currentUser" />
             </div>
 

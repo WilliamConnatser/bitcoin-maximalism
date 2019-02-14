@@ -4,7 +4,7 @@
             <div class="medium-margin">
                 <label>Your Opinion</label>
                 <textarea v-model="opinion" maxlength=280></textarea>
-                <div class="small-text">
+                <div class="extra-small-text">
                     No links, foul language or namecalling is allowed. Please remain respectful of others, on topic,
                     and intellectually honest.
                 </div>
