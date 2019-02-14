@@ -58,13 +58,13 @@
         .action-icon {
             font-size: 3rem;
             font-weight: 400;
-            margin: 1rem;
+            margin-bottom: 1rem;
         }
     
         .action-count {
             color: $color-green;
             display: block;
-            transform: translateY(35px);
+            transform: translateY(25px);
         }
     }
 }

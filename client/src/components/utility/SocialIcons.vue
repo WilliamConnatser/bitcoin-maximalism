@@ -8,25 +8,25 @@
                     inline-template>
         <div>
             <network network="twitter">
-                <a href="#"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'twitter-square' }" class="large-social-icons" /></a>
+                <a href="#" class="fancy-link"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'twitter-square' }" class="large-social-icons" /></a>
             </network>
             <network network="facebook">
-                <a href="#"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook-square' }" class="large-social-icons" /></a>
+                <a href="#" class="fancy-link"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook-square' }" class="large-social-icons" /></a>
             </network>
             <network network="reddit">
-                <a href="#"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'reddit-square' }" class="large-social-icons" /></a>
+                <a href="#" class="fancy-link"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'reddit-square' }" class="large-social-icons" /></a>
             </network>
             <network network="telegram">
-                <a href="#"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'telegram' }" class="large-social-icons" /></a>
+                <a href="#" class="fancy-link"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'telegram' }" class="large-social-icons" /></a>
             </network>
             <network network="weibo">
-                <a href="#"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'weibo' }" class="large-social-icons" /></a>
+                <a href="#" class="fancy-link"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'weibo' }" class="large-social-icons" /></a>
             </network>
             <network network="email">
-                <a href="#"><font-awesome-icon icon="envelope-square" class="large-social-icons" /></a>
+                <a href="#" class="fancy-link"><font-awesome-icon icon="envelope-square" class="large-social-icons" /></a>
             </network>
             <network network="sms">
-                <a href="#"><font-awesome-icon icon="sms" class="large-social-icons" /></a>
+                <a href="#" class="fancy-link"><font-awesome-icon icon="sms" class="large-social-icons" /></a>
             </network>
         </div>
     </social-sharing>

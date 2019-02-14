@@ -6,9 +6,6 @@ import App from './App.vue';
 var SocialSharing = require('vue-social-sharing'); 
 Vue.use(SocialSharing);
 
-//ZEIT Now and Environment Variables Imports
-require('now-env');
-
 /* 
     Abstracted away all of the following:
 

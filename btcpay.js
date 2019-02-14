@@ -1,5 +1,7 @@
+require('dotenv').config();
 const btcpay = require('btcpay');
 const keypair = btcpay.crypto.load_keypair(new Buffer.from(process.env.BTCPAY_KEY, 'hex'));
+
 //Recreate client ... used every time you nee to talk to the BTCPAY Server
 const BTCPayClient = new btcpay.BTCPayClient(process.env.BTCPAY_URL, keypair, {
     merchant: process.env.BTCPAY_MERCHANT

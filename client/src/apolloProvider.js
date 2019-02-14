@@ -1,9 +1,6 @@
 //Vue Imports
 import Vue from 'vue';
 
-//ZEIT Now and Environment Variables Imports
-require('now-env');
-
 //Apollo Dependencies
 import VueApollo from 'vue-apollo';
 import ApolloClient from 'apollo-boost';
@@ -20,10 +17,10 @@ Vue.use(VueApollo);
 
 //Setup ApolloClient (exported so it can be Imported into the Vuex Store)
 export const defaultClient = new ApolloClient({
-    //TODO: Set URI to 'http://localhost:8000/graphql' in development
-    //Production URI: 'https://bitcoinmaximalism.herokuapp.com/graphql'
+    //TODO: Set URI to 'http://localhost:3001/graphql' in development
+    //Production URI: 'https://graphql.bitcoinmaximalism.com/graphql'
     //In production, use the URI returned after deploying the backend
-    uri: 'https://bitcoinmaximalism.herokuapp.com/graphql',
+    uri: 'http://localhost:3001/graphql',
     //Include Auth Token
     fetchOptions: {
         credentials: "include"

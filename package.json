@@ -4,7 +4,7 @@
   "description": "BitcoinMaximalism.com is an unbiased and interactive overview of Bitcoin Maximalism.",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "client": "cd client && npm run serve",
     "dev": "concurrently --names \"start,client\" \"npm run start --silent\" \"npm run client --silent\"",
     "deploy": "git push heroku master"
@@ -25,6 +25,7 @@
     "apollo-server": "^2.3.3",
     "bcrypt": "^3.0.3",
     "btcpay": "github:btcpayserver/node-btcpay",
+    "dotenv": "^6.2.0",
     "graphql": "^0.13.2",
     "i": "^0.3.6",
     "jsonwebtoken": "^8.4.0",
@@ -37,7 +38,6 @@
     "concurrently": "^3.6.0",
     "node-sass": "^4.11.0",
     "nodemon": "^1.18.9",
-    "now-env": "^3.1.0",
     "sass-loader": "^7.1.0"
   }
 }

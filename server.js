@@ -1,5 +1,4 @@
-//ZEIT Now configuration
-require('now-env');
+require('dotenv').config();
 
 //Dependencies for/and GraphQL typeDefs
 const fs = require('fs');
