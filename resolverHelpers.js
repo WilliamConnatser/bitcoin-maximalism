@@ -291,6 +291,7 @@ const parseError = (error, unknownError) => {
     else if (error == 'invalid-sort-index') return 'Invalid number requested';
     else if (error == 'invalid-sort-type') return 'Invalid sort type';
     else if (error == 'invalid-sort-order') return 'Invalid sort order';
+    else if (error == 'invalid-variable') return 'Invalid query variable';
     else if (error == 'admin') return 'You must be an admin';
     else if (error == 'unauthorized') return 'You are not authorized to view this';
     else {

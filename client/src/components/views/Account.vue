@@ -16,9 +16,9 @@
             </div>
 
             <h2>Account History</h2>
-            <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')">Donations</button>
-            <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')">Opinions</button>
-            <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')">Votes</button>
+            <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')" :style="{ cursor: 'pointer'}">Donations</button>
+            <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')" :style="{ cursor: 'pointer'}">Opinions</button>
+            <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')" :style="{ cursor: 'pointer'}">Votes</button>
 
             <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
@@ -73,7 +73,7 @@
                                 <div v-else>
                                     Edited By Administrators
                                 </div>
-                                Done By: {{opinion.censoredBy}} <br/>
+                                Done By: {{opinion.censoredBy}} <br />
                                 Notes: {{opinion.censoredCommentary}}
                             </div>
                         </li>
@@ -94,7 +94,8 @@
                                 <span v-if="vote.upVote">Upvote +{{currentUser.accruedDonations | formatBitcoinAmount}}</span>
                                 <span v-else>Downvote -{{currentUser.accruedDonations | formatBitcoinAmount}}</span>
                             </div>
-                            <router-link :to="argumentLink(vote.metaSlug, vote.slug)">{{argumentLink(vote.metaSlug, vote.slug)}}</router-link>
+                            <router-link :to="argumentLink(vote.metaSlug, vote.slug)">{{argumentLink(vote.metaSlug,
+                                vote.slug)}}</router-link>
                         </li>
                     </ul>
                 </div>
@@ -147,9 +148,9 @@
             },
             argumentLink(metaSlug, slug) {
                 if (slug !== null) {
-                    return `/rhetoric/${metaSlug}/${slug}`;
+                    return `/arguments/${metaSlug}/${slug}`;
                 } else {
-                    return `/rhetoric/${metaSlug}`;
+                    return `/arguments/${metaSlug}`;
                 }
             },
             signoutUser: () => {

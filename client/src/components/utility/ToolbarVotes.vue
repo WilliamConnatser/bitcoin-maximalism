@@ -85,9 +85,6 @@
                     else cumulativeVote -= vote.createdBy.accruedDonations;
                 });
                 return cumulativeVote;
-            },
-            userVoted() {
-
             }
         },
         apollo: {

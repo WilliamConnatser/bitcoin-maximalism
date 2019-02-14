@@ -13,7 +13,7 @@
   import AdvancedListItem from '../utility/AdvancedListItem';
 
   export default {
-    name: "Rhetoric",
+    name: "Arguments",
     components: {
       AdvancedListItem
     },

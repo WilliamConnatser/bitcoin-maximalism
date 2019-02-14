@@ -8,7 +8,7 @@ import VerifyEmail from "./components/auth/VerifyEmail.vue";
 import VerifyPassword from "./components/auth/VerifyPassword.vue";
 import ResetPassword from "./components/auth/ResetPassword.vue";
 import TableOfContents from "./components/views/TableOfContents.vue";
-import Rhetoric from "./components/views/Rhetoric.vue";
+import Arguments from "./components/views/Arguments.vue";
 import Terms from "./components/views/Terms.vue";
 import Privacy from "./components/views/Privacy.vue";
 import PageNotFound from "./components/views/PageNotFound.vue";
@@ -28,12 +28,16 @@ export default new Router({
       component: Intro
     },
     {
-      path: "/rhetoric/:metaSlug",
+      path: "/arguments",
       component: TableOfContents
     },
     {
-      path: "/rhetoric/:metaSlug/:slug",
-      component: Rhetoric
+      path: "/arguments/:metaSlug",
+      component: TableOfContents
+    },
+    {
+      path: "/arguments/:metaSlug/:slug",
+      component: Arguments
     },
     {
       path: "/account",

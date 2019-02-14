@@ -1,6 +1,15 @@
 <template>
   <section>
-    <h1 class="title">{ {{metaSlug}} }</h1>
+    <h1 class="title">
+      {
+      <span v-if="metaSlug">{{metaSlug}}</span>
+      <span v-else>all arguments</span>
+      }
+    </h1>
+
+    <router-link to="/arguments"><button :class="filterButtonStyle()" :style="{ cursor: 'pointer'}">All</button></router-link>
+    <router-link to="/arguments/protagonistic"><button :class="filterButtonStyle('protagonistic')" :style="{ cursor: 'pointer'}">Protagonistic</button></router-link>
+    <router-link to="/arguments/antagonistic"><button :class="filterButtonStyle('antagonistic')" :style="{ cursor: 'pointer'}">Antagonistic</button></router-link>
 
     <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
     <ul>
@@ -16,8 +25,7 @@
   export default {
     data: () => {
       return {
-        protagonisticRhetoric: [],
-        antagonisticRhetoric: []
+        allRhetoric: [],
       }
     },
     components: {
@@ -25,10 +33,10 @@
     },
     computed: {
       args() {
-        if (this.metaSlug === "protagonistic") {
-          return this.sortArrayByVote(this.protagonisticRhetoric);
-        } else if (this.$route.params.metaSlug === "antagonistic") {
-          return this.sortArrayByVote(this.antagonisticRhetoric);
+        if (this.metaSlug === "protagonistic" ||
+          this.$route.params.metaSlug === "antagonistic" ||
+          !this.metaSlug) {
+          return this.sortArrayByVote(this.allRhetoric);
         } else {
           this.forwardTo404();
         }
@@ -60,19 +68,38 @@
         });
       },
       updateQuery() {
-        if (this.metaSlug === 'protagonistic') {
-          this.$apollo.queries.protagonisticRhetoric.refetch();
+        this.$apollo.queries.allRhetoric.refetch();
+      },
+      toggleFilter(metaSlug) {
+        if (metaSlug === 'antagonistic') {
+          this.$router.push({
+            path: '/arguments/antagonistic'
+          });
+        } else if (metaSlug === 'protagonistic') {
+          this.$router.push({
+            path: '/arguments/protagonistic'
+          });
         } else {
-          this.$apollo.queries.antagonisticRhetoric.refetch();
+          this.$router.push({
+            path: '/arguments'
+          });
+        }
+      },
+      filterButtonStyle(metaSlug) {
+        if (metaSlug === this.metaSlug) {
+          return "small-button selected-button";
+        } else {
+          return "small-button";
         }
       }
     },
     apollo: {
-      protagonisticRhetoric: {
+      allRhetoric: {
         query: gql `
-            query protagonisticRhetoric($metaSlug: String!) {
+            query allRhetoric($metaSlug: String) {
               allRhetoric(metaSlug: $metaSlug) {
                 _id
+                metaSlug
                 slug
                 title
                 votes {
@@ -89,47 +116,17 @@
             }
         `,
         variables() {
-          return {
-            metaSlug: this.$route.params.metaSlug
-          }
-        },
-        update: data => (data.allRhetoric),
-        skip() {
-          if (this.$route.params.metaSlug === "protagonistic" && !this.$route.params.slug) {
-            return false;
-          } else {
-            return true;
-          }
-        }
-      },
-      antagonisticRhetoric: {
-        query: gql `
-            query antagonisticRhetoric($metaSlug: String!) {
-              allRhetoric(metaSlug: $metaSlug) {
-                _id
-                slug
-                title
-                votes {
-                  _id
-                  dateCreated
-                  upVote
-                  createdBy {
-                    _id
-                    username
-                    accruedDonations
-                  }
-                }
-              }
+          if (this.metaSlug) {
+            return {
+              metaSlug: this.metaSlug
             }
-        `,
-        variables() {
-          return {
-            metaSlug: this.$route.params.metaSlug
           }
         },
         update: data => (data.allRhetoric),
         skip() {
-          if (this.$route.params.metaSlug === "antagonistic" && !this.$route.params.slug) {
+          if (this.metaSlug === "protagonistic" ||
+            this.metaSlug === "antagonistic" ||
+            !this.metaSlug) {
             return false;
           } else {
             return true;

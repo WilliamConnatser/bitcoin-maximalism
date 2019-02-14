@@ -175,7 +175,7 @@ type Query {
     docIDSpecificOpinionCount(onModel: String!, _id: ID!): Int
     docIDSpecificVotes(onModel: String!, _id: ID!): [Vote]
 
-    allRhetoric(metaSlug: String!): [Rhetoric]
+    allRhetoric(metaSlug: String): [Rhetoric]
     argumentSpecificRhetoric(metaSlug: String!, slug: String!): Rhetoric
     checkDonation(_id: ID!): Boolean
 

@@ -8,7 +8,7 @@
                 <a v-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link" class="fancy-link normal-text"><span
                         class="media-type">{
                         {{arrayItem.media}} } </span>{{arrayItem.title}}</a>
-                <router-link v-if="arrayItem.__typename == 'Rhetoric'" :to="urlGenerator(metaSlug, arrayItem.slug)"
+                <router-link v-if="arrayItem.__typename == 'Rhetoric'" :to="urlGenerator(arrayItem.metaSlug, arrayItem.slug)"
                     class="fancy-link normal-text">{{arrayItem.title}}</router-link>
 
                 <ToolbarActions :arrayItemProp="arrayItem" />
@@ -36,8 +36,12 @@
             }
         },
         methods: {
-            urlGenerator: (metaSlug, slug) => {
-                return `${metaSlug}/${slug}`
+            urlGenerator(metaSlug, slug) {
+                if(this.$route.path.indexOf('arguments/') < 0) {
+                    return `arguments/${metaSlug}/${slug}`;
+                } else {
+                    return `${metaSlug}/${slug}`;
+                }
             }
         }
     };

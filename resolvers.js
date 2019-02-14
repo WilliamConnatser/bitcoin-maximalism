@@ -37,14 +37,19 @@ module.exports = {
                 }
                 const user = await User.findOne({
                         username: currentUser.username
-                    },null, {
+                    }, null, {
                         $fields: {
                             password: false
                         }
                     })
                     .populate({
                         path: 'donations',
-                        model: 'Donation'
+                        model: 'Donation',
+                        options: {
+                            sort: {
+                                'dateCreated': 'descending'
+                            }
+                        }
                     })
                     .populate({
                         path: 'opinions',
@@ -56,6 +61,11 @@ module.exports = {
                                 path: 'createdBy',
                                 model: 'User'
                             }
+                        },
+                        options: {
+                            sort: {
+                                'dateCreated': 'descending'
+                            }
                         }
                     })
                     .populate({
@@ -64,6 +74,11 @@ module.exports = {
                         populate: {
                             path: 'createdBy',
                             model: 'User'
+                        },
+                        options: {
+                            sort: {
+                                'dateCreated': 'descending'
+                            }
                         }
                     });
 
@@ -165,12 +180,25 @@ module.exports = {
             Rhetoric
         }) => {
             try {
+
+                //Default query if no Meta Slug is provided
+                var queryObject = {
+                    approved: true,
+                    active: true
+                }
+
+                //Query if Meta Slug is provided
+                if (metaSlug) {
+                    if (metaSlug !== 'protagonistic' && metaSlug !== 'antagonistic') {
+                        throw new UserInputError('invalid-variable');
+                    } else {
+                        queryObject.metaSlug = metaSlug;
+                    }
+                }
+
+                //Use query object to get an array of Rhetoric documents
                 const rhetoric = await Rhetoric
-                    .find({
-                        metaSlug,
-                        approved: true,
-                        active: true
-                    })
+                    .find(queryObject)
                     .populate({
                         path: 'votes',
                         model: 'Vote',
@@ -235,14 +263,14 @@ module.exports = {
                     _id
                 });
                 if (!donationDocument) throw new UserInputError('user-not-found');
-                
-                if(donationDocument.paid) {
+
+                if (donationDocument.paid) {
                     return true;
                 } else {
-                    const donationPaid =  await invoicePaid(donationDocument, userDocument);
+                    const donationPaid = await invoicePaid(donationDocument, userDocument);
                     return donationPaid;
                 }
-                 
+
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while checking this donation'));
             }

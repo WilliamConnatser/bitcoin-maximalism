@@ -8,10 +8,7 @@
         <router-link to="/introduction" class="small">Intro</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/rhetoric/protagonistic">Pros</router-link>
-      </li>
-      <li class="inline-nav">
-        <router-link to="/rhetoric/antagonistic">Cons</router-link>
+        <router-link to="/arguments">Arguments</router-link>
       </li>
 
       <div class="right-nav">

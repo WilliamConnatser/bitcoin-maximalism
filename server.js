@@ -35,6 +35,7 @@ const startup = require('./startup');
 //Depends on if the app is being deployed or ran in a development environment
 //All environment variables can be found in the now.json file
 if (process.env.DEPLOYING === "false") {
+    console.log("Development Mode")
     var mongoURI = process.env.MONGO_URI_DEVELOPMENT;
 } else {
     var mongoURI = process.env.MONGO_URI_PRODUCTION;

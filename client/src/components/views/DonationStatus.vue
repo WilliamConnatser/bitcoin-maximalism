@@ -61,11 +61,6 @@
             }
         },
         methods: {
-            argumentLink(metaSlug, slug) {
-                var linkString = '/rhetoric/' + metaSlug;
-                if(slug) linkString += '/' + slug;
-                return linkString;
-            },
             refetchCheckDonation() {
                 this.$apollo.queries.checkDonation.refetch();
             }
