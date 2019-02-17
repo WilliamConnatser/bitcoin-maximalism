@@ -1,24 +1,28 @@
 <template>
     <div class="normal-text">
-        <button @click="toggleSort('votes')" class="small-button">
-            Votes
-            <font-awesome-icon v-if="sortType==='votes' && sortDirection==='descending'" icon="sort-amount-down" title="Descending" />
-            <font-awesome-icon v-if="sortType==='votes' && sortDirection==='ascending'" icon="sort-amount-up" title="Ascending" />
-        </button>
-        <button @click="toggleSort('dateCreated')" class="small-button">
-            Date
-            <font-awesome-icon v-if="sortType==='dateCreated' && sortDirection==='descending'" icon="sort-amount-down"
-                title="Descending" />
-            <font-awesome-icon v-if="sortType==='dateCreated' && sortDirection==='ascending'" icon="sort-amount-up"
-                title="Ascending" />
-        </button>
+        <a class="cursor-pointer">
+            <button @click="toggleSort('votes')" class="small-button">
+                Votes
+                <font-awesome-icon v-if="sortType==='votes' && sortDirection==='descending'" icon="sort-amount-down" title="Descending" />
+                <font-awesome-icon v-if="sortType==='votes' && sortDirection==='ascending'" icon="sort-amount-up" title="Ascending" />
+            </button>
+        </a>
+        <a class="cursor-pointer">
+            <button @click="toggleSort('dateCreated')" class="small-button">
+                Date
+                <font-awesome-icon v-if="sortType==='dateCreated' && sortDirection==='descending'" icon="sort-amount-down"
+                    title="Descending" />
+                <font-awesome-icon v-if="sortType==='dateCreated' && sortDirection==='ascending'" icon="sort-amount-up"
+                    title="Ascending" />
+            </button>
+        </a>
 
         <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
         <ul v-if="docIDSpecificOpinions && docIDSpecificOpinions[0]">
             <li v-for="(opinion, forLoopIndex) in docIDSpecificOpinions" :key="forLoopIndex" class="opinion">
                 <div>
-                    <ToolbarVotes :arrayItemProp="opinion" v-on:vote-opinion="updateOpinions" />
+                    <ToolbarVotes :arrayItemProp="opinion" v-on:update-view-opinion-query="updateOpinions" />
                     <strong class="uppercase">{{opinion.createdBy.username}}</strong>
                     {{opinion.dateCreated | formatDate }}
                 </div>
@@ -27,8 +31,11 @@
                 </div>
                 <hr v-if="docIDSpecificOpinions.length-1!==forLoopIndex">
             </li>
-            <button @click="loadMore()" v-if="docIDSpecificOpinionCount>index+10" class="medium-margin">Load More
-                Opinions</button>
+            <a class="pointer-cursor">
+                <button @click="loadMore()" v-if="docIDSpecificOpinionCount>index+10" class="medium-margin">Load More
+                    Opinions
+                </button>
+            </a>
         </ul>
         <div class="medium-margin" v-if="!$apollo.loading && (!docIDSpecificOpinions || !docIDSpecificOpinions[0])">
             No one's commented on this yet...
@@ -43,8 +50,7 @@
     export default {
         name: "ViewOpinions",
         props: {
-            arrayItemProp: Object,
-            metaSlug: String
+            arrayItemProp: Object
         },
         components: {
             ToolbarVotes
@@ -126,12 +132,14 @@
                         _id
                         dateCreated
                         createdBy {
+                            _id
                             username
                         }
                         opinion
                         votes {
                             upVote
                             createdBy {
+                                _id
                                 username
                                 accruedDonations
                             }

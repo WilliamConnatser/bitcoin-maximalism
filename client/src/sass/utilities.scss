@@ -10,7 +10,7 @@
     overflow: hidden;
     word-wrap: break-word;
 
-    transition: all 1s;
+    transition: all .5s;
 
     &:hover {
         transform: translateY(-.3rem);
@@ -32,6 +32,11 @@
             font-size: 3rem;
             font-weight: 600;
             margin: 1rem 2rem;
+        }
+
+        .vote-icon:active {
+            animation: shake .5s;
+            transform: scaleX(1.5) scaleY(1.7);
         }
     
         .amount-donated {
@@ -81,19 +86,19 @@
     transition: all .2s;
 
     &:hover {
-        transform: skewY(1deg) skewX(2deg) scale(1.2);
+        transform: $grow-and-distort;
     }
 }
 
 .extra-large-social-icons {
-    font-size: 7rem;
+    font-size: 6rem;
     margin: 1rem .5rem;
 
     animation: moveInRight .5s;
     transition: all .2s;
 
     &:hover {
-        transform: skewY(1deg) skewX(2deg) scale(1.2);
+        transform: $grow-and-distort;
     }
 }
 

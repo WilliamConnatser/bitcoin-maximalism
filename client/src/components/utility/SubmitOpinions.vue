@@ -5,10 +5,10 @@
                 <label>Your Opinion</label>
                 <textarea v-model="opinion" maxlength=280></textarea>
                 <div class="extra-small-text">
-                    No links, foul language or namecalling is allowed. Please remain respectful of others, on topic,
+                    No hyperlinks, foul language or namecalling is allowed. Please remain respectful of others, on topic,
                     and intellectually honest.
                 </div>
-                <button type="submit">I Agree</button>
+                <button type="submit">Agree &amp; Submit</button>
             </div>
         </form>
         <div v-else class="medium-margin">
@@ -55,6 +55,27 @@
                         }
                     }).then(() => {
                         this.submitted = true;
+
+                        if (this.$route.fullPath.indexOf('leaderboards') > -1) {
+                            if (this.arrayItemProp.__typename === 'Rhetoric') {
+                                this.$parent.$emit('arguments-changed');
+                            } else if (this.arrayItemProp.__typename === 'Opinion') {
+                                this.$parent.$emit('opinions-changed');
+                            } else if (this.arrayItemProp.__typename === 'Resource') {
+                                this.$parent.$emit('resources-changed');
+                            } else if (this.arrayItemProp.__typename === 'BulletPoint') {
+                                this.$parent.$emit('bulletpoints-changed');
+                            }                
+                        } else {
+                            if (this.arrayItemProp.__typename === 'Rhetoric') {
+                                this.$parent.$emit('update-tos-query');
+                            } else if (this.arrayItemProp.__typename === 'Opinion') {
+                                this.$emit('update-view-opinion-query');
+                            } else {
+                                this.$parent.$emit('update-arguments-query');
+                            }
+
+                        }
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });

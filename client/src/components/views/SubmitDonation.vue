@@ -1,6 +1,6 @@
 <template>
     <form @submit.prevent="submitDonation()" class="normal-text">
-        <h1>Submit Donation</h1>
+        <h1 class="heading">submit donation</h1>
         <label>Donation Amount (BTC)</label>
         <input type="text" v-model="donationAmount">
         <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>

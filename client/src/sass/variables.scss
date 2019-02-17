@@ -14,14 +14,16 @@ $color-dark-grey: #607B7D;
 $color-beige: #AAAE8E;
 $color-dark-beige: #828E82;
 
-$header-minimum-height: 4vh;
-$footer-minimum-height: 4vh;
-$view-minimum-height: 91vh;
+$header-minimum-height: 5vh;
+$footer-minimum-height: 7vh;
+$view-minimum-height: 78vh;
 
 $breakpoint-small: 500px;
 
-$view-padding-horizontal: 2vw;
-$view-padding-vertical: 2vh;
+$view-padding-horizontal: 1vw;
+$view-padding-vertical: 1vh;
+
+$grow-and-distort: skewY(1deg) skewX(2deg) scale(1.2);
 
 @keyframes moveInLeft {
     0% {
@@ -90,5 +92,23 @@ $view-padding-vertical: 2vh;
 
     100% {
         transform: scale(1.1)
+    }
+}
+
+@keyframes shake {
+    10%,90% {
+        transform: translate3d(-2px, 0, 0);
+    }
+
+    20%,80% {
+        transform: translate3d(4px, 0, 0);
+    }
+
+    30%,50%,70% {
+        transform: translate3d(-6px, 0, 0);
+    }
+
+    40%,60% {
+        transform: translate3d(6px, 0, 0);
     }
 }

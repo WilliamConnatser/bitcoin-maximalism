@@ -1,6 +1,6 @@
 <template>
     <main class="normal-text">
-        <h1>Donation Status</h1>
+        <h1 class="heading">donation status</h1>
         <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
         <ul v-if="docIDSpecificDonation" class="list">
             <h2>Donation</h2>

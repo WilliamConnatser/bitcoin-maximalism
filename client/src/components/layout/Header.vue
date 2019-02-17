@@ -5,13 +5,10 @@
         <router-link to="/" class="fancy-link">About</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/introduction" class="fancy-link">Intro</router-link>
-      </li>
-      <li class="inline-nav">
         <router-link to="/arguments" class="fancy-link">Arguments</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/activity" class="fancy-link">Activity</router-link>
+        <router-link to="/leaderboards/arguments" class="fancy-link">leaderboards</router-link>
       </li>
 
       <div class="right-nav">
@@ -23,16 +20,21 @@
         </li>
 
         <li v-if="!showSocial" @click="toggleSocial" class="inline-nav">
+          <a class="cursor-pointer">
           <font-awesome-icon icon="share-alt-square" class="social-icons-header large-text" />
+          </a>
         </li>
         <li v-else @click="toggleSocial" class="inline-nav">
-          <font-awesome-icon icon="times-circle" class="social-icons-header large-text" />
+          <a class="cursor-pointer">
+            <font-awesome-icon icon="times-circle" class="social-icons-header large-text" />
+          </a>
         </li>
       </div>
 
       <li v-if="showSocial" class="social-dropdown">
-        <a href="#">
-          <SocialIcons :currentUser="currentUser" /></a>
+        
+          <SocialIcons :currentUser="currentUser" />
+        </a>
       </li>
     </nav>
   </header>

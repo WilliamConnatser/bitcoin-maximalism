@@ -1,0 +1,16 @@
+<template>
+    <div class="container normal-text">
+        <font-awesome-icon :icon="{ prefix: 'fas', iconName: 'exclamation-circle' }" class="extra-large-social-icons fancy-link" />
+        <h1 class="heading">
+            BRB Undergoing Maintenance
+        </h1>
+
+        We'll be right back!!
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "Maintenance"
+    };
+</script>

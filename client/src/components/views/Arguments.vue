@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1 v-if="argumentSpecificRhetoric" class="title">{{argumentSpecificRhetoric.title}}</h1>
+    <h1 v-if="argumentSpecificRhetoric" class="heading">{{argumentSpecificRhetoric.title.toLowerCase()}}</h1>
     <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
-    <ul>
-      <AdvancedListItem v-if="argumentSpecificRhetoric" :arrayProp="concatAndSort" v-on:vote-rhetoric="updateQuery" />
+    <ul class="medium-margin-horizontal">
+      <AdvancedListItem v-if="argumentSpecificRhetoric" :arrayProp="concatAndSort" v-on:update-arguments-query="updateQuery" />
     </ul>
   </div>
 </template>

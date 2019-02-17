@@ -1,9 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
 
-import Activity from "./components/views/Activity.vue";
+import Leaderboards from "./components/views/Leaderboards.vue";
 import About from "./components/views/About.vue";
-import Intro from "./components/views/Intro.vue";
 import Account from "./components/views/Account.vue";
 import VerifyEmail from "./components/auth/VerifyEmail.vue";
 import VerifyPassword from "./components/auth/VerifyPassword.vue";
@@ -15,18 +14,20 @@ import Privacy from "./components/views/Privacy.vue";
 import PageNotFound from "./components/views/PageNotFound.vue";
 import DonationStatus from "./components/views/DonationStatus.vue";
 import SubmitDonation from "./components/views/SubmitDonation.vue";
+import Maintenance from "./components/views/Maintenance.vue";
 
 Vue.use(Router);
 
 export default new Router({
   mode: "history",
   base: process.env.BASE_URL,
-  routes: [{
+  routes: [/*{
+    path: "*",
+    component: Maintenance
+  }*/
+    {
       path: "/",
       component: About
-    }, {
-      path: "/introduction",
-      component: Intro
     },
     {
       path: "/arguments",
@@ -41,8 +42,12 @@ export default new Router({
       component: Arguments
     },
     {
-      path: "/activity",
-      component: Activity
+      path: "/leaderboards",
+      component: Leaderboards
+    },
+    {
+      path: "/leaderboards/:leaderboardsCategory",
+      component: Leaderboards
     },
     {
       path: "/account",
@@ -75,6 +80,9 @@ export default new Router({
     {
       path: "/reset-password",
       component: ResetPassword
+    },
+    {
+      path: "/sitemap.xml"
     },
     {
       path: "*",

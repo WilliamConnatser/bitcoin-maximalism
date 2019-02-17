@@ -1,13 +1,13 @@
 {
   "name": "bitcoin-maximalism-v2",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "description": "BitcoinMaximalism.com is an unbiased and interactive overview of Bitcoin Maximalism.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "startdev": "nodemon server.js",
     "client": "cd client && npm run serve",
-    "dev": "concurrently --names \"start,client\" \"npm run start --silent\" \"npm run client --silent\"",
-    "deploy": "git push heroku master"
+    "dev": "concurrently --names \"startdev,client\" \"npm run startdev --silent\" \"npm run client --silent\""
   },
   "keywords": [
     "Bitcoin",
@@ -16,28 +16,28 @@
     "BTCPay"
   ],
   "author": "William Connatser",
-  "license": "ISC",
+  "license": "MIT",
   "engines": {
     "node": "10.13"
   },
   "dependencies": {
     "apollo-link-state": "^0.4.2",
-    "apollo-server": "^2.3.3",
-    "bcrypt": "^3.0.3",
+    "apollo-server": "^2.4.2",
+    "bcrypt": "^3.0.4",
     "btcpay": "github:btcpayserver/node-btcpay",
     "dotenv": "^6.2.0",
     "graphql": "^0.13.2",
     "i": "^0.3.6",
     "jsonwebtoken": "^8.4.0",
     "md5": "^2.2.1",
-    "mongoose": "^5.4.10",
+    "mongoose": "^5.4.13",
     "nodemailer": "^5.1.1",
-    "npm": "^6.7.0"
+    "npm": "^6.8.0"
   },
   "devDependencies": {
     "concurrently": "^3.6.0",
     "node-sass": "^4.11.0",
-    "nodemon": "^1.18.9",
+    "nodemon": "^1.18.10",
     "sass-loader": "^7.1.0"
   }
 }

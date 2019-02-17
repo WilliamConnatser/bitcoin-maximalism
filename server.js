@@ -44,7 +44,8 @@ if (process.env.DEPLOYING === "false") {
 //Connect to MongoDB via mongoose
 mongoose
     .connect(mongoURI, {
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useCreateIndex: true
     })
     .then(async ({
         models

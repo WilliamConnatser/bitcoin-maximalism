@@ -1,4 +1,4 @@
-## BitcoinMaximalism.com v2
+# www.BitcoinMaximalism.com v2
 
 Stack: Vue + Vue Router + Apollo GraphQL + Mongoose + MongoDB
 

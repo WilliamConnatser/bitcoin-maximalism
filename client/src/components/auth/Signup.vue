@@ -25,7 +25,7 @@
             </div>
             <button type="submit">Register</button>
             <div class="medium-margin">
-                <a href="#" @click="$emit('toggle-login')" class="fancy-link">
+                <a @click="$emit('toggle-login')" class="fancy-link cursor-pointer">
                     Already Registered?
                     <h2>Sign In Here!</h2>
                 </a>

@@ -3,10 +3,6 @@ schema {
   mutation: Mutation
 }
 
-type Token {
-    token: String!
-}
-
 type Rhetoric {
     _id: ID
     dateCreated: String!
@@ -167,6 +163,29 @@ type Crypto {
     valueUSD: Float!
 }
 
+type MetaState {
+    maintenance: Boolean!
+    nextMaintenance: String!
+}
+
+# All types below are only used for query and mutation responses
+
+type Token {
+    token: String!
+}
+
+type ReferralInfluence {
+    _id: ID!
+    username: String!
+    referralInfluence: Float!
+}
+
+type MostReferrals {
+    _id: ID!
+    username: String!
+    referralAmount: Float!
+}
+
 type Query {
     currentUser: User
 
@@ -180,6 +199,16 @@ type Query {
     checkDonation(_id: ID!): Boolean
 
     cryptoValue(ticker: String!): Float
+
+    topArguments(onModel: String!, descending: Boolean!, limit: Int!): [Rhetoric] #Most/Least Upvoted/Opinionated Rhetoric - onModel = Opinion or Vote
+    topBulletPoints(onModel: String!, descending: Boolean!, limit: Int!): [BulletPoint] #Most/Least Upvoted/Opinionated BulletPoint - onModel = Opinion or Vote
+    topResources(onModel: String!, descending: Boolean!, limit: Int!): [Resource] #Most/Least Upvoted/Opinionated Resource - onModel = Opinion or Vote
+    topOpinions(descending: Boolean!, limit: Int!): [Opinion] #Most/Least Upvoted Opinions
+
+    recentOpinions(limit: Int!): [Opinion]
+    mostInfluentialUsers(limit: Int!): [User]
+    mostReferrals(limit: Int!): [MostReferrals]
+    mostReferralInfluence(limit: Int!): [ReferralInfluence]
 }
 
 type Mutation {

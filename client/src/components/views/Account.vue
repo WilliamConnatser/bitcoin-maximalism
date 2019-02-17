@@ -1,25 +1,29 @@
 <template>
-    <main class="normal-text">
+    <main class="container normal-text">
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
-            <div>
+            <section class="medium-margin-vertical">
                 <div>
-                    <h1>Account Panel</h1>
+                    <h1 class="heading">account panel</h1>
                     <router-link to="/submit-donation"><button>Add Influence</button></router-link>
                     <button @click="signoutUser">Signout</button>
                 </div>
                 <div>
                     Influence: {{currentUser.accruedDonations | formatBitcoinAmount}}
                 </div>
-                Referral Link: <a :href="refLink" class="extra-small-text">{{refLink}}</a>
-                <SocialIcons :currentUser="currentUser" />
-            </div>
+                <div>
+                    Referral Link: <br/>
+                    <a :href="refLink" class="extra-small-text">{{refLink}}</a>
+                    <SocialIcons :currentUser="currentUser" />
+                </div>
+            </section>
 
+            <div class="medium-margin-vertical">
             <h2>Account History</h2>
             <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')" :style="{ cursor: 'pointer'}">Donations</button>
             <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')" :style="{ cursor: 'pointer'}">Opinions</button>
             <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')" :style="{ cursor: 'pointer'}">Votes</button>
-
+            </div>
             <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
             <div v-if="historyTab === 'Donation'" class="medium-margin">

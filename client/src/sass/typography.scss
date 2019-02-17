@@ -56,3 +56,12 @@ hr {
 .loading {
     animation: throb .5s infinite;
 }
+
+.heading {
+    margin: 0rem auto 2rem;
+}
+
+.divider {
+    border-top: .1rem solid $color-white;
+    border-bottom: .1rem solid $color-white;
+}

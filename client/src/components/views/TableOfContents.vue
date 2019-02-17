@@ -1,19 +1,17 @@
 <template>
-  <section>
-    <h1 class="title">
-      {
+  <section class="normal-text container">
+    <h1 class="heading">
       <span v-if="metaSlug">{{metaSlug}}</span>
       <span v-else>arguments</span>
-      }
     </h1>
 
-    <router-link to="/arguments"><button :class="filterButtonStyle()" :style="{ cursor: 'pointer'}">All</button></router-link>
-    <router-link to="/arguments/protagonistic"><button :class="filterButtonStyle('protagonistic')" :style="{ cursor: 'pointer'}">Protagonistic</button></router-link>
-    <router-link to="/arguments/antagonistic"><button :class="filterButtonStyle('antagonistic')" :style="{ cursor: 'pointer'}">Antagonistic</button></router-link>
+    <router-link to="/arguments"><button :class="filterButtonStyle()">All</button></router-link>
+    <router-link to="/arguments/protagonistic"><button :class="filterButtonStyle('protagonistic')">Protagonistic</button></router-link>
+    <router-link to="/arguments/antagonistic"><button :class="filterButtonStyle('antagonistic')">Antagonistic</button></router-link>
 
     <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
-    <ul>
-      <AdvancedListItem :arrayProp="this.args" v-on:vote-tos="updateQuery" />
+    <ul class="medium-margin-horizontal">
+      <AdvancedListItem :arrayProp="this.args" v-on:update-tos-query="updateQuery" />
     </ul>
   </section>
 </template>
@@ -87,9 +85,9 @@
       },
       filterButtonStyle(metaSlug) {
         if (metaSlug === this.metaSlug) {
-          return "small-button selected-button";
+          return "small-button selected-button cursor-pointer";
         } else {
-          return "small-button";
+          return "small-button cursor-pointer";
         }
       }
     },
@@ -122,7 +120,6 @@
             }
           }
         },
-        update: data => (data.allRhetoric),
         skip() {
           if (this.metaSlug === "protagonistic" ||
             this.metaSlug === "antagonistic" ||

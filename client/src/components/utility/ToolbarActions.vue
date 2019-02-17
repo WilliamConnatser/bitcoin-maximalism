@@ -1,6 +1,6 @@
 <template>
     <div class="normal-text">
-        <a href="#" class="fancy-link list-action-toolbar">
+        <a class="fancy-link list-action-toolbar cursor-pointer">
             <strong v-if="this.viewOpinions !== null" @click="cancel('viewOpinions')" class="action-count extra-small-text">X</strong>
             <strong v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="action-count extra-small-text">{{docIDSpecificOpinionCount}}</strong>
             <font-awesome-icon icon="comment" title="View Opinions" class="action-icon" />
@@ -16,8 +16,8 @@
             -->
 
         <div v-if="this.viewOpinions !== null">
-            <button v-if="this.submitOpinion === null" @click="show('submitOpinion')">Submit Opinion</button>
-            <button v-if="this.submitOpinion !== null" @click="cancel('submitOpinion')">View Opinions</button>
+            <a><button v-if="this.submitOpinion === null" @click="show('submitOpinion')" class="cursor-pointer">Submit Opinion</button></a>
+            <a><button v-if="this.submitOpinion !== null" @click="cancel('submitOpinion')" class="cursor-pointer">View Opinions</button></a>
 
             <ViewOpinions v-if="this.submitOpinion === null" :arrayItemProp="arrayItemProp" />
             <SubmitOpinions v-if="this.submitOpinion !== null" :arrayItemProp="arrayItemProp" />
@@ -75,10 +75,10 @@
         },
         computed: {
             slug() {
-                return this.$route.params.slug;
+                return this.arrayItemProp.slug;
             },
             metaSlug() {
-                return this.$route.params.metaSlug;
+                return this.arrayItemProp.metaSlug;
             }
         },
         components: {

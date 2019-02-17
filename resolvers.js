@@ -19,6 +19,7 @@ const {
     createDonation,
     validateDonationAmount,
     invoicePaid,
+    sortByVote,
     sendPasswordResetEmail,
     sendRegistrationEmail,
     parseError
@@ -37,11 +38,7 @@ module.exports = {
                 }
                 const user = await User.findOne({
                         username: currentUser.username
-                    }, null, {
-                        $fields: {
-                            password: false
-                        }
-                    })
+                    }, '-password')
                     .populate({
                         path: 'donations',
                         model: 'Donation',
@@ -59,7 +56,8 @@ module.exports = {
                             model: 'Vote',
                             populate: {
                                 path: 'createdBy',
-                                model: 'User'
+                                model: 'User',
+                                select: '_id username accruedDonations'
                             }
                         },
                         options: {
@@ -73,7 +71,8 @@ module.exports = {
                         model: 'Vote',
                         populate: {
                             path: 'createdBy',
-                            model: 'User'
+                            model: 'User',
+                            select: '_id username accruedDonations'
                         },
                         options: {
                             sort: {
@@ -124,13 +123,7 @@ module.exports = {
                             populate: {
                                 path: 'createdBy',
                                 model: 'User',
-                                options: {
-                                    fields: {
-                                        _id: true,
-                                        username: true,
-                                        accruedDonations: true
-                                    }
-                                }
+                                select: '_id username accruedDonations'
                             }
                         }
                     })
@@ -143,13 +136,7 @@ module.exports = {
                             populate: {
                                 path: 'createdBy',
                                 model: 'User',
-                                options: {
-                                    fields: {
-                                        _id: true,
-                                        username: true,
-                                        accruedDonations: true
-                                    }
-                                }
+                                select: '_id username accruedDonations'
                             }
                         }
                     })
@@ -159,13 +146,7 @@ module.exports = {
                         populate: {
                             path: 'createdBy',
                             model: 'User',
-                            options: {
-                                fields: {
-                                    _id: true,
-                                    username: true,
-                                    accruedDonations: true
-                                }
-                            }
+                            select: '_id username accruedDonations'
                         }
                     });
 
@@ -205,13 +186,7 @@ module.exports = {
                         populate: {
                             path: 'createdBy',
                             model: 'User',
-                            options: {
-                                fields: {
-                                    _id: true,
-                                    username: true,
-                                    accruedDonations: true
-                                }
-                            }
+                            select: '_id username accruedDonations'
                         }
                     });
 
@@ -308,25 +283,13 @@ module.exports = {
                             populate: {
                                 path: 'createdBy',
                                 model: 'User',
-                                options: {
-                                    fields: {
-                                        _id: true,
-                                        username: true,
-                                        accruedDonations: true
-                                    }
-                                }
+                                select: '_id username accruedDonations'
                             }
                         })
                         .populate({
                             path: 'createdBy',
                             model: 'User',
-                            options: {
-                                fields: {
-                                    _id: true,
-                                    username: true,
-                                    accruedDonations: true
-                                }
-                            }
+                            select: '_id username accruedDonations'
                         })
                         .sort({
                             dateCreated: sortDirection
@@ -367,25 +330,13 @@ module.exports = {
                             populate: {
                                 path: 'createdBy',
                                 model: 'User',
-                                options: {
-                                    fields: {
-                                        _id: true,
-                                        username: true,
-                                        accruedDonations: true
-                                    }
-                                }
+                                select: '_id username accruedDonations'
                             }
                         })
                         .populate({
                             path: 'createdBy',
                             model: 'User',
-                            options: {
-                                fields: {
-                                    _id: true,
-                                    username: true,
-                                    accruedDonations: true
-                                }
-                            }
+                            select: '_id username accruedDonations'
                         });
 
                     if (sortDirection === 'descending') {
@@ -434,16 +385,327 @@ module.exports = {
                 }).populate({
                     path: 'createdBy',
                     model: 'User',
-                    options: {
-                        fields: {
-                            _id: true,
-                            username: true,
-                            accruedDonations: true
-                        }
-                    }
+                    select: '_id username accruedDonations'
                 });
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while counting this document\'s opinions'));
+            }
+        },
+        topArguments: async (_, {
+            onModel,
+            descending,
+            limit
+        }, {
+            Rhetoric
+        }) => {
+            try {
+                if (onModel !== 'Opinion' && onModel !== 'Vote') throw new UserInputError('invalid-model');
+                if (limit < 1) throw new UserInputError('invalid-limit');
+
+                var rhetoric = [];
+
+                if (onModel === 'Opinion') {
+                    rhetoric = await Rhetoric.find({})
+                        .populate({
+                            path: 'votes',
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User',
+                                select: '_id username accruedDonations'
+                            }
+                        })
+
+                    return await rhetoric.sort((a, b) => {
+                        if (descending) {
+                            return b.opinions.length - a.opinions.length;
+                        } else {
+                            return a.opinions.length - b.opinions.length;
+                        }
+                    }).slice(0, limit);
+
+                } else {
+                    rhetoric = await Rhetoric.find({})
+                        .populate({
+                            path: 'votes',
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User',
+                                select: '_id username accruedDonations'
+                            }
+                        });
+
+                    return await sortByVote(rhetoric, descending).slice(0, limit);
+                }
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these arguments'));
+            }
+        },
+        topBulletPoints: async (_, {
+            onModel,
+            descending,
+            limit
+        }, {
+            BulletPoint
+        }) => {
+            try {
+                if (onModel !== 'Opinion' && onModel !== 'Vote') throw new UserInputError('invalid-model');
+                if (limit < 1) throw new UserInputError('invalid-limit');
+
+                var bulletPoints;
+
+                if (onModel === 'Opinion') {
+                    bulletPoints = await BulletPoint.find({})
+                        .populate({
+                            path: 'votes',
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User',
+                                select: '_id username accruedDonations'
+                            }
+                        });
+
+                    return await bulletPoints.sort((a, b) => {
+                        if (descending) {
+                            return b.opinions.length - a.opinions.length;
+                        } else {
+                            return a.opinions.length - b.opinions.length;
+                        }
+                    }).slice(0, (limit));
+
+                } else {
+                    bulletPoints = await BulletPoint.find({})
+                        .populate({
+                            path: 'votes',
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User',
+                                select: '_id username accruedDonations'
+                            }
+                        });
+
+                    return await sortByVote(bulletPoints, descending).slice(0, limit);
+                }
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these bulletpoints'));
+            }
+        },
+        topResources: async (_, {
+            onModel,
+            descending,
+            limit
+        }, {
+            Resource
+        }) => {
+            try {
+                if (onModel !== 'Opinion' && onModel !== 'Vote') throw new UserInputError('invalid-model');
+                if (limit < 1) throw new UserInputError('invalid-limit');
+
+                var resources;
+
+                if (onModel === 'Opinion') {
+                    resources = await Resource.find({})
+                        .populate({
+                            path: 'votes',
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User',
+                                select: '_id username accruedDonations'
+                            }
+                        });
+
+                    return await resources.sort((a, b) => {
+                        if (descending) {
+                            return b.opinions.length - a.opinions.length;
+                        } else {
+                            return a.opinions.length - b.opinions.length;
+                        }
+                    }).slice(0, (limit));
+
+                } else {
+                    resources = await Resource.find({})
+                        .populate({
+                            path: 'votes',
+                            model: 'Vote',
+                            populate: {
+                                path: 'createdBy',
+                                model: 'User',
+                                select: '_id username accruedDonations'
+                            }
+                        });
+
+                    return await sortByVote(resources, descending).slice(0, limit);
+                }
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these resources'));
+            }
+        },
+        topOpinions: async (_, {
+            descending,
+            limit
+        }, {
+            Opinion
+        }) => {
+            try {
+                if (limit < 1) throw new UserInputError('invalid-limit');
+
+                var opinions = [];
+
+                opinions = await Opinion.find({})
+                    .populate({
+                        path: 'votes',
+                        model: 'Vote',
+                        populate: {
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        }
+                    })
+                    .populate({
+                        path: 'createdBy',
+                        model: 'User',
+                        select: '_id username accruedDonations'
+                    });
+
+                return await sortByVote(opinions, descending).slice(0, limit);
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these arguments'));
+            }
+        },
+        recentOpinions: async (_, {
+            limit
+        }, {
+            Opinion
+        }) => {
+            try {
+                if (limit < 1) throw new UserInputError('invalid-limit');
+
+                const opinions = await Opinion.find({
+                        approved: true
+                    })
+                    .populate({
+                        path: 'votes',
+                        model: 'Vote',
+                        populate: {
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        }
+                    })
+                    .populate({
+                        path: 'createdBy',
+                        model: 'User',
+                        select: '_id username accruedDonations'
+                    })
+                    .sort({
+                        dateCreated: 'descending'
+                    })
+                    .limit(limit);
+
+                return opinions;
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these opinions'));
+            }
+        },
+        mostReferrals: async (_, {
+            limit
+        }, {
+            User
+        }) => {
+            try {
+                if (limit < 1) throw new UserInputError('invalid-limit');
+
+                const users = await User.find({}, '_id username accruedDonations referrals');
+
+                var processedUsers = [];
+
+                users.forEach(user => {
+                    processedUsers.push({
+                        _id: user._id,
+                        username: user.username,
+                        referralAmount: user.referrals.length
+                    });
+                });
+
+                return await processedUsers.sort((a, b) => {
+                    return b.referralAmount - a.referralAmount;
+                }).slice(0, limit);
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these users'));
+            }
+        },
+        mostReferralInfluence: async (_, {
+            limit
+        }, {
+            User
+        }) => {
+            try {
+                if (limit < 1) throw new UserInputError('invalid-limit');
+
+                const users = await User.find({}, '_id username referrals')
+                    .populate({
+                        path: 'referrals',
+                        model: 'User',
+                        select: '_id',
+                        populate: {
+                            path: 'donations',
+                            model: 'Donation'
+                        }
+                    });
+
+                var processedUsers = [];
+
+                users.forEach(user => {
+                    user.referralInfluence = 0;
+                    user.referrals.forEach(referredUser => {
+                        referredUser.donations.forEach(donation => {
+                            if (donation.paid) {
+                                user.referralInfluence += donation.amount * 0.1;
+                            }
+                        });
+                    });
+
+                    processedUsers.push({
+                        _id: user._id,
+                        username: user.username,
+                        referralInfluence: user.referralInfluence
+                    });
+                });
+
+                return processedUsers.sort((a, b) => {
+                    return b.referralInfluence - a.referralInfluence;
+                });
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these users'));
+            }
+        },
+        mostInfluentialUsers: async (_, {
+            limit
+        }, {
+            User
+        }) => {
+            try {
+                if (limit < 1) throw new UserInputError('invalid-limit');
+
+                const users = await User.find({}, '_id username accruedDonations');
+
+                return await users.sort((a, b) => {
+                    return b.accruedDonations - a.accruedDonations;
+                }).slice(0, limit);
+
+            } catch (err) {
+                console.log(err)
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these users'));
             }
         }
     },
@@ -746,10 +1008,12 @@ module.exports = {
                     opinionObject.slug = applicableDocument.slug;
                 }
 
-                //Save the Opinion document and the User document
+                //Save the Opinion document, the User document, and the applicableDocument
                 const newOpinion = await new Opinion(opinionObject).save();
-                userDocument.opinions.push(newOpinion);
+                userDocument.opinions.push(newOpinion._id);
                 userDocument.save();
+                applicableDocument.opinions.push(newOpinion._id);
+                applicableDocument.save();
 
                 return currentUser.accruedDonations;
             } catch (err) {

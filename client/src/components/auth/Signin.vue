@@ -16,7 +16,7 @@
 
             <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
             <div class="medium-margin">
-                <a href="#" @click="$emit('toggle-login')" class="fancy-link">
+                <a @click="$emit('toggle-login')" class="fancy-link cursor-pointer">
                     Not Registered Yet?
                     <h2>Sign Up Here!</h2>
                 </a>

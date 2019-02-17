@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="list-vote-toolbar">
-            <a href="#" class="icon fancy-link" @click='submitVote(true)' title="Upvote">
-                <font-awesome-icon icon="angle-up" />
+            <a class="icon fancy-link cursor-pointer" @click='submitVote(true)' title="Upvote">
+                <font-awesome-icon icon="angle-up" class="vote-icon"/>
             </a>
             <span class="amount-donated">
                 <span v-if="calculateVotes(arrayItemProp.votes)>0">+ {{calculateVotes(arrayItemProp.votes) |
@@ -12,8 +12,8 @@
                 <span v-else-if="calculateVotes(arrayItemProp.votes)===0">{{calculateVotes(arrayItemProp.votes)*-1 |
                     formatBitcoinAmount}}</span>
             </span>
-            <a href="#" class="icon fancy-link" @click='submitVote(false)' title="Downvote">
-                <font-awesome-icon icon="angle-down" />
+            <a class="icon fancy-link cursor-pointer" @click='submitVote(false)' title="Downvote">
+                <font-awesome-icon icon="angle-down" class="vote-icon"/>
             </a>
         </div>
     </div>
@@ -47,9 +47,9 @@
 
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
-                }  else if (!this.currentUser.emailVerified) {
+                } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                }  else if (!this.currentUser.accruedDonations === 0) {
+                } else if (!this.currentUser.accruedDonations === 0) {
                     this.$toasted.global.no_influence();
                 } else {
                     //GraphQL Mutation
@@ -65,13 +65,28 @@
                             upVote
                         }
                     }).then(() => {
-                        if (this.arrayItemProp.__typename === 'Rhetoric') {
-                            this.$parent.$emit('vote-tos');
-                        } else if (this.arrayItemProp.__typename === 'Opinion') {
-                            this.$emit('vote-opinion');
+
+                        if (this.$route.fullPath.indexOf('leaderboards') > -1) {
+                            if (this.arrayItemProp.__typename === 'Rhetoric') {
+                                this.$parent.$emit('arguments-changed');
+                            } else if (this.arrayItemProp.__typename === 'Opinion') {
+                                this.$parent.$emit('opinions-changed');
+                            } else if (this.arrayItemProp.__typename === 'Resource') {
+                                this.$parent.$emit('resources-changed');
+                            } else if (this.arrayItemProp.__typename === 'BulletPoint') {
+                                this.$parent.$emit('bulletpoints-changed');
+                            }                
                         } else {
-                            this.$parent.$emit('vote-rhetoric');
+                            if (this.arrayItemProp.__typename === 'Rhetoric') {
+                                this.$parent.$emit('update-tos-query');
+                            } else if (this.arrayItemProp.__typename === 'Opinion') {
+                                this.$emit('update-view-opinion-query');
+                            } else {
+                                this.$parent.$emit('update-arguments-query');
+                            }
+
                         }
+
                         this.$toasted.global.vote_success();
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)

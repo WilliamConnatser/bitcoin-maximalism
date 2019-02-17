@@ -265,6 +265,25 @@ const validateDonationAmount = (donationAmount, bitcoinValue) => {
     }
 }
 
+const calculateVotes = voteArray => {
+    var cumulativeVote = 0;
+    voteArray.forEach(vote => {
+        if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
+        else cumulativeVote -= vote.createdBy.accruedDonations;
+    });
+    return cumulativeVote;
+}
+
+const sortByVote = (documentArray, descending) => {
+    return documentArray.sort((a, b) => {
+        if (descending) {
+            return calculateVotes(b.votes) - calculateVotes(a.votes);
+        } else {
+            return calculateVotes(a.votes) - calculateVotes(b.votes);
+        }
+    });
+}
+
 const parseError = (error, unknownError) => {
     //Known errors which return a slug have special notifications in the onError property inside /client/apolloProvider.js
     if (error == 'log-in') return 'log-in';
@@ -287,15 +306,16 @@ const parseError = (error, unknownError) => {
     else if (error == 'email-taken') return 'Email address already in use';
     else if (error == 'invalid-referral') return 'Invalid referral link, clear your cookies';
     else if (error == 'invalid-id') return 'Invalid document ID submitted';
-    else if (error == 'invalid-type') return 'Invalid type submitted';
+    else if (error == 'invalid-model') return 'Invalid model submitted';
     else if (error == 'invalid-sort-index') return 'Invalid number requested';
     else if (error == 'invalid-sort-type') return 'Invalid sort type';
     else if (error == 'invalid-sort-order') return 'Invalid sort order';
     else if (error == 'invalid-variable') return 'Invalid query variable';
+    else if (error == 'invalid-limit') return 'Invalid query limit';
     else if (error == 'admin') return 'You must be an admin';
     else if (error == 'unauthorized') return 'You are not authorized to view this';
     else {
-        console.log(error);
+        //console.log(error);
         return unknownError;
     }
 }
@@ -308,5 +328,7 @@ module.exports = {
     createDonation,
     validateDonationAmount,
     invoicePaid,
+    calculateVotes,
+    sortByVote,
     parseError
 };

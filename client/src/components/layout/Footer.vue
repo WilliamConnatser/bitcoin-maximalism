@@ -17,7 +17,7 @@
         </li>
         <br/>
         <li>&copy; YOLO International LLC 2019</li>
-        </br>
+        <br/>
         <li>
             <router-link to="/terms">Terms</router-link>
         </li>

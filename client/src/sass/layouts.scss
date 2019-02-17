@@ -40,7 +40,7 @@
 
     .container {
         max-width: 100rem;
-        margin: 2rem auto;
+        margin: 1rem auto;
     }
 }
 
@@ -65,4 +65,12 @@
 
 .medium-margin {
     margin: 2.5rem;
+}
+
+.medium-margin-vertical {
+    margin: 2.5rem 0;
+}
+
+.medium-margin-horizontal {
+    margin: 0 2.5rem;
 }

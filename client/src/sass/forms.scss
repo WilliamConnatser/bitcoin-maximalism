@@ -91,6 +91,18 @@ button {
     max-width: 20rem;
     margin: 0rem;
     height: 3rem;
+
+    &:enabled {
+        animation: shake 0.25s cubic-bezier(.36,.07,.19,.97) both;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        perspective: 100rem;
+    }
+
+    &:hover {
+        background-color: $color-white;
+        color: $color-green;
+    }
 }
 
 .large-button {
@@ -102,4 +114,8 @@ button {
 .selected-button {
     background-color: $color-white;
     color: $color-green;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
