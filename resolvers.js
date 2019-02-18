@@ -683,7 +683,7 @@ module.exports = {
 
                 return processedUsers.sort((a, b) => {
                     return b.referralInfluence - a.referralInfluence;
-                });
+                }).slice(0, limit);
 
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these users'));
