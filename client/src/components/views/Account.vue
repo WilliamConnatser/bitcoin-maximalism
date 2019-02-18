@@ -2,11 +2,15 @@
     <main class="container normal-text">
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
-            <section class="medium-margin-vertical">
+            <section>
                 <div>
                     <h1 class="heading">account panel</h1>
-                    <router-link to="/submit-donation"><button>Add Influence</button></router-link>
-                    <button @click="signoutUser">Signout</button>
+                    <a class="cursor-pointer">
+                        <router-link to="/submit-donation"><button>Add Influence</button></router-link>
+                    </a>
+                    <a class="cursor-pointer">
+                        <button @click="signoutUser">Signout</button>
+                    </a>
                 </div>
                 <div>
                     Influence: {{currentUser.accruedDonations | formatBitcoinAmount}}
@@ -20,9 +24,9 @@
 
             <div class="medium-margin-vertical">
             <h2>Account History</h2>
-            <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')" :style="{ cursor: 'pointer'}">Donations</button>
-            <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')" :style="{ cursor: 'pointer'}">Opinions</button>
-            <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')" :style="{ cursor: 'pointer'}">Votes</button>
+            <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')">Donations</button>
+            <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')">Opinions</button>
+            <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')">Votes</button>
             </div>
             <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
@@ -203,8 +207,8 @@
                 this.historyTab = tabName;
             },
             tabButtonStyle(tabName) {
-                if (tabName === this.historyTab) return "small-button selected-button";
-                else return "small-button";
+                if (tabName === this.historyTab) return "small-button selected-button cursor-pointer";
+                else return "small-button cursor-pointer";
             },
             calculateVotes(voteArray) {
                 var cumulativeVote = 0;

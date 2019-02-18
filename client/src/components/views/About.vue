@@ -26,11 +26,13 @@
             objective, but the human did give a good amount of effort in order to remain impartial.
         </p>
 
-        <h2 class="heading divider">about bitcoinmaximalism.com</h2>
+        <br class="large-margin-vertical" />
+        <br class="large-margin-vertical" />
+        <h1 class="heading">about us</h1>
 
         <div class="medium-margin">
             <h2>
-                what?
+                what
             </h2>
             BitcoinMaximalism.com is a highly-specific social media platform based solely on the nuance surrounding the
             <strong>Bitcoin Maximalism</strong> and
@@ -43,7 +45,7 @@
 
         <div class="medium-margin">
             <h2>
-                why?
+                why
             </h2>
             Most social media platforms where such discussions are taking place are unfortunately filled with
             bots, sockpuppets, spam, and other low-value content. BitcoinMaximalism.com is an attempt to filter
@@ -54,7 +56,7 @@
 
         <div class="medium-margin">
             <h2>
-                how?
+                how
             </h2>
             After registering for an account and verifying your email, you may donate Bitcoins by accessing your
             account panel. Once the Bitcoin transaction has been confirmed, a proportional amount of influence
@@ -64,15 +66,14 @@
 
         <div class="medium-margin">
             <h2>
-                when?
+                when
             </h2>
             Now! Feel free to take the site for a test drive! Please keep in mind this service is in open beta, so
-            please let us know if you come accross any issues. All donations received during our Open Beta will be
+            please let us know if you come accross any issues. All donations received during our open beta will be
             given a <strong>25% influence bonus</strong>. Refer your friends and receive a <strong>10%
                 influence bonus</strong> that's permanently proportional to each of their donations!
         </div>
 
-        <h2 class="heading">open beta:</h2>
         <div class="medium-margin">
             <a href="https://github.com/WilliamConnatser/bitcoin-maximalism-v2" target="_blank" rel="noopener">
                 <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'github-square' }" class="extra-large-social-icons fancy-link" />
