@@ -245,7 +245,7 @@
                 </h2>
 
                 <ul class="list ordered-list">
-                    <li v-for="user in mostReferralInfluence" :key="user._id">
+                    <li v-for="user in mostReferralInfluence.slice(0,5)" :key="user._id">
                         {{user.username}} - {{user.referralInfluence | formatBitcoinAmount}}
                     </li>
                 </ul>

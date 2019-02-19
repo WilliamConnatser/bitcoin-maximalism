@@ -1,9 +1,24 @@
 <template>
-    <div >
-        <a class="fancy-link list-action-toolbar cursor-pointer">
-            <strong v-if="this.viewOpinions !== null" @click="cancel('viewOpinions')" class="action-count extra-small-text">X</strong>
-            <strong v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="action-count extra-small-text">{{docIDSpecificOpinionCount}}</strong>
-            <font-awesome-icon icon="comment" title="View Opinions" class="action-icon" />
+    <div>
+        <a v-if="this.viewOpinions !== null" @click="cancel('viewOpinions')" class="cursor-pointer">
+            <div class="list-action-group"
+                title="Hide Opinions">
+                Opinions
+                <div class="fancy-link list-action-group-icon">
+                    <strong class="action-count extra-small-text">X</strong>
+                    <font-awesome-icon icon="comment" title="View Opinions" class="action-icon" />
+                </div>
+            </div>
+        </a>
+        <a v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="cursor-pointer">
+            <div class="list-action-group"
+                title="Show Opinions">
+                Opinions
+                <div class="fancy-link list-action-group-icon">
+                    <strong class="action-count extra-small-text">{{docIDSpecificOpinionCount}}</strong>
+                    <font-awesome-icon icon="comment" title="View Opinions" class="action-icon" />
+                </div>
+            </div>
         </a>
 
         <!--
@@ -16,8 +31,10 @@
             -->
 
         <div v-if="this.viewOpinions !== null">
-            <a><button v-if="this.submitOpinion === null" @click="show('submitOpinion')" class="cursor-pointer">Submit Opinion</button></a>
-            <a><button v-if="this.submitOpinion !== null" @click="cancel('submitOpinion')" class="cursor-pointer">View Opinions</button></a>
+            <a><button v-if="this.submitOpinion === null" @click="show('submitOpinion')" class="cursor-pointer">Submit
+                    Opinion</button></a>
+            <a><button v-if="this.submitOpinion !== null" @click="cancel('submitOpinion')" class="cursor-pointer">View
+                    Opinions</button></a>
 
             <ViewOpinions v-if="this.submitOpinion === null" :arrayItemProp="arrayItemProp" />
             <SubmitOpinions v-if="this.submitOpinion !== null" :arrayItemProp="arrayItemProp" />

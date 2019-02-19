@@ -48,32 +48,34 @@
         }
     }
 
-    &-action-toolbar {
-        display: inline-block;
-    
+    &-action-group {
+
         &:hover {
             transform: scale(1.2, 1.2);
-    
+            
             &::after {
-                transform: scaleX(1.5) scaleY(1.7);
-                opacity: 0;
+                transform: scaleX(1) scaleY(1);
             }
         }
-    
+
         &:active {
-            transform: rotate(20deg);
+            transform: rotate(5deg);
         }
-    
-        .action-icon {
-            font-size: 3rem;
-            font-weight: 400;
-            margin-bottom: 1rem;
-        }
-    
-        .action-count {
-            color: $color-green;
-            display: block;
-            transform: translateY(25px);
+
+        &-icon {
+            display: inline-block;
+        
+            .action-icon {
+                font-size: 3rem;
+                font-weight: 400;
+                margin-bottom: 1rem;
+            }
+        
+            .action-count {
+                color: $color-green;
+                display: block;
+                transform: translateY(25px);
+            }
         }
     }
 }
