@@ -36,7 +36,6 @@
 </template>
 
 <script>
-    import gql from 'graphql-tag';
     import ToolbarVotes from './ToolbarVotes';
     import ToolbarActions from './ToolbarActions';
 

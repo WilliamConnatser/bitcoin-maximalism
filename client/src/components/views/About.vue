@@ -26,10 +26,6 @@
             objective, but the human did give a good amount of effort in order to remain impartial.
         </p>
 
-        <br class="large-margin-vertical" />
-        <br class="large-margin-vertical" />
-        <h1 class="heading">about us</h1>
-
         <div class="medium-margin">
             <h2>
                 what

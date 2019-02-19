@@ -14,7 +14,7 @@ import Privacy from "./components/views/Privacy.vue";
 import PageNotFound from "./components/views/PageNotFound.vue";
 import DonationStatus from "./components/views/DonationStatus.vue";
 import SubmitDonation from "./components/views/SubmitDonation.vue";
-import Maintenance from "./components/views/Maintenance.vue";
+//import Maintenance from "./components/views/Maintenance.vue";
 
 Vue.use(Router);
 

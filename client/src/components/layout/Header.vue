@@ -32,7 +32,7 @@
       </div>
 
       <li v-if="showSocial" class="social-dropdown">
-        
+        <a class="cursor-pointer">
           <SocialIcons :currentUser="currentUser" />
         </a>
       </li>

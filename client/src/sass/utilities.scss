@@ -38,6 +38,10 @@
             animation: shake .5s;
             transform: scaleX(1.5) scaleY(1.7);
         }
+
+        .already-voted {
+            color: $color-dark-green;
+        }
     
         .amount-donated {
             font-size: 2rem;

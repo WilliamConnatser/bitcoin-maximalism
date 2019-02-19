@@ -1,19 +1,16 @@
 <template>
     <div>
         <div class="list-vote-toolbar">
-            <a class="icon fancy-link cursor-pointer" @click='submitVote(true)' title="Upvote">
-                <font-awesome-icon icon="angle-up" class="vote-icon"/>
+            <a :class="voteIconClass(true)" @click='submitVote(true)' title="Upvote">
+                <font-awesome-icon icon="angle-up" class="vote-icon" />
             </a>
             <span class="amount-donated">
-                <span v-if="calculateVotes(arrayItemProp.votes)>0">+ {{calculateVotes(arrayItemProp.votes) |
-                    formatBitcoinAmount}}</span>
-                <span v-else-if="calculateVotes(arrayItemProp.votes)<0">- {{calculateVotes(arrayItemProp.votes)*-1 |
-                    formatBitcoinAmount}}</span>
-                <span v-else-if="calculateVotes(arrayItemProp.votes)===0">{{calculateVotes(arrayItemProp.votes)*-1 |
-                    formatBitcoinAmount}}</span>
+                <span v-if="calculateVotes>0">+ {{calculateVotes | formatBitcoinAmount}}</span>
+                <span v-else-if="calculateVotes<0">- {{calculateVotes*-1 | formatBitcoinAmount}}</span>
+                <span v-else-if="calculateVotes===0">{{calculateVotes*-1 | formatBitcoinAmount}}</span>
             </span>
-            <a class="icon fancy-link cursor-pointer" @click='submitVote(false)' title="Downvote">
-                <font-awesome-icon icon="angle-down" class="vote-icon"/>
+            <a :class="voteIconClass(false)" @click='submitVote(false)' title="Downvote">
+                <font-awesome-icon icon="angle-down" class="vote-icon" />
             </a>
         </div>
     </div>
@@ -39,6 +36,14 @@
             },
             metaSlug() {
                 return this.$route.params.metaSlug;
+            },
+            calculateVotes() {
+                var cumulativeVote = 0;
+                this.arrayItemProp.votes.forEach(vote => {
+                    if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
+                    else cumulativeVote -= vote.createdBy.accruedDonations;
+                });
+                return cumulativeVote;
             }
         },
         methods: {
@@ -75,7 +80,7 @@
                                 this.$parent.$emit('resources-changed');
                             } else if (this.arrayItemProp.__typename === 'BulletPoint') {
                                 this.$parent.$emit('bulletpoints-changed');
-                            }                
+                            }
                         } else {
                             if (this.arrayItemProp.__typename === 'Rhetoric') {
                                 this.$parent.$emit('update-tos-query');
@@ -93,13 +98,22 @@
                     });
                 }
             },
-            calculateVotes(voteArray) {
-                var cumulativeVote = 0;
-                voteArray.forEach(vote => {
-                    if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
-                    else cumulativeVote -= vote.createdBy.accruedDonations;
-                });
-                return cumulativeVote;
+            voteIconClass(upVote) {
+                if (this.currentUser) {
+
+                    let match = this.arrayItemProp.votes.find(vote => {
+                        return (vote.createdBy._id === this.currentUser._id && vote.upVote === upVote)
+                    });
+
+                    if(match) {
+                        return "icon already-voted cursor-pointer";
+                    } else {
+                        return "icon fancy-link cursor-pointer";
+                    }
+
+                } else {
+                    return "icon fancy-link cursor-pointer";
+                }
             }
         },
         apollo: {

@@ -33,5 +33,5 @@ Vue.filter('stringifySlug', function (value) {
 });
 
 Vue.filter('formatBitcoinAmount', function (value) {
-    return value.toFixed(8);
+    return Math.round(value*100000000);
 });
