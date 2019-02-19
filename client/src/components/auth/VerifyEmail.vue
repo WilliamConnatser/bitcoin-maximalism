@@ -1,5 +1,5 @@
 <template>
-    <div class="normal-text">
+    <div >
         <h1>Verify Email</h1>
 
         <div v-if="!success && $apollo.loading">

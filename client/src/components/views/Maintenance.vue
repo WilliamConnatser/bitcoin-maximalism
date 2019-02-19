@@ -1,5 +1,5 @@
 <template>
-    <div class="container normal-text">
+    <div class="container ">
         <font-awesome-icon :icon="{ prefix: 'fas', iconName: 'exclamation-circle' }" class="extra-large-social-icons fancy-link" />
         <h1 class="heading">
             BRB Undergoing Maintenance

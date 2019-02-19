@@ -1,5 +1,5 @@
 <template>
-    <main class="container normal-text">
+    <main class="container ">
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
             <section>

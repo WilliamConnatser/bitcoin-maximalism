@@ -4,12 +4,12 @@
             <section>
                 <ToolbarVotes :arrayItemProp="arrayItem" />
 
-                <span v-if="arrayItem.__typename == 'BulletPoint'" class="normal-text">{{arrayItem.content}}</span>
-                <a v-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link" class="fancy-link normal-text"><span
+                <span v-if="arrayItem.__typename == 'BulletPoint'" >{{arrayItem.content}}</span>
+                <a v-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link" class="fancy-link "><span
                         class="media-type">{
                         {{arrayItem.media}} } </span>{{arrayItem.title}}</a>
                 <router-link v-if="arrayItem.__typename == 'Rhetoric'" :to="urlGenerator(arrayItem.metaSlug, arrayItem.slug)"
-                    class="fancy-link normal-text">{{arrayItem.title}}</router-link>
+                    class="fancy-link ">{{arrayItem.title}}</router-link>
 
                 <ToolbarActions :arrayItemProp="arrayItem" />
             </section>

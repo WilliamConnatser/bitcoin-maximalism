@@ -1,5 +1,5 @@
 <template>
-    <div class="container normal-text">
+    <div class="container ">
         <h1 class="heading">
             bitcoin maximalism
         </h1>

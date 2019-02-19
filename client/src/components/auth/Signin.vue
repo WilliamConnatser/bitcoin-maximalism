@@ -1,5 +1,5 @@
 <template>
-    <div class="normal-text">
+    <div >
         <h1>Sign In</h1>
         <form @submit.prevent="signinUser">
             <div class="medium-margin">

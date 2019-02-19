@@ -1,5 +1,5 @@
 <template>
-    <div class="normal-text">
+    <div >
         <a class="cursor-pointer">
             <button @click="toggleSort('votes')" class="small-button">
                 Votes

@@ -1,5 +1,5 @@
 <template>
-    <div class="normal-text">
+    <div >
 
         <ul v-if="singleDocument && singleDocument.__typename === 'Opinion'">
             <li class="opinion">
@@ -22,12 +22,12 @@
             <li class="list">
                 <ToolbarVotes :arrayItemProp="singleDocument" />
 
-                <span v-if="singleDocument.__typename == 'BulletPoint'" class="normal-text">{{singleDocument.content}}</span>
-                <a v-if="singleDocument.__typename == 'Resource'" :href="singleDocument.link" class="fancy-link normal-text"><span
+                <span v-if="singleDocument.__typename == 'BulletPoint'" >{{singleDocument.content}}</span>
+                <a v-if="singleDocument.__typename == 'Resource'" :href="singleDocument.link" class="fancy-link "><span
                         class="media-type">{
                         {{singleDocument.media}} } </span>{{singleDocument.title}}</a>
                 <router-link v-if="singleDocument.__typename == 'Rhetoric'" :to="urlGenerator(singleDocument.metaSlug, singleDocument.slug)"
-                    class="fancy-link normal-text">{{singleDocument.title}}</router-link>
+                    class="fancy-link ">{{singleDocument.title}}</router-link>
 
                 <ToolbarActions :arrayItemProp="singleDocument"/>
             </li>

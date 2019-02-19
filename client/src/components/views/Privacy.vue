@@ -1,6 +1,6 @@
 <template>
 
-    <div class="normal-text">
+    <div >
         <h1>Privacy Policy</h1>
 
         Protecting your private information is our priority. This Statement of Privacy applies to

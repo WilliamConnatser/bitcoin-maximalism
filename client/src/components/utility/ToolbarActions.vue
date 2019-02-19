@@ -1,5 +1,5 @@
 <template>
-    <div class="normal-text">
+    <div >
         <a class="fancy-link list-action-toolbar cursor-pointer">
             <strong v-if="this.viewOpinions !== null" @click="cancel('viewOpinions')" class="action-count extra-small-text">X</strong>
             <strong v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="action-count extra-small-text">{{docIDSpecificOpinionCount}}</strong>

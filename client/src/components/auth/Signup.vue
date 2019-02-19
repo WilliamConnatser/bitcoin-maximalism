@@ -1,5 +1,5 @@
 <template>
-    <div class="normal-text">
+    <div >
         <h1>Sign Up</h1>
         <form v-if="!success" @submit.prevent="signupUser">
             <div class="medium-margin">

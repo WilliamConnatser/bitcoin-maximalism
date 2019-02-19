@@ -13,7 +13,7 @@
 
       <div class="right-nav">
         <li class="inline-nav">
-          <router-link to="/account" class="fancy-link normal-text">
+          <router-link to="/account" class="fancy-link ">
             <strong v-if="currentUser">Account</strong>
             <strong v-else>Log In</strong>
           </router-link>

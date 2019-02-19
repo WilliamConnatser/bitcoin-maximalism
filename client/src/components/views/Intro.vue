@@ -1,5 +1,5 @@
 <template>
-  <main class="container normal-text">
+  <main class="container ">
     
   </main>
 </template>

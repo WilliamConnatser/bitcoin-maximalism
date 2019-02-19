@@ -1,6 +1,6 @@
 <template>
     <div>
-        <form v-if="!submitted" @submit.prevent="submitOpinion()" class="normal-text">
+        <form v-if="!submitted" @submit.prevent="submitOpinion()" >
             <div class="medium-margin">
                 <label>Your Opinion</label>
                 <textarea v-model="opinion" maxlength=280></textarea>

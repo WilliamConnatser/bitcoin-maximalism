@@ -1,5 +1,5 @@
 <template>
-  <section class="normal-text container">
+  <section class=" container">
     <h1 class="heading">
       <span v-if="metaSlug">{{metaSlug}}</span>
       <span v-else>arguments</span>

@@ -1,5 +1,5 @@
 <template>
-    <section class="normal-text">
+    <section >
         <h1>Terms and Conditions</h1>
 
         <h2>Agreement between User and www.BitcoinMaximalism.com</h2>

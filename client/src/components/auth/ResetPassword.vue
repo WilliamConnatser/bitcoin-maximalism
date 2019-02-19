@@ -1,5 +1,5 @@
 <template>
-    <div class="normal-text">
+    <div >
         <h1>Reset Password</h1>
 
         <form v-if="!reset" @submit.prevent="startPasswordReset">

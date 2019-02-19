@@ -1,5 +1,5 @@
 <template>
-    <div class="normal-text">
+    <div >
         <h1>Reset Pasword</h1>
 
         <div v-if="!validated && $apollo.loading">
