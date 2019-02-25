@@ -28,7 +28,7 @@
                 <font-awesome-icon v-if="this.viewEdits === null" icon="pen-square" title="View Edits" class="action-icon" />
                 <font-awesome-icon v-else icon="square" title="View Edits" class="action-icon" />
             </div>
-            -->
+        -->
 
         <div v-if="this.viewOpinions !== null">
             <a><button v-if="this.submitOpinion === null" @click="show('submitOpinion')" class="cursor-pointer">Submit
@@ -48,7 +48,7 @@
                 <ViewEdits v-if="this.submitEdit === null" :arrayItemProp="arrayItemProp" :metaSlug="metaSlug" />
                 <SubmitEdits v-if="this.submitEdit !== null" :arrayItemProp="arrayItemProp" :metaSlug="metaSlug" />
             </div>
-            -->
+        -->
     </div>
 </template>
 

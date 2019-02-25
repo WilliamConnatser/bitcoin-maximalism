@@ -1,11 +1,12 @@
 <template>
     <div>
-        <form v-if="!submitted" @submit.prevent="submitOpinion()" >
+        <form v-if="!submitted" @submit.prevent="submitOpinion()">
             <div class="medium-margin">
                 <label>Your Opinion</label>
                 <textarea v-model="opinion" maxlength=280></textarea>
                 <div class="extra-small-text">
-                    No hyperlinks, foul language or namecalling is allowed. Please remain respectful of others, on topic,
+                    No hyperlinks, foul language or namecalling is allowed. Please remain respectful of others, on
+                    topic,
                     and intellectually honest.
                 </div>
                 <button type="submit">Agree &amp; Submit</button>
@@ -65,7 +66,7 @@
                                 this.$parent.$emit('resources-changed');
                             } else if (this.arrayItemProp.__typename === 'BulletPoint') {
                                 this.$parent.$emit('bulletpoints-changed');
-                            }                
+                            }
                         } else {
                             if (this.arrayItemProp.__typename === 'Rhetoric') {
                                 this.$parent.$emit('update-tos-query');
@@ -81,10 +82,22 @@
                     });
                 }
             },
-            validOpinion(opinion){
-                if(opinion.length>280) {
+            validOpinion(opinion) {
+                if (opinion.length > 280) {
                     this.opinion.limit(280);
-                    this.$toasted.global.donation_amount();
+                    this.$toasted.show('Opinions must be 280 characters or less', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                     return false;
                 } else {
                     return true;

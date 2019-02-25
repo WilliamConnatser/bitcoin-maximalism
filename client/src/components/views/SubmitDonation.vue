@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submitDonation()" >
+    <form @submit.prevent="submitDonation()" class="container">
         <h1 class="heading">submit donation</h1>
         <label>Donation Amount (BTC)</label>
         <input type="text" v-model="donationAmount">
@@ -21,7 +21,7 @@
         </div>
         <div class="medium-margin">
             <button type="submit">Submit Donation</button>
-        </div>        
+        </div>
     </form>
 </template>
 
@@ -77,25 +77,85 @@
             validAmount(value) {
                 if (isNaN(Number(value))) {
                     this.donationAmount = this.donationAmount.replace(/\D/g, '');
-                    this.$toasted.global.invalid_donation_numbers_only();
+                    this.$toasted.show('Donations may only contain numbers', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                     return false;
                 } else if (value < 0) {
                     this.donationAmount *= -1;
-                    this.$toasted.global.invalid_donation_negative();
+                    this.$toasted.show('Donations amounts may only be positive', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                     return false;
                 } else if (Number(value) === 0) {
-                    this.$toasted.global.invalid_donation_nonzero();
+                    this.$toasted.show('Donations must be a non-zero number', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                     return false;
                 }
                 if (value * this.cryptoValue < 1) {
-                    this.$toasted.global.invalid_donation_minimum();
+                    this.$toasted.show('Donations must be more than $1', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                     return false;
                 } else if (value.indexOf('.') < 0) {
                     //If no decimals, then no need to check for max decimals
                     return true;
                 } else if (value.toString().split(".")[1].length > 8) {
                     this.donationAmount = Number(this.donationAmount).toFixed(8);
-                    this.$toasted.global.invalid_donation_decimal();
+                    this.$toasted.show('Donations may only contain a maximum of 8 decimal places', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                     return false;
                 } else {
                     return true;

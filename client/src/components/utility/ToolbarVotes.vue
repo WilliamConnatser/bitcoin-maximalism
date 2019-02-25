@@ -55,7 +55,23 @@
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
                 } else if (!this.currentUser.accruedDonations === 0) {
-                    this.$toasted.global.no_influence();
+                    this.$toasted.show(
+                        'You don\'t have any influence. Add influence in your Account Panel by making a donation', {
+                            duration: 5000,
+                            position: 'bottom-center',
+                            fullWidth: true,
+                            fitToScreen: true,
+                            singleton: true,
+                            action: [{
+                                text: 'Account Panel',
+                                push: '/account'
+                            }, {
+                                text: 'Close',
+                                onClick: (e, toastObject) => {
+                                    toastObject.goAway(0);
+                                }
+                            }]
+                        });
                 } else {
                     //GraphQL Mutation
                     this.$apollo.mutate({
@@ -92,7 +108,19 @@
 
                         }
 
-                        this.$toasted.global.vote_success();
+                        this.$toasted.show('Vote submitted successfully', {
+                            duration: 5000,
+                            position: 'bottom-center',
+                            fullWidth: true,
+                            fitToScreen: true,
+                            singleton: true,
+                            action: [{
+                                text: 'Close',
+                                onClick: (e, toastObject) => {
+                                    toastObject.goAway(0);
+                                }
+                            }]
+                        });
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
@@ -105,7 +133,7 @@
                         return (vote.createdBy._id === this.currentUser._id && vote.upVote === upVote)
                     });
 
-                    if(match) {
+                    if (match) {
                         return "icon already-voted cursor-pointer";
                     } else {
                         return "icon fancy-link cursor-pointer";

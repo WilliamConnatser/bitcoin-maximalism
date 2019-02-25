@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <h1>Sign Up</h1>
         <form v-if="!success" @submit.prevent="signupUser">
             <div class="medium-margin">
@@ -59,14 +59,62 @@
                 var query = {};
                 var variables = {};
                 if (!this.checked) {
-                    this.$toasted.global.accept_tos();
+                    this.$toasted.show('You must accept the Terms of Service and Privacy Policy.', {
+                        duration: null,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                     return false;
                 } else if (this.username.trim() === "") {
-                    this.$toasted.global.username();
+                    this.$toasted.show('Enter a username', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                 } else if (this.email.trim() === "") {
-                    this.$toasted.global.email();
+                    this.$toasted.show('Enter an email', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                 } else if (this.password.trim() === "") {
-                    this.$toasted.global.password();
+                    this.$toasted.show('Enter a password', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                 } else if (localStorage.ref) {
                     query = gql `
                         mutation($username: String!, $email: String!, $password: String!, $ref: ID!) {

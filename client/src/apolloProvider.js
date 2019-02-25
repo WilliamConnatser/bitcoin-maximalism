@@ -20,7 +20,7 @@ export const defaultClient = new ApolloClient({
     //TODO: Set URI to  'http://localhost:3001/graphql' in development
     //Production URI: 'https://graphql.bitcoinmaximalism.com/graphql'
     //In production, use the URI returned after deploying the backend
-    uri:  'https://graphql.bitcoinmaximalism.com/graphql',
+    uri:  'http://localhost:3001/graphql',
     //Include Auth Token
     fetchOptions: {
         credentials: "include"

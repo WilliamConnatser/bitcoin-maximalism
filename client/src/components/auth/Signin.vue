@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <h1>Sign In</h1>
         <form @submit.prevent="signinUser">
             <div class="medium-margin">
@@ -65,8 +65,32 @@
                 }
             },
             validateForm() {
-                if (this.email.trim() === "") this.$toasted.global.email();
-                else if (this.password.trim() === "") this.$toasted.global.password();
+                if (this.email.trim() === "") this.$toasted.show('Enter an email', {
+                    duration: 5000,
+                    position: 'bottom-center',
+                    fullWidth: true,
+                    fitToScreen: true,
+                    singleton: true,
+                    action: [{
+                        text: 'Close',
+                        onClick: (e, toastObject) => {
+                            toastObject.goAway(0);
+                        }
+                    }]
+                });
+                else if (this.password.trim() === "") this.$toasted.show('Enter a password', {
+                    duration: 5000,
+                    position: 'bottom-center',
+                    fullWidth: true,
+                    fitToScreen: true,
+                    singleton: true,
+                    action: [{
+                        text: 'Close',
+                        onClick: (e, toastObject) => {
+                            toastObject.goAway(0);
+                        }
+                    }]
+                });
                 else return true;
             }
         },

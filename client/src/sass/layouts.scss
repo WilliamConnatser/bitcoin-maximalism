@@ -38,11 +38,11 @@
     min-height: $view-minimum-height;
     padding: $view-padding-vertical $view-padding-horizontal;
     font-size: 2rem;
+}
 
-    .container {
-        max-width: 100rem;
-        margin: 1rem auto;
-    }
+.container {
+    max-width: 100rem;
+    margin: 1rem auto;
 }
 
 #footer {
