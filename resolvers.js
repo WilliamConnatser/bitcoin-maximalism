@@ -87,6 +87,16 @@ module.exports = {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching this user'));
             }
         },
+        allUsernames: async (_, args, {
+            User
+        }) => {
+            try {
+                return await User.find({}, 'username');
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching all users'));
+            }
+        },
         cryptoValue: async (_, {
             ticker
         }, {

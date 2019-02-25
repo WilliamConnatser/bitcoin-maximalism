@@ -7,7 +7,6 @@ label {
 
 input {
     text-align: center;
-    display: inline-block;
     max-width: 15rem;
     width: 75%;
     height: 4rem;
@@ -23,16 +22,16 @@ input {
 }
 
 input#check {
-	position: absolute;
-	opacity: 0;
-	
-	&:checked + label svg path {
-		stroke-dashoffset: 0;
-	}
-	
-	&:focus + label {
-		transform: scale(1.03);
-	}
+    position: absolute;
+    opacity: 0;
+
+    &:checked+label svg path {
+        stroke-dashoffset: 0;
+    }
+
+    &:focus+label {
+        transform: scale(1.03);
+    }
 }
 
 .checkbox {
@@ -40,17 +39,19 @@ input#check {
         width: 4rem;
         height: 4rem;
     }
+
     input[type=checkbox] {
         display: none;
-        &:checked ~ .checkbox__icon {
+
+        &:checked~.checkbox__icon {
             /* styling for checked checkbox goes here */
         }
-        &:disabled ~ .checkbox__icon {
+
+        &:disabled~.checkbox__icon {
             /* styling for disabled checkbox goes here */
         }
     }
 }
-
 
 textarea {
     text-align: center;
@@ -59,6 +60,16 @@ textarea {
     width: 100%;
     height: 25rem;
     font-size: 2rem;
+    border: 0.1rem solid $color-white;
+    color: $color-white;
+    background-color: $color-green;
+}
+
+select {
+    max-width: 20rem;
+    width: 75%;
+    height: 4rem;
+    font-size: 1.5rem;
     border: 0.1rem solid $color-white;
     color: $color-white;
     background-color: $color-green;
@@ -94,7 +105,7 @@ button {
     height: 3rem;
 
     &:enabled {
-        animation: shake 0.25s cubic-bezier(.36,.07,.19,.97) both;
+        animation: shake 0.25s cubic-bezier(.36, .07, .19, .97) both;
         transform: translate3d(0, 0, 0);
         backface-visibility: hidden;
         perspective: 100rem;

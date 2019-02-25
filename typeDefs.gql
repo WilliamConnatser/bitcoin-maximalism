@@ -186,13 +186,19 @@ type MostReferrals {
     referralAmount: Float!
 }
 
+type Username {
+    _id: ID!
+    username: String!
+}
+
 type Query {
     currentUser: User
+    allUsernames: [Username!]!
 
     docIDSpecificDonation(_id: ID!): Donation
     docIDSpecificOpinions(_id: String!, onModel: String!, sortType: String!, sortDirection: String, index: Int!): [Opinion]
     docIDSpecificOpinionCount(onModel: String!, _id: ID!): Int
-    docIDSpecificVotes(onModel: String!, _id: ID!): [Vote]
+    docIDSpecificVotes(onModel: String!, _id: ID!): [Vote!]!
 
     allRhetoric(metaSlug: String): [Rhetoric]
     argumentSpecificRhetoric(metaSlug: String!, slug: String!): Rhetoric
@@ -200,15 +206,15 @@ type Query {
 
     cryptoValue(ticker: String!): Float
 
-    topArguments(onModel: String!, descending: Boolean!, limit: Int!): [Rhetoric] #Most/Least Upvoted/Opinionated Rhetoric - onModel = Opinion or Vote
-    topBulletPoints(onModel: String!, descending: Boolean!, limit: Int!): [BulletPoint] #Most/Least Upvoted/Opinionated BulletPoint - onModel = Opinion or Vote
-    topResources(onModel: String!, descending: Boolean!, limit: Int!): [Resource] #Most/Least Upvoted/Opinionated Resource - onModel = Opinion or Vote
+    topArguments(onModel: String!, descending: Boolean!, limit: Int!): [Rhetoric!]! #Most/Least Upvoted/Opinionated Rhetoric - onModel = Opinion or Vote
+    topBulletPoints(onModel: String!, descending: Boolean!, limit: Int!): [BulletPoint!]! #Most/Least Upvoted/Opinionated BulletPoint - onModel = Opinion or Vote
+    topResources(onModel: String!, descending: Boolean!, limit: Int!): [Resource!]! #Most/Least Upvoted/Opinionated Resource - onModel = Opinion or Vote
     topOpinions(descending: Boolean!, limit: Int!): [Opinion] #Most/Least Upvoted Opinions
 
-    recentOpinions(limit: Int!): [Opinion]
-    mostInfluentialUsers(limit: Int!): [User]
-    mostReferrals(limit: Int!): [MostReferrals]
-    mostReferralInfluence(limit: Int!): [ReferralInfluence]
+    recentOpinions(limit: Int!): [Opinion!]!
+    mostInfluentialUsers(limit: Int!): [User!]!
+    mostReferrals(limit: Int!): [MostReferrals!]!
+    mostReferralInfluence(limit: Int!): [ReferralInfluence!]!
 }
 
 type Mutation {
