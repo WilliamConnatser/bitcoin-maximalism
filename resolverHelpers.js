@@ -59,7 +59,7 @@ const sendRegistrationEmail = user => {
         const emailValidationToken = createToken(user, process.env.SECRET, "1d");
         emailObject.to = user.email;
         emailObject.text += `www.BitcoinMaximalism.com/verify-email/${emailValidationToken}`;
-        emailObject.html += `<a href="www.BitcoinMaximalism.com/verify-email/${emailValidationToken}">Verify Email</a>`;
+        emailObject.html += `<a href="www.BitcoinMaximalism.com/verify-email/${emailValidationToken}">www.BitcoinMaximalism.com/verify-email/${emailValidationToken}</a>`;
         emailTransporter.sendMail(emailObject);
     } catch (err) {
         throw new ApolloError(parseError(err.message, 'An unkown error occurred while sending email verification'));
@@ -72,7 +72,7 @@ const sendPasswordResetEmail = user => {
         const emailValidationToken = createToken(user, process.env.SECRET, "1h");
         emailObject.to = user.email;
         emailObject.text += `www.BitcoinMaximalism.com/verify-password/${emailValidationToken}`;
-        emailObject.html += `<a href="www.BitcoinMaximalism.com/verify-password/${emailValidationToken}/">Verify Password</a>`;
+        emailObject.html += `<a href="www.BitcoinMaximalism.com/verify-password/${emailValidationToken}/">www.BitcoinMaximalism.com/verify-password/${emailValidationToken}</a>`;
         emailTransporter.sendMail(emailObject);
     } catch (err) {
         throw new ApolloError(parseError(err.message, 'An unkown error occurred while sending your password reset email'));
@@ -139,12 +139,14 @@ const invoicePaid = async (donation, applicableDocument) => {
     try {
         const updatedInvoice = await btcPayClient.get_invoice(donation.invoiceID);
         //If the invoice was paid. Allow 5% leeway for user error having to do with fees
-        if (Number(updatedInvoice.btcPaid) > donation.preBonusAmount * 0.95) {
+        //TODO: Change to > in production
+        if (Number(updatedInvoice.btcPaid) < donation.preBonusAmount * 0.95) {
             donation.paid = true;
 
             //If the document is a User document, then it's an accruing donation towards influence weight
             if (applicableDocument.username) {
-                donation.preBonusAmount = Number(updatedInvoice.btcPaid);
+                //Todo change to = Number(updatedInvoice.btcPaid);
+                donation.preBonusAmount = donation.preBonusAmount
                 donation.amount = donation.preBonusAmount * (donation.bonusPercentage + 1);
                 adjustDonationInfluence(await donation.save());
 

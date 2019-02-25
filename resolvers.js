@@ -736,7 +736,7 @@ module.exports = {
             User
         }) => {
             try {
-                const userObjectFromToken = {}
+                let userObjectFromToken = {};
                 //Validation
                 await jwt.verify(token, process.env.SECRET, function (err, userObject) {
                     if (err) throw new AuthenticationError('invalid-token');

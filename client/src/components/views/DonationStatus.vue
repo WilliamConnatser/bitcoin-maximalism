@@ -62,7 +62,7 @@
         },
         methods: {
             refetchCheckDonation() {
-                this.$apollo.queries.checkDonation.refetch();
+                if(this.$apollo.queries.checkDonation) this.$apollo.queries.checkDonation.refetch();
             }
         },
         computed: {
@@ -99,7 +99,7 @@
                     else return false
                 },
                 result({data}){
-                    if(data.checkDonation && !this.docIDSpecificDonation.paid) {
+                    if(data.checkDonation && this.docIDSpecificDonation && !this.docIDSpecificDonation.paid) {
                         this.$apollo.queries.docIDSpecificDonation.refetch();
                     }
                 },
