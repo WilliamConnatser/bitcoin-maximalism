@@ -56,8 +56,8 @@
             },
             signupUser() {
 
-                var query = {};
-                var variables = {};
+                let query = {};
+                let variables = {};
                 if (!this.checked) {
                     this.$toasted.show('You must accept the Terms of Service and Privacy Policy.', {
                         duration: null,

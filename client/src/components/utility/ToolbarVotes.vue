@@ -38,7 +38,7 @@
                 return this.$route.params.metaSlug;
             },
             calculateVotes() {
-                var cumulativeVote = 0;
+                let cumulativeVote = 0;
                 this.arrayItemProp.votes.forEach(vote => {
                     if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
                     else cumulativeVote -= vote.createdBy.accruedDonations;

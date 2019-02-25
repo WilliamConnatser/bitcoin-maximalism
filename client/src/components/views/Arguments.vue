@@ -33,7 +33,7 @@
     computed: {
       concatAndSort: function () {
         if (this.argumentSpecificRhetoric.bulletPoints && this.argumentSpecificRhetoric.resources) {
-          var concatArray = this.argumentSpecificRhetoric.bulletPoints.concat(this.argumentSpecificRhetoric.resources);
+          let concatArray = this.argumentSpecificRhetoric.bulletPoints.concat(this.argumentSpecificRhetoric.resources);
           return this.sortArrayByVote(concatArray);
         } else {
           return []
@@ -48,7 +48,7 @@
     },
     methods: {
       calculateVotes(voteArray) {
-        var cumulativeVote = 0;
+        let cumulativeVote = 0;
         voteArray.forEach(vote => {
           if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
           else cumulativeVote -= vote.createdBy.accruedDonations;

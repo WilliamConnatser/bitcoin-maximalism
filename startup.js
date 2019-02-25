@@ -30,7 +30,7 @@ const startup = async models => {
                     slug: bulletPoint.slug,
                     metaSlug: bulletPoint.metaSlug
                 }, async (err, rhetoric) => {
-                    var arrayToCompare = rhetoric.bulletPoints.map(function (v) {
+                    let arrayToCompare = rhetoric.bulletPoints.map(function (v) {
                         return v.toString();
                     });
                     if (bulletPoint !== undefined) {
@@ -53,7 +53,7 @@ const startup = async models => {
                     slug: resource.slug,
                     metaSlug: resource.metaSlug
                 }, async (err, rhetoric) => {
-                    var arrayToCompare = rhetoric.resources.map(function (v) {
+                    const arrayToCompare = rhetoric.resources.map(function (v) {
                         return v.toString();
                     });
                     if (resource !== undefined) {
@@ -77,7 +77,7 @@ const startup = async models => {
                     metaSlug: resource.metaSlug
                 }, (err, rhetoric) => {
 
-                    var arrayToCompare = rhetoric.resources.map(function (v) {
+                    const arrayToCompare = rhetoric.resources.map(function (v) {
                         return v.toString();
                     });
                     if (resource !== undefined) {
@@ -102,7 +102,7 @@ const startup = async models => {
         btcPayClient.get_rates('BTC_USD', process.env.BTCPAY_STOREID)
             .then(async function (rates) {
 
-                var cryptoDoc = await models.Crypto.findOne({
+                const cryptoDoc = await models.Crypto.findOne({
                     ticker: 'BTC'
                 });
 
@@ -113,7 +113,7 @@ const startup = async models => {
 
                 } else {
 
-                    var id = require('mongodb').ObjectID();
+                    const id = require('mongodb').ObjectID();
                     const newCrypto = new models.Crypto({
                         _id: id,
                         ticker: 'BTC',

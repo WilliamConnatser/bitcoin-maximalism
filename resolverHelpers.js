@@ -53,9 +53,9 @@ const createToken = ({
     }
 };
 
-const sendRegistrationEmail = async user => {
+const sendRegistrationEmail = user => {
     try {
-        var emailObject = registrationEmail;
+        const emailObject = registrationEmail;
         const emailValidationToken = createToken(user, process.env.SECRET, "1d");
         emailObject.to = user.email;
         emailObject.text += `www.BitcoinMaximalism.com/verify-email/${emailValidationToken}`;
@@ -66,15 +66,13 @@ const sendRegistrationEmail = async user => {
     }
 }
 
-const sendPasswordResetEmail = async user => {
+const sendPasswordResetEmail = user => {
     try {
-        var emailObject = passwordResetEmail;
+        const emailObject = passwordResetEmail;
         const emailValidationToken = createToken(user, process.env.SECRET, "1h");
         emailObject.to = user.email;
         emailObject.text += `www.BitcoinMaximalism.com/verify-password/${emailValidationToken}`;
         emailObject.html += `<a href="www.BitcoinMaximalism.com/verify-password/${emailValidationToken}/">Verify Password</a>`;
-
-        console.log(emailObject)
         emailTransporter.sendMail(emailObject);
     } catch (err) {
         throw new ApolloError(parseError(err.message, 'An unkown error occurred while sending your password reset email'));
@@ -83,7 +81,7 @@ const sendPasswordResetEmail = async user => {
 
 const createInvoice = async (amount, currentUser) => {
     try {
-        var invoiceObject = {
+        const invoiceObject = {
             price: amount,
             currency: 'BTC',
             buyer: {
@@ -103,7 +101,7 @@ const createInvoice = async (amount, currentUser) => {
 const createDonation = async (amount, invoice, currentUser, applicableDocument) => {
 
     try {
-        var donationObject = {
+        const donationObject = {
             _id: require('mongodb').ObjectID(),
             invoiceID: invoice.id,
             invoiceURL: invoice.url,
@@ -172,7 +170,7 @@ const invoicePaid = async (donation, applicableDocument) => {
 
 const adjustUserInfluence = async user => {
     try {
-        var accruedDonations = 0;
+        let accruedDonations = 0;
 
         user.donations.forEach(donation => {
             if (donation.paid) {
@@ -266,7 +264,7 @@ const validateDonationAmount = (donationAmount, bitcoinValue) => {
 }
 
 const calculateVotes = voteArray => {
-    var cumulativeVote = 0;
+    let cumulativeVote = 0;
     voteArray.forEach(vote => {
         if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
         else cumulativeVote -= vote.createdBy.accruedDonations;

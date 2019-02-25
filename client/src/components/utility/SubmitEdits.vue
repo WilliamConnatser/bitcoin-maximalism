@@ -99,8 +99,8 @@
         },
         methods: {
             scrollToTop() {
-                var element = this.$refs.success;
-                var top = element.offsetTop;
+                let element = this.$refs.success;
+                let top = element.offsetTop;
                 window.scrollTo(0, top);
             },
             validAmount(value) {

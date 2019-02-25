@@ -176,33 +176,6 @@
                 if (accruing) return 'Influence';
                 else if (onModel === 'Certificate') return 'Certificate';
             },
-            validAmount(value) {
-                if (isNaN(Number(value))) {
-                    this.donationAmount = this.donationAmount.replace(/\D/g, '');
-                    this.$toasted.global.invalid_donation_numbers_only();
-                    return false;
-                } else if (value < 0) {
-                    this.donationAmount *= -1;
-                    this.$toasted.global.invalid_donation_negative();
-                    return false;
-                } else if (Number(value) === 0) {
-                    this.$toasted.global.invalid_donation_nonzero();
-                    return false;
-                }
-                if (value * this.cryptoValue < 1) {
-                    this.$toasted.global.invalid_donation_minimum();
-                    return false;
-                } else if (value.indexOf('.') < 0) {
-                    //If no decimals, then no need to check for max decimals
-                    return true;
-                } else if (value.toString().split(".")[1].length > 8) {
-                    this.donationAmount = Number(this.donationAmount).toFixed(8);
-                    this.$toasted.global.invalid_donation_decimal();
-                    return false;
-                } else {
-                    return true;
-                }
-            },
             toggleHistoryTab(tabName) {
                 this.historyTab = tabName;
             },
@@ -211,7 +184,7 @@
                 else return "small-button cursor-pointer";
             },
             calculateVotes(voteArray) {
-                var cumulativeVote = 0;
+                let cumulativeVote = 0;
                 voteArray.forEach(vote => {
                     if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
                     else cumulativeVote -= vote.createdBy.accruedDonations;

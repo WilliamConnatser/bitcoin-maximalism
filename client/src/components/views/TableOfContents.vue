@@ -53,7 +53,7 @@
         });
       },
       calculateVotes(voteArray) {
-        var cumulativeVote = 0;
+        let cumulativeVote = 0;
         voteArray.forEach(vote => {
           if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
           else cumulativeVote -= vote.createdBy.accruedDonations;

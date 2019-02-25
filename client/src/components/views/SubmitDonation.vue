@@ -50,7 +50,19 @@
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
                 } else if (!this.checked) {
-                    this.$toasted.global.accept_tos();
+                    this.$toasted.show('You must accept the Terms of Service and Privacy Policy.', {
+                        duration: null,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                 } else if (this.validAmount(this.donationAmount)) {
 
                     //GraphQL Mutation

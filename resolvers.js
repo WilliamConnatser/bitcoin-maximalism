@@ -163,7 +163,7 @@ module.exports = {
             try {
 
                 //Default query if no Meta Slug is provided
-                var queryObject = {
+                const queryObject = {
                     approved: true,
                     active: true
                 }
@@ -270,9 +270,11 @@ module.exports = {
                     }
                 }
 
+                let opinions = [];
+
                 if (sortType === 'dateCreated') {
 
-                    var opinions = await Opinion.find({
+                    opinions = await Opinion.find({
                             approved: true,
                             documentID: _id,
                             onModel
@@ -299,7 +301,7 @@ module.exports = {
                 } else if (sortType === 'votes') {
 
                     function calculateVotes(voteArray) {
-                        var cumulativeVote = 0;
+                        let cumulativeVote = 0;
                         voteArray.forEach(vote => {
                             if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
                             else cumulativeVote -= vote.createdBy.accruedDonations;
@@ -319,7 +321,7 @@ module.exports = {
                         });
                     }
 
-                    var opinions = await Opinion.find({
+                    opinions = await Opinion.find({
                             approved: true,
                             documentID: _id,
                             onModel
@@ -402,10 +404,8 @@ module.exports = {
                 if (onModel !== 'Opinion' && onModel !== 'Vote') throw new UserInputError('invalid-model');
                 if (limit < 1) throw new UserInputError('invalid-limit');
 
-                var rhetoric = [];
-
                 if (onModel === 'Opinion') {
-                    rhetoric = await Rhetoric.find({})
+                    let rhetoric = await Rhetoric.find({})
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -425,7 +425,7 @@ module.exports = {
                     }).slice(0, limit);
 
                 } else {
-                    rhetoric = await Rhetoric.find({})
+                    let rhetoric = await Rhetoric.find({})
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -454,10 +454,8 @@ module.exports = {
                 if (onModel !== 'Opinion' && onModel !== 'Vote') throw new UserInputError('invalid-model');
                 if (limit < 1) throw new UserInputError('invalid-limit');
 
-                var bulletPoints;
-
                 if (onModel === 'Opinion') {
-                    bulletPoints = await BulletPoint.find({})
+                    const bulletPoints = await BulletPoint.find({})
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -477,7 +475,7 @@ module.exports = {
                     }).slice(0, (limit));
 
                 } else {
-                    bulletPoints = await BulletPoint.find({})
+                    const bulletPoints = await BulletPoint.find({})
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -506,10 +504,8 @@ module.exports = {
                 if (onModel !== 'Opinion' && onModel !== 'Vote') throw new UserInputError('invalid-model');
                 if (limit < 1) throw new UserInputError('invalid-limit');
 
-                var resources;
-
                 if (onModel === 'Opinion') {
-                    resources = await Resource.find({})
+                    const resources = await Resource.find({})
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -529,7 +525,7 @@ module.exports = {
                     }).slice(0, (limit));
 
                 } else {
-                    resources = await Resource.find({})
+                    const resources = await Resource.find({})
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -556,9 +552,7 @@ module.exports = {
             try {
                 if (limit < 1) throw new UserInputError('invalid-limit');
 
-                var opinions = [];
-
-                opinions = await Opinion.find({})
+                const opinions = await Opinion.find({})
                     .populate({
                         path: 'votes',
                         model: 'Vote',
@@ -624,8 +618,7 @@ module.exports = {
                 if (limit < 1) throw new UserInputError('invalid-limit');
 
                 const users = await User.find({}, '_id username accruedDonations referrals');
-
-                var processedUsers = [];
+                const processedUsers = [];
 
                 users.forEach(user => {
                     processedUsers.push({
@@ -662,7 +655,7 @@ module.exports = {
                         }
                     });
 
-                var processedUsers = [];
+                const processedUsers = [];
 
                 users.forEach(user => {
                     user.referralInfluence = 0;
@@ -704,7 +697,6 @@ module.exports = {
                 }).slice(0, limit);
 
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these users'));
             }
         }
@@ -744,16 +736,16 @@ module.exports = {
             User
         }) => {
             try {
-                var userObjectFromToken = {}
+                const userObjectFromToken = {}
                 //Validation
-                const userObject = await jwt.verify(token, process.env.SECRET, function (err, userObject) {
+                await jwt.verify(token, process.env.SECRET, function (err, userObject) {
                     if (err) throw new AuthenticationError('invalid-token');
                     userObjectFromToken = userObject
                 });
                 if (userObjectFromToken.emailVerified) throw new UserInputError("already-verified");
 
                 //Update User document
-                var user = await User.findOne({
+                const user = await User.findOne({
                     username: userObjectFromToken.username
                 });
                 if (!user) throw new AuthenticationError('user-not-found');
@@ -825,7 +817,7 @@ module.exports = {
                 }
 
                 //Update User document
-                var user = await User.findOne({
+                const user = await User.findOne({
                     username: userObject.username
                 });
                 if (!user) throw new AuthenticationError('user-not-found');
@@ -876,7 +868,7 @@ module.exports = {
                 }
 
                 //Update User document
-                var user = await User.findOne({
+                let user = await User.findOne({
                     username: userObject.username
                 });
                 if (!user) throw new AuthenticationError('user-not-found');
@@ -916,7 +908,7 @@ module.exports = {
                 });
                 if (emailInUse) throw new UserInputError("email-taken");
 
-                var referredBy = null;
+                let referredBy = null;
                 if (ref) {
                     referredBy = await User.findOne({
                         _id: ref
@@ -925,7 +917,7 @@ module.exports = {
                 }
 
                 //Construct the user object to be inserted
-                var userObject = {
+                const userObject = {
                     username,
                     email,
                     password,
@@ -974,7 +966,7 @@ module.exports = {
 
 
                 //Create Invoice, Donation document, and Opinion document
-                var applicableDocument = {};
+                let applicableDocument = {};
                 (onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
                         _id: documentID
                     }): (onModel === 'Resource') ? applicableDocument = await Resource.findOne({
@@ -984,14 +976,14 @@ module.exports = {
                         _id: documentID
                     });
 
-                var userDocument = await User.findOne({
+                let userDocument = await User.findOne({
                     _id: currentUser._id
                 });
 
                 if (!applicableDocument) throw new UserInputError('invalid-id');
                 if (!userDocument) throw new UserInputError('user-not-found');
 
-                var opinionObject = {
+                let opinionObject = {
                     _id: require('mongodb').ObjectID(),
                     dateCreated: new Date(),
                     createdBy: currentUser._id,
@@ -1040,7 +1032,7 @@ module.exports = {
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
 
                 //Get document being voted on & the user document
-                var applicableDocument = {};
+                let applicableDocument = {};
                 (onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
                     _id: documentID
                 }): (onModel === 'Resource') ? applicableDocument = await Resource.findOne({
@@ -1051,7 +1043,7 @@ module.exports = {
                     _id: documentID
                 });
 
-                var userDocument = await User.findOne({
+                const userDocument = await User.findOne({
                     _id: currentUser._id
                 });
 
@@ -1059,7 +1051,7 @@ module.exports = {
                 if (!userDocument) throw new UserInputError('user-not-found');
 
                 //See if the user has already voted for this document.
-                var oldVote = await Vote.findOne({
+                const oldVote = await Vote.findOne({
                     createdBy: currentUser._id,
                     onModel,
                     documentID
@@ -1078,7 +1070,7 @@ module.exports = {
                     }
                 } else {
 
-                    var voteObject = {
+                    const voteObject = {
                         _id: require('mongodb').ObjectID(),
                         dateCreated: new Date(),
                         dateUpdated: new Date(),
@@ -1156,7 +1148,7 @@ module.exports = {
 
                 //Create Invoice and Donation
                 args.votingDonation = true;
-                var applicableDocument = {};
+                let applicableDocument = {};
                 (args.onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
                         _id: args.documentID
                     }): (args.onModel === 'Resource') ? applicableDocument = await Resource.findOne({
@@ -1169,7 +1161,7 @@ module.exports = {
                 const newDonation = await createDonation(args, applicableDocument, newInvoice, Donation, currentUser);
 
                 //Check every 5 minutes to see if the invoice has been paid
-                var invoiceInterval;
+                let invoiceInterval;
                 invoiceInterval = setInterval(function () {
                     invoicePaid(newInvoice, newDonation, invoiceInterval, args, applicableDocument);
                 }, 300000);
@@ -1206,7 +1198,7 @@ module.exports = {
                 }
 
                 //Create BulletPoint document
-                var id = require('mongodb').ObjectID();
+                let id = require('mongodb').ObjectID();
                 const newBulletPoint = await new BulletPoint({
                     _id: id,
                     slug,
