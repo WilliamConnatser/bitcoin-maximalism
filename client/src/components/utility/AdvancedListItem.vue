@@ -1,11 +1,12 @@
 <template>
     <div>
+        <ToolbarSubmissions :applicableObject="arrayProp[0]" />
         <li class="list" v-for="arrayItem in arrayProp" :key="arrayItem._id">
             <section>
                 <ToolbarVotes :arrayItemProp="arrayItem" />
 
                 <span v-if="arrayItem.__typename == 'BulletPoint'" >{{arrayItem.content}}</span>
-                <a v-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link" class="fancy-link "><span
+                <a v-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link" class="fancy-link"><span
                         class="media-type">{
                         {{arrayItem.media}} } </span>{{arrayItem.title}}</a>
                 <router-link v-if="arrayItem.__typename == 'Rhetoric'" :to="urlGenerator(arrayItem.metaSlug, arrayItem.slug)"
@@ -20,6 +21,7 @@
 <script>
     import ToolbarVotes from '../utility/ToolbarVotes';
     import ToolbarActions from '../utility/ToolbarActions';
+    import ToolbarSubmissions from '../utility/ToolbarSubmissions';
 
     export default {
         name: "AdvancedListItem",
@@ -27,6 +29,7 @@
             arrayProp: Array
         },
         components: {
+            ToolbarSubmissions,
             ToolbarVotes,
             ToolbarActions
         },

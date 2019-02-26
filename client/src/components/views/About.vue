@@ -72,14 +72,14 @@
 
         <div class="medium-margin">
             <a href="https://github.com/WilliamConnatser/bitcoin-maximalism-v2" target="_blank" rel="noopener">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'github-square' }" class="extra-large-social-icons fancy-link" />
+                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'github-square' }" class="extra-large-icon fancy-link" />
             </a> <br />
             Please report technical and bug issues via Github by creating an issue.
         </div>
 
         <div class="medium-margin">
             <a href="mailto:admin@BitcoinMaximalism.com" target="_blank" rel="noopener">
-                <font-awesome-icon :icon="{ prefix: 'fas', iconName: 'envelope-square' }" class="extra-large-social-icons fancy-link" />
+                <font-awesome-icon :icon="{ prefix: 'fas', iconName: 'envelope-square' }" class="extra-large-icon fancy-link" />
             </a> <br />
             Please report donation and account issues via Email.
         </div>

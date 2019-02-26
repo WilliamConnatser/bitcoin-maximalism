@@ -3,14 +3,6 @@
     <h1 v-if="argumentSpecificRhetoric" class="heading">{{argumentSpecificRhetoric.title.toLowerCase()}}</h1>
     <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
     <div v-else>
-      <div class="small-text">
-        bulletpoint
-        <font-awesome-icon icon="plus-square" class="large-social-icons"></font-awesome-icon>
-      </div>
-      <div class="small-text">
-        resource
-        <font-awesome-icon icon="plus-square" class="large-social-icons"></font-awesome-icon>
-      </div>
       <ul class="medium-margin-horizontal">
         <AdvancedListItem v-if="argumentSpecificRhetoric" :arrayProp="concatAndSort" v-on:update-arguments-query="updateQuery" />
       </ul>
@@ -21,6 +13,7 @@
 <script>
   import gql from 'graphql-tag';
   import AdvancedListItem from '../utility/AdvancedListItem';
+  
 
   export default {
     name: "Arguments",

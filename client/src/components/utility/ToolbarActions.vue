@@ -62,6 +62,12 @@
         props: {
             arrayItemProp: Object
         },
+        components: {
+            ViewOpinions,
+            ViewEdits,
+            SubmitOpinions,
+            SubmitEdits
+        },
         data() {
             return {
                 currentUser: null,
@@ -95,12 +101,6 @@
             metaSlug() {
                 return this.arrayItemProp.metaSlug;
             }
-        },
-        components: {
-            ViewOpinions,
-            ViewEdits,
-            SubmitOpinions,
-            SubmitEdits
         },
         apollo: {
             currentUser: {
