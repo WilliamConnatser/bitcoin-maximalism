@@ -2,12 +2,44 @@
     <div>
         <form v-if="!submitted" @submit.prevent="submitOpinion()">
             <div class="medium-margin">
-                <label>Add Resource</label>
-                <textarea v-model="opinion" maxlength=280></textarea>
-                <div class="extra-small-text">
-                    No hyperlinks, foul language or namecalling is allowed. Please remain respectful of others, on
-                    topic,
-                    and intellectually honest.
+                <h2>submit resource</h2>
+                <label>Resource Title</label>
+                <input v-model="title" class="wide-input">
+                <label>Resource Type</label>
+                <select v-model="media">
+                <option value="article" :selected="media === 'article'">
+                    Article
+                </option>
+                <option value="blog" :selected="media === 'blog'">
+                    Blog
+                </option>
+                <option value="podcast" :selected="media === 'podcast'">
+                    Podcast
+                </option>
+                <option value="video" :selected="media === 'video'">
+                    Video
+                </option>
+                <option value="whitepaper" :selected="media === 'whitepaper'">
+                    Whitepaper
+                </option>
+                <option value="book" :selected="media === 'book'">
+                    Book
+                </option>
+            </select>
+                <label>Resource Hyperlink</label>
+                <input v-model="link" class="wide-input">
+                <div class="extra-small-text medium-margin-vertical">
+                    Please look over the already existing resources and the rhetoric contained within them. New
+                    resources should only be submitted if you are certain that the other resources do not already
+                    cover the content that you are submitting. The title of the article should be written
+                    exactly how it is typed on the original source.
+                </div>
+                <div class="extra-small-text medium-margin-vertical">
+                    Please do not include hyperlinks for security purposes, foul language or namecalling, and please
+                    remain respectful of others, on topic, and intellectually honest. We retain the right to reject any
+                    new arguments for any reason. Please read our <router-link to='/terms'>Terms</router-link> for more
+                    information. By clicking Agree &amp; Submit below you agree that you have read and understand to
+                    those Terms.
                 </div>
                 <button type="submit">Agree &amp; Submit</button>
             </div>
@@ -30,7 +62,9 @@
             return {
                 currentUser: null,
                 submitted: false,
-                opinion: ""
+                title: "",
+                media: "article",
+                link: ""
             }
         },
         methods: {

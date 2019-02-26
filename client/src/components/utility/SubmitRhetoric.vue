@@ -2,12 +2,22 @@
     <div>
         <form v-if="!submitted" @submit.prevent="submitOpinion()">
             <div class="medium-margin">
-                <label>Add Argument</label>
-                <textarea v-model="opinion" maxlength=280></textarea>
-                <div class="extra-small-text">
-                    No hyperlinks, foul language or namecalling is allowed. Please remain respectful of others, on
-                    topic,
-                    and intellectually honest.
+                <h2>submit argument</h2>
+                <label>Argument Title</label>
+                <textarea v-model="title" maxlength=70 class="small-textarea"></textarea>
+                <div class="extra-small-text medium-margin-vertical">
+                    Please look over the already existing arguments and the rhetoric contained within them. New
+                    arguments should only be submitted if you are certain that the other arguments do not already
+                    contain the argument you are bringing forth. Arguments should be a succint title or description
+                    of the overall argument, and are thus limited to 70 characters. The actual substance and detail
+                    of the argument should be contained inside its bulletpoints and resources.
+                </div>
+                <div class="extra-small-text medium-margin-vertical">
+                    Please do not include hyperlinks for security purposes, foul language or namecalling, and please
+                    remain respectful of others, on topic, and intellectually honest. We retain the right to reject any
+                    new arguments for any reason. Please read our <router-link to='/terms'>Terms</router-link> for more
+                    information. By clicking Agree &amp; Submit below you agree that you have read and understand to
+                    those Terms.
                 </div>
                 <button type="submit">Agree &amp; Submit</button>
             </div>
@@ -30,7 +40,7 @@
             return {
                 currentUser: null,
                 submitted: false,
-                opinion: ""
+                title: ""
             }
         },
         methods: {

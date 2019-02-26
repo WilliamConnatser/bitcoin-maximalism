@@ -16,7 +16,13 @@
                 <strong>Date Created</strong>: {{ docIDSpecificDonation.dateCreated | formatDate}}
             </li>
             <li>
-                <strong>Donation For</strong>: {{donationFor}}
+                <strong>Created By</strong>: {{docIDSpecificDonation.createdBy.username}}
+            </li>
+            <li>
+                <strong>Created For</strong>: {{docIDSpecificDonation.createdFor.username}}
+            </li>
+            <li>
+                <strong>Attributed Towards</strong>: {{donationFor}}
             </li>
             <li v-if="!docIDSpecificDonation.active">
                 <strong>Inactive</strong> Unpaid or Expired Invoice

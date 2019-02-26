@@ -2,17 +2,20 @@
     <div class="list-submissions-toolbar medium-margin">
         <span v-if="slug === undefined" @click="show('submitRhetoric'), cancel('submitResources'), cancel('submitBulletPoints')"
             class="small-text icon-group cursor-pointer">
-            <font-awesome-icon icon="plus-square"></font-awesome-icon>
+            <font-awesome-icon v-if="!submitRhetoric" icon="plus-square" class="large-icon" />
+            <font-awesome-icon v-else icon="minus-square" class="large-icon" />
             <span>argument</span>
         </span>
         <span v-if="slug !== undefined" @click="show('submitBulletPoints'), cancel('submitResources'), cancel('submitRhetoric')"
             class="small-text icon-group cursor-pointer">
-            <font-awesome-icon icon="plus-square"></font-awesome-icon>
+            <font-awesome-icon v-if="!submitBulletPoints" icon="plus-square" class="large-icon" />
+            <font-awesome-icon v-else icon="minus-square" class="large-icon" />
             <span>bulletpoint</span>
         </span>
         <span v-if="slug !== undefined" @click="show('submitResources'), cancel('submitBulletPoints'), cancel('submitRhetoric')"
             class="small-text icon-group cursor-pointer">
-            <font-awesome-icon icon="plus-square"></font-awesome-icon>
+            <font-awesome-icon v-if="!submitResources" icon="plus-square" class="large-icon" />
+            <font-awesome-icon v-else icon="minus-square" class="large-icon" />
             <span>resource</span>
         </span>
 

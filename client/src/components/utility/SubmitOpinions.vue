@@ -2,12 +2,12 @@
     <div>
         <form v-if="!submitted" @submit.prevent="submitOpinion()">
             <div class="medium-margin">
+                <h2>submit opinion</h2>
                 <label>Your Opinion</label>
                 <textarea v-model="opinion" maxlength=280></textarea>
                 <div class="extra-small-text">
-                    No hyperlinks, foul language or namecalling is allowed. Please remain respectful of others, on
-                    topic,
-                    and intellectually honest.
+                    No hyperlinks (for security purposes), foul language or namecalling is allowed. Please remain
+                    respectful of others, on topic, and intellectually honest.
                 </div>
                 <button type="submit">Agree &amp; Submit</button>
             </div>

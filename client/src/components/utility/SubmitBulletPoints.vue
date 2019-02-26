@@ -2,12 +2,17 @@
     <div>
         <form v-if="!submitted" @submit.prevent="submitOpinion()">
             <div class="medium-margin">
-                <label>Add Bulletpoint</label>
-                <textarea v-model="opinion" maxlength=280></textarea>
+                <h2>submit resource</h2>
+                <label>Bulletpoint Content</label>
+                <textarea v-model="content" maxlength=280></textarea>
                 <div class="extra-small-text">
-                    No hyperlinks, foul language or namecalling is allowed. Please remain respectful of others, on
-                    topic,
-                    and intellectually honest.
+                    Please read over the already existing bulletpoints. New bulletpoints should only be submitted if
+                    you are certain that the other bulletpoints do not already contain the argument you are bringing
+                    forth. No hyperlinks (for security purposes), foul language
+                    or namecalling is allowed. Please remain respectful of others, on topic, and intellectually honest.
+                    We retain the right to reject any new bulletpoints for any reason. Please read our <router-link to='/terms'>Terms</router-link>
+                    for more information. By clicking Agree &amp; Submit below you agree that you have read and
+                    understand to those Terms.
                 </div>
                 <button type="submit">Agree &amp; Submit</button>
             </div>
@@ -30,7 +35,7 @@
             return {
                 currentUser: null,
                 submitted: false,
-                opinion: ""
+                content: ""
             }
         },
         methods: {
