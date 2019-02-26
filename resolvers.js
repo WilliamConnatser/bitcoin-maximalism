@@ -217,9 +217,21 @@ module.exports = {
                 if (!currentUser) throw new AuthenticationError('log-in');
                 const donation = await Donation.findOne({
                     _id
-                });
+                })
+                    .populate({
+                        path: 'createdBy',
+                        model: 'User',
+                        select: '_id username accruedDonations'
+                    })
+                    .populate({
+                        path: 'createdFor',
+                        model: 'User',
+                        select: '_id username accruedDonations'
+                    });
+
                 if (!donation) throw new UserInputError('invalid-id');
-                if (donation.createdBy.toString() !== currentUser._id) throw new AuthenticationError('unauthorized');
+                if (donation.createdBy._id.toString() !== currentUser._id
+                    && donation.createdFor._id.toString() !== currentUser._id) throw new AuthenticationError('unauthorized');
 
                 else return donation;
 
@@ -1109,7 +1121,8 @@ module.exports = {
             }
         },
         submitDonation: async (_, {
-            amount
+            amount,
+            userID
         }, {
             Crypto,
             User,
@@ -1124,16 +1137,31 @@ module.exports = {
                 }).valueUSD;
                 validateDonationAmount(amount, bitcoinValue);
 
-                const userDocument = await User.findOne({
+                const currentUserDocument = await User.findOne({
                     _id: currentUser._id
                 });
-                if (!userDocument) throw new UserInputError('user-not-found');
+                if (!currentUserDocument) throw new UserInputError('user-not-found');
+
+                var otherUserDocument;
+                if (currentUser._id === userID) {
+                    otherUserDocument = currentUserDocument;
+                } else {
+                    otherUserDocument = await User.findOne({
+                        _id: userID
+                    });
+                }
+                if (!otherUserDocument) throw new UserInputError('user-not-found');
 
                 const newInvoice = await createInvoice(amount, currentUser);
-                const newDonation = await createDonation(amount, newInvoice, currentUser, userDocument);
+                const newDonation = await createDonation(amount, newInvoice, currentUser, currentUserDocument, otherUserDocument);
 
-                userDocument.donations.push(newDonation._id);
-                userDocument.save();
+                currentUserDocument.donations.push(newDonation._id);
+                currentUserDocument.save();
+
+                if (currentUser._id !== userID) {
+                    otherUserDocument.donations.push(newDonation._id);
+                    otherUserDocument.save();
+                }
 
                 //Return donation ID
                 return newDonation._id;

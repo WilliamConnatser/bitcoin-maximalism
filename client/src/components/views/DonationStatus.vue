@@ -44,7 +44,7 @@
             </li>
         </ul>
         <div v-else-if="!$apollo.loading" class="medium-margin">
-            <h2>You're not authorized to view this</h2>
+            <h2>You're not authorized to view this donation.</h2>
         </div>
     </main>
 </template>
@@ -109,6 +109,12 @@
                 query: gql `query docIDSpecificDonation($_id: ID!) {
                     docIDSpecificDonation(_id: $_id) {
                         _id
+                        createdBy {
+                            username
+                        }
+                        createdFor {
+                            username
+                        }
                         dateCreated
                         amount
                         bonusPercentage

@@ -98,14 +98,15 @@ const createInvoice = async (amount, currentUser) => {
     }
 }
 
-const createDonation = async (amount, invoice, currentUser, applicableDocument) => {
+const createDonation = async (amount, invoice, currentUser, applicableDocument, otherUserDocument) => {
 
     try {
         const donationObject = {
             _id: require('mongodb').ObjectID(),
             invoiceID: invoice.id,
             invoiceURL: invoice.url,
-            createdBy: currentUser._id
+            createdBy: currentUser._id,
+            createdFor: otherUserDocument._id
         }
 
         //If the document is a User document, then it's an accruing donation towards influence weight
@@ -123,7 +124,7 @@ const createDonation = async (amount, invoice, currentUser, applicableDocument) 
             //Document ID is only assigned for non-accruing donations (IE. purchases of items, subscriptions, etc)
             //TODO: create extra conditional on fields of applicableDocument to see what type it is. For now, we assume it's a certificate
             donationObject.onModel = 'Certificate';
-            donationObject.documentID = applicableDocument._id;
+            donationObject.documentID = otherUserDocument._id;
             donationObject.accruing = false;
             donationObject.amount = amount;
         }
@@ -175,14 +176,14 @@ const adjustUserInfluence = async user => {
         let accruedDonations = 0;
 
         user.donations.forEach(donation => {
-            if (donation.paid) {
+            if (donation.paid && donation.createdFor.toString() === user._id.toString()) {
                 accruedDonations += donation.amount;
             }
         });
 
         user.referrals.forEach(referredUser => {
             referredUser.donations.forEach(donation => {
-                if (donation.paid) {
+                if (donation.paid && donation.createdFor.toString() === referredUser._id.toString()) {
                     accruedDonations += donation.amount * 0.1;
                 }
             });
@@ -199,7 +200,7 @@ const adjustUserInfluence = async user => {
 const adjustDonationInfluence = async donation => {
     try {
         const donationUser = await User.findOne({
-                _id: donation.createdBy
+                _id: donation.createdFor
             })
             .populate({
                 path: 'donations',

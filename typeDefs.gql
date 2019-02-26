@@ -95,6 +95,7 @@ type Donation {
     _id: ID
     dateCreated: String!
     createdBy: User!
+    createdFor: User!
     ticker: String!
     amount: Float!
     active: Boolean! # Unpaid donations will be false
@@ -230,7 +231,7 @@ type Mutation {
 
     submitOpinion(onModel: String!, documentID: ID!, opinion: String!): Float
     submitVote(onModel: String!, documentID: ID!, upVote: Boolean!): Float
-    submitDonation(amount: String!): ID
+    submitDonation(amount: String!, userID: ID!): ID
 
     #Inactive - conceptual - submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
     #Inactive - conceptual -submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String

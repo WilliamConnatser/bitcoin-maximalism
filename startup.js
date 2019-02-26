@@ -131,6 +131,22 @@ const startup = async models => {
     setInterval(function () {
         updateBitcoinValue();
     }, 60 * 60000);
+
+    //Database Maintenance to add ability for users to make donations for other users.
+    const donations = await models.Donation.find({});
+    
+    donations.forEach(donation => {
+
+        console.log(donation.createdFor)
+        
+        if(donation.createdFor === undefined) {
+
+            console.log("ut oh!")
+
+            donation.createdFor = donation.createdBy;
+            donation.save();
+        }
+    });
 }
 
 module.exports = startup;

@@ -14,6 +14,7 @@ input {
     border: 0.1rem solid $color-white;
     color: $color-white;
     background-color: $color-green;
+    outline: none;
 }
 
 .checkbox {
@@ -63,16 +64,22 @@ textarea {
     border: 0.1rem solid $color-white;
     color: $color-white;
     background-color: $color-green;
+    outline: none;
 }
 
 select {
     max-width: 20rem;
     width: 75%;
     height: 4rem;
-    font-size: 1.5rem;
+    font-size: 2rem;
     border: 0.1rem solid $color-white;
     color: $color-white;
     background-color: $color-green;
+    outline: none;
+
+    option {
+        outline: none;
+    }
 }
 
 button {

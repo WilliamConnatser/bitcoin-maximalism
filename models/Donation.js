@@ -13,6 +13,11 @@ const DonationSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    createdFor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     ticker: {
         type: String,
         required: true,
