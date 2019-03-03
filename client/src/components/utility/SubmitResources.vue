@@ -1,48 +1,49 @@
 <template>
     <div>
         <form v-if="!submitted" @submit.prevent="submitOpinion()">
-            <div class="medium-margin">
-                <h2>submit resource</h2>
-                <label>Resource Title</label>
+            <h2 class="medium-margin-vertical">submit resource</h2>
+            <div class="medium-margin-vertical">
+                <label>resource title</label>
                 <input v-model="title" class="wide-input">
-                <label>Resource Type</label>
-                <select v-model="media">
-                <option value="article" :selected="media === 'article'">
-                    Article
-                </option>
-                <option value="blog" :selected="media === 'blog'">
-                    Blog
-                </option>
-                <option value="podcast" :selected="media === 'podcast'">
-                    Podcast
-                </option>
-                <option value="video" :selected="media === 'video'">
-                    Video
-                </option>
-                <option value="whitepaper" :selected="media === 'whitepaper'">
-                    Whitepaper
-                </option>
-                <option value="book" :selected="media === 'book'">
-                    Book
-                </option>
-            </select>
-                <label>Resource Hyperlink</label>
+                <label>resource type</label>
+                <select v-model="media" class="wide-input">
+                    <option value="article" :selected="media === 'article'">
+                        Article
+                    </option>
+                    <option value="blog" :selected="media === 'blog'">
+                        Blog
+                    </option>
+                    <option value="podcast" :selected="media === 'podcast'">
+                        Podcast
+                    </option>
+                    <option value="video" :selected="media === 'video'">
+                        Video
+                    </option>
+                    <option value="whitepaper" :selected="media === 'whitepaper'">
+                        Whitepaper
+                    </option>
+                    <option value="book" :selected="media === 'book'">
+                        Book
+                    </option>
+                </select>
+                <label>resource link</label>
                 <input v-model="link" class="wide-input">
-                <div class="extra-small-text medium-margin-vertical">
+                <div>
                     Please look over the already existing resources and the rhetoric contained within them. New
                     resources should only be submitted if you are certain that the other resources do not already
                     cover the content that you are submitting. The title of the article should be written
                     exactly how it is typed on the original source.
                 </div>
+
                 <div class="extra-small-text medium-margin-vertical">
-                    Please do not include hyperlinks for security purposes, foul language or namecalling, and please
-                    remain respectful of others, on topic, and intellectually honest. We retain the right to reject any
-                    new arguments for any reason. Please read our <router-link to='/terms'>Terms</router-link> for more
-                    information. By clicking Agree &amp; Submit below you agree that you have read and understand to
-                    those Terms.
+                    Foul language and namecalling is not allowed. Please remain respectful of others, on topic, and
+                    intellectually honest. We retain the right to reject any new resources for any reason. Please
+                    read our <router-link to='/terms'>Terms</router-link> for more information. By clicking Agree
+                    &amp; Submit below you agree that you have read and understand to those Terms.
                 </div>
-                <button type="submit">Agree &amp; Submit</button>
             </div>
+
+            <button type="submit">Agree &amp; Submit</button>
         </form>
         <div v-else class="medium-margin">
             Your opinion was submitted successfully.
@@ -116,10 +117,82 @@
                     });
                 }
             },
-            validOpinion(opinion) {
-                if (opinion.length > 280) {
-                    this.opinion.limit(280);
-                    this.$toasted.show('Opinions must be 280 characters or less', {
+            validTitle(title) {
+                if (title.length > 280) {
+                    this.title = title.slice(0, 280);
+                    this.$toasted.show('Titles must be 280 characters or less', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+                } else if (title.trim() === "") {
+                    this.$toasted.show('You must enter a title', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            validMedia(media) {
+                if (media !== "article" && media !== "blog" && media !== "podcast" && media !== "video" && media !==
+                    "whitepaper") {
+                    this.media = "article";
+                    this.$toasted.show('Invalid media type submitted', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+                } else if (media.trim() === "") {
+                    this.$toasted.show('You must enter a media type', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            validLink(link) {
+                if (link.trim() === "") {
+                    this.$toasted.show('You must enter a link', {
                         duration: 5000,
                         position: 'bottom-center',
                         fullWidth: true,
@@ -139,8 +212,14 @@
             }
         },
         watch: {
-            opinion(newOpinion) {
-                this.validOpinion(newOpinion);
+            title(newTitle) {
+                this.validTitle(newTitle);
+            },
+            media(newMedia) {
+                this.validMedia(newMedia);
+            },
+            link(newLink) {
+                this.validLink(newLink);
             }
         },
         apollo: {

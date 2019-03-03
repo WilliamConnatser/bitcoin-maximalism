@@ -233,12 +233,13 @@ type Mutation {
     submitVote(onModel: String!, documentID: ID!, upVote: Boolean!): Float
     submitDonation(amount: String!, userID: ID!): ID
 
+    submitBulletPoint(metaSlug: String!, slug: String!, content: String!): ID
+    submitResource(metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): ID
+    submitRhetoric(metaSlug: String!, slug: String!, title: String!): ID
+
     #Inactive - conceptual - submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
     #Inactive - conceptual -submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String
     #Inactive - conceptual - submitEditRhetoric
-    #Inactive - conceptual - addResource
-    #Inactive - conceptual - addRhetoric
-    #Inactive - resolver written - addBulletPoint(slug: String!, metaSlug: String!, content: String!): BulletPoint
     #Inactive - resolver written - setUserAllegiance(allegiance: String!): Token
     #Inactive - resolve written - approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
 }

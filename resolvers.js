@@ -216,8 +216,8 @@ module.exports = {
                 //Donation info has to do with financial privacy, so only the user should be able to access their own donations.
                 if (!currentUser) throw new AuthenticationError('log-in');
                 const donation = await Donation.findOne({
-                    _id
-                })
+                        _id
+                    })
                     .populate({
                         path: 'createdBy',
                         model: 'User',
@@ -230,8 +230,8 @@ module.exports = {
                     });
 
                 if (!donation) throw new UserInputError('invalid-id');
-                if (donation.createdBy._id.toString() !== currentUser._id
-                    && donation.createdFor._id.toString() !== currentUser._id) throw new AuthenticationError('unauthorized');
+                if (donation.createdBy._id.toString() !== currentUser._id &&
+                    donation.createdFor._id.toString() !== currentUser._id) throw new AuthenticationError('unauthorized');
 
                 else return donation;
 
@@ -1168,6 +1168,118 @@ module.exports = {
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while approving this opinion'));
             }
+        },
+        submitBulletPoint: async (_, {
+            metaSlug,
+            slug,
+            content
+        }, {
+            BulletPoint,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (!user.emailVerified) throw new ForbiddenError('verify-email');
+
+                const bulletPoint = await BulletPoint.findOne({
+                    content
+                });
+                if (bulletPoint) {
+                    throw new UserInputError('This BulletPoint already exists in the database');
+                }
+
+                //Create BulletPoint document
+                let _id = require('mongodb').ObjectID();
+                const newBulletPoint = await new BulletPoint({
+                    _id,
+                    metaSlug,
+                    slug,
+                    content,
+                    createdBy: currentUser._id
+                }).save();
+
+                return _id;
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this BulletPoint'));
+            }
+        },
+        submitResource: async (_, {
+            metaSlug,
+            slug,
+            title,
+            media,
+            link
+        }, {
+            Resource,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (!user.emailVerified) throw new ForbiddenError('verify-email');
+
+                const resource = await Resource.findOne({
+                    link
+                });
+                if (resource) {
+                    throw new UserInputError('This resource already exists in the database');
+                }
+
+                //Create Resource document
+                let _id = require('mongodb').ObjectID();
+                const newResource = await new Resource({
+                    _id,
+                    metaSlug,
+                    slug,
+                    title,
+                    media,
+                    link,
+                    createdBy: currentUser._id
+                }).save();
+
+                return _id;
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Resource'));
+            }
+        },
+        submitRhetoric: async (_, {
+            metaSlug,
+            slug,
+            title
+        }, {
+            Rhetoric,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (!user.emailVerified) throw new ForbiddenError('verify-email');
+
+                const rhetoric = await Rhetoric.findOne({
+                    title
+                });
+                if (rhetoric) {
+                    throw new UserInputError('This Rhetoric already exists in the database');
+                }
+
+                //Create Rhetoric Document
+                let _id = require('mongodb').ObjectID();
+                const newRhetoric = await new Rhetoric({
+                    _id,
+                    metaSlug,
+                    slug,
+                    title,
+                    createdBy: currentUser._id
+                }).save();
+
+                return _id;
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Resource'));
+            }
         }
     }
 }
@@ -1214,42 +1326,6 @@ module.exports = {
 
 
 /* Inactive for now
-        addBulletPoint: async (_, {
-            slug,
-            pro,
-            content
-        }, {
-            BulletPoint,
-            currentUser
-        }) => {
-            try {
-                //Validation
-                if (!currentUser) throw new AuthenticationError('log-in');
-                if (!currentUser.admin) throw new ForbiddenError('admin');
-                if (!user.emailVerified) throw new ForbiddenError('verify-email');
-
-                const bulletPoint = await BulletPoint.findOne({
-                    content
-                });
-                if (bulletPoint) {
-                    throw new UserInputError('This BulletPoint already exists in the database');
-                }
-
-                //Create BulletPoint document
-                let id = require('mongodb').ObjectID();
-                const newBulletPoint = await new BulletPoint({
-                    _id: id,
-                    slug,
-                    pro,
-                    content,
-                    approved: true
-                }).save();
-
-                return newBulletPoint;
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unknown error occurred while creating this BulletPoint'));
-            }
-        },
         approveOpinion: async (_, {
             _id,
             approved,

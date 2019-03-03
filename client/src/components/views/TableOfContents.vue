@@ -10,7 +10,7 @@
     <router-link to="/arguments/antagonistic"><button :class="filterButtonStyle('antagonistic')">Antagonistic</button></router-link>
 
     <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
-    <ul class="medium-margin-horizontal">
+    <ul v-else class="medium-margin-horizontal">
       <AdvancedListItem :arrayProp="this.args" v-on:update-tos-query="updateQuery" />
     </ul>
   </section>
