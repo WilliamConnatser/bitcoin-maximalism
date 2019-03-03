@@ -13,7 +13,7 @@ type Rhetoric {
     title: String!
     approved: Boolean!
     dateApproved: String
-    approvedBy: String
+    approvedBy: User
     approvalCommentary: String
     bulletPoints: [BulletPoint!]!
     resources: [Resource!]!
@@ -41,7 +41,7 @@ type BulletPoint {
 
 type Resource {
     _id: ID
-    dateCreated: User!
+    dateCreated: String!
     createdBy: User!
     active: Boolean!
     slug: String!
@@ -86,7 +86,7 @@ type Edit {
     onModel: String!
     approved: Boolean!
     dateApproved: String
-    approvedBy: String
+    approvedBy: User
     approvalCommentary: String
     votes: [Vote!]!
 }
@@ -216,6 +216,10 @@ type Query {
     mostInfluentialUsers(limit: Int!): [User!]!
     mostReferrals(limit: Int!): [MostReferrals!]!
     mostReferralInfluence(limit: Int!): [ReferralInfluence!]!
+
+    unapprovedRhetoric(_id: ID): [BulletPoint!]!
+    unapprovedBulletPoints(_id: ID): [BulletPoint!]!
+    unapprovedResources(_id: ID): [Resource!]!
 }
 
 type Mutation {

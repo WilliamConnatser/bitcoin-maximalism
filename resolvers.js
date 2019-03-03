@@ -37,7 +37,7 @@ module.exports = {
                     return null;
                 }
                 const user = await User.findOne({
-                        username: currentUser.username
+                        _id: currentUser._id
                     }, '-password')
                     .populate({
                         path: 'donations',
@@ -79,7 +79,64 @@ module.exports = {
                                 'dateCreated': 'descending'
                             }
                         }
-                    });
+                    })
+                    .populate({
+                        path: 'resources',
+                        model: 'Resource',
+                        populate: {
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        },
+                        populate: {
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        },
+                        options: {
+                            sort: {
+                                'dateCreated': 'descending'
+                            }
+                        }
+                    })
+                    .populate({
+                        path: 'rhetoric',
+                        model: 'Rhetoric',
+                        populate: {
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        },
+                        populate: {
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        },
+                        options: {
+                            sort: {
+                                'dateCreated': 'descending'
+                            }
+                        }
+                    })
+                    .populate({
+                        path: 'bulletPoints',
+                        model: 'BulletPoint',
+                        populate: {
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        },
+                        populate: {
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        },
+                        options: {
+                            sort: {
+                                'dateCreated': 'descending'
+                            }
+                        }
+                    })
 
                 return user;
 
@@ -1203,15 +1260,15 @@ module.exports = {
 
                 //Create BulletPoint document
                 let _id = require('mongodb').ObjectID();
-                const newBulletPoint = new BulletPoint({
+                const newBulletPoint = await new BulletPoint({
                     _id,
                     metaSlug,
                     slug,
                     content,
-                    createdBy: currentUser._id
+                    createdBy: user._id
                 }).save();
 
-                user.bulletPoints.push(_id)
+                user.bulletPoints.push(newBulletPoint._id)
                 user.save();
 
                 return _id;
@@ -1268,10 +1325,10 @@ module.exports = {
                     title,
                     media,
                     link,
-                    createdBy: currentUser._id
+                    createdBy: user._id
                 }).save();
 
-                user.resources.push(_id)
+                user.resources.push(newResource._id)
                 user.save();
 
                 return _id;
@@ -1319,10 +1376,10 @@ module.exports = {
                     metaSlug,
                     slug,
                     title,
-                    createdBy: currentUser._id
+                    createdBy: user._id
                 }).save();
 
-                user.rhetoric.push(_id);
+                user.rhetoric.push(newRhetoric._id);
                 user.save();
 
                 return _id;

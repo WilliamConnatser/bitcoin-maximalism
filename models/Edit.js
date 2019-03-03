@@ -45,7 +45,8 @@ const EditSchema = new mongoose.Schema({
         type: Date
     },
     approvedBy: {
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     approvalCommentary: {
         type: String

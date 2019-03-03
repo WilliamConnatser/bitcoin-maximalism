@@ -112,8 +112,6 @@
                                 active
                                 paid
                                 accruing
-                                onModel
-                                documentID
                             }
                             opinions {
                                 _id
@@ -140,16 +138,56 @@
                             votes {
                                 _id
                                 dateCreated
-                                createdBy {
-                                    _id
-                                    username
-                                    accruedDonations
-                                }
                                 slug
                                 metaSlug
                                 onModel
                                 documentID
                                 upVote
+                            }
+                            bulletPoints {
+                                _id
+                                dateCreated
+                                slug
+                                metaSlug
+                                content
+                                approved
+                                dateApproved
+                                approvedBy {
+                                    _id
+                                    username
+                                }
+                                approvalCommentary
+                            }
+                            resources {
+                                _id
+                                dateCreated
+                                active
+                                slug
+                                metaSlug
+                                media
+                                link
+                                approved
+                                dateApproved
+                                approvedBy {
+                                    _id
+                                    username
+                                }
+                                approvalCommentary
+                            }
+                            rhetoric {
+                                _id
+                                dateCreated
+                                active
+                                slug
+                                metaSlug
+                                title
+                                approved
+                                dateApproved
+                                approvedBy {
+                                    _id
+                                    username
+                                }
+                                approvalCommentary
                             }
                         }
                     }

@@ -16,20 +16,21 @@
                     Influence: {{currentUser.accruedDonations | formatBitcoinAmount}}
                 </div>
                 <div>
-                    Referral Link: <br/>
+                    Referral Link: <br />
                     <a :href="refLink" class="extra-small-text">{{refLink}}</a>
                     <SocialIcons :currentUser="currentUser" />
                 </div>
             </section>
 
             <div class="medium-margin-vertical">
-            <h2>Account History</h2>
-            <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')">Donations</button>
-            <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')">Opinions</button>
-            <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')">Votes</button>
-            <button @click="toggleHistoryTab('Rhetoric')" :class="tabButtonStyle('Rhetoric')">Arguments</button>
-            <button @click="toggleHistoryTab('BulletPoint')" :class="tabButtonStyle('BulletPoint')">Bulletpoints</button>
-            <button @click="toggleHistoryTab('Resource')" :class="tabButtonStyle('Resource')">Resources</button>
+                <h2>Account History</h2>
+                <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')">Donations</button>
+                <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')">Opinions</button>
+                <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')">Votes</button>
+                <br />
+                <button @click="toggleHistoryTab('Rhetoric')" :class="tabButtonStyle('Rhetoric')">Arguments</button>
+                <button @click="toggleHistoryTab('BulletPoint')" :class="tabButtonStyle('BulletPoint')">Bulletpoints</button>
+                <button @click="toggleHistoryTab('Resource')" :class="tabButtonStyle('Resource')">Resources</button>
             </div>
             <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
@@ -53,7 +54,7 @@
                         </li>
                     </ul>
                 </div>
-                <div v-else>
+                <div v-else class="small-text medium-margin">
                     You haven't made any donations yet.
                 </div>
             </div>
@@ -90,7 +91,7 @@
                         </li>
                     </ul>
                 </div>
-                <div v-else>
+                <div v-else class="small-text medium-margin">
                     You haven't submitted any opinions yet.
                 </div>
             </div>
@@ -110,8 +111,100 @@
                         </li>
                     </ul>
                 </div>
-                <div v-else>
+                <div v-else class="small-text medium-margin">
                     You haven't submitted any votes yet.
+                </div>
+            </div>
+
+            <div v-if="historyTab === 'Rhetoric'" class="medium-margin">
+                <h2>Arguments</h2>
+                <div v-if="currentUser.rhetoric.length>0">
+                    <ul v-for="argument in currentUser.rhetoric" :key="argument._id" class="list">
+                        <li>
+                            <div><strong>{{argument.dateCreated | formatDate}}</strong></div>
+                            <div>
+                                {{argument.title}}
+                            </div>
+                            <div v-if="argument.dateApproved">
+                                {{argument.approved}} <br />
+                                {{argument.dateApproved}} <br />
+                                {{argument.approvedBy.username}} <br />
+                                {{argument.approvalCommentary}} <br />
+                                <router-link :to="argumentLink(argument.metaSlug, argument.slug)">
+                                    {{argumentLink(argument.metaSlug,argument.slug)}}
+                                </router-link>
+                            </div>
+                            <div v-else class="small-text medium-margin">
+                                This argument has not been approved yet.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div v-else class="small-text medium-margin">
+                    You haven't submitted any arguments yet.
+                </div>
+            </div>
+
+            <div v-if="historyTab === 'BulletPoint'" class="medium-margin">
+                <h2>BulletPoints</h2>
+                <div v-if="currentUser.bulletPoints.length>0">
+                    <ul v-for="bulletPoint in currentUser.bulletPoints" :key="bulletPoint._id" class="list">
+                        <li>
+                            <div><strong>{{bulletPoint.dateCreated | formatDate}}</strong></div>
+                            <div>
+                                {{bulletPoint.content}}
+                            </div>
+                            <div v-if="bulletPoint.dateApproved">
+                                {{bulletPoint.approved}} <br />
+                                {{bulletPoint.dateApproved}} <br />
+                                {{bulletPoint.approvedBy.username}} <br />
+                                {{bulletPoint.approvalCommentary}} <br />
+                                <router-link :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)">
+                                    {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
+                                </router-link>
+                            </div>
+                            <div v-else class="small-text medium-margin">
+                                This bulletpoint has not been approved yet.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div v-else class="small-text medium-margin">
+                    You haven't submitted any bulletpoints yet.
+                </div>
+            </div>
+
+            <div v-if="historyTab === 'Resource'" class="medium-margin">
+                <h2>Resources</h2>
+                <div v-if="currentUser.resources.length>0">
+                    <ul v-for="resource in currentUser.resources" :key="resource._id" class="list">
+                        <li>
+                            <div><strong>{{resource.dateCreated | formatDate}}</strong></div>
+                            <div>
+                                <a :href="resource.link" class="fancy-link">
+                                    <span class="media-type">
+                                        { {{resource.media}} }
+                                    </span>
+                                    {{resource.title}}
+                                </a>
+                            </div>
+                            <div v-if="resource.dateApproved">
+                                {{resource.approved}} <br />
+                                {{resource.dateApproved}} <br />
+                                {{resource.approvedBy.username}} <br />
+                                {{resource.approvalCommentary}} <br />
+                                <router-link :to="argumentLink(resource.metaSlug, resource.slug)">
+                                    {{argumentLink(resource.metaSlug,resource.slug)}}
+                                </router-link>
+                            </div>
+                            <div v-else class="small-text medium-margin">
+                                This resource has not been approved yet.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div v-else class="small-text medium-margin">
+                    You haven't submitted any resources yet.
                 </div>
             </div>
 
@@ -135,7 +228,9 @@
         data() {
             return {
                 currentUser: null,
-                allUnapprovedOpinions: null,
+                unapprovedRhetoric: [],
+                unapprovedBulletPoints: [],
+                unapprovedResources: [],
                 approved: null,
                 approvalCommentary: [],
                 historyTab: 'Donation'
@@ -214,8 +309,6 @@
                                 active
                                 paid
                                 accruing
-                                onModel
-                                documentID
                             }
                             opinions {
                                 _id
@@ -242,16 +335,57 @@
                             votes {
                                 _id
                                 dateCreated
-                                createdBy {
-                                    _id
-                                    username
-                                    accruedDonations
-                                }
                                 slug
                                 metaSlug
                                 onModel
                                 documentID
                                 upVote
+                            }
+                            bulletPoints {
+                                _id
+                                dateCreated
+                                slug
+                                metaSlug
+                                content
+                                approved
+                                dateApproved
+                                approvedBy {
+                                    _id
+                                    username
+                                }
+                                approvalCommentary
+                            }
+                            resources {
+                                _id
+                                dateCreated
+                                active
+                                slug
+                                metaSlug
+                                title
+                                media
+                                link
+                                approved
+                                dateApproved
+                                approvedBy {
+                                    _id
+                                    username
+                                }
+                                approvalCommentary
+                            }
+                            rhetoric {
+                                _id
+                                dateCreated
+                                active
+                                slug
+                                metaSlug
+                                title
+                                approved
+                                dateApproved
+                                approvedBy {
+                                    _id
+                                    username
+                                }
+                                approvalCommentary
                             }
                         }
                     }
