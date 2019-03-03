@@ -27,6 +27,9 @@
             <button @click="toggleHistoryTab('Donation')" :class="tabButtonStyle('Donation')">Donations</button>
             <button @click="toggleHistoryTab('Opinion')" :class="tabButtonStyle('Opinion')">Opinions</button>
             <button @click="toggleHistoryTab('Vote')" :class="tabButtonStyle('Vote')">Votes</button>
+            <button @click="toggleHistoryTab('Rhetoric')" :class="tabButtonStyle('Rhetoric')">Arguments</button>
+            <button @click="toggleHistoryTab('BulletPoint')" :class="tabButtonStyle('BulletPoint')">Bulletpoints</button>
+            <button @click="toggleHistoryTab('Resource')" :class="tabButtonStyle('Resource')">Resources</button>
             </div>
             <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
@@ -161,7 +164,7 @@
                     return `/arguments/${metaSlug}`;
                 }
             },
-            signoutUser: () => {
+            signoutUser() {
                 //Remove token in localStorage
                 localStorage.setItem("token", "");
                 //End Apollo Client Session

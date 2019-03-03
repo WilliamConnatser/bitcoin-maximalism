@@ -22,6 +22,10 @@
             objective, but the human did give a good amount of effort in order to remain impartial.
         </p>
 
+        <h2 class="heading medium-margin">
+            bitcoinmaximalism.com
+        </h2>
+
         <div class="medium-margin">
             <h2>
                 what

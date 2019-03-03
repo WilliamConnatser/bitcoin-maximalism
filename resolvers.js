@@ -1174,6 +1174,7 @@ module.exports = {
             slug,
             content
         }, {
+            User,
             BulletPoint,
             currentUser
         }) => {
@@ -1193,15 +1194,25 @@ module.exports = {
                     throw new UserInputError('already-exists');
                 }
 
+                const user = await User.findOne({
+                    _id: currentUser._id
+                });
+                if (!user) {
+                    throw new UserInputError('user-not-found');
+                }
+
                 //Create BulletPoint document
                 let _id = require('mongodb').ObjectID();
-                const newBulletPoint = await new BulletPoint({
+                const newBulletPoint = new BulletPoint({
                     _id,
                     metaSlug,
                     slug,
                     content,
                     createdBy: currentUser._id
                 }).save();
+
+                user.bulletPoints.push(_id)
+                user.save();
 
                 return _id;
 
@@ -1217,6 +1228,7 @@ module.exports = {
             media,
             link
         }, {
+            User,
             Resource,
             currentUser
         }) => {
@@ -1240,6 +1252,13 @@ module.exports = {
                     throw new UserInputError('already-exists');
                 }
 
+                const user = await User.findOne({
+                    _id: currentUser._id
+                });
+                if (!user) {
+                    throw new UserInputError('user-not-found');
+                }
+
                 //Create Resource document
                 let _id = require('mongodb').ObjectID();
                 const newResource = await new Resource({
@@ -1252,6 +1271,9 @@ module.exports = {
                     createdBy: currentUser._id
                 }).save();
 
+                user.resources.push(_id)
+                user.save();
+
                 return _id;
 
             } catch (err) {
@@ -1263,6 +1285,7 @@ module.exports = {
             slug,
             title
         }, {
+            User,
             Rhetoric,
             currentUser
         }) => {
@@ -1282,6 +1305,13 @@ module.exports = {
                     throw new UserInputError('already-exists');
                 }
 
+                const user = await User.findOne({
+                    _id: currentUser._id
+                });
+                if (!user) {
+                    throw new UserInputError('user-not-found');
+                }
+
                 //Create Rhetoric Document
                 let _id = require('mongodb').ObjectID();
                 const newRhetoric = await new Rhetoric({
@@ -1292,9 +1322,13 @@ module.exports = {
                     createdBy: currentUser._id
                 }).save();
 
+                user.rhetoric.push(_id);
+                user.save();
+
                 return _id;
 
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
             }
         }
