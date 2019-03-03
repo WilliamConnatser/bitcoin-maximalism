@@ -948,8 +948,12 @@ module.exports = {
         }) => {
             try {
                 //Validation
+
+                //Construct regex for case-insensitive query
+                const emailRegEx = new RegExp(email.replace('.', '\.'), 'i');
+
                 const user = await User.findOne({
-                    email
+                    email: emailRegEx
                 });
                 if (!user) {
                     throw new AuthenticationError("user-not-found");
