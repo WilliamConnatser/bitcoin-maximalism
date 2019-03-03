@@ -217,7 +217,7 @@ type Query {
     mostReferrals(limit: Int!): [MostReferrals!]!
     mostReferralInfluence(limit: Int!): [ReferralInfluence!]!
 
-    unapprovedRhetoric(_id: ID): [BulletPoint!]!
+    unapprovedRhetoric(_id: ID): [Rhetoric!]!
     unapprovedBulletPoints(_id: ID): [BulletPoint!]!
     unapprovedResources(_id: ID): [Resource!]!
 }

@@ -5,6 +5,8 @@
     text-align: left;
     min-height: $header-minimum-height;
     list-style-type: none;
+    max-width: 1000px;
+    margin: 0 auto;
     padding: 1rem;
 
     @media screen and (max-width: $breakpoint-small) {

@@ -137,11 +137,12 @@ const startup = async models => {
     
     donations.forEach(donation => {
 
-        console.log(donation.createdFor)
+        
         
         if(donation.createdFor === undefined) {
 
             console.log("ut oh!")
+            console.log("adding createdBy ", donation.createdFor)
 
             donation.createdFor = donation.createdBy;
             donation.save();

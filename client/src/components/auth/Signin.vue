@@ -164,6 +164,7 @@
                                 active
                                 slug
                                 metaSlug
+                                title
                                 media
                                 link
                                 approved

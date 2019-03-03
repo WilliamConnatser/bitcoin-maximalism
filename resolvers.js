@@ -778,6 +778,165 @@ module.exports = {
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these users'));
             }
+        },
+        unapprovedRhetoric: async (_, {
+            _id
+        }, {
+            Rhetoric
+        }) => {
+            try {
+
+                //Queried for a single document
+                if (_id !== undefined) {
+
+                    const rhetoric = await Rhetoric.findOne({
+                            _id
+                        })
+                        .populate({
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        })
+                        .populate({
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        });
+
+                    if (!rhetoric) throw new UserInputError('invalid-id');
+
+                    return [rhetoric];
+                }
+
+                //Queried for all documents
+                else {
+
+                    const rhetoric = await Rhetoric.find({
+                            approved: false
+                        })
+                        .populate({
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        })
+                        .populate({
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        });
+
+                    return rhetoric;
+                }
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching these unapproved arguments'));
+            }
+        },
+        unapprovedBulletPoints: async (_, {
+            _id
+        }, {
+            BulletPoint
+        }) => {
+            try {
+
+                //Queried for a single document
+                if (_id !== undefined) {
+
+                    const bulletPoint = await BulletPoint.findOne({
+                            _id
+                        })
+                        .populate({
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        })
+                        .populate({
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        });
+
+                    if (!bulletPoint) throw new UserInputError('invalid-id');
+
+                    return [bulletPoint];
+                }
+
+                //Queried for all documents
+                else {
+
+                    const bulletPoint = await BulletPoint.find({
+                            approved: false
+                        })
+                        .populate({
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        })
+                        .populate({
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        });
+
+                    return bulletPoint;
+                }
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching these unapproved bulletpoints'));
+            }
+        },
+        unapprovedResources: async (_, {
+            _id
+        }, {
+            Resource
+        }) => {
+            try {
+
+                //Queried for a single document
+                if (_id !== undefined) {
+
+                    const resource = await Resource.findOne({
+                            _id
+                        })
+                        .populate({
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        })
+                        .populate({
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        });
+
+                    if (!resource) throw new UserInputError('invalid-id');
+
+                    return [resource];
+                }
+
+                //Queried for all documents
+                else {
+
+                    const resource = await Resource.find({
+                            approved: false
+                        })
+                        .populate({
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        })
+                        .populate({
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        });
+
+                    return resource;
+                }
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching these unapproved resource'));
+            }
         }
     },
     Mutation: {
@@ -1241,8 +1400,12 @@ module.exports = {
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
                 if (content.length > 1150) throw new UserInputError('invalid-bulletpoint');
                 if (content.trim() === "") throw new UserInputError('invalid-bulletpoint');
-                if (await BulletPoint.findOne({metaSlug}) === null) throw new UserInputError('invalid-argument-type');
-                if (await BulletPoint.findOne({slug}) === null) throw new UserInputError('invalid-slug');
+                if (await BulletPoint.findOne({
+                        metaSlug
+                    }) === null) throw new UserInputError('invalid-argument-type');
+                if (await BulletPoint.findOne({
+                        slug
+                    }) === null) throw new UserInputError('invalid-slug');
 
                 const bulletPoint = await BulletPoint.findOne({
                     content
@@ -1295,12 +1458,16 @@ module.exports = {
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
                 if (title.length > 280) throw new UserInputError('invalid-title');
                 if (title.trim() === "") throw new UserInputError('invalid-title');
-                if (media !== "article" && media !== "blog" && media !== "podcast"
-                    && media !== "video" && media !== "whitepaper") throw new UserInputError('invalid-media');
+                if (media !== "article" && media !== "blog" && media !== "podcast" &&
+                    media !== "video" && media !== "whitepaper") throw new UserInputError('invalid-media');
                 if (media.trim() === "") throw new UserInputError('invalid-media');
                 if (link.trim() === "") throw new UserInputError('invalid-link');
-                if (await Resource.findOne({metaSlug}) === null) throw new UserInputError('invalid-argument-type');
-                if (await Resource.findOne({slug}) === null) throw new UserInputError('invalid-slug');
+                if (await Resource.findOne({
+                        metaSlug
+                    }) === null) throw new UserInputError('invalid-argument-type');
+                if (await Resource.findOne({
+                        slug
+                    }) === null) throw new UserInputError('invalid-slug');
 
                 const resource = await Resource.findOne({
                     link

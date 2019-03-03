@@ -143,6 +143,32 @@
                 <div v-else class="small-text medium-margin">
                     You haven't submitted any arguments yet.
                 </div>
+                <h2 v-if="currentUser.admin">Admin - Unapproved Arguments</h2>
+                <div v-if="unapprovedRhetoric.length>0">
+                    <ul v-for="argument in unapprovedRhetoric" :key="argument._id" class="list">
+                        <li>
+                            <div><strong>{{argument.dateCreated | formatDate}}</strong></div>
+                            <div>
+                                {{argument.title}}
+                            </div>
+                            <div v-if="argument.dateApproved">
+                                {{argument.approved}} <br />
+                                {{argument.dateApproved}} <br />
+                                {{argument.approvedBy.username}} <br />
+                                {{argument.approvalCommentary}} <br />
+                                <router-link :to="argumentLink(argument.metaSlug, argument.slug)">
+                                    {{argumentLink(argument.metaSlug,argument.slug)}}
+                                </router-link>
+                            </div>
+                            <div v-else class="small-text medium-margin">
+                                This argument has not been approved yet.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div v-else-if="currentUser.admin" class="small-text medium-margin">
+                    There aren't any unapproved arguments yet.
+                </div>
             </div>
 
             <div v-if="historyTab === 'BulletPoint'" class="medium-margin">
@@ -171,6 +197,32 @@
                 </div>
                 <div v-else class="small-text medium-margin">
                     You haven't submitted any bulletpoints yet.
+                </div>
+                <h2 v-if="currentUser.admin">Admin - Unapproved BulletPoints</h2>
+                <div v-if="unapprovedBulletPoints.length>0">
+                    <ul v-for="bulletPoint in unapprovedBulletPoints" :key="bulletPoint._id" class="list">
+                        <li>
+                            <div><strong>{{bulletPoint.dateCreated | formatDate}}</strong></div>
+                            <div>
+                                {{bulletPoint.content}}
+                            </div>
+                            <div v-if="bulletPoint.dateApproved">
+                                {{bulletPoint.approved}} <br />
+                                {{bulletPoint.dateApproved}} <br />
+                                {{bulletPoint.approvedBy.username}} <br />
+                                {{bulletPoint.approvalCommentary}} <br />
+                                <router-link :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)">
+                                    {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
+                                </router-link>
+                            </div>
+                            <div v-else class="small-text medium-margin">
+                                This bulletpoint has not been approved yet.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div v-else-if="currentUser.admin" class="small-text medium-margin">
+                    There are no unapproved bulletpoints yet.
                 </div>
             </div>
 
@@ -205,6 +257,37 @@
                 </div>
                 <div v-else class="small-text medium-margin">
                     You haven't submitted any resources yet.
+                </div>
+                <h2 v-if="currentUser.admin">Admin - Unapproved Resources</h2>
+                <div v-if="unapprovedResources.length>0">
+                    <ul v-for="resource in unapprovedResources" :key="resource._id" class="list">
+                        <li>
+                            <div><strong>{{resource.dateCreated | formatDate}}</strong></div>
+                            <div>
+                                <a :href="resource.link" class="fancy-link">
+                                    <span class="media-type">
+                                        { {{resource.media}} }
+                                    </span>
+                                    {{resource.title}}
+                                </a>
+                            </div>
+                            <div v-if="resource.dateApproved">
+                                {{resource.approved}} <br />
+                                {{resource.dateApproved}} <br />
+                                {{resource.approvedBy.username}} <br />
+                                {{resource.approvalCommentary}} <br />
+                                <router-link :to="argumentLink(resource.metaSlug, resource.slug)">
+                                    {{argumentLink(resource.metaSlug,resource.slug)}}
+                                </router-link>
+                            </div>
+                            <div v-else class="small-text medium-margin">
+                                This resource has not been approved yet.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div v-else-if="currentUser && currentUser.admin" class="small-text medium-margin">
+                    There aren't any unapproved resources.
                 </div>
             </div>
 
@@ -390,6 +473,76 @@
                         }
                     }
                 `
+            },
+            unapprovedRhetoric: {
+                query: gql `query unapprovedRhetoric {
+                    unapprovedRhetoric {
+                        _id
+                        dateCreated
+                        active
+                        slug
+                        metaSlug
+                        title
+                        approved
+                        dateApproved
+                        approvedBy {
+                            _id
+                            username
+                        }
+                        approvalCommentary
+                    }
+                }`,
+                skip() {
+                    if(this.currentUser && this.currentUser.admin) return false;
+                    else return true;
+                }
+            },
+            unapprovedBulletPoints: {
+                query: gql `query unapprovedBulletPoints {
+                    unapprovedBulletPoints {
+                        _id
+                        dateCreated
+                        slug
+                        metaSlug
+                        content
+                        approved
+                        dateApproved
+                        approvedBy {
+                            _id
+                            username
+                        }
+                        approvalCommentary
+                    }
+                }`,
+                skip() {
+                    if(this.currentUser && this.currentUser.admin) return false;
+                    else return true;
+                }
+            },
+            unapprovedResources: {
+                query: gql `query unapprovedResources {
+                    unapprovedResources {
+                        _id
+                        dateCreated
+                        active
+                        slug
+                        metaSlug
+                        title
+                        media
+                        link
+                        approved
+                        dateApproved
+                        approvedBy {
+                            _id
+                            username
+                        }
+                        approvalCommentary
+                    }
+                }`,
+                skip() {
+                    if(this.currentUser && this.currentUser.admin) return false;
+                    else return true;
+                }
             }
         }
     };
