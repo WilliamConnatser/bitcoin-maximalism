@@ -4,8 +4,8 @@
             <h2 class="medium-margin-vertical">submit bulletpoint</h2>
             <div class="medium-margin-vertical">
                 <label for="content">bulletpoint content</label>
-                <textarea v-model="content" name="content"></textarea>
-                <div>
+                <textarea v-model="content" name="content" class="tall-textarea"></textarea>
+                <div class="extra-small-text medium-margin-vertical">
                     Please read over the already existing rhetoric and bulletpoints. New bulletpoints should only
                     be submitted if you are certain that the other bulletpoints do not already contain the argument
                     you are submitting. New Bulletpoints are limited to 1150 characters.
@@ -20,8 +20,8 @@
             </div>
             <button type="submit">Agree &amp; Submit</button>
         </form>
-        <div v-else class="medium-margin">
-            Your opinion was submitted successfully.
+        <div v-else class="medium-margin  large-margin-vertical">
+            Your bulletpoint was submitted successfully. {{submitted}}
         </div>
     </div>
 </template>
@@ -31,9 +31,6 @@
 
     export default {
         name: "SubmitBulletPoints",
-        props: {
-            arrayItemProp: Object
-        },
         data() {
             return {
                 currentUser: null,
@@ -63,7 +60,7 @@
                             content: this.content
                         }
                     }).then(({data}) => {
-                        console.log("new", data)
+                        this.submitted = data.submitBulletPoint;
                         //Redirect to status page
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
@@ -99,10 +96,10 @@
         },
         computed: {
             slug() {
-                return this.arrayItemProp.slug;
+                return this.$route.params.slug;
             },
             metaSlug() {
-                return this.arrayItemProp.metaSlug;
+                return this.$route.params.metaSlug;
             }
         },
         apollo: {

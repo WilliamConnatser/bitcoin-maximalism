@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <div class="submission-form">
         <form v-if="!submitted" @submit.prevent="submitResource()">
             <h2 class="medium-margin-vertical">submit resource</h2>
             <div class="medium-margin-vertical">
                 <label>resource title</label>
-                <input v-model="title" class="wide-input">
+                <textarea v-model="title" maxlength=280 name="title" class="short-textarea"></textarea>
                 <label>resource link</label>
-                <input v-model="link" class="wide-input">
+                <textarea v-model="link" name="link" class="short-textarea"></textarea>
                 <label>resource type</label>
                 <select v-model="media" class="wide-input">
                     <option value="article" :selected="media === 'article'">
@@ -28,7 +28,7 @@
                         Book
                     </option>
                 </select>
-                <div>
+                <div class="extra-small-text medium-margin-vertical">
                     Please look over the already existing resources and the rhetoric contained within them. New
                     resources should only be submitted if you are certain that the other resources do not already
                     cover the content that you are submitting. The title of the article should be written
@@ -45,8 +45,8 @@
 
             <button type="submit">Agree &amp; Submit</button>
         </form>
-        <div v-else class="medium-margin">
-            Your opinion was submitted successfully.
+        <div v-else class="medium-margin large-margin-vertical">
+            Your resource was submitted successfully. {{submitted}}
         </div>
     </div>
 </template>
@@ -56,9 +56,6 @@
 
     export default {
         name: "SubmitResources",
-        props: {
-            arrayItemProp: Object
-        },
         data() {
             return {
                 currentUser: null,
@@ -76,7 +73,7 @@
                     this.$toasted.global.log_in();
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                } else if (this.validOpinion(this.opinion)) {
+                } else if (this.validTitle(this.title) && this.validMedia(this.media) && this.validLink(this.link)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -91,8 +88,8 @@
                             media: this.media,
                             link: this.link
                         }
-                    }).then(() => {
-                        console.log("new", data)
+                    }).then(({data}) => {
+                        this.submitted = data.submitResource;
                         //Redirect to status page
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
@@ -206,10 +203,10 @@
         },
         computed: {
             slug() {
-                return this.arrayItemProp.slug;
+                return this.$route.params.slug;
             },
             metaSlug() {
-                return this.arrayItemProp.metaSlug;
+                return this.$route.params.metaSlug;
             }
         },
         apollo: {

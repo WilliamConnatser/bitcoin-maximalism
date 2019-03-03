@@ -1183,7 +1183,7 @@ module.exports = {
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
                 if (content.length > 1150) throw new UserInputError('invalid-bulletpoint');
                 if (content.trim() === "") throw new UserInputError('invalid-bulletpoint');
-                if (await BulletPoint.findOne({metaSlug}) === null) throw new UserInputError('invalid-slug');
+                if (await BulletPoint.findOne({metaSlug}) === null) throw new UserInputError('invalid-argument-type');
                 if (await BulletPoint.findOne({slug}) === null) throw new UserInputError('invalid-slug');
 
                 const bulletPoint = await BulletPoint.findOne({
@@ -1230,7 +1230,7 @@ module.exports = {
                     && media !== "video" && media !== "whitepaper") throw new UserInputError('invalid-media');
                 if (media.trim() === "") throw new UserInputError('invalid-media');
                 if (link.trim() === "") throw new UserInputError('invalid-link');
-                if (await Resource.findOne({metaSlug}) === null) throw new UserInputError('invalid-slug');
+                if (await Resource.findOne({metaSlug}) === null) throw new UserInputError('invalid-argument-type');
                 if (await Resource.findOne({slug}) === null) throw new UserInputError('invalid-slug');
 
                 const resource = await Resource.findOne({
@@ -1270,7 +1270,7 @@ module.exports = {
                 //Validation
                 if (!currentUser) throw new AuthenticationError('log-in');
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
-                if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new UserInputError('invalid-slug');
+                if (!/^[a-z0-9-]*$/.test(slug)) throw new UserInputError('invalid-slug');
                 if (title.length > 80) throw new UserInputError('invalid-title');
                 if (title.trim() === "") throw new UserInputError('invalid-title');
                 if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');

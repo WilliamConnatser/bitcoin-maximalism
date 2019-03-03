@@ -4,7 +4,7 @@
             <h2 class="medium-margin-vertical">submit argument</h2>
             <div class="medium-margin-vertical">
                 <label for="title">argument title</label>
-                <textarea v-model="title" maxlength=75 name="title" class="small-textarea"></textarea>
+                <textarea v-model="title" maxlength=75 name="title" class="short-textarea"></textarea>
                 <label>argument type</label>
                 <select v-model="metaSlug" class="wide-input">
                     <option value="protagonistic" :selected="metaSlug === 'protagonistic'">
@@ -16,7 +16,7 @@
                 </select>
                 <label for="slug">argument slug</label>
                 <input v-model="slug" class="wide-input" name="slug">
-                <div class="medium-margin-vertical">
+                <div class="extra-small-text medium-margin-vertical">
                     Please look over the already existing arguments and the rhetoric contained within them. New
                     arguments should only be submitted if you are certain that the other arguments do not already
                     contain the argument you are submitting. Arguments should be a succint title that properly
@@ -32,8 +32,8 @@
             <button type="submit">Agree &amp; Submit</button>
         </form>
 
-        <div v-else class="medium-margin">
-            Your opinion was submitted successfully.
+        <div v-else class="medium-margin  large-margin-vertical">
+            Your argument was submitted successfully. {{submitted}}
         </div>
     </div>
 </template>
@@ -43,9 +43,6 @@
 
     export default {
         name: "SubmitRhetoric",
-        props: {
-            arrayItemProp: Object
-        },
         data() {
             return {
                 currentUser: null,
@@ -63,7 +60,7 @@
                     this.$toasted.global.log_in();
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                } else if (this.validTitle(this.title)) {
+                } else if (this.validTitle(this.title) && this.validMetaSlug(this.metaSlug) && this.validSlug(this.slug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -77,7 +74,7 @@
                             title: this.title
                         }
                     }).then(({data}) => {
-                        console.log("new", data)
+                        this.submitted = data.submitRhetoric;
                         //Redirect to status page
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
@@ -157,7 +154,7 @@
                 }
             },
             validSlug(slug) {
-                if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+                if (!/^[a-z0-9-]*$/.test(slug)) {
                     this.slug = "argument-slug";
                     this.$toasted.show('Slugs should only contain lower case letters and dashes (-)', {
                         duration: 5000,
@@ -174,6 +171,7 @@
                     });
                     return false;
                 } else if (slug.trim() === "") {
+                    this.slug = "argument-slug";
                     this.$toasted.show('You must enter a slug', {
                         duration: 5000,
                         position: 'bottom-center',
@@ -189,6 +187,7 @@
                     });
                     return false;
                 } else {
+                    this.slug = this.slug.toLowerCase();
                     return true;
                 }
             }

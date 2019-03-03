@@ -19,9 +19,9 @@
             <span>resource</span>
         </span>
 
-        <SubmitRhetoric v-if="submitRhetoric" :arrayItemProp="applicableObject" />
-        <SubmitResources v-if="submitResources" :arrayItemProp="applicableObject" />
-        <SubmitBulletPoints v-if="submitBulletPoints" :arrayItemProp="applicableObject" />
+        <SubmitRhetoric v-if="submitRhetoric" class="submission-form" />
+        <SubmitResources v-if="submitResources" class="submission-form" />
+        <SubmitBulletPoints v-if="submitBulletPoints" class="submission-form" />
     </div>
 </template>
 
