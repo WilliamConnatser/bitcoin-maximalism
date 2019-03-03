@@ -1,10 +1,12 @@
 <template>
     <div>
-        <form v-if="!submitted" @submit.prevent="submitOpinion()">
+        <form v-if="!submitted" @submit.prevent="submitResource()">
             <h2 class="medium-margin-vertical">submit resource</h2>
             <div class="medium-margin-vertical">
                 <label>resource title</label>
                 <input v-model="title" class="wide-input">
+                <label>resource link</label>
+                <input v-model="link" class="wide-input">
                 <label>resource type</label>
                 <select v-model="media" class="wide-input">
                     <option value="article" :selected="media === 'article'">
@@ -26,8 +28,6 @@
                         Book
                     </option>
                 </select>
-                <label>resource link</label>
-                <input v-model="link" class="wide-input">
                 <div>
                     Please look over the already existing resources and the rhetoric contained within them. New
                     resources should only be submitted if you are certain that the other resources do not already
@@ -69,7 +69,7 @@
             }
         },
         methods: {
-            submitOpinion: async function () {
+            submitResource: async function () {
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (!this.currentUser) {
@@ -80,38 +80,20 @@
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                            mutation submitOpinion($documentID: ID!, $onModel: String!, $opinion: String!){
-                                submitOpinion(documentID: $documentID, onModel: $onModel, opinion: $opinion)
+                            mutation submitResource($metaSlug: String!, $slug: String!, $title: String!, $media: String!, $link:String!){
+                                submitResource(metaSlug: $metaSlug, slug: $slug, title: $title, media: $media, link:$link)
                             }
                         `,
                         variables: {
-                            documentID: this.arrayItemProp._id,
-                            onModel: this.arrayItemProp.__typename,
-                            opinion: this.opinion
+                            metaSlug: this.metaSlug,
+                            slug: this.slug,
+                            title: this.title,
+                            media: this.media,
+                            link: this.link
                         }
                     }).then(() => {
-                        this.submitted = true;
-
-                        if (this.$route.fullPath.indexOf('leaderboards') > -1) {
-                            if (this.arrayItemProp.__typename === 'Rhetoric') {
-                                this.$parent.$emit('arguments-changed');
-                            } else if (this.arrayItemProp.__typename === 'Opinion') {
-                                this.$parent.$emit('opinions-changed');
-                            } else if (this.arrayItemProp.__typename === 'Resource') {
-                                this.$parent.$emit('resources-changed');
-                            } else if (this.arrayItemProp.__typename === 'BulletPoint') {
-                                this.$parent.$emit('bulletpoints-changed');
-                            }
-                        } else {
-                            if (this.arrayItemProp.__typename === 'Rhetoric') {
-                                this.$parent.$emit('update-tos-query');
-                            } else if (this.arrayItemProp.__typename === 'Opinion') {
-                                this.$emit('update-view-opinion-query');
-                            } else {
-                                this.$parent.$emit('update-arguments-query');
-                            }
-
-                        }
+                        console.log("new", data)
+                        //Redirect to status page
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
@@ -220,6 +202,14 @@
             },
             link(newLink) {
                 this.validLink(newLink);
+            }
+        },
+        computed: {
+            slug() {
+                return this.arrayItemProp.slug;
+            },
+            metaSlug() {
+                return this.arrayItemProp.metaSlug;
             }
         },
         apollo: {

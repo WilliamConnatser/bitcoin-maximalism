@@ -313,6 +313,14 @@ const parseError = (error, unknownError) => {
     else if (error == 'invalid-sort-order') return 'Invalid sort order';
     else if (error == 'invalid-variable') return 'Invalid query variable';
     else if (error == 'invalid-limit') return 'Invalid query limit';
+    else if (error == 'already-exists') return 'What you submitted already exists';
+    else if (error == 'invalid-bulletpoint') return 'Invalid bulletpoint submitted';
+    else if (error == 'invalid-media') return 'Invalid media type submitted';
+    else if (error == 'invalid-link') return 'Invalid link submitted';
+    else if (error == 'invalid-title') return 'Invalid title submitted';
+    else if (error == 'invalid-slug') return 'Invalid slug submitted';
+    else if (error == 'invalid-rhetoric') return 'Invalid rhetoric submitted';
+    else if (error == 'invalid-argument-type') return 'Invalid argument type';
     else if (error == 'admin') return 'You must be an admin';
     else if (error == 'unauthorized') return 'You are not authorized to view this';
     else {

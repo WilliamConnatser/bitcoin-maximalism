@@ -5,7 +5,18 @@
             <div class="medium-margin-vertical">
                 <label for="title">argument title</label>
                 <textarea v-model="title" maxlength=75 name="title" class="small-textarea"></textarea>
-                <div>
+                <label>argument type</label>
+                <select v-model="metaSlug" class="wide-input">
+                    <option value="protagonistic" :selected="metaSlug === 'protagonistic'">
+                        Protagonistic
+                    </option>
+                    <option value="antagonistic" :selected="metaSlug === 'antagonistic'">
+                        Antagonistic
+                    </option>
+                </select>
+                <label for="slug">argument slug</label>
+                <input v-model="slug" class="wide-input" name="slug">
+                <div class="medium-margin-vertical">
                     Please look over the already existing arguments and the rhetoric contained within them. New
                     arguments should only be submitted if you are certain that the other arguments do not already
                     contain the argument you are submitting. Arguments should be a succint title that properly
@@ -39,7 +50,9 @@
             return {
                 currentUser: null,
                 submitted: false,
-                title: ""
+                title: "",
+                metaSlug: "protagonistic",
+                slug: "argument-slug"
             }
         },
         methods: {
@@ -54,38 +67,18 @@
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                            mutation submitOpinion($documentID: ID!, $onModel: String!, $opinion: String!){
-                                submitOpinion(documentID: $documentID, onModel: $onModel, opinion: $opinion)
+                            mutation submitRhetoric($metaSlug: String!, $slug: String!, $title: String!){
+                                submitRhetoric(metaSlug: $metaSlug, slug: $slug, title: $title)
                             }
                         `,
                         variables: {
-                            documentID: this.arrayItemProp._id,
-                            onModel: this.arrayItemProp.__typename,
-                            opinion: this.opinion
+                            metaSlug: this.metaSlug,
+                            slug: this.slug,
+                            title: this.title
                         }
-                    }).then(() => {
-                        this.submitted = true;
-
-                        if (this.$route.fullPath.indexOf('leaderboards') > -1) {
-                            if (this.arrayItemProp.__typename === 'Rhetoric') {
-                                this.$parent.$emit('arguments-changed');
-                            } else if (this.arrayItemProp.__typename === 'Opinion') {
-                                this.$parent.$emit('opinions-changed');
-                            } else if (this.arrayItemProp.__typename === 'Resource') {
-                                this.$parent.$emit('resources-changed');
-                            } else if (this.arrayItemProp.__typename === 'BulletPoint') {
-                                this.$parent.$emit('bulletpoints-changed');
-                            }
-                        } else {
-                            if (this.arrayItemProp.__typename === 'Rhetoric') {
-                                this.$parent.$emit('update-tos-query');
-                            } else if (this.arrayItemProp.__typename === 'Opinion') {
-                                this.$emit('update-view-opinion-query');
-                            } else {
-                                this.$parent.$emit('update-arguments-query');
-                            }
-
-                        }
+                    }).then(({data}) => {
+                        console.log("new", data)
+                        //Redirect to status page
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
@@ -108,6 +101,93 @@
                         }]
                     });
                     return false;
+                } else if (title.trim() === "") {
+                    this.$toasted.show('You must enter a title', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            validMetaSlug(metaSlug) {
+                if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") {
+                    this.media = "protagonistic";
+                    this.$toasted.show('Invalid argument type submitted', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+                } else if (metaSlug.trim() === "") {
+                    this.$toasted.show('You must select a media type', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            validSlug(slug) {
+                if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+                    this.slug = "argument-slug";
+                    this.$toasted.show('Slugs should only contain lower case letters and dashes (-)', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+                } else if (slug.trim() === "") {
+                    this.$toasted.show('You must enter a slug', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
                 } else {
                     return true;
                 }
@@ -116,6 +196,12 @@
         watch: {
             title(newTitle) {
                 this.validTitle(newTitle);
+            },
+            metaSlug(newMetaSlug) {
+                this.validMetaSlug(newMetaSlug);
+            },
+            slug(newSlug) {
+                this.validSlug(newSlug);
             }
         },
         apollo: {

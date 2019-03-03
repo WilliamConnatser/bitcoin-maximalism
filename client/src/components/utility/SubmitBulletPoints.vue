@@ -3,8 +3,8 @@
         <form v-if="!submitted" @submit.prevent="submitBulletPoint()">
             <h2 class="medium-margin-vertical">submit bulletpoint</h2>
             <div class="medium-margin-vertical">
-                <label for="bulletpoint">bulletpoint content</label>
-                <textarea v-model="bulletPoint" name="bulletpoint"></textarea>
+                <label for="content">bulletpoint content</label>
+                <textarea v-model="content" name="content"></textarea>
                 <div>
                     Please read over the already existing rhetoric and bulletpoints. New bulletpoints should only
                     be submitted if you are certain that the other bulletpoints do not already contain the argument
@@ -38,7 +38,7 @@
             return {
                 currentUser: null,
                 submitted: false,
-                bulletPoint: ""
+                content: ""
             }
         },
         methods: {
@@ -49,50 +49,30 @@
                     this.$toasted.global.log_in();
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                } else if (this.validBulletPoint(this.opinion)) {
+                } else if (this.validBulletPoint(this.content)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                            mutation submitOpinion($documentID: ID!, $onModel: String!, $opinion: String!){
-                                submitOpinion(documentID: $documentID, onModel: $onModel, opinion: $opinion)
+                            mutation submitBulletPoint($metaSlug: String!, $slug: String!, $content: String!){
+                                submitBulletPoint(metaSlug: $metaSlug, slug: $slug, content: $content)
                             }
                         `,
                         variables: {
-                            documentID: this.arrayItemProp._id,
-                            onModel: this.arrayItemProp.__typename,
-                            opinion: this.opinion
+                            metaSlug: this.metaSlug,
+                            slug: this.slug,
+                            content: this.content
                         }
-                    }).then(() => {
-                        this.submitted = true;
-
-                        if (this.$route.fullPath.indexOf('leaderboards') > -1) {
-                            if (this.arrayItemProp.__typename === 'Rhetoric') {
-                                this.$parent.$emit('arguments-changed');
-                            } else if (this.arrayItemProp.__typename === 'Opinion') {
-                                this.$parent.$emit('opinions-changed');
-                            } else if (this.arrayItemProp.__typename === 'Resource') {
-                                this.$parent.$emit('resources-changed');
-                            } else if (this.arrayItemProp.__typename === 'BulletPoint') {
-                                this.$parent.$emit('bulletpoints-changed');
-                            }
-                        } else {
-                            if (this.arrayItemProp.__typename === 'Rhetoric') {
-                                this.$parent.$emit('update-tos-query');
-                            } else if (this.arrayItemProp.__typename === 'Opinion') {
-                                this.$emit('update-view-opinion-query');
-                            } else {
-                                this.$parent.$emit('update-arguments-query');
-                            }
-
-                        }
+                    }).then(({data}) => {
+                        console.log("new", data)
+                        //Redirect to status page
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
                 }
             },
-            validBulletPoint(bulletPoint) {
-                if (bulletPoint.length > 1150) {
-                    this.bulletPoint = this.bulletPoint.slice(0,1150);
+            validBulletPoint(content) {
+                if (content.length > 1150) {
+                    this.content = this.content.slice(0,1150);
                     this.$toasted.show('Bulletpoints must be 1150 characters or less', {
                         duration: 5000,
                         position: 'bottom-center',
@@ -113,8 +93,16 @@
             }
         },
         watch: {
-            bulletPoint(newBulletPoint) {
-                this.validBulletPoint(newBulletPoint);
+            content(newcontent) {
+                this.validBulletPoint(newcontent);
+            }
+        },
+        computed: {
+            slug() {
+                return this.arrayItemProp.slug;
+            },
+            metaSlug() {
+                return this.arrayItemProp.metaSlug;
             }
         },
         apollo: {

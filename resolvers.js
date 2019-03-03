@@ -1180,13 +1180,17 @@ module.exports = {
             try {
                 //Validation
                 if (!currentUser) throw new AuthenticationError('log-in');
-                if (!user.emailVerified) throw new ForbiddenError('verify-email');
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+                if (content.length > 1150) throw new UserInputError('invalid-bulletpoint');
+                if (content.trim() === "") throw new UserInputError('invalid-bulletpoint');
+                if (await BulletPoint.findOne({metaSlug}) === null) throw new UserInputError('invalid-slug');
+                if (await BulletPoint.findOne({slug}) === null) throw new UserInputError('invalid-slug');
 
                 const bulletPoint = await BulletPoint.findOne({
                     content
                 });
                 if (bulletPoint) {
-                    throw new UserInputError('This BulletPoint already exists in the database');
+                    throw new UserInputError('already-exists');
                 }
 
                 //Create BulletPoint document
@@ -1202,6 +1206,7 @@ module.exports = {
                 return _id;
 
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this BulletPoint'));
             }
         },
@@ -1218,13 +1223,21 @@ module.exports = {
             try {
                 //Validation
                 if (!currentUser) throw new AuthenticationError('log-in');
-                if (!user.emailVerified) throw new ForbiddenError('verify-email');
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+                if (title.length > 280) throw new UserInputError('invalid-title');
+                if (title.trim() === "") throw new UserInputError('invalid-title');
+                if (media !== "article" && media !== "blog" && media !== "podcast"
+                    && media !== "video" && media !== "whitepaper") throw new UserInputError('invalid-media');
+                if (media.trim() === "") throw new UserInputError('invalid-media');
+                if (link.trim() === "") throw new UserInputError('invalid-link');
+                if (await Resource.findOne({metaSlug}) === null) throw new UserInputError('invalid-slug');
+                if (await Resource.findOne({slug}) === null) throw new UserInputError('invalid-slug');
 
                 const resource = await Resource.findOne({
                     link
                 });
                 if (resource) {
-                    throw new UserInputError('This resource already exists in the database');
+                    throw new UserInputError('already-exists');
                 }
 
                 //Create Resource document
@@ -1256,13 +1269,17 @@ module.exports = {
             try {
                 //Validation
                 if (!currentUser) throw new AuthenticationError('log-in');
-                if (!user.emailVerified) throw new ForbiddenError('verify-email');
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+                if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new UserInputError('invalid-slug');
+                if (title.length > 80) throw new UserInputError('invalid-title');
+                if (title.trim() === "") throw new UserInputError('invalid-title');
+                if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');
 
                 const rhetoric = await Rhetoric.findOne({
                     title
                 });
                 if (rhetoric) {
-                    throw new UserInputError('This Rhetoric already exists in the database');
+                    throw new UserInputError('already-exists');
                 }
 
                 //Create Rhetoric Document
@@ -1278,7 +1295,7 @@ module.exports = {
                 return _id;
 
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Resource'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
             }
         }
     }
