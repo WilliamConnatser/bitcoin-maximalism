@@ -36,11 +36,11 @@
             </button>
         </form>
         <div v-else-if="rhetoricObject === undefined" class="medium-margin large-margin-vertical">
-            The argument was submitted successfully! <br />
+            <h2>The argument was submitted successfully!</h2>
             You may track the status of your submission in your Account Panel or <router-link :to="submissionStatusLink(submitted)">HERE</router-link>
         </div>
         <div v-else class="medium-margin large-margin-vertical">
-            The argument was edited successfully! <br />
+            <h2>The argument was edited successfully!</h2>
         </div>
     </div>
 </template>

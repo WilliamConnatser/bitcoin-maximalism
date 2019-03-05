@@ -1472,6 +1472,7 @@ module.exports = {
                 if (await Resource.findOne({
                         slug
                     }) === null) throw new UserInputError('invalid-slug');
+                if(!link.includes('http')) link = 'http://' + link;
 
                 const resource = await Resource.findOne({
                     link
@@ -1506,6 +1507,59 @@ module.exports = {
 
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Resource'));
+            }
+        },
+        submitEditResource: async (_, {
+            documentID,
+            metaSlug,
+            slug,
+            title,
+            media,
+            link
+        }, {
+            Resource,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+                if (title.length > 280) throw new UserInputError('invalid-title');
+                if (title.trim() === "") throw new UserInputError('invalid-title');
+                if (media !== "article" && media !== "blog" && media !== "podcast" &&
+                    media !== "video" && media !== "whitepaper") throw new UserInputError('invalid-media');
+                if (media.trim() === "") throw new UserInputError('invalid-media');
+                if (link.trim() === "") throw new UserInputError('invalid-link');
+                if (await Resource.findOne({
+                        metaSlug
+                    }) === null) throw new UserInputError('invalid-argument-type');
+                if (await Resource.findOne({
+                        slug
+                    }) === null) throw new UserInputError('invalid-slug');
+                if(!link.includes('http')) link = 'http://' + link;
+
+                const resource = await Resource.findOne({
+                    _id: documentID
+                });
+                if(!resource) throw new UserInputError('invalid-id');
+                if (!resource.createdBy.toString() !== currentUser._id && !currentUser.admin) {
+                    throw new UserInputError('edit-submission-unauthorized');
+                }
+                if (resource.approved && !currentUser.admin) throw new UserInputError('edit-submission-approved');
+
+                //Edit and Save Resource document
+                resource.metaSlug = metaSlug;
+                resource.slug = slug;
+                resource.title = title;
+                resource.media = media;
+                resource.link = link;
+                resource.save();
+
+                return true;
+
+            } catch (err) {
+                console.log(err)
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
             }
         },
         submitRhetoric: async (_, {
@@ -1556,7 +1610,6 @@ module.exports = {
                 return _id;
 
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
             }
         },
@@ -1581,6 +1634,7 @@ module.exports = {
                 let rhetoric = await Rhetoric.findOne({
                     _id: documentID
                 });
+                if(!rhetoric) throw new UserInputError('invalid-id');
                 if (!rhetoric.createdBy.toString() !== currentUser._id && !currentUser.admin) {
                     throw new UserInputError('edit-submission-unauthorized');
                 }
@@ -1595,7 +1649,6 @@ module.exports = {
                 return true;
 
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
             }
         }

@@ -1,7 +1,8 @@
 <template>
     <div class="submission-form">
-        <form v-if="!submitted" @submit.prevent="submitResource()">
-            <h2 class="medium-margin-vertical">submit resource</h2>
+        <form v-if="!submitted" @submit.prevent="submitForm()">
+            <h2 v-if="resourceObject === undefined" class="medium-margin-vertical">submit resource</h2>
+            <h2 class="medium-margin-vertical">edit resource</h2>
             <div class="medium-margin-vertical">
                 <label>resource title</label>
                 <textarea v-model="title" maxlength=280 name="title" class="short-textarea"></textarea>
@@ -43,10 +44,17 @@
                 </div>
             </div>
 
-            <button type="submit">Agree &amp; Submit</button>
+            <button type="submit">
+                Agree &amp; Submit
+                <span v-if="resourceObject !== undefined">Edit</span>
+            </button>
         </form>
-        <div v-else class="medium-margin large-margin-vertical">
-            Your resource was submitted successfully. {{submitted}}
+        <div v-else-if="resourceObject === undefined" class="medium-margin large-margin-vertical">
+            <h2>The resource was submitted successfully!</h2>
+            You may track the status of your submission in your Account Panel or <router-link :to="submissionStatusLink(submitted)">HERE</router-link>
+        </div>
+        <div v-else>
+            <h2>The resource was edited successfully!</h2>
         </div>
     </div>
 </template>
@@ -89,7 +97,52 @@
                 }
             },
             submitResourceEdit: async function () {
-                console.log("write edit resource function!!!!");
+
+                await this.$apollo.queries.currentUser.refetch();
+
+                if (!this.currentUser) {
+                    this.$toasted.global.log_in();
+                } else if (!this.currentUser.emailVerified) {
+                    this.$toasted.global.verify_email();
+                } else if (this.validTitle(this.title) && this.validMedia(this.media) && this.validLink(this.link)) {
+                    //GraphQL Mutation
+                    this.$apollo.mutate({
+                        mutation: gql `
+                            mutation submitEditResource(
+                                $documentID: ID!
+                                $metaSlug: String!
+                                $slug: String!
+                                $title: String!
+                                $media: String!
+                                $link: String!
+                            ) {
+                                submitEditResource(
+                                    documentID: $documentID
+                                    metaSlug: $metaSlug
+                                    slug: $slug
+                                    title: $title
+                                    media: $media
+                                    link: $link
+                                )
+                            }
+                        `,
+                        variables: {
+                            documentID: this.resourceObject._id,
+                            metaSlug: this.resourceObject.metaSlug,
+                            slug: this.resourceObject.slug,
+                            title: this.title,
+                            media: this.media,
+                            link: this.link
+                        }
+                    }).then(({
+                        data
+                    }) => {
+                        this.submitted = true;
+                        this.$apollo.queries.unapprovedResources.refetch();
+                    }).catch(() => {
+                        // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
+                    });
+                }
             },
             submitResource: async function () {
                 await this.$apollo.queries.currentUser.refetch();
@@ -250,6 +303,36 @@
                         }
                     }
                 `
+            },
+            unapprovedResources: {
+                query: gql `query unapprovedResources($_id: ID!) {
+                    unapprovedResources(_id: $_id) {
+                        _id
+                        dateCreated
+                        active
+                        slug
+                        metaSlug
+                        title
+                        media
+                        link
+                        approved
+                        dateApproved
+                        approvedBy {
+                            _id
+                            username
+                        }
+                        approvalCommentary
+                    }
+                }`,
+                variables() {
+                    return {
+                        _id: this.resourceObject._id
+                    }
+                },
+                skip() {
+                    if (this.resourceObject === undefined) return true;
+                    else return false;
+                }
             }
         }
     };
