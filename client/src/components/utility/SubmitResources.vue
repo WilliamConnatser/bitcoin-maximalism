@@ -56,16 +56,41 @@
 
     export default {
         name: "SubmitResources",
+        props: {
+            resourceObject: Object
+        },
         data() {
-            return {
-                currentUser: null,
-                submitted: false,
-                title: "",
-                media: "article",
-                link: ""
+            if (this.resourceObject === undefined) {
+                return {
+                    currentUser: null,
+                    submitted: false,
+                    title: "",
+                    media: "article",
+                    link: ""
+                }
+            } else {
+                return {
+                    currentUser: null,
+                    submitted: false,
+                    title: this.resourceObject.title,
+                    media: this.resourceObject.media,
+                    link: this.resourceObject.link
+                }
             }
+
+
         },
         methods: {
+            submitForm() {
+                if (this.resourceObject) {
+                    submitResourceEdit();
+                } else {
+                    submitResource();
+                }
+            },
+            submitResourceEdit: async function () {
+                console.log("write edit resource function!!!!");
+            },
             submitResource: async function () {
                 await this.$apollo.queries.currentUser.refetch();
 
@@ -88,7 +113,9 @@
                             media: this.media,
                             link: this.link
                         }
-                    }).then(({data}) => {
+                    }).then(({
+                        data
+                    }) => {
                         this.submitted = data.submitResource;
                         //Redirect to status page
                     }).catch(() => {

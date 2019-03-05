@@ -1,7 +1,8 @@
 <template>
     <div>
-        <form v-if="!submitted" @submit.prevent="submitBulletPoint()">
-            <h2 class="medium-margin-vertical">submit bulletpoint</h2>
+        <form v-if="!submitted" @submit.prevent="submitForm()">
+            <h2 v-if="bulletPointObject === undefined" class="medium-margin-vertical">submit bulletpoint</h2>
+            <h2 v-else class="medium-margin-vertical">edit bulletpoint</h2>
             <div class="medium-margin-vertical">
                 <label for="content">bulletpoint content</label>
                 <textarea v-model="content" name="content" class="tall-textarea"></textarea>
@@ -18,7 +19,10 @@
                     &amp; Submit below you agree that you have read and understand to those Terms.
                 </div>
             </div>
-            <button type="submit">Agree &amp; Submit</button>
+            <button type="submit">
+                <span v-if="bulletPointObject === undefined">Agree &amp; Submit</span>
+                <span v-else>Agree &amp; Submit Edit</span>
+            </button>
         </form>
         <div v-else class="medium-margin  large-margin-vertical">
             Your bulletpoint was submitted successfully. {{submitted}}
@@ -31,14 +35,37 @@
 
     export default {
         name: "SubmitBulletPoints",
+        props: {
+            bulletPointObject: Object
+        },
         data() {
-            return {
-                currentUser: null,
-                submitted: false,
-                content: ""
+
+            if (this.bulletPointObject === undefined) {
+                return {
+                    currentUser: null,
+                    submitted: false,
+                    content: ""
+                }
+            } else {
+                return {
+                    currentUser: null,
+                    submitted: false,
+                    content: this.bulletPointObject.content
+                }
             }
+
         },
         methods: {
+            submitForm() {
+                if (this.bulletPointObject) {
+                    submitBulletPointEdit();
+                } else {
+                    submitBulletPoint();
+                }
+            },
+            submitBulletPointEdit: async function() {
+                console.log("write edit bulletpoint function!!!!"); 
+            },
             submitBulletPoint: async function () {
                 await this.$apollo.queries.currentUser.refetch();
 
@@ -59,7 +86,9 @@
                             slug: this.slug,
                             content: this.content
                         }
-                    }).then(({data}) => {
+                    }).then(({
+                        data
+                    }) => {
                         this.submitted = data.submitBulletPoint;
                         //Redirect to status page
                     }).catch(() => {
@@ -69,7 +98,7 @@
             },
             validBulletPoint(content) {
                 if (content.length > 1150) {
-                    this.content = this.content.slice(0,1150);
+                    this.content = this.content.slice(0, 1150);
                     this.$toasted.show('Bulletpoints must be 1150 characters or less', {
                         duration: 5000,
                         position: 'bottom-center',

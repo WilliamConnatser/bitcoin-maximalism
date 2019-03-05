@@ -55,8 +55,7 @@
                     submitted: false,
                     title: this.rhetoricObject.title,
                     metaSlug: this.rhetoricObject.metaSlug,
-                    slug: this.rhetoricObject.slug,
-                    unapprovedRhetoric: []
+                    slug: this.rhetoricObject.slug
                 }
 
             } else {
@@ -252,34 +251,6 @@
                         }
                     }
                 `
-            },
-            unapprovedRhetoric: {
-                query: gql `query unapprovedRhetoric($_id: ID!) {
-                    unapprovedRhetoric(_id: $_id) {
-                        _id
-                        dateCreated
-                        active
-                        slug
-                        metaSlug
-                        title
-                        approved
-                        dateApproved
-                        approvedBy {
-                            _id
-                            username
-                        }
-                        approvalCommentary
-                    }
-                }`,
-                variables() {
-                    return {
-                        _id: this.rhetoricObject._id
-                    }
-                },
-                skip() {
-                    if (this.rhetoricObject !== undefined) return false;
-                    else return true;
-                }
             }
         }
     };

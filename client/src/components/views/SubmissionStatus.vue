@@ -27,8 +27,7 @@
 
                             <div class="list-submissions-toolbar">
                                 <span v-if="currentUser && (currentUser.admin || argument.createdBy._id === currentUser._id)"
-                                    @click="show('editRhetoric'), cancel('approveRhetoric')"
-                                    class="small-text icon-group cursor-pointer">
+                                    @click="show('editRhetoric'), cancel('approveRhetoric')" class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!editRhetoric" icon="pen-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit argument</span>
@@ -73,10 +72,26 @@
                         </div>
                         <div v-else class="small-text medium-margin">
                             This bulletpoint has not been approved yet. <br />
-                            <router-link :to="submissionStatusLink(bulletPoint)">
-                                INFO
-                            </router-link>
+                            <div class="list-submissions-toolbar">
+                                <span v-if="currentUser && (currentUser.admin || bulletPoint.createdBy._id === currentUser._id)"
+                                    @click="show('editBulletPoint'), cancel('approveBulletPoint')" class="small-text icon-group cursor-pointer">
+                                    <font-awesome-icon v-if="!editBulletPoint" icon="pen-square" class="large-icon" />
+                                    <font-awesome-icon v-else icon="minus-square" class="large-icon" />
+                                    <span>edit bulletpoint</span>
+                                </span>
+                                <SubmitBulletPoints v-if="editBulletPoint" :bulletPointObject="bulletPoint" />
+                                <span v-if="currentUser && currentUser.admin" @click="show('approveBulletPoint'), cancel('editBulletPoint')"
+                                    class="small-text icon-group cursor-pointer">
+                                    <font-awesome-icon v-if="!approveBulletPoint" icon="check-square" class="large-icon" />
+                                    <font-awesome-icon v-else icon="minus-square" class="large-icon" />
+                                    <span>approve bulletpoint</span>
+                                </span>
+                                <ApproveSubmission v-if="approveBulletPoint" :submissionObject="bulletPoint" />
+                            </div>
                         </div>
+                        <router-link :to="submissionStatusLink(bulletPoint)">
+                            Reference Link
+                        </router-link>
                     </li>
                 </ul>
             </div>
@@ -99,9 +114,6 @@
                                 {{resource.title}}
                             </a>
                         </div>
-                        <router-link :to="submissionStatusLink(resource)">
-                            Reference Link
-                        </router-link>
                         <div v-if="resource.dateApproved">
                             {{resource.approved}} <br />
                             {{resource.dateApproved}} <br />
@@ -114,7 +126,26 @@
                         </div>
                         <div v-else class="small-text medium-margin">
                             This resource has not been approved yet. <br />
+                            <div class="list-submissions-toolbar">
+                                <span v-if="currentUser && (currentUser.admin || resource.createdBy._id === currentUser._id)"
+                                    @click="show('editResource'), cancel('approveResource')" class="small-text icon-group cursor-pointer">
+                                    <font-awesome-icon v-if="!editResource" icon="pen-square" class="large-icon" />
+                                    <font-awesome-icon v-else icon="minus-square" class="large-icon" />
+                                    <span>edit resource</span>
+                                </span>
+                                <SubmitResources v-if="editResource" :resourceObject="resource" />
+                                <span v-if="currentUser && currentUser.admin" @click="show('approveResource'), cancel('editResource')"
+                                    class="small-text icon-group cursor-pointer">
+                                    <font-awesome-icon v-if="!approveResource" icon="check-square" class="large-icon" />
+                                    <font-awesome-icon v-else icon="minus-square" class="large-icon" />
+                                    <span>approve resource</span>
+                                </span>
+                                <ApproveSubmission v-if="approveResource" :submissionObject="resource" />
+                            </div>
                         </div>
+                        <router-link :to="submissionStatusLink(resource)">
+                            Reference Link
+                        </router-link>
                     </li>
                 </ul>
             </div>
@@ -127,7 +158,9 @@
 
 <script>
     import gql from 'graphql-tag';
+    import SubmitResources from '../utility/SubmitResources.vue';
     import SubmitRhetoric from '../utility/SubmitRhetoric.vue';
+    import SubmitBulletPoints from '../utility/SubmitBulletPoints.vue';
     import ApproveSubmission from '../utility/ApproveSubmission.vue';
 
     export default {
@@ -138,12 +171,18 @@
                 unapprovedBulletPoints: [],
                 unapprovedResources: [],
                 editRhetoric: false,
-                approveRhetoric: false
+                approveRhetoric: false,
+                editBulletPoint: false,
+                approveBulletPoint: false,
+                editResource: false,
+                approveResource: false
             }
         },
         components: {
             ApproveSubmission,
-            SubmitRhetoric
+            SubmitRhetoric,
+            SubmitBulletPoints,
+            SubmitResources
         },
         methods: {
             submissionStatusLink(submission) {
