@@ -2,6 +2,8 @@
     <main >
         <h1 class="heading">donation status</h1>
         <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
+        <apollo-response v-else class="apollo-response" />
+        
         <ul v-if="docIDSpecificDonation" class="list">
             <h2>Donation</h2>
             <li v-if="docIDSpecificDonation.active && !docIDSpecificDonation.paid">

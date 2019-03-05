@@ -14,6 +14,7 @@ import Privacy from "./components/views/Privacy.vue";
 import PageNotFound from "./components/views/PageNotFound.vue";
 import DonationStatus from "./components/views/DonationStatus.vue";
 import SubmitDonation from "./components/views/SubmitDonation.vue";
+import SubmissionStatus from "./components/views/SubmissionStatus.vue";
 //import Maintenance from "./components/views/Maintenance.vue";
 
 Vue.use(Router);
@@ -68,6 +69,10 @@ export default new Router({
     {
       path: "/donation-status/:_id",
       component: DonationStatus
+    },
+    {
+      path: "/submission-status/:documentType/:documentID",
+      component: SubmissionStatus
     },
     {
       path: "/verify-email/:token",

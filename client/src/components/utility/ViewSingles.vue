@@ -1,6 +1,5 @@
 <template>
-    <div >
-
+    <div class="apollo-response">
         <ul v-if="singleDocument && singleDocument.__typename === 'Opinion'">
             <li class="opinion">
                 <div>

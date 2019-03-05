@@ -1563,49 +1563,11 @@ module.exports = {
     }
 }
 
-/*
-    Some of this logic will be used to attribute donations to accounts Saved for l8tr
-    try {
-                //Validation
-                if (!currentUser) throw new AuthenticationError('log-in');
-                if (args.onModel !== 'BulletPoint' && args.onModel !== 'Resource' && args.onModel !== 'Rhetoric') throw new UserInputError('invalid-type');
-                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
-                const cryptoDoc = await Crypto.findOne({
-                    ticker: 'BTC'
-                })
-                validateDonationAmount(args.amount, cryptoDoc.valueUSD);
+/* 
 
-                //Create Invoice and Donation
-                args.votingDonation = true;
-                let applicableDocument = {};
-                (args.onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
-                        _id: args.documentID
-                    }): (args.onModel === 'Resource') ? applicableDocument = await Resource.findOne({
-                        _id: args.documentID
-                    }) :
-                    applicableDocument = await Rhetoric.findOne({
-                        _id: args.documentID
-                    });
-                const newInvoice = await createInvoice(args, currentUser, args.onModel);
-                const newDonation = await createDonation(args, applicableDocument, newInvoice, Donation, currentUser);
-
-                //Check every 5 minutes to see if the invoice has been paid
-                let invoiceInterval;
-                invoiceInterval = setInterval(function () {
-                    invoicePaid(newInvoice, newDonation, invoiceInterval, args, applicableDocument);
-                }, 300000);
-
-                //Return donation ID
-                return newDonation._id;
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this vote'));
-            }
-
-            */
-
-
-/* Inactive for now
-        approveOpinion: async (_, {
+Inactive for now:
+        
+approveOpinion: async (_, {
             _id,
             approved,
             approvalCommentary
@@ -1635,4 +1597,4 @@ module.exports = {
             }
 
         }
-        */
+*/

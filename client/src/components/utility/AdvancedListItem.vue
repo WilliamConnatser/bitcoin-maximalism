@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container apollo-response">
         <ToolbarSubmissions :applicableObject="arrayProp[0]" />
         <li class="list" v-for="arrayItem in arrayProp" :key="arrayItem._id">
             <section>

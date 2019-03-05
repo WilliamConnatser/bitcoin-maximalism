@@ -10,11 +10,6 @@
                 <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'twitter-square' }" class="extra-large-icon" />
             </a>
         </li>
-        <li>
-            <a href="https://www.facebook.com/BitcoinMaximalism/" target="_blank" rel="noopener">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook-square' }" class="extra-large-icon" />
-            </a>
-        </li>
         <br/>
         <li>&copy; YOLO International LLC 2019</li>
         <br/>

@@ -241,9 +241,11 @@ type Mutation {
     submitResource(metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): ID
     submitRhetoric(metaSlug: String!, slug: String!, title: String!): ID
 
-    #Inactive - conceptual - submitEditBulletPoint(amount: String!, bulletPointID: ID!, bulletPointContent: String!): String
-    #Inactive - conceptual -submitEditResource(amount: String!, resourceID: ID!, resourceTitle: String!, resourcePath: String!, resourceMedia: String!): String
-    #Inactive - conceptual - submitEditRhetoric
-    #Inactive - resolver written - setUserAllegiance(allegiance: String!): Token
+    #toggleApproval(onModel: String!, documentID: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
+    #submitEditRhetoric(documentID: ID!, metaSlug: String!, slug: String!, title: String!): Boolean
+    #submitEditBulletPoint(documentID: ID!, metaSlug: String!, slug: String!, content: String!): Boolean
+    #submitEditResource(documentID: ID!, metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): Boolean
+    
     #Inactive - resolve written - approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
+
 }

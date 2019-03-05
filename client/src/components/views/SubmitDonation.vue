@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submitDonation()" class="container">
+    <form @submit.prevent="submitDonation()" class="container apollo-response">
         <h1 class="heading">submit donation</h1>
 
         <div class="medium-margin">

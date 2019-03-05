@@ -89,10 +89,10 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-
+        
             margin: 0 15px;
             animation: moveInRight .5s;
-
+        
             &:hover {
                 transform: scale(1.2, 1.2);
                 
@@ -100,7 +100,7 @@
                     transform: scaleX(1) scaleY(1);
                 }
             }
-    
+        
             &:active {
                 transform: rotate(5deg);
             }
@@ -137,6 +137,28 @@
 
     &:hover {
         transform: $grow-and-distort;
+    }
+}
+
+.icon-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin: 0 15px;
+    animation: moveInRight .5s;
+
+    &:hover {
+        transform: scale(1.2, 1.2);
+        
+        &::after {
+            transform: scaleX(1) scaleY(1);
+        }
+    }
+
+    &:active {
+        transform: rotate(5deg);
     }
 }
 

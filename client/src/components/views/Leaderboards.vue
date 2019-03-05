@@ -11,6 +11,7 @@
         <router-link to="/leaderboards/users"><button :class="filterButtonStyle('users')" style="cursor: pointer">Users</button></router-link>
 
         <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
+
         <section v-if="!leaderboardsCategory || leaderboardsCategory === 'opinions'">
             <div v-if="recentOpinions" class="medium-margin">
                 <h2>

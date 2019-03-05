@@ -1,7 +1,8 @@
 <template>
     <div>
-        <form v-if="!submitted" @submit.prevent="submitRhetoric()">
-            <h2 class="medium-margin-vertical">submit argument</h2>
+        <form v-if="!submitted" @submit.prevent="submitForm()">
+            <h2 v-if="rhetoricObject === undefined" class="medium-margin-vertical">submit argument</h2>
+            <h2 v-else class="medium-margin-vertical">edit argument</h2>
             <div class="medium-margin-vertical">
                 <label for="title">argument title</label>
                 <textarea v-model="title" maxlength=75 name="title" class="short-textarea"></textarea>
@@ -29,11 +30,15 @@
                     &amp; Submit below you agree that you have read and understand to those Terms.
                 </div>
             </div>
-            <button type="submit">Agree &amp; Submit</button>
+            <button type="submit">
+                <span v-if="rhetoricObject === undefined">Agree &amp; Submit</span>
+                <span v-else>Agree &amp; Submit Edit</span>
+            </button>
         </form>
 
         <div v-else class="medium-margin  large-margin-vertical">
-            Your argument was submitted successfully. {{submitted}}
+            Your argument was submitted successfully!
+            You may track the status of your submission in your Account Panel or <router-link :to="submissionStatusLink(submitted)">HERE</router-link>
         </div>
     </div>
 </template>
@@ -44,15 +49,40 @@
     export default {
         name: "SubmitRhetoric",
         data() {
-            return {
-                currentUser: null,
-                submitted: false,
-                title: "",
-                metaSlug: "protagonistic",
-                slug: "argument-slug"
+            if (this.rhetoricObject) {
+                return {
+                    currentUser: null,
+                    submitted: false,
+                    title: this.rhetoricObject.title,
+                    metaSlug: this.rhetoricObject.metaSlug,
+                    slug: this.rhetoricObject.slug,
+                    unapprovedRhetoric: []
+                }
+
+            } else {
+                return {
+                    currentUser: null,
+                    submitted: false,
+                    title: "",
+                    metaSlug: "protagonistic",
+                    slug: "argument-slug"
+                }
             }
         },
+        props: {
+            rhetoricObject: Object
+        },
         methods: {
+            submitForm() {
+                if (this.rhetoricObject) {
+                    this.submitRhetoricEdit();
+                } else {
+                    this.submitRhetoric();
+                }
+            },
+            submitRhetoricEdit: async function () {
+                console.log("create edit rhetoric mutation!!")
+            },
             submitRhetoric: async function () {
                 await this.$apollo.queries.currentUser.refetch();
 
@@ -73,7 +103,9 @@
                             slug: this.slug,
                             title: this.title
                         }
-                    }).then(({data}) => {
+                    }).then(({
+                        data
+                    }) => {
                         this.submitted = data.submitRhetoric;
                         //Redirect to status page
                     }).catch(() => {
@@ -83,7 +115,7 @@
             },
             validTitle(title) {
                 if (title.length > 80) {
-                    this.title = this.title.slice(0,80);
+                    this.title = this.title.slice(0, 80);
                     this.$toasted.show('Argument titles must be 80 characters or less', {
                         duration: 5000,
                         position: 'bottom-center',
@@ -190,6 +222,9 @@
                     this.slug = this.slug.toLowerCase();
                     return true;
                 }
+            },
+            submissionStatusLink(_id) {
+                return `/submission-status/argument/${_id}`;
             }
         },
         watch: {
@@ -217,6 +252,34 @@
                         }
                     }
                 `
+            },
+            unapprovedRhetoric: {
+                query: gql `query unapprovedRhetoric($_id: ID!) {
+                    unapprovedRhetoric(_id: $_id) {
+                        _id
+                        dateCreated
+                        active
+                        slug
+                        metaSlug
+                        title
+                        approved
+                        dateApproved
+                        approvedBy {
+                            _id
+                            username
+                        }
+                        approvalCommentary
+                    }
+                }`,
+                variables() {
+                    return {
+                        _id: this.rhetoricObject._id
+                    }
+                },
+                skip() {
+                    if (this.rhetoricObject !== undefined) return false;
+                    else return true;
+                }
             }
         }
     };

@@ -1,5 +1,5 @@
 <template>
-    <div class="container ">
+    <div class="container apollo-response">
         <h1 class="heading">
             bitcoin maximalism
         </h1>

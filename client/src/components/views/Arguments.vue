@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <main>
     <h1 v-if="argumentSpecificRhetoric" class="heading">{{argumentSpecificRhetoric.title.toLowerCase()}}</h1>
     <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
     <div v-else>
@@ -7,7 +7,7 @@
         <AdvancedListItem v-if="argumentSpecificRhetoric" :arrayProp="concatAndSort" v-on:update-arguments-query="updateQuery" />
       </ul>
     </div>
-  </div>
+  </main>
 </template>
 
 <script>

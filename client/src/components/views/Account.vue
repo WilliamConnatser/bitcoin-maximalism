@@ -1,5 +1,5 @@
 <template>
-    <main class="container ">
+    <main class="container apollo-response">
         <Login v-if="!currentUser" />
         <div v-if="currentUser">
             <section>
@@ -135,7 +135,10 @@
                                 </router-link>
                             </div>
                             <div v-else class="small-text medium-margin">
-                                This argument has not been approved yet.
+                                This argument has not been approved yet. <br/>
+                                <router-link :to="submissionStatusLink(argument)" class="small-text">
+                                    INFO
+                                </router-link>
                             </div>
                         </li>
                     </ul>
@@ -161,7 +164,10 @@
                                 </router-link>
                             </div>
                             <div v-else class="small-text medium-margin">
-                                This argument has not been approved yet.
+                                This argument has not been approved yet. <br/>
+                                <router-link :to="submissionStatusLink(argument)">
+                                    INFO
+                                </router-link>
                             </div>
                         </li>
                     </ul>
@@ -190,7 +196,10 @@
                                 </router-link>
                             </div>
                             <div v-else class="small-text medium-margin">
-                                This bulletpoint has not been approved yet.
+                                This bulletpoint has not been approved yet. <br/>
+                                <router-link :to="submissionStatusLink(bulletPoint)">
+                                    INFO
+                                </router-link>
                             </div>
                         </li>
                     </ul>
@@ -216,7 +225,10 @@
                                 </router-link>
                             </div>
                             <div v-else class="small-text medium-margin">
-                                This bulletpoint has not been approved yet.
+                                This bulletpoint has not been approved yet. <br/>
+                                <router-link :to="submissionStatusLink(bulletPoint)">
+                                    INFO
+                                </router-link>
                             </div>
                         </li>
                     </ul>
@@ -250,7 +262,10 @@
                                 </router-link>
                             </div>
                             <div v-else class="small-text medium-margin">
-                                This resource has not been approved yet.
+                                This resource has not been approved yet. <br/>
+                                <router-link :to="submissionStatusLink(resource)">
+                                    INFO
+                                </router-link>
                             </div>
                         </li>
                     </ul>
@@ -281,7 +296,10 @@
                                 </router-link>
                             </div>
                             <div v-else class="small-text medium-margin">
-                                This resource has not been approved yet.
+                                This resource has not been approved yet. <br/>
+                                <router-link :to="submissionStatusLink(resource)">
+                                    INFO
+                                </router-link>
                             </div>
                         </li>
                     </ul>
@@ -341,6 +359,12 @@
                 } else {
                     return `/arguments/${metaSlug}`;
                 }
+            },
+            submissionStatusLink(submission) {
+                if(submission.__typename === 'Rhetoric') return `/submission-status/argument/${submission._id}`;
+                if(submission.__typename === 'Resource') return `/submission-status/resource/${submission._id}`;
+                if(submission.__typename === 'BulletPoint') return `/submission-status/bulletpoint/${submission._id}`;
+                else return `/404`;
             },
             signoutUser() {
                 //Remove token in localStorage

@@ -15,7 +15,7 @@
                 <input type="password" v-model="password" autocomplete="password" class="wide-input">
             </div>
             <div class="medium-margin">
-                <label @click="toggleCheck()" for="agree" class="checkbox">
+                <label @click="checked = !checked" for="agree" class="checkbox">
                     <input type="checkbox" name="agree" class=".checkbox">
                     <font-awesome-icon v-if="!checked" icon="square" title="Unchecked" class="checkbox__icon" />
                     <font-awesome-icon v-else icon="check-square" title="Checked" class="checkbox__icon" />
@@ -51,9 +51,6 @@
             }
         },
         methods: {
-            toggleCheck() {
-                this.checked = !this.checked;
-            },
             signupUser() {
 
                 let query = {};

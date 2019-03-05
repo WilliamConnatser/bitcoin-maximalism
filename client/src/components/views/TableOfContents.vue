@@ -1,5 +1,5 @@
 <template>
-  <section class=" container">
+  <section class="container">
     <h1 class="heading">
       <span v-if="metaSlug">{{metaSlug}}</span>
       <span v-else>arguments</span>
@@ -10,6 +10,7 @@
     <router-link to="/arguments/antagonistic"><button :class="filterButtonStyle('antagonistic')">Antagonistic</button></router-link>
 
     <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
+
     <ul v-else class="medium-margin-horizontal">
       <AdvancedListItem :arrayProp="this.args" v-on:update-tos-query="updateQuery" />
     </ul>
