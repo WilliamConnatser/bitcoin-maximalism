@@ -83,9 +83,9 @@
         methods: {
             submitForm() {
                 if (this.resourceObject) {
-                    submitResourceEdit();
+                    this.submitResourceEdit();
                 } else {
-                    submitResource();
+                    this.submitResource();
                 }
             },
             submitResourceEdit: async function () {

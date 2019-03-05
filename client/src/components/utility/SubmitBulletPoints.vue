@@ -58,9 +58,9 @@
         methods: {
             submitForm() {
                 if (this.bulletPointObject) {
-                    submitBulletPointEdit();
+                    this.submitBulletPointEdit();
                 } else {
-                    submitBulletPoint();
+                    this.submitBulletPoint();
                 }
             },
             submitBulletPointEdit: async function() {

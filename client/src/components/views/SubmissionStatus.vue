@@ -9,9 +9,14 @@
             <div v-if="unapprovedRhetoric.length>0">
                 <ul v-for="argument in unapprovedRhetoric" :key="argument._id" class="list">
                     <li>
-                        <div><strong>{{argument.dateCreated | formatDate}}</strong></div>
                         <div>
-                            {{argument.title}}
+                            <strong>{{argument.dateCreated | formatDate}}</strong> <br />
+                            <strong>Title:</strong> <br />
+                            {{argument.title}} <br />
+                            <strong>Argument Type:</strong> <br />
+                            {{argument.metaSlug}} <br />
+                            <strong>Argument Slug:</strong> <br />
+                            {{argument.slug}} <br />
                         </div>
                         <div v-if="argument.dateApproved">
                             {{argument.approved}} <br />
@@ -32,15 +37,16 @@
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit argument</span>
                                 </span>
-                                <SubmitRhetoric v-if="editRhetoric" :rhetoricObject="argument" />
+
                                 <span v-if="currentUser && currentUser.admin" @click="show('approveRhetoric'), cancel('editRhetoric')"
                                     class="small-text icon-group cursor-pointer">
-                                    <font-awesome-icon v-if="!editRhetoric" icon="check-square" class="large-icon" />
+                                    <font-awesome-icon v-if="!approveRhetoric" icon="check-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>approve argument</span>
                                 </span>
-                                <ApproveSubmission v-if="approveRhetoric" :submissionObject="argument" />
                             </div>
+                            <SubmitRhetoric v-if="editRhetoric" :rhetoricObject="argument" />
+                            <ApproveSubmission v-if="approveRhetoric" :submissionObject="argument" />
                         </div>
                         <router-link :to="submissionStatusLink(argument)">
                             Reference Link
@@ -79,15 +85,15 @@
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit bulletpoint</span>
                                 </span>
-                                <SubmitBulletPoints v-if="editBulletPoint" :bulletPointObject="bulletPoint" />
                                 <span v-if="currentUser && currentUser.admin" @click="show('approveBulletPoint'), cancel('editBulletPoint')"
                                     class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!approveBulletPoint" icon="check-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>approve bulletpoint</span>
                                 </span>
-                                <ApproveSubmission v-if="approveBulletPoint" :submissionObject="bulletPoint" />
                             </div>
+                            <SubmitBulletPoints v-if="editBulletPoint" :bulletPointObject="bulletPoint" />
+                            <ApproveSubmission v-if="approveBulletPoint" :submissionObject="bulletPoint" />
                         </div>
                         <router-link :to="submissionStatusLink(bulletPoint)">
                             Reference Link
@@ -133,15 +139,16 @@
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit resource</span>
                                 </span>
-                                <SubmitResources v-if="editResource" :resourceObject="resource" />
+
                                 <span v-if="currentUser && currentUser.admin" @click="show('approveResource'), cancel('editResource')"
                                     class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!approveResource" icon="check-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>approve resource</span>
                                 </span>
-                                <ApproveSubmission v-if="approveResource" :submissionObject="resource" />
                             </div>
+                            <SubmitResources v-if="editResource" :resourceObject="resource" />
+                            <ApproveSubmission v-if="approveResource" :submissionObject="resource" />
                         </div>
                         <router-link :to="submissionStatusLink(resource)">
                             Reference Link

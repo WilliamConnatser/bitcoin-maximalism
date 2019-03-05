@@ -22,6 +22,7 @@
         <SubmitRhetoric v-if="submitRhetoric" class="submission-form" />
         <SubmitResources v-if="submitResources" class="submission-form" />
         <SubmitBulletPoints v-if="submitBulletPoints" class="submission-form" />
+
     </div>
 </template>
 
@@ -62,7 +63,7 @@
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
                 } else {
-                    if(!this[actionType]) {
+                    if (!this[actionType]) {
                         this[actionType] = true;
                     } else {
                         this[actionType] = false;

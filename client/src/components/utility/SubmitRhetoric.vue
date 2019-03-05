@@ -35,10 +35,12 @@
                 <span v-else>Agree &amp; Submit Edit</span>
             </button>
         </form>
-
-        <div v-else class="medium-margin  large-margin-vertical">
-            Your argument was submitted successfully!
+        <div v-else-if="rhetoricObject === undefined" class="medium-margin large-margin-vertical">
+            The argument was submitted successfully! <br />
             You may track the status of your submission in your Account Panel or <router-link :to="submissionStatusLink(submitted)">HERE</router-link>
+        </div>
+        <div v-else class="medium-margin large-margin-vertical">
+            The argument was edited successfully! <br />
         </div>
     </div>
 </template>
@@ -80,7 +82,47 @@
                 }
             },
             submitRhetoricEdit: async function () {
-                console.log("create edit rhetoric mutation!!")
+
+                await this.$apollo.queries.currentUser.refetch();
+
+                if (!this.currentUser) {
+                    this.$toasted.global.log_in();
+                } else if (!this.currentUser.emailVerified) {
+                    this.$toasted.global.verify_email();
+                } else if (this.validTitle(this.title) && this.validMetaSlug(this.metaSlug) && this.validSlug(this.slug)) {
+                    //GraphQL Mutation
+                    this.$apollo.mutate({
+                        mutation: gql `
+                            mutation submitEditRhetoric(
+                                $documentID: ID!
+                                $metaSlug: String!
+                                $slug: String!
+                                $title: String!
+                            ) {
+                                submitEditRhetoric(
+                                    documentID: $documentID
+                                    metaSlug: $metaSlug
+                                    slug: $slug
+                                    title: $title
+                                )
+                            }
+                        `,
+                        variables: {
+                            documentID: this.rhetoricObject._id,
+                            metaSlug: this.metaSlug,
+                            slug: this.slug,
+                            title: this.title
+                        }
+                    }).then(({
+                        data
+                    }) => {
+                        this.submitted = true;
+                        this.$apollo.queries.unapprovedRhetoric.refetch();
+                        //Redirect to status page
+                    }).catch(() => {
+                        // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
+                    });
+                }
             },
             submitRhetoric: async function () {
                 await this.$apollo.queries.currentUser.refetch();
@@ -251,6 +293,38 @@
                         }
                     }
                 `
+            },
+            unapprovedRhetoric: {
+                query: gql `query unapprovedRhetoric($_id: ID!) {
+                    unapprovedRhetoric(_id: $_id) {
+                        _id
+                        dateCreated
+                        createdBy {
+                            _id
+                            username
+                        }
+                        active
+                        slug
+                        metaSlug
+                        title
+                        approved
+                        dateApproved
+                        approvedBy {
+                            _id
+                            username
+                        }
+                        approvalCommentary
+                    }
+                }`,
+                variables() {
+                    return {
+                        _id: this.rhetoricObject._id
+                    }
+                },
+                skip() {
+                    if (this.rhetoricObject === undefined) return true;
+                    else return false;
+                }
             }
         }
     };

@@ -242,7 +242,7 @@ type Mutation {
     submitRhetoric(metaSlug: String!, slug: String!, title: String!): ID
 
     #toggleApproval(onModel: String!, documentID: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
-    #submitEditRhetoric(documentID: ID!, metaSlug: String!, slug: String!, title: String!): Boolean
+    submitEditRhetoric(documentID: ID!, metaSlug: String!, slug: String!, title: String!): Boolean
     #submitEditBulletPoint(documentID: ID!, metaSlug: String!, slug: String!, content: String!): Boolean
     #submitEditResource(documentID: ID!, metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): Boolean
     
