@@ -11,7 +11,7 @@
                 </label>
 
                 <label>approval reason</label>
-                <textarea v-model="approvalReason" name="approval-reason" class="short-textarea"></textarea>
+                <textarea v-model="approvalCommentary" name="approval reason" class="short-textarea"></textarea>
 
                 <div class="extra-small-text medium-margin-vertical">
                     This form can be used to toggle approval for any submission.
@@ -24,7 +24,10 @@
             </button>
         </form>
         <div v-else class="medium-margin large-margin-vertical">
-            Your resource was submitted successfully. {{submitted}}
+            The submission
+            <span v-if="approved">approval</span>
+            <span v-else>disproval</span>
+            was submitted successfully.
         </div>
     </div>
 </template>
@@ -38,74 +41,48 @@
             submissionObject: Object
         },
         data() {
-            if (this.submissionObject.approvalDate !== undefined) {
-                return {
-                    currentUser: null,
-                    submitted: false,
-                    approved: this.submissionObject.approved,
-                    approvalReason: this.submissionObject.approvalReason
-                }
-            } else {
-                return {
-                    currentUser: null,
-                    submitted: false,
-                    approved: false,
-                    approvalReason: ""
-                }
+            return {
+                currentUser: null,
+                submitted: false,
+                approved: this.submissionObject.approved,
+                approvalCommentary: this.submissionObject.approvalCommentary
             }
         },
         methods: {
-            submitResource: async function () {
+            submitApproval: async function () {
                 await this.$apollo.queries.currentUser.refetch();
-
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                } else if (this.validTitle(this.title) && this.validMedia(this.media) && this.validLink(this.link)) {
+                } else if (this.validApprovalCommentary(this.approvalCommentary) && this.validApproved(this.approved)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                            mutation submitResource($metaSlug: String!, $slug: String!, $title: String!, $media: String!, $link:String!){
-                                submitResource(metaSlug: $metaSlug, slug: $slug, title: $title, media: $media, link:$link)
+                            mutation toggleApproval($onModel: String!, $documentID: ID!, $approved: Boolean!, $approvalCommentary: String!){
+                                toggleApproval(onModel: $onModel, documentID: $documentID, approved: $approved, approvalCommentary: $approvalCommentary)
                             }
                         `,
                         variables: {
-                            metaSlug: this.metaSlug,
-                            slug: this.slug,
-                            title: this.title,
-                            media: this.media,
-                            link: this.link
+                            onModel: this.submissionObject.__typename,
+                            documentID: this.submissionObject._id,
+                            approved: this.approved,
+                            approvalCommentary: this.approvalCommentary
                         }
                     }).then(({
                         data
                     }) => {
-                        this.submitted = data.submitResource;
+                        this.submitted = data.toggleApproval;
                         //Redirect to status page
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
                 }
             },
-            validTitle(title) {
-                if (title.length > 280) {
-                    this.title = title.slice(0, 280);
-                    this.$toasted.show('Titles must be 280 characters or less', {
-                        duration: 5000,
-                        position: 'bottom-center',
-                        fullWidth: true,
-                        fitToScreen: true,
-                        singleton: true,
-                        action: [{
-                            text: 'Close',
-                            onClick: (e, toastObject) => {
-                                toastObject.goAway(0);
-                            }
-                        }]
-                    });
-                    return false;
-                } else if (title.trim() === "") {
-                    this.$toasted.show('You must enter a title', {
+            validApproved(approved) {
+                if (typeof approved !== "boolean") {
+                    this.approved = false;
+                    this.$toasted.show('Approval commentary must be a boolean', {
                         duration: 5000,
                         position: 'bottom-center',
                         fullWidth: true,
@@ -123,46 +100,10 @@
                     return true;
                 }
             },
-            validMedia(media) {
-                if (media !== "article" && media !== "blog" && media !== "podcast" && media !== "video" && media !==
-                    "whitepaper") {
-                    this.media = "article";
-                    this.$toasted.show('Invalid media type submitted', {
-                        duration: 5000,
-                        position: 'bottom-center',
-                        fullWidth: true,
-                        fitToScreen: true,
-                        singleton: true,
-                        action: [{
-                            text: 'Close',
-                            onClick: (e, toastObject) => {
-                                toastObject.goAway(0);
-                            }
-                        }]
-                    });
-                    return false;
-                } else if (media.trim() === "") {
-                    this.$toasted.show('You must enter a media type', {
-                        duration: 5000,
-                        position: 'bottom-center',
-                        fullWidth: true,
-                        fitToScreen: true,
-                        singleton: true,
-                        action: [{
-                            text: 'Close',
-                            onClick: (e, toastObject) => {
-                                toastObject.goAway(0);
-                            }
-                        }]
-                    });
-                    return false;
-                } else {
-                    return true;
-                }
-            },
-            validLink(link) {
-                if (link.trim() === "") {
-                    this.$toasted.show('You must enter a link', {
+            validApprovalCommentary(approved) {
+                if (typeof approved !== "string") {
+                    this.approved = false;
+                    this.$toasted.show('Approval commentary must be a string', {
                         duration: 5000,
                         position: 'bottom-center',
                         fullWidth: true,
@@ -182,22 +123,11 @@
             }
         },
         watch: {
-            title(newTitle) {
-                this.validTitle(newTitle);
+            approved(newApproved) {
+                this.validApproved(newApproved);
             },
-            media(newMedia) {
-                this.validMedia(newMedia);
-            },
-            link(newLink) {
-                this.validLink(newLink);
-            }
-        },
-        computed: {
-            slug() {
-                return this.$route.params.slug;
-            },
-            metaSlug() {
-                return this.$route.params.metaSlug;
+            approvalCommentary(newApprovalCommentary) {
+                this.validApprovalCommentary(newApprovalCommentary);
             }
         },
         apollo: {

@@ -82,14 +82,15 @@
                 }
             },
             submitRhetoricEdit: async function () {
-
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                } else if (this.validTitle(this.title) && this.validMetaSlug(this.metaSlug) && this.validSlug(this.slug)) {
+                } else if (this.validTitle(this.title) &&
+                            this.validMetaSlug(this.metaSlug) &&
+                            this.validSlug(this.slug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -116,6 +117,7 @@
                     }).then(({
                         data
                     }) => {
+                        console.log("whattt")
                         this.submitted = true;
                         this.$apollo.queries.unapprovedRhetoric.refetch();
                         //Redirect to status page
@@ -131,7 +133,9 @@
                     this.$toasted.global.log_in();
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                } else if (this.validTitle(this.title) && this.validMetaSlug(this.metaSlug) && this.validSlug(this.slug)) {
+                } else if (this.validTitle(this.title) &&
+                            this.validMetaSlug(this.metaSlug) &&
+                            this.validSlug(this.slug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -207,6 +211,8 @@
                         }]
                     });
                     return false;
+                } else {
+                    return true;
                 }
             },
             validSlug(slug) {

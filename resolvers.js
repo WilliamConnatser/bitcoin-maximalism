@@ -266,9 +266,11 @@ module.exports = {
             Rhetoric
         }) => {
             try {
-                const rhetoric = await Rhetoric.find({approved: true});
-                const protagonistic = await rhetoric.filter(arg => arg.metaSlug==='protagonistic').map(arg => arg.slug);                
-                const antagonistic = await rhetoric.filter(arg => arg.metaSlug==='antagonistic').map(arg => arg.slug);
+                const rhetoric = await Rhetoric.find({
+                    approved: true
+                });
+                const protagonistic = await rhetoric.filter(arg => arg.metaSlug === 'protagonistic').map(arg => arg.slug);
+                const antagonistic = await rhetoric.filter(arg => arg.metaSlug === 'antagonistic').map(arg => arg.slug);
 
                 return {
                     protagonistic,
@@ -1618,6 +1620,7 @@ module.exports = {
                 return true;
 
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
             }
         },
@@ -1694,7 +1697,7 @@ module.exports = {
                     _id: documentID
                 });
                 if (!rhetoric) throw new UserInputError('invalid-id');
-                if (!bulletPoint.createdBy.equals(currentUser._id) && !currentUser.admin) {
+                if (!rhetoric.createdBy.equals(currentUser._id) && !currentUser.admin) {
                     throw new UserInputError('edit-submission-unauthorized');
                 }
                 if (rhetoric.approved && !currentUser.admin) throw new UserInputError('edit-submission-approved');
@@ -1704,6 +1707,60 @@ module.exports = {
                 rhetoric.slug = slug;
                 rhetoric.title = title;
                 rhetoric.save();
+
+                return true;
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
+            }
+        }, //toggleApproval(onModel: String!, documentID: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
+        toggleApproval: async (_, {
+            onModel,
+            documentID,
+            approved,
+            approvalCommentary
+        }, {
+            BulletPoint,
+            Resource,
+            Rhetoric,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+                if (!currentUser.admin) throw new UserInputError('admin');
+                if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric') throw new UserInputError('invalid-model')
+
+                let applicableDocument = null;
+
+                switch (onModel) {
+                    case "BulletPoint":
+                        applicableDocument = await BulletPoint.findOne({
+                            _id: documentID
+                        });
+                        break;
+
+                    case "Resource":
+                        applicableDocument = await Resource.findOne({
+                            _id: documentID
+                        });
+                        break;
+
+                    case "Rhetoric":
+                        applicableDocument = await Rhetoric.findOne({
+                            _id: documentID
+                        });
+                }
+
+                if (!applicableDocument) throw new UserInputError('invalid-id');
+
+                //Update and Save Rhetoric Document
+                applicableDocument.approved = approved;
+                applicableDocument.approvalCommentary = approvalCommentary;
+                applicableDocument.dateApproved = new Date();
+                applicableDocument.approvedBy = currentUser._id;
+                applicableDocument.save();
 
                 return true;
 

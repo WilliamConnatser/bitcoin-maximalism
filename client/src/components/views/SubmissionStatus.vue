@@ -17,15 +17,17 @@
                             {{argument.metaSlug}} <br />
                             <strong>Argument Slug:</strong> <br />
                             {{argument.slug}} <br />
-                        </div>
-                        <div v-if="argument.dateApproved">
-                            {{argument.approved}} <br />
-                            {{argument.dateApproved}} <br />
-                            {{argument.approvedBy.username}} <br />
-                            {{argument.approvalCommentary}} <br />
-                            <router-link :to="argumentLink(argument.metaSlug, argument.slug)">
+                            <router-link v-if="argument.approved" :to="argumentLink(argument.metaSlug, argument.slug)">
                                 {{argumentLink(argument.metaSlug,argument.slug)}}
                             </router-link>
+                        </div>
+                        <div v-if="argument.dateApproved">
+                            <strong>
+                                <span v-if="argument.approved">Approved </span>
+                                <span v-else>Denied </span>
+                            </strong> <br/>
+                            {{argument.dateApproved | formatDate}} <br/>
+                            {{argument.approvalCommentary}}
                         </div>
                         <div v-else class="small-text medium-margin">
                             This argument has not been approved yet. <br />
@@ -67,14 +69,16 @@
                         <div>
                             {{bulletPoint.content}}
                         </div>
-                        <div v-if="bulletPoint.dateApproved">
-                            {{bulletPoint.approved}} <br />
-                            {{bulletPoint.dateApproved}} <br />
-                            {{bulletPoint.approvedBy.username}} <br />
-                            {{bulletPoint.approvalCommentary}} <br />
-                            <router-link :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)">
-                                {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
-                            </router-link>
+                        <router-link v-if="bulletPoint.approved" :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)">
+                            {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
+                        </router-link>
+                        <div v-if="bulletPoint.dateApproved" class="medium-margin">
+                            <strong>
+                                <span v-if="bulletPoint.approved">Approved </span>
+                                <span v-else>Denied </span>
+                            </strong> <br/>
+                            {{bulletPoint.dateApproved | formatDate}} <br/>
+                            {{bulletPoint.approvalCommentary}}
                         </div>
                         <div v-else class="small-text medium-margin">
                             This bulletpoint has not been approved yet. <br />
@@ -119,16 +123,18 @@
                                 </span>
                                 {{resource.title}}
                             </a>
-                        </div>
-                        <div v-if="resource.dateApproved">
-                            {{resource.approved}} <br />
-                            {{resource.dateApproved}} <br />
-                            {{resource.approvedBy.username}} <br />
-                            {{resource.approvalCommentary}} <br />
-                            <router-link :to="argumentLink(resource.metaSlug, resource.slug)">
+                            <br/>
+                            <router-link v-if="resource.approved" :to="argumentLink(resource.metaSlug, resource.slug)">
                                 {{argumentLink(resource.metaSlug,resource.slug)}}
                             </router-link>
-
+                        </div>
+                        <div v-if="resource.dateApproved">
+                            <strong>
+                                <span v-if="resource.approved">Approved </span>
+                                <span v-else>Denied </span>
+                            </strong> <br/>
+                            {{resource.dateApproved | formatDate}} <br/>
+                            {{resource.approvalCommentary}}
                         </div>
                         <div v-else class="small-text medium-margin">
                             This resource has not been approved yet. <br />
@@ -215,6 +221,13 @@
                     } else {
                         this[actionType] = false;
                     }
+                }
+            },
+            argumentLink(metaSlug, slug) {
+                if (slug !== null) {
+                    return `/arguments/${metaSlug}/${slug}`;
+                } else {
+                    return `/arguments/${metaSlug}`;
                 }
             }
         },

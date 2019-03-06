@@ -99,7 +99,7 @@
                     media: "article",
                     link: ""
                 }
-                
+
             } else {
                 return {
                     currentUser: null,
@@ -314,6 +314,12 @@
             validSlug(slug) {
                 if (!this.allSlugs[this.metaSlug].includes(slug)) {
 
+                    if (this.resourceObject === undefined) {
+                        this.slug = this.$route.params.slug;
+                    } else {
+                        this.slug = this.resourceObject.slug;
+                    }
+
                     this.$toasted.show('You must choose a valid slug', {
                         duration: 5000,
                         position: 'bottom-center',
@@ -334,11 +340,30 @@
                 }
             },
             validMetaSlug(metaSlug) {
-                if (this.metaSlug === 'protagonistic' ||
-                    this.metaSlug === 'antagonistic') {
+                if (metaSlug === 'protagonistic' ||
+                    metaSlug === 'antagonistic') {
                     return true;
 
                 } else {
+                    if (this.resourceObject === undefined) {
+                        this.metaSlug = this.$route.params.metaSlug;
+                    } else {
+                        this.metaSlug = this.resourceObject.metaSlug;
+                    }
+
+                    this.$toasted.show('Invalid argument type submitted', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
                     return false;
                 }
             },

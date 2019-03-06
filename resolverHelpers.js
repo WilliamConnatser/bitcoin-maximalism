@@ -326,7 +326,6 @@ const parseError = (error, unknownError) => {
     else if (error == 'edit-submission-approved') return 'Submissions that were already approved can not be edited';
     else if (error == 'unauthorized') return 'You are not authorized to view this';
     else {
-        //console.log(error);
         return unknownError;
     }
 }
