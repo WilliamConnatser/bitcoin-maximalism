@@ -262,6 +262,23 @@ module.exports = {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching all rhetoric'));
             }
         },
+        allSlugs: async (_, args, {
+            Rhetoric
+        }) => {
+            try {
+                const rhetoric = await Rhetoric.find({approved: true});
+                const protagonistic = await rhetoric.filter(arg => arg.metaSlug==='protagonistic').map(arg => arg.slug);                
+                const antagonistic = await rhetoric.filter(arg => arg.metaSlug==='antagonistic').map(arg => arg.slug);
+
+                return {
+                    protagonistic,
+                    antagonistic
+                }
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching all users'));
+            }
+        },
         docIDSpecificDonation: async (_, {
             _id
         }, {
@@ -1506,7 +1523,7 @@ module.exports = {
                 if (title.length > 280) throw new UserInputError('invalid-title');
                 if (title.trim() === "") throw new UserInputError('invalid-title');
                 if (media !== "article" && media !== "blog" && media !== "podcast" &&
-                    media !== "video" && media !== "whitepaper") throw new UserInputError('invalid-media');
+                    media !== "video" && media !== "whitepaper" && media !== "website") throw new UserInputError('invalid-media');
                 if (media.trim() === "") throw new UserInputError('invalid-media');
                 if (link.trim() === "") throw new UserInputError('invalid-link');
                 if (await Resource.findOne({
@@ -1570,7 +1587,7 @@ module.exports = {
                 if (title.length > 280) throw new UserInputError('invalid-title');
                 if (title.trim() === "") throw new UserInputError('invalid-title');
                 if (media !== "article" && media !== "blog" && media !== "podcast" &&
-                    media !== "video" && media !== "whitepaper") throw new UserInputError('invalid-media');
+                    media !== "video" && media !== "whitepaper" && media !== "website") throw new UserInputError('invalid-media');
                 if (media.trim() === "") throw new UserInputError('invalid-media');
                 if (link.trim() === "") throw new UserInputError('invalid-link');
                 if (await Resource.findOne({

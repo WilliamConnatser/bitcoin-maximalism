@@ -207,23 +207,6 @@
                         }]
                     });
                     return false;
-                } else if (metaSlug.trim() === "") {
-                    this.$toasted.show('You must select a media type', {
-                        duration: 5000,
-                        position: 'bottom-center',
-                        fullWidth: true,
-                        fitToScreen: true,
-                        singleton: true,
-                        action: [{
-                            text: 'Close',
-                            onClick: (e, toastObject) => {
-                                toastObject.goAway(0);
-                            }
-                        }]
-                    });
-                    return false;
-                } else {
-                    return true;
                 }
             },
             validSlug(slug) {

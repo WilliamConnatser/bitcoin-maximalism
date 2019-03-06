@@ -5,12 +5,20 @@
             <h2 class="medium-margin-vertical">edit resource</h2>
             <div class="medium-margin-vertical">
                 <label>argument type</label>
-                <select v-model="metaSlug" class="wide-input">
+                <select v-model="metaSlug" class="wide-input" @change="metaSlugChanged()">
                     <option value="protagonistic" :selected="metaSlug === 'protagonistic'">
                         Protagonistic
                     </option>
                     <option value="antagonistic" :selected="metaSlug === 'antagonistic'">
                         Antagonistic
+                    </option>
+                </select>
+                <label>argument slug</label>
+                <select v-model="slug" class="wide-input">
+                    <option v-if="slug===null" value="null">Pick a Slug...</option>
+                    <option v-for="querySlug in allSlugs[metaSlug]" :value="querySlug" :selected="querySlug === slug"
+                        :key="querySlug">
+                        {{querySlug}}
                     </option>
                 </select>
                 <label>resource title</label>
@@ -36,6 +44,9 @@
                     </option>
                     <option value="book" :selected="media === 'book'">
                         Book
+                    </option>
+                    <option value="website" :selected="media === 'website'">
+                        Website
                     </option>
                 </select>
                 <div class="extra-small-text medium-margin-vertical">
@@ -78,9 +89,9 @@
         },
         data() {
             if (this.resourceObject === undefined) {
-
                 return {
                     currentUser: null,
+                    allSlugs: {},
                     submitted: false,
                     slug: this.$route.params.slug,
                     metaSlug: this.$route.params.metaSlug,
@@ -88,9 +99,11 @@
                     media: "article",
                     link: ""
                 }
+                
             } else {
                 return {
                     currentUser: null,
+                    allSlugs: {},
                     submitted: false,
                     slug: this.resourceObject.slug,
                     metaSlug: this.resourceObject.metaSlug,
@@ -104,19 +117,25 @@
             submitForm() {
                 if (this.resourceObject) {
                     this.submitResourceEdit();
+
                 } else {
                     this.submitResource();
                 }
             },
             submitResourceEdit: async function () {
-
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
+
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                } else if (this.validTitle(this.title) && this.validMedia(this.media) && this.validLink(this.link)) {
+
+                } else if (this.validTitle(this.title) &&
+                    this.validMedia(this.media) &&
+                    this.validLink(this.link) &&
+                    this.validMetaSlug(this.metaSlug) &&
+                    this.validSlug(this.slug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -140,8 +159,8 @@
                         `,
                         variables: {
                             documentID: this.resourceObject._id,
-                            metaSlug: this.resourceObject.metaSlug,
-                            slug: this.resourceObject.slug,
+                            metaSlug: this.metaSlug,
+                            slug: this.slug,
                             title: this.title,
                             media: this.media,
                             link: this.link
@@ -161,9 +180,15 @@
 
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
+
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                } else if (this.validTitle(this.title) && this.validMedia(this.media) && this.validLink(this.link)) {
+
+                } else if (this.validTitle(this.title) &&
+                    this.validMedia(this.media) &&
+                    this.validLink(this.link) &&
+                    this.validMetaSlug(this.metaSlug) &&
+                    this.validSlug(this.slug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -205,6 +230,7 @@
                         }]
                     });
                     return false;
+
                 } else if (title.trim() === "") {
                     this.$toasted.show('You must enter a title', {
                         duration: 5000,
@@ -220,13 +246,15 @@
                         }]
                     });
                     return false;
+
                 } else {
                     return true;
                 }
             },
             validMedia(media) {
-                if (media !== "article" && media !== "blog" && media !== "podcast" && media !== "video" && media !==
-                    "whitepaper") {
+                if (media !== "article" && media !== "blog" &&
+                    media !== "podcast" && media !== "video" &&
+                    media !== "whitepaper" && media !== "website") {
                     this.media = "article";
                     this.$toasted.show('Invalid media type submitted', {
                         duration: 5000,
@@ -242,6 +270,7 @@
                         }]
                     });
                     return false;
+
                 } else if (media.trim() === "") {
                     this.$toasted.show('You must enter a media type', {
                         duration: 5000,
@@ -257,6 +286,7 @@
                         }]
                     });
                     return false;
+
                 } else {
                     return true;
                 }
@@ -280,6 +310,43 @@
                 } else {
                     return true;
                 }
+            },
+            validSlug(slug) {
+                if (!this.allSlugs[this.metaSlug].includes(slug)) {
+
+                    this.$toasted.show('You must choose a valid slug', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+
+                } else {
+                    return true;
+                }
+            },
+            validMetaSlug(metaSlug) {
+                if (this.metaSlug === 'protagonistic' ||
+                    this.metaSlug === 'antagonistic') {
+                    return true;
+
+                } else {
+                    return false;
+                }
+            },
+            metaSlugChanged() {
+                this.slug = null;
+            },
+            submissionStatusLink(_id) {
+                return `/submission-status/argument/${_id}`;
             }
         },
         watch: {
@@ -291,6 +358,12 @@
             },
             link(newLink) {
                 this.validLink(newLink);
+            },
+            metaSlug(newMetaSlug) {
+                this.validMetaSlug(newMetaSlug);
+            },
+            slug(newSlug) {
+                this.validSlug(newSlug);
             }
         },
         apollo: {
@@ -304,6 +377,16 @@
                             emailVerified
                             active
                             admin
+                        }
+                    }
+                `
+            },
+            allSlugs: {
+                query: gql `
+                    query allSlugs{
+                        allSlugs{
+                            protagonistic
+                            antagonistic
                         }
                     }
                 `

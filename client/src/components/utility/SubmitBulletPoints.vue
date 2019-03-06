@@ -4,6 +4,23 @@
             <h2 v-if="bulletPointObject === undefined" class="medium-margin-vertical">submit bulletpoint</h2>
             <h2 v-else class="medium-margin-vertical">edit bulletpoint</h2>
             <div class="medium-margin-vertical">
+                <label>argument type</label>
+                <select v-model="metaSlug" class="wide-input" @change="metaSlugChanged()">
+                    <option value="protagonistic" :selected="metaSlug === 'protagonistic'">
+                        Protagonistic
+                    </option>
+                    <option value="antagonistic" :selected="metaSlug === 'antagonistic'">
+                        Antagonistic
+                    </option>
+                </select>
+                <label>argument slug</label>
+                <select v-model="slug" class="wide-input">
+                    <option v-if="slug===null" value="null">Pick a Slug...</option>
+                    <option v-for="querySlug in allSlugs[metaSlug]" :value="querySlug" :selected="querySlug === slug"
+                        :key="querySlug">
+                        {{querySlug}}
+                    </option>
+                </select>
                 <label for="content">bulletpoint content</label>
                 <textarea v-model="content" name="content" class="tall-textarea"></textarea>
                 <div class="extra-small-text medium-margin-vertical">
@@ -46,13 +63,19 @@
             if (this.bulletPointObject === undefined) {
                 return {
                     currentUser: null,
+                    allSlugs: {},
                     submitted: false,
+                    slug: this.$route.params.slug,
+                    metaSlug: this.$route.params.metaSlug,
                     content: ""
                 }
             } else {
                 return {
                     currentUser: null,
+                    allSlugs: {},
                     submitted: false,
+                    slug: this.bulletPointObject.slug,
+                    metaSlug: this.bulletPointObject.metaSlug,
                     content: this.bulletPointObject.content
                 }
             }
@@ -65,14 +88,16 @@
                     this.submitBulletPoint();
                 }
             },
-            submitBulletPointEdit: async function() {
+            submitBulletPointEdit: async function () {
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (!this.currentUser) {
                     this.$toasted.global.log_in();
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                } else if (this.validBulletPoint(this.content)) {
+                } else if (this.validBulletPoint(this.content) &&
+                    this.validMetaSlug(this.metaSlug) &&
+                    this.validSlug(this.slug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -92,8 +117,8 @@
                         `,
                         variables: {
                             documentID: this.bulletPointObject._id,
-                            metaSlug: this.bulletPointObject.metaSlug,
-                            slug: this.bulletPointObject.slug,
+                            metaSlug: this.metaSlug,
+                            slug: this.slug,
                             content: this.content
                         }
                     }).then(({
@@ -113,7 +138,9 @@
                     this.$toasted.global.log_in();
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
-                } else if (this.validBulletPoint(this.content)) {
+                } else if (this.validBulletPoint(this.content) &&
+                    this.validMetaSlug(this.metaSlug) &&
+                    this.validSlug(this.slug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -157,24 +184,69 @@
                     return true;
                 }
             },
-            submissionStatusLink(submission) {
-                if (submission.__typename === 'Rhetoric') return `/submission-status/argument/${submission._id}`;
-                if (submission.__typename === 'Resource') return `/submission-status/resource/${submission._id}`;
-                if (submission.__typename === 'BulletPoint') return `/submission-status/bulletpoint/${submission._id}`;
-                else return `/404`;
+            validSlug(slug) {
+                if (slug === "resources") {
+                    this.slug = null;
+                    this.$toasted.show('You can\'t add a bulletpoint on the resources argument type', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+
+                } else if (!this.allSlugs[this.metaSlug].includes(slug)) {
+                    this.$toasted.show('You must choose a valid slug', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
+
+                } else {
+                    return true;
+                }
+            },
+            validMetaSlug(metaSlug) {
+                if (this.metaSlug === 'protagonistic' ||
+                    this.metaSlug === 'antagonistic') {
+                    return true;
+                    
+                } else {
+                    return false;
+                }
+            },
+            metaSlugChanged() {
+                this.slug = null;
+            },
+            submissionStatusLink(_id) {
+                return `/submission-status/bulletpoint/${_id}`;
             }
         },
         watch: {
-            content(newcontent) {
-                this.validBulletPoint(newcontent);
-            }
-        },
-        computed: {
-            slug() {
-                return this.$route.params.slug;
+            content(newContent) {
+                this.validBulletPoint(newContent);
             },
-            metaSlug() {
-                return this.$route.params.metaSlug;
+            metaSlug(newMetaSlug) {
+                this.validMetaSlug(newMetaSlug);
+            },
+            slug(newSlug) {
+                this.validSlug(newSlug);
             }
         },
         apollo: {
@@ -188,6 +260,16 @@
                             emailVerified
                             active
                             admin
+                        }
+                    }
+                `
+            },
+            allSlugs: {
+                query: gql `
+                    query allSlugs{
+                        allSlugs{
+                            protagonistic
+                            antagonistic
                         }
                     }
                 `
