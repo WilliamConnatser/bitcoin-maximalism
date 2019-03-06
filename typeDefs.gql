@@ -181,6 +181,11 @@ type ReferralInfluence {
     referralInfluence: Float!
 }
 
+type AllSlugs {
+    protagonistic: [String!]!
+    antagonistic: [String!]!
+}
+
 type MostReferrals {
     _id: ID!
     username: String!
@@ -203,8 +208,9 @@ type Query {
 
     allRhetoric(metaSlug: String): [Rhetoric]
     argumentSpecificRhetoric(metaSlug: String!, slug: String!): Rhetoric
-    checkDonation(_id: ID!): Boolean
+    allSlugs: AllSlugs
 
+    checkDonation(_id: ID!): Boolean
     cryptoValue(ticker: String!): Float
 
     topArguments(onModel: String!, descending: Boolean!, limit: Int!): [Rhetoric!]! #Most/Least Upvoted/Opinionated Rhetoric - onModel = Opinion or Vote
@@ -241,11 +247,11 @@ type Mutation {
     submitResource(metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): ID
     submitRhetoric(metaSlug: String!, slug: String!, title: String!): ID
 
-    #toggleApproval(onModel: String!, documentID: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
     submitEditRhetoric(documentID: ID!, metaSlug: String!, slug: String!, title: String!): Boolean
-    #submitEditBulletPoint(documentID: ID!, metaSlug: String!, slug: String!, content: String!): Boolean
+    submitEditBulletPoint(documentID: ID!, metaSlug: String!, slug: String!, content: String!): Boolean
     submitEditResource(documentID: ID!, metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): Boolean
     
+    #toggleApproval(onModel: String!, documentID: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
     #Inactive - resolve written - approveOpinion(_id: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
 
 }

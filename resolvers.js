@@ -1445,6 +1445,49 @@ module.exports = {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this BulletPoint'));
             }
         },
+        submitEditBulletPoint: async (_, {
+            documentID,
+            metaSlug,
+            slug,
+            content
+        }, {
+            BulletPoint,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+                if (content.length > 1150) throw new UserInputError('invalid-bulletpoint');
+                if (content.trim() === "") throw new UserInputError('invalid-bulletpoint');
+                if (await BulletPoint.findOne({
+                        metaSlug
+                    }) === null) throw new UserInputError('invalid-argument-type');
+                if (await BulletPoint.findOne({
+                        slug
+                    }) === null) throw new UserInputError('invalid-slug');
+
+                const bulletPoint = await BulletPoint.findOne({
+                    _id: documentID
+                });
+                if (!bulletPoint) throw new UserInputError('invalid-id');
+                if (!bulletPoint.createdBy.equals(currentUser._id) && !currentUser.admin) {
+                    throw new UserInputError('edit-submission-unauthorized');
+                }
+                if (bulletPoint.approved && !currentUser.admin) throw new UserInputError('edit-submission-approved');
+
+                //Update and Save BulletPoint document
+                bulletPoint.metaSlug = metaSlug;
+                bulletPoint.slug = slug;
+                bulletPoint.content = content;
+                bulletPoint.save();
+
+                return true;
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this BulletPoint'));
+            }
+        },
         submitResource: async (_, {
             metaSlug,
             slug,
@@ -1472,7 +1515,7 @@ module.exports = {
                 if (await Resource.findOne({
                         slug
                     }) === null) throw new UserInputError('invalid-slug');
-                if(!link.includes('http')) link = 'http://' + link;
+                if (!link.includes('http')) link = 'http://' + link;
 
                 const resource = await Resource.findOne({
                     link
@@ -1536,13 +1579,13 @@ module.exports = {
                 if (await Resource.findOne({
                         slug
                     }) === null) throw new UserInputError('invalid-slug');
-                if(!link.includes('http')) link = 'http://' + link;
+                if (!link.includes('http')) link = 'http://' + link;
 
                 const resource = await Resource.findOne({
                     _id: documentID
                 });
-                if(!resource) throw new UserInputError('invalid-id');
-                if (!resource.createdBy.toString() !== currentUser._id && !currentUser.admin) {
+                if (!resource) throw new UserInputError('invalid-id');
+                if (!resource.createdBy.equals(currentUser._id) && !currentUser.admin) {
                     throw new UserInputError('edit-submission-unauthorized');
                 }
                 if (resource.approved && !currentUser.admin) throw new UserInputError('edit-submission-approved');
@@ -1558,7 +1601,6 @@ module.exports = {
                 return true;
 
             } catch (err) {
-                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
             }
         },
@@ -1634,8 +1676,8 @@ module.exports = {
                 let rhetoric = await Rhetoric.findOne({
                     _id: documentID
                 });
-                if(!rhetoric) throw new UserInputError('invalid-id');
-                if (!rhetoric.createdBy.toString() !== currentUser._id && !currentUser.admin) {
+                if (!rhetoric) throw new UserInputError('invalid-id');
+                if (!bulletPoint.createdBy.equals(currentUser._id) && !currentUser.admin) {
                     throw new UserInputError('edit-submission-unauthorized');
                 }
                 if (rhetoric.approved && !currentUser.admin) throw new UserInputError('edit-submission-approved');
@@ -1643,7 +1685,7 @@ module.exports = {
                 //Update and Save Rhetoric Document
                 rhetoric.metaSlug = metaSlug;
                 rhetoric.slug = slug;
-                rhetoric.title = title;                
+                rhetoric.title = title;
                 rhetoric.save();
 
                 return true;

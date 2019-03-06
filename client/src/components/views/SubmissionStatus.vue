@@ -275,6 +275,10 @@
                     unapprovedBulletPoints(_id: $_id) {
                         _id
                         dateCreated
+                        createdBy {
+                            _id
+                            username
+                        }
                         slug
                         metaSlug
                         content
@@ -302,6 +306,10 @@
                     unapprovedResources(_id: $_id) {
                         _id
                         dateCreated
+                        createdBy {
+                            _id
+                            username
+                        }
                         active
                         slug
                         metaSlug

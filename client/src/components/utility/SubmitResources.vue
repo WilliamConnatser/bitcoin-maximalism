@@ -4,6 +4,15 @@
             <h2 v-if="resourceObject === undefined" class="medium-margin-vertical">submit resource</h2>
             <h2 class="medium-margin-vertical">edit resource</h2>
             <div class="medium-margin-vertical">
+                <label>argument type</label>
+                <select v-model="metaSlug" class="wide-input">
+                    <option value="protagonistic" :selected="metaSlug === 'protagonistic'">
+                        Protagonistic
+                    </option>
+                    <option value="antagonistic" :selected="metaSlug === 'antagonistic'">
+                        Antagonistic
+                    </option>
+                </select>
                 <label>resource title</label>
                 <textarea v-model="title" maxlength=280 name="title" class="short-textarea"></textarea>
                 <label>resource link</label>
@@ -69,9 +78,12 @@
         },
         data() {
             if (this.resourceObject === undefined) {
+
                 return {
                     currentUser: null,
                     submitted: false,
+                    slug: this.$route.params.slug,
+                    metaSlug: this.$route.params.metaSlug,
                     title: "",
                     media: "article",
                     link: ""
@@ -80,13 +92,13 @@
                 return {
                     currentUser: null,
                     submitted: false,
+                    slug: this.resourceObject.slug,
+                    metaSlug: this.resourceObject.metaSlug,
                     title: this.resourceObject.title,
                     media: this.resourceObject.media,
                     link: this.resourceObject.link
                 }
             }
-
-
         },
         methods: {
             submitForm() {
@@ -281,14 +293,6 @@
                 this.validLink(newLink);
             }
         },
-        computed: {
-            slug() {
-                return this.$route.params.slug;
-            },
-            metaSlug() {
-                return this.$route.params.metaSlug;
-            }
-        },
         apollo: {
             currentUser: {
                 query: gql `
@@ -309,6 +313,10 @@
                     unapprovedResources(_id: $_id) {
                         _id
                         dateCreated
+                        createdBy {
+                            _id
+                            username
+                        }
                         active
                         slug
                         metaSlug

@@ -24,8 +24,12 @@
                 <span v-else>Agree &amp; Submit Edit</span>
             </button>
         </form>
-        <div v-else class="medium-margin  large-margin-vertical">
-            Your bulletpoint was submitted successfully. {{submitted}}
+        <div v-else-if="bulletPointObject === undefined" class="medium-margin large-margin-vertical">
+            <h2>The bulletpoint was submitted successfully!</h2>
+            You may track the status of your submission in your Account Panel or <router-link :to="submissionStatusLink(submitted)">HERE</router-link>
+        </div>
+        <div v-else>
+            <h2>The bulletpoint was edited successfully!</h2>
         </div>
     </div>
 </template>
@@ -39,7 +43,6 @@
             bulletPointObject: Object
         },
         data() {
-
             if (this.bulletPointObject === undefined) {
                 return {
                     currentUser: null,
@@ -53,7 +56,6 @@
                     content: this.bulletPointObject.content
                 }
             }
-
         },
         methods: {
             submitForm() {
@@ -64,7 +66,45 @@
                 }
             },
             submitBulletPointEdit: async function() {
-                console.log("write edit bulletpoint function!!!!"); 
+                await this.$apollo.queries.currentUser.refetch();
+
+                if (!this.currentUser) {
+                    this.$toasted.global.log_in();
+                } else if (!this.currentUser.emailVerified) {
+                    this.$toasted.global.verify_email();
+                } else if (this.validBulletPoint(this.content)) {
+                    //GraphQL Mutation
+                    this.$apollo.mutate({
+                        mutation: gql `
+                            mutation submitEditBulletPoint(
+                                $documentID: ID!
+                                $metaSlug: String!
+                                $slug: String!
+                                $content: String!
+                            ) {
+                                submitEditBulletPoint(
+                                    documentID: $documentID
+                                    metaSlug: $metaSlug
+                                    slug: $slug
+                                    content: $content
+                                )
+                            }
+                        `,
+                        variables: {
+                            documentID: this.bulletPointObject._id,
+                            metaSlug: this.bulletPointObject.metaSlug,
+                            slug: this.bulletPointObject.slug,
+                            content: this.content
+                        }
+                    }).then(({
+                        data
+                    }) => {
+                        this.submitted = true;
+                        this.$apollo.queries.unapprovedBulletPoints.refetch();
+                    }).catch(() => {
+                        // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
+                    });
+                }
             },
             submitBulletPoint: async function () {
                 await this.$apollo.queries.currentUser.refetch();
@@ -116,6 +156,12 @@
                 } else {
                     return true;
                 }
+            },
+            submissionStatusLink(submission) {
+                if (submission.__typename === 'Rhetoric') return `/submission-status/argument/${submission._id}`;
+                if (submission.__typename === 'Resource') return `/submission-status/resource/${submission._id}`;
+                if (submission.__typename === 'BulletPoint') return `/submission-status/bulletpoint/${submission._id}`;
+                else return `/404`;
             }
         },
         watch: {
@@ -145,6 +191,37 @@
                         }
                     }
                 `
+            },
+            unapprovedBulletPoints: {
+                query: gql `query unapprovedBulletPoints($_id: ID!) {
+                    unapprovedBulletPoints(_id: $_id) {
+                        _id
+                        dateCreated
+                        createdBy {
+                            _id
+                            username
+                        }
+                        slug
+                        metaSlug
+                        content
+                        approved
+                        dateApproved
+                        approvedBy {
+                            _id
+                            username
+                        }
+                        approvalCommentary
+                    }
+                }`,
+                variables() {
+                    return {
+                        _id: this.bulletPointObject._id
+                    }
+                },
+                skip() {
+                    if (this.bulletPointObject === undefined) return true;
+                    else return false;
+                }
             }
         }
     };
