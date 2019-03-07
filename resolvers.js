@@ -1413,6 +1413,7 @@ module.exports = {
             slug,
             content
         }, {
+            Rhetoric,
             User,
             BulletPoint,
             currentUser
@@ -1423,11 +1424,11 @@ module.exports = {
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
                 if (content.length > 1150) throw new UserInputError('invalid-bulletpoint');
                 if (content.trim() === "") throw new UserInputError('invalid-bulletpoint');
-                if (await BulletPoint.findOne({
-                        metaSlug
-                    }) === null) throw new UserInputError('invalid-argument-type');
-                if (await BulletPoint.findOne({
-                        slug
+                if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');
+                if (await Rhetoric.findOne({
+                        slug,
+                        approved: true,
+                        active: true
                     }) === null) throw new UserInputError('invalid-slug');
 
                 const bulletPoint = await BulletPoint.findOne({
@@ -1470,6 +1471,7 @@ module.exports = {
             slug,
             content
         }, {
+            Rhetoric,
             BulletPoint,
             currentUser
         }) => {
@@ -1479,11 +1481,11 @@ module.exports = {
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
                 if (content.length > 1150) throw new UserInputError('invalid-bulletpoint');
                 if (content.trim() === "") throw new UserInputError('invalid-bulletpoint');
-                if (await BulletPoint.findOne({
-                        metaSlug
-                    }) === null) throw new UserInputError('invalid-argument-type');
-                if (await BulletPoint.findOne({
-                        slug
+                if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');
+                if (await Rhetoric.findOne({
+                        slug,
+                        approved: true,
+                        active: true
                     }) === null) throw new UserInputError('invalid-slug');
 
                 const bulletPoint = await BulletPoint.findOne({
@@ -1514,6 +1516,7 @@ module.exports = {
             media,
             link
         }, {
+            Rhetoric,
             User,
             Resource,
             currentUser
@@ -1528,12 +1531,8 @@ module.exports = {
                     media !== "video" && media !== "whitepaper" && media !== "website") throw new UserInputError('invalid-media');
                 if (media.trim() === "") throw new UserInputError('invalid-media');
                 if (link.trim() === "") throw new UserInputError('invalid-link');
-                if (await Resource.findOne({
-                        metaSlug
-                    }) === null) throw new UserInputError('invalid-argument-type');
-                if (await Resource.findOne({
-                        slug
-                    }) === null) throw new UserInputError('invalid-slug');
+                if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');
+                if (await Rhetoric.findOne({slug, approved: true, active: true}) === null) throw new UserInputError('invalid-slug');
                 if (!link.includes('http')) link = 'http://' + link;
 
                 const resource = await Resource.findOne({
@@ -1579,6 +1578,7 @@ module.exports = {
             media,
             link
         }, {
+            Rhetoric,
             Resource,
             currentUser
         }) => {
@@ -1592,12 +1592,8 @@ module.exports = {
                     media !== "video" && media !== "whitepaper" && media !== "website") throw new UserInputError('invalid-media');
                 if (media.trim() === "") throw new UserInputError('invalid-media');
                 if (link.trim() === "") throw new UserInputError('invalid-link');
-                if (await Resource.findOne({
-                        metaSlug
-                    }) === null) throw new UserInputError('invalid-argument-type');
-                if (await Resource.findOne({
-                        slug
-                    }) === null) throw new UserInputError('invalid-slug');
+                if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');
+                if (await Rhetoric.findOne({slug, approved: true, active: true}) === null) throw new UserInputError('invalid-slug');
                 if (!link.includes('http')) link = 'http://' + link;
 
                 const resource = await Resource.findOne({
