@@ -184,6 +184,10 @@ module.exports = {
                     .populate({
                         path: 'bulletPoints',
                         model: 'BulletPoint',
+                        match: {
+                            approved: true,
+                            active: true
+                        },
                         populate: {
                             path: 'votes',
                             model: 'Vote',
@@ -197,6 +201,10 @@ module.exports = {
                     .populate({
                         path: 'resources',
                         model: 'Resource',
+                        match: {
+                            approved: true,
+                            active: true
+                        },
                         populate: {
                             path: 'votes',
                             model: 'Vote',
@@ -267,7 +275,8 @@ module.exports = {
         }) => {
             try {
                 const rhetoric = await Rhetoric.find({
-                    approved: true
+                    approved: true,
+                    active: true
                 });
                 const protagonistic = await rhetoric.filter(arg => arg.metaSlug === 'protagonistic').map(arg => arg.slug);
                 const antagonistic = await rhetoric.filter(arg => arg.metaSlug === 'antagonistic').map(arg => arg.slug);
@@ -503,7 +512,10 @@ module.exports = {
                 if (limit < 1) throw new UserInputError('invalid-limit');
 
                 if (onModel === 'Opinion') {
-                    let rhetoric = await Rhetoric.find({})
+                    let rhetoric = await Rhetoric.find({
+                            approved: true,
+                            active: true
+                        })
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -523,7 +535,10 @@ module.exports = {
                     }).slice(0, limit);
 
                 } else {
-                    let rhetoric = await Rhetoric.find({})
+                    let rhetoric = await Rhetoric.find({
+                            approved: true,
+                            active: true
+                        })
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -553,7 +568,10 @@ module.exports = {
                 if (limit < 1) throw new UserInputError('invalid-limit');
 
                 if (onModel === 'Opinion') {
-                    const bulletPoints = await BulletPoint.find({})
+                    const bulletPoints = await BulletPoint.find({
+                            approved: true,
+                            active: true
+                        })
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -573,7 +591,10 @@ module.exports = {
                     }).slice(0, (limit));
 
                 } else {
-                    const bulletPoints = await BulletPoint.find({})
+                    const bulletPoints = await BulletPoint.find({
+                            approved: true,
+                            active: true
+                        })
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -603,7 +624,10 @@ module.exports = {
                 if (limit < 1) throw new UserInputError('invalid-limit');
 
                 if (onModel === 'Opinion') {
-                    const resources = await Resource.find({})
+                    const resources = await Resource.find({
+                            approved: true,
+                            active: true
+                        })
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -623,7 +647,10 @@ module.exports = {
                     }).slice(0, (limit));
 
                 } else {
-                    const resources = await Resource.find({})
+                    const resources = await Resource.find({
+                            approved: true,
+                            active: true
+                        })
                         .populate({
                             path: 'votes',
                             model: 'Vote',
@@ -650,7 +677,9 @@ module.exports = {
             try {
                 if (limit < 1) throw new UserInputError('invalid-limit');
 
-                const opinions = await Opinion.find({})
+                const opinions = await Opinion.find({
+                        approved: true
+                    })
                     .populate({
                         path: 'votes',
                         model: 'Vote',
@@ -831,6 +860,7 @@ module.exports = {
                 else {
 
                     const rhetoric = await Rhetoric.find({
+                            active: true,
                             approved: false
                         })
                         .populate({
@@ -884,7 +914,8 @@ module.exports = {
                 else {
 
                     const bulletPoint = await BulletPoint.find({
-                            approved: false
+                            approved: false,
+                            active: true
                         })
                         .populate({
                             path: 'createdBy',
@@ -937,7 +968,8 @@ module.exports = {
                 else {
 
                     const resource = await Resource.find({
-                            approved: false
+                            approved: false,
+                            active: true
                         })
                         .populate({
                             path: 'createdBy',
