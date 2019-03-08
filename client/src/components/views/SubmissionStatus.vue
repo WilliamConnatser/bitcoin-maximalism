@@ -10,31 +10,29 @@
                 <ul v-for="argument in unapprovedRhetoric" :key="argument._id" class="list">
                     <li>
                         <div>
-                            <strong>{{argument.dateCreated | formatDate}}</strong> <br />
-                            <strong>Title:</strong> <br />
-                            {{argument.title}} <br />
-                            <strong>Argument Type:</strong> <br />
-                            {{argument.metaSlug}} <br />
-                            <strong>Argument Slug:</strong> <br />
-                            {{argument.slug}} <br />
-                            <router-link v-if="argument.approved" :to="argumentLink(argument.metaSlug, argument.slug)">
-                                {{argumentLink(argument.metaSlug,argument.slug)}}
-                            </router-link>
+                            <strong>{{argument.dateCreated | formatDate}}</strong><br />
+                            {{argument.title}}
+                            <div v-if="argument.dateApproved" class="small-text medium-margin">
+                                <div v-if="argument.approved">
+                                    This argument was approved on {{argument.dateApproved | formatDate}}
+                                    <br />
+                                    <router-link class="extra-small-text" :to="argumentLink(argument.metaSlug, argument.slug)">
+                                        {{argumentLink(argument.metaSlug,argument.slug)}}
+                                    </router-link>
+                                </div>
+                                <div v-else>
+                                    This argument was denied approval on {{argument.dateApproved | formatDate}}
+                                    <br />
+                                    Reason: {{argument.approvalCommentary}}
+                                </div>
+                            </div>
+                            <div v-else class="small-text medium-margin">
+                                This argument has not been approved yet.
+                            </div>
                         </div>
-                        <div v-if="argument.dateApproved">
-                            <strong>
-                                <span v-if="argument.approved">Approved </span>
-                                <span v-else>Denied </span>
-                            </strong> <br/>
-                            {{argument.dateApproved | formatDate}} <br/>
-                            {{argument.approvalCommentary}}
-                        </div>
-                        <div v-else class="small-text medium-margin">
-                            This argument has not been approved yet. <br />
-
-                            <div class="list-submissions-toolbar">
-                                <span v-if="currentUser && (currentUser.admin || argument.createdBy._id === currentUser._id)"
-                                    @click="show('editRhetoric'), cancel('approveRhetoric')" class="small-text icon-group cursor-pointer">
+                        <div v-if="currentUser && (currentUser.admin || (argument.createdBy._id === currentUser._id && !argument.dateApproved))">
+                            <div class="list-submissions-toolbar small-text medium-margin">
+                                <span @click="show('editRhetoric'), cancel('approveRhetoric')" class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!editRhetoric" icon="pen-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit argument</span>
@@ -50,7 +48,7 @@
                             <SubmitRhetoric v-if="editRhetoric" :rhetoricObject="argument" />
                             <ApproveSubmission v-if="approveRhetoric" :submissionObject="argument" />
                         </div>
-                        <router-link :to="submissionStatusLink(argument)">
+                        <router-link class="extra-small-text" :to="submissionStatusLink(argument)">
                             Reference Link
                         </router-link>
                     </li>
@@ -65,26 +63,33 @@
             <div v-if="unapprovedBulletPoints.length>0">
                 <ul v-for="bulletPoint in unapprovedBulletPoints" :key="bulletPoint._id" class="list">
                     <li>
-                        <div><strong>{{bulletPoint.dateCreated | formatDate}}</strong></div>
                         <div>
+                            <strong>{{bulletPoint.dateCreated | formatDate}}</strong>
+                            <br />
                             {{bulletPoint.content}}
+
+                            <div v-if="bulletPoint.dateApproved" class="small-text medium-margin">
+                                <div v-if="bulletPoint.approved">
+                                    This bulletpoint was approved on {{bulletPoint.dateApproved | formatDate}}
+                                    <br />
+                                    <router-link class="extra-small-text" :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)">
+                                        {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
+                                    </router-link>
+                                </div>
+                                <div v-else>
+                                    This bulletpoint was denied approval on {{bulletPoint.dateApproved | formatDate}}
+                                    <br />
+                                    Reason: {{bulletPoint.approvalCommentary}}
+                                </div>
+                            </div>
+                            <div v-else class="small-text medium-margin">
+                                This bulletpoint has not been approved yet.
+                            </div>
                         </div>
-                        <router-link v-if="bulletPoint.approved" :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)">
-                            {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
-                        </router-link>
-                        <div v-if="bulletPoint.dateApproved" class="medium-margin">
-                            <strong>
-                                <span v-if="bulletPoint.approved">Approved </span>
-                                <span v-else>Denied </span>
-                            </strong> <br/>
-                            {{bulletPoint.dateApproved | formatDate}} <br/>
-                            {{bulletPoint.approvalCommentary}}
-                        </div>
-                        <div v-else class="small-text medium-margin">
-                            This bulletpoint has not been approved yet. <br />
-                            <div class="list-submissions-toolbar">
-                                <span v-if="currentUser && (currentUser.admin || bulletPoint.createdBy._id === currentUser._id)"
-                                    @click="show('editBulletPoint'), cancel('approveBulletPoint')" class="small-text icon-group cursor-pointer">
+                        <div v-if="currentUser && (currentUser.admin || (bulletPoint.createdBy._id === currentUser._id && !bulletPoint.dateApproved))">
+                            <div class="list-submissions-toolbar small-text medium-margin">
+                                <span @click="show('editBulletPoint'), cancel('approveBulletPoint')" class="small-text
+                                    icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!editBulletPoint" icon="pen-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit bulletpoint</span>
@@ -99,7 +104,7 @@
                             <SubmitBulletPoints v-if="editBulletPoint" :bulletPointObject="bulletPoint" />
                             <ApproveSubmission v-if="approveBulletPoint" :submissionObject="bulletPoint" />
                         </div>
-                        <router-link :to="submissionStatusLink(bulletPoint)">
+                        <router-link class="uppercase extra-small-text" :to="submissionStatusLink(bulletPoint)">
                             Reference Link
                         </router-link>
                     </li>
@@ -115,32 +120,39 @@
             <div v-if="unapprovedResources.length>0">
                 <ul v-for="resource in unapprovedResources" :key="resource._id" class="list">
                     <li>
-                        <div><strong>{{resource.dateCreated | formatDate}}</strong></div>
-                        <div>
-                            <a :href="resource.link" class="fancy-link">
-                                <span class="media-type">
-                                    { {{resource.media}} }
-                                </span>
-                                {{resource.title}}
-                            </a>
-                            <br/>
-                            <router-link v-if="resource.approved" :to="argumentLink(resource.metaSlug, resource.slug)">
-                                {{argumentLink(resource.metaSlug,resource.slug)}}
-                            </router-link>
-                        </div>
-                        <div v-if="resource.dateApproved">
-                            <strong>
-                                <span v-if="resource.approved">Approved </span>
-                                <span v-else>Denied </span>
-                            </strong> <br/>
-                            {{resource.dateApproved | formatDate}} <br/>
-                            {{resource.approvalCommentary}}
+                        <strong>{{resource.dateCreated | formatDate}}</strong>
+                        <br />
+                        <a :href="resource.link" class="fancy-link">
+                            <span class="media-type">
+                                { {{resource.media}} }
+                            </span>
+                            {{resource.title}}
+                        </a>
+                        <br />
+                        <router-link v-if="resource.approved" :to="argumentLink(resource.metaSlug, resource.slug)">
+                            {{argumentLink(resource.metaSlug, resource.slug)}}
+                        </router-link>
+
+                        <div v-if="resource.dateApproved" class="small-text medium-margin">
+                            <div v-if="resource.approved">
+                                This resource was approved on {{resource.dateApproved | formatDate}}
+                                <br />
+                                <router-link class="extra-small-text" :to="argumentLink(resource.metaSlug, resource.slug)">
+                                    {{argumentLink(resource.metaSlug, resource.slug)}}
+                                </router-link>
+                            </div>
+                            <div v-else>
+                                This resource was denied approval on {{resource.dateApproved | formatDate}}
+                                <br />
+                                Reason: {{resource.approvalCommentary}}
+                            </div>
                         </div>
                         <div v-else class="small-text medium-margin">
-                            This resource has not been approved yet. <br />
-                            <div class="list-submissions-toolbar">
-                                <span v-if="currentUser && (currentUser.admin || resource.createdBy._id === currentUser._id)"
-                                    @click="show('editResource'), cancel('approveResource')" class="small-text icon-group cursor-pointer">
+                            This resource has not been approved yet.
+                        </div>
+                        <div v-if="currentUser && (currentUser.admin || (resource.createdBy._id === currentUser._id && !resource.dateApproved))">
+                            <div class="list-submissions-toolbar small-text medium-margin">
+                                <span @click="show('editResource'), cancel('approveResource')" class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!editResource" icon="pen-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit resource</span>
