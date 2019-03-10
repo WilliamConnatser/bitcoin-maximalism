@@ -121,9 +121,7 @@
                             slug: this.slug,
                             content: this.content
                         }
-                    }).then(({
-                        data
-                    }) => {
+                    }).then(() => {
                         this.submitted = true;
                         this.$apollo.queries.unapprovedBulletPoints.refetch();
                     }).catch(() => {
@@ -223,10 +221,8 @@
                 }
             },
             validMetaSlug(metaSlug) {
-                if (this.metaSlug === 'protagonistic' ||
-                    this.metaSlug === 'antagonistic') {
-                    return true;
-                    
+                if (metaSlug === 'protagonistic' || metaSlug === 'antagonistic') {
+                    return true;                    
                 } else {
                     return false;
                 }

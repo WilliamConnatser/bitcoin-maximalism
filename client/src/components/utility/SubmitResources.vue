@@ -165,9 +165,7 @@
                             media: this.media,
                             link: this.link
                         }
-                    }).then(({
-                        data
-                    }) => {
+                    }).then(() => {
                         this.submitted = true;
                         this.$apollo.queries.unapprovedResources.refetch();
                     }).catch(() => {

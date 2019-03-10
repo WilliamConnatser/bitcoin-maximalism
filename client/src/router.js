@@ -15,6 +15,7 @@ import PageNotFound from "./components/views/PageNotFound.vue";
 import DonationStatus from "./components/views/DonationStatus.vue";
 import SubmitDonation from "./components/views/SubmitDonation.vue";
 import SubmissionStatus from "./components/views/SubmissionStatus.vue";
+import Maintenance from "./components/views/Maintenance.vue";
 //import Maintenance from "./components/views/Maintenance.vue";
 
 Vue.use(Router);

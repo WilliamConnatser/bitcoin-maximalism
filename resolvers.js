@@ -148,7 +148,9 @@ module.exports = {
             User
         }) => {
             try {
-                return await User.find({}, 'username');
+                const users = await User.find({}, 'username');
+
+                return users.filter(user => user.username !== 'Administrator');
 
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching all users'));
@@ -278,8 +280,8 @@ module.exports = {
                     approved: true,
                     active: true
                 });
-                const protagonistic = await rhetoric.filter(arg => arg.metaSlug === 'protagonistic').map(arg => arg.slug);
-                const antagonistic = await rhetoric.filter(arg => arg.metaSlug === 'antagonistic').map(arg => arg.slug);
+                const protagonistic = await rhetoric.filter(arg => arg.metaSlug === 'protagonistic' && arg.approved === true).map(arg => arg.slug);
+                const antagonistic = await rhetoric.filter(arg => arg.metaSlug === 'antagonistic' && arg.approved === true).map(arg => arg.slug);
 
                 return {
                     protagonistic,
@@ -757,7 +759,7 @@ module.exports = {
 
                 return await processedUsers.sort((a, b) => {
                     return b.referralAmount - a.referralAmount;
-                }).slice(0, limit);
+                }).filter(user => user.username !== 'Administrator').slice(0, limit);
 
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these users'));
@@ -803,7 +805,7 @@ module.exports = {
 
                 return processedUsers.sort((a, b) => {
                     return b.referralInfluence - a.referralInfluence;
-                }).slice(0, limit);
+                }).filter(user => user.username !== 'Administrator').slice(0, limit);
 
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these users'));
@@ -821,7 +823,7 @@ module.exports = {
 
                 return await users.sort((a, b) => {
                     return b.accruedDonations - a.accruedDonations;
-                }).slice(0, limit);
+                }).filter(user => user.username !== 'Administrator').slice(0, limit);
 
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these users'));

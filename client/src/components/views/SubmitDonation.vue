@@ -107,7 +107,7 @@
                                 onClick: (e, toastObject) => {
                                     toastObject.goAway(0);
                                 }
-                            },{
+                            }, {
                                 text: 'Continue',
                                 onClick: (e, toastObject) => {
                                     this.confirmedDifferentUser = true;

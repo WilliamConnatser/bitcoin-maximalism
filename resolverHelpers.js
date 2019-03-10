@@ -141,13 +141,13 @@ const invoicePaid = async (donation, applicableDocument) => {
         const updatedInvoice = await btcPayClient.get_invoice(donation.invoiceID);
         //If the invoice was paid. Allow 5% leeway for user error having to do with fees
         //TODO: Change to > in production
-        if (Number(updatedInvoice.btcPaid) < donation.preBonusAmount * 0.95) {
+        if (Number(updatedInvoice.btcPaid) > donation.preBonusAmount * 0.95) {
             donation.paid = true;
 
             //If the document is a User document, then it's an accruing donation towards influence weight
             if (applicableDocument.username) {
-                //Todo change to = Number(updatedInvoice.btcPaid);
-                donation.preBonusAmount = donation.preBonusAmount
+                //Todo change in production = Number(updatedInvoice.btcPaid);
+                donation.preBonusAmount = Number(updatedInvoice.btcPaid);
                 donation.amount = donation.preBonusAmount * (donation.bonusPercentage + 1);
                 adjustDonationInfluence(await donation.save());
 

@@ -114,10 +114,7 @@
                             slug: this.slug,
                             title: this.title
                         }
-                    }).then(({
-                        data
-                    }) => {
-                        console.log("whattt")
+                    }).then(() => {
                         this.submitted = true;
                         this.$apollo.queries.unapprovedRhetoric.refetch();
                         //Redirect to status page
