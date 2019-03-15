@@ -2,20 +2,22 @@
   <header>
     <nav id="header" class="small-text">
       <li class="inline-nav">
-        <router-link to="/" class="fancy-link">About</router-link>
+        <router-link to="/" class="unstyled-link">About</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/arguments" class="fancy-link">Arguments</router-link>
+        <router-link to="/arguments" class="unstyled-link">Arguments</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/leaderboards/arguments" class="fancy-link">leaderboards</router-link>
+        <router-link to="/leaderboards/arguments" class="unstyled-link">leaderboards</router-link>
       </li>
 
       <div class="right-nav">
         <li class="inline-nav">
-          <router-link to="/account" class="fancy-link ">
+          <router-link to="/account" class="unstyled-link">
             <strong v-if="currentUser">Account</strong>
-            <strong v-else>Log In</strong>
+            <strong v-else>
+              Log In or Register
+            </strong>
           </router-link>
         </li>
 
@@ -28,6 +30,11 @@
           <a class="cursor-pointer">
             <font-awesome-icon icon="times-circle" class="social-icons-header large-text" />
           </a>
+        </li>
+         <li class="inline-nav">
+          <router-link to="/about" class="unstyled-link">
+            <font-awesome-icon icon="question" class="social-icons-header large-text" />
+          </router-link>
         </li>
       </div>
 

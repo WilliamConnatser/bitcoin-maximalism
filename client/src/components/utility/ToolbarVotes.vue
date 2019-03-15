@@ -136,11 +136,11 @@
                     if (match) {
                         return "icon already-voted cursor-pointer";
                     } else {
-                        return "icon fancy-link cursor-pointer";
+                        return "icon unstyled-link cursor-pointer";
                     }
 
                 } else {
-                    return "icon fancy-link cursor-pointer";
+                    return "icon unstyled-link cursor-pointer";
                 }
             }
         },

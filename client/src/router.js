@@ -3,6 +3,7 @@ import Router from "vue-router";
 
 import Leaderboards from "./components/views/Leaderboards.vue";
 import About from "./components/views/About.vue";
+import Intro from "./components/views/Intro.vue";
 import Account from "./components/views/Account.vue";
 import VerifyEmail from "./components/auth/VerifyEmail.vue";
 import VerifyPassword from "./components/auth/VerifyPassword.vue";
@@ -15,7 +16,6 @@ import PageNotFound from "./components/views/PageNotFound.vue";
 import DonationStatus from "./components/views/DonationStatus.vue";
 import SubmitDonation from "./components/views/SubmitDonation.vue";
 import SubmissionStatus from "./components/views/SubmissionStatus.vue";
-import Maintenance from "./components/views/Maintenance.vue";
 //import Maintenance from "./components/views/Maintenance.vue";
 
 Vue.use(Router);
@@ -29,6 +29,10 @@ export default new Router({
   }*/
     {
       path: "/",
+      component: Intro
+    },
+    {
+      path: "/about",
       component: About
     },
     {

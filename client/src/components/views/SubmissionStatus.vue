@@ -122,7 +122,7 @@
                     <li>
                         <strong>{{resource.dateCreated | formatDate}}</strong>
                         <br />
-                        <a :href="resource.link" class="fancy-link">
+                        <a :href="resource.link" class="unstyled-link">
                             <span class="media-type">
                                 { {{resource.media}} }
                             </span>

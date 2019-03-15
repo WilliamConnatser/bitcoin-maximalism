@@ -3,7 +3,7 @@
         <a v-if="this.viewOpinions !== null" @click="cancel('viewOpinions')" class="cursor-pointer">
             <div class="list-action-group small-text" title="Hide Opinions">
                 opinions
-                <div class="fancy-link list-action-group-icon">
+                <div class="unstyled-link list-action-group-icon">
                     <strong class="action-count extra-small-text">X</strong>
                     <font-awesome-icon icon="comment" title="View Opinions" class="action-icon" />
                 </div>
@@ -12,7 +12,7 @@
         <a v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="cursor-pointer">
             <div class="list-action-group small-text" title="Show Opinions">
                 opinions
-                <div class="fancy-link list-action-group-icon">
+                <div class="unstyled-link list-action-group-icon">
                     <strong class="action-count extra-small-text">{{docIDSpecificOpinionCount}}</strong>
                     <font-awesome-icon icon="comment" title="View Opinions" class="action-icon" />
                 </div>

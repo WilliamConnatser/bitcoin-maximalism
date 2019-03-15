@@ -1,30 +1,15 @@
 <template>
     <div class="container apollo-response">
+
         <h1 class="heading">
-            bitcoin maximalism
+            about bitcoinmaximalism.com
         </h1>
 
-        <p class="medium-margin">
-            The term Bitcoin Maximalism was initially termed by Vitalik Buterin in a
-            <a href="https://blog.ethereum.org/2014/11/20/bitcoin-maximalism-currency-platform-network-effects/">blog</a>
-            post written on November 19, 2014, and has since been popularized throughout the cryptocurrency community
-            to describe ardent Bitcoin supporters. Bitcoin Maximalism was originally coined as a sort of derogatory
-            name for staunch Bitcoin proponents, but some Bitcoin proponents have ironically adopted the Bitcoin
-            Maximalist title as a badge of honor! There are many immensly nuanced arguments for and against Bitcoin
-            Maximalism, and BitcoinMaximalism.com is intended to serve as an objective*** overview of Bitcoin
-            Maximalism. The curated arguments which are outlined are only meant to give you an unbiased introduction to
-            the nuance surrounding them. Please do your own research because there is a lot more to learn beyond what's
-            within this site and the linked resources.
-        </p>
-
-        <p class="extra-small-text medium-margin">
-            *** Considering a human built this web site, and wrote the content, it is technically impossible to be 100%
-            objective, but the human did give a good amount of effort in order to remain impartial.
-        </p>
-
-        <h2 class="heading medium-margin">
-            bitcoinmaximalism.com
-        </h2>
+        <div class="medium-margin">
+            <button class="large-button medium-margin">
+                <router-link to="/account" class="unstyled-link normal-text">Register Here</router-link>
+            </button>
+        </div>
 
         <div class="medium-margin">
             <h2>
@@ -70,22 +55,16 @@
 
         <div class="medium-margin">
             <a href="https://github.com/WilliamConnatser/bitcoin-maximalism-v2" target="_blank" rel="noopener">
-                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'github-square' }" class="extra-large-icon fancy-link" />
+                <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'github-square' }" class="extra-large-icon unstyled-link" />
             </a> <br />
             Please report technical and bug issues via Github by creating an issue.
         </div>
 
         <div class="medium-margin">
             <a href="mailto:admin@BitcoinMaximalism.com" target="_blank" rel="noopener">
-                <font-awesome-icon :icon="{ prefix: 'fas', iconName: 'envelope-square' }" class="extra-large-icon fancy-link" />
+                <font-awesome-icon :icon="{ prefix: 'fas', iconName: 'envelope-square' }" class="extra-large-icon unstyled-link" />
             </a> <br />
             Please report donation and account issues via Email.
-        </div>
-
-        <div class="medium-margin">
-            <button class="large-button medium-margin">
-                <router-link to="/account" class="fancy-link">Register Here</router-link>
-            </button>
         </div>
     </div>
 </template>

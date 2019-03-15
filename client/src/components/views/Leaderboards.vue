@@ -1,5 +1,5 @@
 <template>
-    <main class="container ">
+    <main class="container">
         <h1 class="heading">leaderboards</h1>
 
         <router-link to="/leaderboards"><button :class="filterButtonStyle(undefined)" style="cursor: pointer">All</button></router-link>

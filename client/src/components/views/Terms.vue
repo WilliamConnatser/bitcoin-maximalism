@@ -18,7 +18,7 @@
         cryptocurrencies in general. Don't blindly trust The Site, The Site's users' opinions, or blindly
         trust any of the information contained within and linked from the Site, but instead verify the
         information by leveraging other independent resources. Knowledge is power. Don't trust- verify.
-        <br /><br />
+        <br/><br/>
 
 
         <h2>Forward-Looking Statements</h2>

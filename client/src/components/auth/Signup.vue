@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Sign Up</h1>
+        <h1 class="heading">Sign Up</h1>
         <form v-if="!success" @submit.prevent="signupUser">
             <div class="medium-margin">
                 <label>Username</label>
@@ -25,7 +25,7 @@
             </div>
             <button type="submit">Register</button>
             <div class="medium-margin">
-                <a @click="$emit('toggle-login')" class="fancy-link cursor-pointer">
+                <a @click="$emit('toggle-login')" class="unstyled-link cursor-pointer">
                     Already Registered?
                     <h2>Sign In Here!</h2>
                 </a>

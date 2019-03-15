@@ -7,11 +7,11 @@
 
                 <div class="medium-margin">
                     <span v-if="arrayItem.__typename == 'BulletPoint'">{{arrayItem.content}}</span>
-                    <a v-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link" class="fancy-link">
+                    <a v-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link" class="unstyled-link">
                         <span class="media-type">{ {{arrayItem.media}} } </span>{{arrayItem.title}}
                     </a>
                     <router-link v-if="arrayItem.__typename == 'Rhetoric'" :to="urlGenerator(arrayItem.metaSlug, arrayItem.slug)"
-                        class="fancy-link ">{{arrayItem.title}}</router-link>
+                        class="unstyled-link ">{{arrayItem.title}}</router-link>
                 </div>
 
                 <ToolbarActions :arrayItemProp="arrayItem" />
