@@ -45,7 +45,7 @@
                 <strong>Applicable Document</strong>: {{ docIDSpecificDonation.onModel }} - {{ docIDSpecificDonation.documentID }}
             </li>
             <li>
-                <strong>Donation ID</strong>: <router-link :to="donationLink">{{docIDSpecificDonation._id}}</router-link>
+                <strong>Donation ID</strong>: <router-link :to="donationLink" class="small-uppercase-link">{{docIDSpecificDonation._id}}</router-link>
             </li>
             <li>
                 <strong>Invoice ID</strong>: <a :href="docIDSpecificDonation.invoiceURL">{{ docIDSpecificDonation.invoiceID }}</a>

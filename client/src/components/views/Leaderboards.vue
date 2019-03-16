@@ -221,8 +221,8 @@
                     Most Influential Users
                 </h2>
 
-                <ul class="list ordered-list">
-                    <li v-for="user in mostInfluentialUsers" :key="user._id">
+                <ul class="list">
+                    <li v-for="user in mostInfluentialUsers" :key="user._id" class="ordered-list">
                         {{user.username}} - {{user.accruedDonations | formatBitcoinAmount}}
                     </li>
                 </ul>
@@ -233,8 +233,8 @@
                     Most User Referrals
                 </h2>
 
-                <ul class="list ordered-list">
-                    <li v-for="user in mostReferrals" :key="user._id">
+                <ul class="list">
+                    <li v-for="user in mostReferrals" :key="user._id" class="ordered-list">
                         {{user.username}} - {{user.referralAmount}} Referrals
                     </li>
                 </ul>
@@ -245,8 +245,8 @@
                     Most Referral Influence
                 </h2>
 
-                <ul class="list ordered-list">
-                    <li v-for="user in mostReferralInfluence.slice(0,5)" :key="user._id">
+                <ul class="list">
+                    <li v-for="user in mostReferralInfluence.slice(0,5)" :key="user._id" class="ordered-list">
                         {{user.username}} - {{user.referralInfluence | formatBitcoinAmount}}
                     </li>
                 </ul>

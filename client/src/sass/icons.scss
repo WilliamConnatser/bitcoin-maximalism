@@ -1,0 +1,45 @@
+.icon-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin: 0 15px;
+    animation: moveInRight .5s;
+
+    &:hover {
+        transform: scale(1.2, 1.2);
+        
+        &::after {
+            transform: scaleX(1) scaleY(1);
+        }
+    }
+
+    &:active {
+        transform: rotate(5deg);
+    }
+}
+
+.large-icon {
+    font-size: 3rem;
+    margin: 10px 5px;
+
+    animation: moveInRight .5s;
+    transition: all .2s;
+
+    &:hover {
+        transform: $grow-and-distort;
+    }
+}
+
+.extra-large-icon {
+    font-size: 6rem;
+    margin: 10px 5px;
+
+    animation: moveInRight .5s;
+    transition: all .2s;
+
+    &:hover {
+        transform: $grow-and-distort;
+    }
+}

@@ -32,12 +32,6 @@ strong {
     font-size: 4rem;
 }
 
-.unstyled-link {
-    color: $color-white;
-    text-transform: uppercase;
-    text-decoration: none;
-}
-
 .uppercase {
     text-transform: uppercase;
 }
@@ -47,21 +41,26 @@ strong {
     margin-right: 1rem;
 }
 
-hr {
-    color: $color-white;
-    border: 1;
-    border-color: $color-white;
-}
-
 .loading {
     animation: throb .5s infinite;
 }
 
 .heading {
-    margin: 0rem auto 2rem;
+    margin: 0rem auto 20px;
 }
 
-.divider {
-    border-top: .1rem solid $color-white;
-    border-bottom: .1rem solid $color-white;
+.unstyled-link {
+    color: $color-white;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.regular-link {
+    color: $color-dark-green;
+}
+
+.small-uppercase-link {
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    color: $color-dark-green;
 }

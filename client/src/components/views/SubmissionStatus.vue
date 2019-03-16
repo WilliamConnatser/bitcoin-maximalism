@@ -16,7 +16,7 @@
                                 <div v-if="argument.approved">
                                     This argument was approved on {{argument.dateApproved | formatDate}}
                                     <br />
-                                    <router-link class="extra-small-text" :to="argumentLink(argument.metaSlug, argument.slug)">
+                                    <router-link :to="argumentLink(argument.metaSlug, argument.slug)" class="small-uppercase-link">
                                         {{argumentLink(argument.metaSlug,argument.slug)}}
                                     </router-link>
                                 </div>
@@ -48,7 +48,7 @@
                             <SubmitRhetoric v-if="editRhetoric" :rhetoricObject="argument" />
                             <ApproveSubmission v-if="approveRhetoric" :submissionObject="argument" />
                         </div>
-                        <router-link class="extra-small-text" :to="submissionStatusLink(argument)">
+                        <router-link :to="submissionStatusLink(argument)" class="small-uppercase-link">
                             Reference Link
                         </router-link>
                     </li>
@@ -72,7 +72,7 @@
                                 <div v-if="bulletPoint.approved">
                                     This bulletpoint was approved on {{bulletPoint.dateApproved | formatDate}}
                                     <br />
-                                    <router-link class="extra-small-text" :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)">
+                                    <router-link :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)" class="small-uppercase-link">
                                         {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
                                     </router-link>
                                 </div>
@@ -104,7 +104,7 @@
                             <SubmitBulletPoints v-if="editBulletPoint" :bulletPointObject="bulletPoint" />
                             <ApproveSubmission v-if="approveBulletPoint" :submissionObject="bulletPoint" />
                         </div>
-                        <router-link class="uppercase extra-small-text" :to="submissionStatusLink(bulletPoint)">
+                        <router-link :to="submissionStatusLink(bulletPoint)" class="small-uppercase-link">
                             Reference Link
                         </router-link>
                     </li>
@@ -128,16 +128,12 @@
                             </span>
                             {{resource.title}}
                         </a>
-                        <br />
-                        <router-link v-if="resource.approved" :to="argumentLink(resource.metaSlug, resource.slug)">
-                            {{argumentLink(resource.metaSlug, resource.slug)}}
-                        </router-link>
 
                         <div v-if="resource.dateApproved" class="small-text medium-margin">
                             <div v-if="resource.approved">
                                 This resource was approved on {{resource.dateApproved | formatDate}}
                                 <br />
-                                <router-link class="extra-small-text" :to="argumentLink(resource.metaSlug, resource.slug)">
+                                <router-link :to="argumentLink(resource.metaSlug, resource.slug)" class="small-uppercase-link">
                                     {{argumentLink(resource.metaSlug, resource.slug)}}
                                 </router-link>
                             </div>
@@ -168,7 +164,7 @@
                             <SubmitResources v-if="editResource" :resourceObject="resource" />
                             <ApproveSubmission v-if="approveResource" :submissionObject="resource" />
                         </div>
-                        <router-link :to="submissionStatusLink(resource)">
+                        <router-link :to="submissionStatusLink(resource)" class="small-uppercase-link">
                             Reference Link
                         </router-link>
                     </li>

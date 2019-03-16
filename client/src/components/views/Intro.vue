@@ -5,15 +5,17 @@
         </h1>
 
         <div class="large-margin-vertical">
-            <h2>Already know the basics?</h2>
-            <button class="large-button">
-                <router-link to="/arguments" class="unstyled-link normal-text">Become An Expert!</router-link>
-            </button>
+            <h2>already know the basics?</h2>
+            <router-link to="/arguments">
+                <button class="large-button">
+                    Become An Expert
+                </button>
+            </router-link>
         </div>
 
         <p class="medium-margin">
             The term Bitcoin Maximalism was initially termed by Vitalik Buterin in a
-            <a href="https://blog.ethereum.org/2014/11/20/bitcoin-maximalism-currency-platform-network-effects/">blog</a>
+            <a href="https://blog.ethereum.org/2014/11/20/bitcoin-maximalism-currency-platform-network-effects/" class="regular-link uppercase">blog</a>
             post written on November 19, 2014, and has since been popularized throughout the cryptocurrency community
             to describe ardent Bitcoin supporters. Bitcoin Maximalism was originally coined as a sort of derogatory
             name for staunch Bitcoin proponents, but some Bitcoin proponents have ironically adopted the Bitcoin

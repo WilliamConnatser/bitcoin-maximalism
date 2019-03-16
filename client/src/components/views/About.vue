@@ -6,9 +6,11 @@
         </h1>
 
         <div class="medium-margin">
-            <button class="large-button medium-margin">
-                <router-link to="/account" class="unstyled-link normal-text">Register Here</router-link>
-            </button>
+            <router-link to="/account">
+                <button class="large-button medium-margin">
+                    Register Here
+                </button>
+            </router-link>
         </div>
 
         <div class="medium-margin">

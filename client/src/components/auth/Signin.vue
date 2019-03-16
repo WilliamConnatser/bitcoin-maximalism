@@ -9,7 +9,7 @@
             <div class="medium-margin">
                 <label>Password</label>
                 <input type="password" v-model="password" autocomplete="password" class="wide-input"> <br />
-                <router-link to="/reset-password">Forgot Password?</router-link>
+                <router-link to="/reset-password" class="regular-link">Forgot Password?</router-link>
             </div>
 
             <button type="submit">Login</button>

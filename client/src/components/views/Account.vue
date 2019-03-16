@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     Referral Link: <br />
-                    <a :href="refLink" class="extra-small-text">{{refLink}}</a>
+                    <a :href="refLink" class="small-uppercase-link">{{refLink}}</a>
                     <SocialIcons :currentUser="currentUser" />
                 </div>
             </section>
@@ -53,7 +53,7 @@
                                 This donation was paid!
                             </div>
 
-                            <router-link :to="statusLink(donation)" class="uppercase extra-small-text">
+                            <router-link :to="statusLink(donation)" class="uppercase small-uppercase-link">
                                 Info
                             </router-link>
                         </li>
@@ -85,7 +85,7 @@
                             {{opinion.opinion}}
                             <br />
 
-                            <router-link class="extra-small-text" :to="argumentLink(opinion.metaSlug, opinion.slug)">
+                            <router-link :to="argumentLink(opinion.metaSlug, opinion.slug)" class="small-uppercase-link">
                                 {{argumentLink(opinion.metaSlug,opinion.slug)}}
                             </router-link>
 
@@ -118,7 +118,7 @@
                             <span v-else>Downvote -{{currentUser.accruedDonations | formatBitcoinAmount}}</span>
                             <br />
 
-                            <router-link class="extra-small-text" :to="argumentLink(vote.metaSlug, vote.slug)">
+                            <router-link :to="argumentLink(vote.metaSlug, vote.slug)" class="small-uppercase-link">
                                 {{argumentLink(vote.metaSlug,vote.slug)}}
                             </router-link>
                         </li>
@@ -142,7 +142,7 @@
                                 <div v-if="argument.approved">
                                     This argument was approved on {{argument.dateApproved | formatDate}}
                                     <br />
-                                    <router-link class="extra-small-text" :to="argumentLink(argument.metaSlug, argument.slug)">
+                                    <router-link :to="argumentLink(argument.metaSlug, argument.slug)" class="small-uppercase-link">
                                         {{argumentLink(argument.metaSlug,argument.slug)}}
                                     </router-link>
                                 </div>
@@ -155,7 +155,7 @@
                             <div v-else class="small-text medium-margin">
                                 This argument has not been approved yet.
                             </div>
-                            <router-link class="extra-small-text uppercase" :to="submissionStatusLink(argument)">
+                            <router-link :to="submissionStatusLink(argument)" class="small-uppercase-link">
                                 Reference Link
                             </router-link>
                         </li>
@@ -176,7 +176,7 @@
                                 <div v-if="argument.approved">
                                     This argument was approved on {{argument.dateApproved | formatDate}}
                                     <br />
-                                    <router-link class="extra-small-text" :to="argumentLink(argument.metaSlug, argument.slug)">
+                                    <router-link :to="argumentLink(argument.metaSlug, argument.slug)" class="small-uppercase-link">
                                         {{argumentLink(argument.metaSlug,argument.slug)}}
                                     </router-link>
                                 </div>
@@ -189,7 +189,7 @@
                             <div v-else class="small-text medium-margin">
                                 This argument has not been approved yet.
                             </div>
-                            <router-link class="extra-small-text" :to="submissionStatusLink(argument)">
+                            <router-link :to="submissionStatusLink(argument)" class="small-uppercase-link">
                                 Reference Link
                             </router-link>
                         </li>
@@ -213,7 +213,7 @@
                                 <div v-if="bulletPoint.approved">
                                     This bulletpoint was approved on {{bulletPoint.dateApproved | formatDate}}
                                     <br />
-                                    <router-link class="extra-small-text" :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)">
+                                    <router-link :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)" class="small-uppercase-link">
                                         {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
                                     </router-link>
                                 </div>
@@ -226,7 +226,7 @@
                             <div v-else class="small-text medium-margin">
                                 This bulletpoint has not been approved yet.
                             </div>
-                            <router-link class="extra-small-text uppercase" :to="submissionStatusLink(bulletPoint)">
+                            <router-link :to="submissionStatusLink(bulletPoint)" class="small-uppercase-link">
                                 Reference Link
                             </router-link>
                         </li>
@@ -247,7 +247,7 @@
                                 <div v-if="bulletPoint.approved">
                                     This bulletpoint was approved on {{bulletPoint.dateApproved | formatDate}}
                                     <br />
-                                    <router-link class="extra-small-text" :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)">
+                                    <router-link :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)" class="small-uppercase-link">
                                         {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
                                     </router-link>
                                 </div>
@@ -260,7 +260,7 @@
                             <div v-else class="small-text medium-margin">
                                 This bulletpoint has not been approved yet.
                             </div>
-                            <router-link class="extra-small-text uppercase" :to="submissionStatusLink(bulletPoint)">
+                            <router-link :to="submissionStatusLink(bulletPoint)" class="small-uppercase-link">
                                 Reference Link
                             </router-link>
                         </li>
@@ -289,7 +289,7 @@
                                 <div v-if="resource.approved">
                                     This resource was approved on {{resource.dateApproved | formatDate}}
                                     <br />
-                                    <router-link class="extra-small-text" :to="argumentLink(resource.metaSlug, resource.slug)">
+                                    <router-link :to="argumentLink(resource.metaSlug, resource.slug)" class="small-uppercase-link">
                                         {{argumentLink(resource.metaSlug,resource.slug)}}
                                     </router-link>
                                 </div>
@@ -302,7 +302,7 @@
                             <div v-else class="small-text medium-margin">
                                 This resource has not been approved yet.
                             </div>
-                            <router-link class="extra-small-text uppercase" :to="submissionStatusLink(resource)">
+                            <router-link :to="submissionStatusLink(resource)" class="small-uppercase-link">
                                 Reference Link
                             </router-link>
                         </li>
@@ -327,7 +327,7 @@
                                 <div v-if="resource.approved">
                                     This resource was approved on {{resource.dateApproved | formatDate}}
                                     <br />
-                                    <router-link class="extra-small-text" :to="argumentLink(resource.metaSlug, resource.slug)">
+                                    <router-link :to="argumentLink(resource.metaSlug, resource.slug)" class="small-uppercase-link">
                                         {{argumentLink(resource.metaSlug,resource.slug)}}
                                     </router-link>
                                 </div>
@@ -340,7 +340,7 @@
                             <div v-else class="small-text medium-margin">
                                 This resource has not been approved yet.
                             </div>
-                            <router-link class="extra-small-text uppercase" :to="submissionStatusLink(resource)">
+                            <router-link :to="submissionStatusLink(resource)" class="small-uppercase-link">
                                 Reference Link
                             </router-link>
                         </li>

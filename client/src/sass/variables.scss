@@ -1,18 +1,8 @@
 $color-green: #41b883;
 $color-dark-green: #3A606E;
 $color-blue: #0798ec;
-$color-light-blue: #1bcee6;
-$color-dark-blue: #2c3e4f;
-$color-purple: #ba5be9;
-$color-yellow: #fec401;
-$color-orange: #ff5f45;
-$color-pink: #ee1a59;
-
 $color-white: #fdfdfd;
-$color-grey: #b4b8ab;
-$color-dark-grey: #607B7D;
-$color-beige: #AAAE8E;
-$color-dark-beige: #828E82;
+$color-blue-grey: #607B7D;
 
 $header-minimum-height: 5vh;
 $footer-minimum-height: 5vh;
@@ -28,23 +18,11 @@ $grow-and-distort: skewY(1deg) skewX(2deg) scale(1.2);
 @keyframes moveInLeft {
     0% {
         opacity: 0;
-        transform: translateX(-10rem); 
+        transform: translateX(-160px); 
     }
 
     80% {
-        transform: translateX(2rem);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translate(0)
-    }
-}
-
-@keyframes moveInBottom {
-    0% {
-        opacity: 0;
-        transform: translateY(2rem)
+        transform: translateX(10px);
     }
 
     100% {
@@ -56,11 +34,11 @@ $grow-and-distort: skewY(1deg) skewX(2deg) scale(1.2);
 @keyframes moveInRight {
     0% {
         opacity: 0;
-        transform: translateX(10rem)
+        transform: translateX(160px)
     }
 
     80% {
-        transform: translateX(-2rem);
+        transform: translateX(-10px);
     }
 
     100% {

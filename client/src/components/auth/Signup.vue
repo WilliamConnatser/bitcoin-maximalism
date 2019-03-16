@@ -20,8 +20,8 @@
                     <font-awesome-icon v-if="!checked" icon="square" title="Unchecked" class="checkbox__icon" />
                     <font-awesome-icon v-else icon="check-square" title="Checked" class="checkbox__icon" />
                 </label>
-                I have read and agree to the <router-link to="/terms">Terms</router-link> &amp;
-                <router-link to="/privacy">Privacy Policy</router-link>
+                I have read and agree to the <router-link to="/terms" class="regular-link">Terms</router-link> &amp;
+                <router-link to="/privacy" class="regular-link">Privacy Policy</router-link>
             </div>
             <button type="submit">Register</button>
             <div class="medium-margin">

@@ -12,9 +12,13 @@
 
     transition: all .5s;
 
+    .ordered-list {
+        list-style: decimal inside;
+    }
+
     &:hover {
         transform: translateY(-.3rem);
-        box-shadow: 0 1rem 2rem rgba($color-dark-grey, .2);
+        box-shadow: 0 1rem 2rem rgba($color-blue-grey, .2);
 
         &::after {
             transform: scaleX(1.5) scaleY(1.7);
@@ -24,7 +28,7 @@
 
     &:active {
         transform: translateY(-.1rem);
-        box-shadow: 0 .5rem 1rem rgba($color-dark-grey, .1)
+        box-shadow: 0 .5rem 1rem rgba($color-blue-grey, .1)
     }
 
     &-vote-toolbar {
@@ -88,10 +92,13 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+
             align-items: center;
+            font-size: 1.75rem;
         
             margin: 0 15px;
             animation: moveInRight .5s;
+            cursor: pointer;            
         
             &:hover {
                 transform: scale(1.2, 1.2);
@@ -110,61 +117,4 @@
             width: 100%;
         }
     }
-}
-
-.ordered-list {
-    list-style: decimal inside;
-}
-
-.large-icon {
-    font-size: 3rem;
-    margin: 1rem .5rem;
-
-    animation: moveInRight .5s;
-    transition: all .2s;
-
-    &:hover {
-        transform: $grow-and-distort;
-    }
-}
-
-.extra-large-icon {
-    font-size: 6rem;
-    margin: 1rem .5rem;
-
-    animation: moveInRight .5s;
-    transition: all .2s;
-
-    &:hover {
-        transform: $grow-and-distort;
-    }
-}
-
-.icon-group {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    margin: 0 15px;
-    animation: moveInRight .5s;
-
-    &:hover {
-        transform: scale(1.2, 1.2);
-        
-        &::after {
-            transform: scaleX(1) scaleY(1);
-        }
-    }
-
-    &:active {
-        transform: rotate(5deg);
-    }
-}
-
-.btcpay-iframe {
-    max-width: 100%;
-    width: 32rem;
-    height: 72rem;
-    border: 0;
 }

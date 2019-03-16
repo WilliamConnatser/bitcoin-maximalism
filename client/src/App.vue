@@ -30,8 +30,9 @@
 <style lang="scss">
     @import "./sass/base";
     @import "./sass/forms";
+    @import "./sass/icons";
     @import "./sass/layouts";
+    @import "./sass/lists";
     @import "./sass/typography";
     @import "./sass/variables";
-    @import "./sass/utilities";
 </style>

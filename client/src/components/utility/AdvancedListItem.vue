@@ -11,7 +11,9 @@
                         <span class="media-type">{ {{arrayItem.media}} } </span>{{arrayItem.title}}
                     </a>
                     <router-link v-if="arrayItem.__typename == 'Rhetoric'" :to="urlGenerator(arrayItem.metaSlug, arrayItem.slug)"
-                        class="unstyled-link ">{{arrayItem.title}}</router-link>
+                        class="unstyled-link ">
+                        {{arrayItem.title}}
+                    </router-link>
                 </div>
 
                 <ToolbarActions :arrayItemProp="arrayItem" />

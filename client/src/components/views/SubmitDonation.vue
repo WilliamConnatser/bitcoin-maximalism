@@ -28,8 +28,8 @@
             refer to our Privacy Policy and Terms of Service for more details.
         </p>
         <div class="medium-margin">
-            I have read and agree to the <router-link to="/terms">Terms</router-link> &amp;
-            <router-link to="/privacy">Privacy Policy</router-link>
+            I have read and agree to the <router-link to="/terms" class="small-uppercase-link">Terms</router-link> &amp;
+            <router-link to="/privacy" class="small-uppercase-link">Privacy Policy</router-link>
             <label @click="toggleCheck()" for="agree" class="checkbox">
                 <input type="checkbox" name="agree" class=".checkbox">
                 <font-awesome-icon v-if="!checked" icon="square" title="Unchecked" class="checkbox__icon" />

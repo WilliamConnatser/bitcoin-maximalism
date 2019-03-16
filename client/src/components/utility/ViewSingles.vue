@@ -11,7 +11,7 @@
                     {{singleDocument.opinion}}
                 </div>
 
-                <router-link :to="urlGenerator(singleDocument.metaSlug, singleDocument.slug)">
+                <router-link :to="urlGenerator(singleDocument.metaSlug, singleDocument.slug)" class="small-uppercase-link">
                     {{urlGenerator(singleDocument.metaSlug, singleDocument.slug)}}
                 </router-link>
             </li>
@@ -22,11 +22,17 @@
                 <ToolbarVotes :arrayItemProp="singleDocument" />
 
                 <span v-if="singleDocument.__typename == 'BulletPoint'" >{{singleDocument.content}}</span>
-                <a v-if="singleDocument.__typename == 'Resource'" :href="singleDocument.link" class="unstyled-link "><span
-                        class="media-type">{
-                        {{singleDocument.media}} } </span>{{singleDocument.title}}</a>
-                <router-link v-if="singleDocument.__typename == 'Rhetoric'" :to="urlGenerator(singleDocument.metaSlug, singleDocument.slug)"
-                    class="unstyled-link ">{{singleDocument.title}}</router-link>
+                <a v-if="singleDocument.__typename == 'Resource'" :href="singleDocument.link" class="unstyled-link">
+                    <span class="media-type">
+                        { {{singleDocument.media}} }
+                    </span>
+                    {{singleDocument.title}}
+                </a>
+                <router-link v-if="singleDocument.__typename == 'Rhetoric'"
+                        :to="urlGenerator(singleDocument.metaSlug, singleDocument.slug)"
+                        class="unstyled-link">
+                    {{singleDocument.title}}
+                </router-link>
 
                 <ToolbarActions :arrayItemProp="singleDocument"/>
             </li>

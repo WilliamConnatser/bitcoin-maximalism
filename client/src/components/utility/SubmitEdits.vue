@@ -42,8 +42,8 @@
                         reason we deem necessary, so please remain respectful of others and intellectually honest.
                         All donations are non-binding, no products or services are guaranteed in lieu of a donation,
                         and absolutely no refunds will be performed no matter your edit is published or edited. By
-                        continuing you are agreeing to accept the <router-link to="/terms">Terms</router-link> &amp;
-                        <router-link to="/privacy">Privacy Policy</router-link>.
+                        continuing you are agreeing to accept the <router-link to="/terms" class="small-uppercase-link">Terms</router-link> &amp;
+                        <router-link to="/privacy" class="small-uppercase-link">Privacy Policy</router-link>.
                     </div>
                 </div>
 
@@ -64,8 +64,8 @@
                         reason we deem necessary, so please remain respectful of others and intellectually honest.
                         All donations are non-binding, no products or services are guaranteed in lieu of a donation,
                         and absolutely no refunds will be performed no matter your edit is published or edited. By
-                        continuing you are agreeing to accept the <router-link to="/terms">Terms</router-link> &amp;
-                        <router-link to="/privacy">Privacy Policy</router-link>.
+                        continuing you are agreeing to accept the <router-link to="/terms" class="small-uppercase-link">Terms</router-link> &amp;
+                        <router-link to="/privacy" class="small-uppercase-link">Privacy Policy</router-link>.
                     </div>
                 </div>
             </div>
