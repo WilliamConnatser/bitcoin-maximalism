@@ -1,21 +1,18 @@
 <template>
-    <div >
-        <a>
-            <button @click="toggleSort('votes')" class="small-button">
-                Votes
-                <font-awesome-icon v-if="sortType==='votes' && sortDirection==='descending'" icon="sort-amount-down" title="Descending" />
-                <font-awesome-icon v-if="sortType==='votes' && sortDirection==='ascending'" icon="sort-amount-up" title="Ascending" />
-            </button>
-        </a>
-        <a>
-            <button @click="toggleSort('dateCreated')" class="small-button">
-                Date
-                <font-awesome-icon v-if="sortType==='dateCreated' && sortDirection==='descending'" icon="sort-amount-down"
-                    title="Descending" />
-                <font-awesome-icon v-if="sortType==='dateCreated' && sortDirection==='ascending'" icon="sort-amount-up"
-                    title="Ascending" />
-            </button>
-        </a>
+    <div>
+        <button @click="toggleSort('votes')" class="small-button">
+            Votes
+            <font-awesome-icon v-if="sortType==='votes' && sortDirection==='descending'" icon="sort-amount-down" title="Descending" />
+            <font-awesome-icon v-if="sortType==='votes' && sortDirection==='ascending'" icon="sort-amount-up" title="Ascending" />
+        </button>
+
+        <button @click="toggleSort('dateCreated')" class="small-button">
+            Date
+            <font-awesome-icon v-if="sortType==='dateCreated' && sortDirection==='descending'" icon="sort-amount-down"
+                title="Descending" />
+            <font-awesome-icon v-if="sortType==='dateCreated' && sortDirection==='ascending'" icon="sort-amount-up"
+                title="Ascending" />
+        </button>
 
         <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 

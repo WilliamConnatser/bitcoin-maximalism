@@ -23,7 +23,7 @@
 
         <li v-if="!showSocial" @click="toggleSocial" class="inline-nav">
           <a>
-          <font-awesome-icon icon="share-alt-square" class="social-icons-header large-text" />
+            <font-awesome-icon icon="share-alt-square" class="social-icons-header large-text" />
           </a>
         </li>
         <li v-else @click="toggleSocial" class="inline-nav">
@@ -31,7 +31,7 @@
             <font-awesome-icon icon="times-circle" class="social-icons-header large-text" />
           </a>
         </li>
-         <li class="inline-nav">
+        <li class="inline-nav">
           <router-link to="/about" class="unstyled-link">
             <font-awesome-icon icon="question" class="social-icons-header large-text" />
           </router-link>

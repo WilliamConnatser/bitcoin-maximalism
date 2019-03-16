@@ -29,10 +29,12 @@
         -->
 
         <div v-if="this.viewOpinions !== null">
-            <a><button v-if="this.submitOpinion === null" @click="show('submitOpinion')" class="cursor-pointer">Submit
-                    Opinion</button></a>
-            <a><button v-if="this.submitOpinion !== null" @click="cancel('submitOpinion')" class="cursor-pointer">View
-                    Opinions</button></a>
+            <button v-if="this.submitOpinion === null" @click="show('submitOpinion')" class="cursor-pointer">
+                Submit Opinion
+            </button>
+            <button v-if="this.submitOpinion !== null" @click="cancel('submitOpinion')" class="cursor-pointer">
+                View Opinions
+            </button>
 
             <ViewOpinions v-if="this.submitOpinion === null" :arrayItemProp="arrayItemProp" />
             <SubmitOpinions v-if="this.submitOpinion !== null" :arrayItemProp="arrayItemProp" />

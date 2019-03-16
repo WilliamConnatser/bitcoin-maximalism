@@ -200,7 +200,6 @@ type Username {
 type Query {
     currentUser: User
     allUsernames: [Username!]!
-    getAllegiance: Boolean
 
     docIDSpecificDonation(_id: ID!): Donation
     docIDSpecificOpinions(_id: String!, onModel: String!, sortType: String!, sortDirection: String, index: Int!): [Opinion]
@@ -234,7 +233,7 @@ type Mutation {
     signupUser(username: String!, email: String!, password: String!, ref: ID): Boolean
     verifyEmail(token: String!): Token
     resendRegistrationEmail(email: String!): Boolean
-    setAllegiance(maximalist: Boolean!): User
+    setAllegiance(maximalist: Boolean!): Boolean
 
     startPasswordReset(email: String!): Boolean
     verifyPasswordReset(token: String!): Token

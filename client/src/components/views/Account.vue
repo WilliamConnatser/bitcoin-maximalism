@@ -5,12 +5,8 @@
             <section>
                 <div>
                     <h1 class="heading">account panel</h1>
-                    <a>
-                        <router-link to="/submit-donation"><button>Add Influence</button></router-link>
-                    </a>
-                    <a>
-                        <button @click="signoutUser">Signout</button>
-                    </a>
+                    <router-link to="/submit-donation"><button>Add Influence</button></router-link>
+                    <button @click="signoutUser">Signout</button>
                 </div>
                 <div>
                     Influence: {{currentUser.accruedDonations | formatBitcoinAmount}}

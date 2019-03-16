@@ -1774,7 +1774,7 @@ module.exports = {
                 user.maximalist = maximalist;
                 user.save();
 
-                return user;
+                return user.maximalist;
 
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));

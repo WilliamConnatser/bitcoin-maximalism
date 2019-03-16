@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    affiliation: {
+    maximalist: {
         type: Boolean
     },
     admin: {

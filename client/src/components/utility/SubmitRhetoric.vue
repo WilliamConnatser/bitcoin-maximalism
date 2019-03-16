@@ -9,10 +9,10 @@
                 <label>argument type</label>
                 <select v-model="metaSlug" class="wide-input">
                     <option value="protagonistic" :selected="metaSlug === 'protagonistic'">
-                        Protagonistic
+                        protagonistic
                     </option>
                     <option value="antagonistic" :selected="metaSlug === 'antagonistic'">
-                        Antagonistic
+                        antagonistic
                     </option>
                 </select>
                 <label for="slug">argument slug</label>
@@ -26,7 +26,8 @@
                 <div class="extra-small-text medium-margin-vertical">
                     Foul language and namecalling is not allowed. Please remain respectful of others, on topic, and
                     intellectually honest. We retain the right to reject any new arguments for any reason. Please
-                    read our <router-link to='/terms'>Terms</router-link> for more information. By clicking Agree
+                    read our <router-link to='/terms' class="small-uppercase-link">Terms</router-link> for more
+                    information. By clicking Agree
                     &amp; Submit below you agree that you have read and understand to those Terms.
                 </div>
             </div>
@@ -37,7 +38,8 @@
         </form>
         <div v-else-if="rhetoricObject === undefined" class="medium-margin large-margin-vertical">
             <h2>The argument was submitted successfully!</h2>
-            You may track the status of your submission in your Account Panel or <router-link :to="submissionStatusLink(submitted)">HERE</router-link>
+            You may track the status of your submission in your Account Panel or <router-link :to="submissionStatusLink(submitted)"
+                class="small-uppercase-link">HERE</router-link>
         </div>
         <div v-else class="medium-margin large-margin-vertical">
             <h2>The argument was edited successfully!</h2>
@@ -89,8 +91,8 @@
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
                 } else if (this.validTitle(this.title) &&
-                            this.validMetaSlug(this.metaSlug) &&
-                            this.validSlug(this.slug)) {
+                    this.validMetaSlug(this.metaSlug) &&
+                    this.validSlug(this.slug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -131,8 +133,8 @@
                 } else if (!this.currentUser.emailVerified) {
                     this.$toasted.global.verify_email();
                 } else if (this.validTitle(this.title) &&
-                            this.validMetaSlug(this.metaSlug) &&
-                            this.validSlug(this.slug)) {
+                    this.validMetaSlug(this.metaSlug) &&
+                    this.validSlug(this.slug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
