@@ -1,13 +1,13 @@
 <template>
     <div >
-        <a class="cursor-pointer">
+        <a>
             <button @click="toggleSort('votes')" class="small-button">
                 Votes
                 <font-awesome-icon v-if="sortType==='votes' && sortDirection==='descending'" icon="sort-amount-down" title="Descending" />
                 <font-awesome-icon v-if="sortType==='votes' && sortDirection==='ascending'" icon="sort-amount-up" title="Ascending" />
             </button>
         </a>
-        <a class="cursor-pointer">
+        <a>
             <button @click="toggleSort('dateCreated')" class="small-button">
                 Date
                 <font-awesome-icon v-if="sortType==='dateCreated' && sortDirection==='descending'" icon="sort-amount-down"

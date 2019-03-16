@@ -29,6 +29,9 @@ const UserSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    affiliation: {
+        type: Boolean
+    },
     admin: {
         type: Boolean,
         required: true,

@@ -86,9 +86,9 @@
       },
       filterButtonStyle(metaSlug) {
         if (metaSlug === this.metaSlug) {
-          return "small-button selected-button cursor-pointer";
+          return "small-button selected-button ";
         } else {
-          return "small-button cursor-pointer";
+          return "small-button ";
         }
       }
     },

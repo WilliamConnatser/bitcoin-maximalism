@@ -5,10 +5,10 @@
             <section>
                 <div>
                     <h1 class="heading">account panel</h1>
-                    <a class="cursor-pointer">
+                    <a>
                         <router-link to="/submit-donation"><button>Add Influence</button></router-link>
                     </a>
-                    <a class="cursor-pointer">
+                    <a>
                         <button @click="signoutUser">Signout</button>
                     </a>
                 </div>
@@ -427,8 +427,8 @@
                 this.historyTab = tabName;
             },
             tabButtonStyle(tabName) {
-                if (tabName === this.historyTab) return "small-button selected-button cursor-pointer";
-                else return "small-button cursor-pointer";
+                if (tabName === this.historyTab) return "small-button selected-button ";
+                else return "small-button ";
             },
             calculateVotes(voteArray) {
                 let cumulativeVote = 0;

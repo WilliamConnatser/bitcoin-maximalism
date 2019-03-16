@@ -94,6 +94,7 @@ button {
     margin: 5px;
     border: 1px solid $color-white;
     outline: none;
+    cursor: pointer;
 
     &:hover {
         background-color: $color-white;

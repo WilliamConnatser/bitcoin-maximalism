@@ -1566,7 +1566,11 @@ module.exports = {
                 if (media.trim() === "") throw new UserInputError('invalid-media');
                 if (link.trim() === "") throw new UserInputError('invalid-link');
                 if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');
-                if (await Rhetoric.findOne({slug, approved: true, active: true}) === null) throw new UserInputError('invalid-slug');
+                if (await Rhetoric.findOne({
+                        slug,
+                        approved: true,
+                        active: true
+                    }) === null) throw new UserInputError('invalid-slug');
                 if (!link.includes('http')) link = 'http://' + link;
 
                 const resource = await Resource.findOne({
@@ -1627,7 +1631,11 @@ module.exports = {
                 if (media.trim() === "") throw new UserInputError('invalid-media');
                 if (link.trim() === "") throw new UserInputError('invalid-link');
                 if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');
-                if (await Rhetoric.findOne({slug, approved: true, active: true}) === null) throw new UserInputError('invalid-slug');
+                if (await Rhetoric.findOne({
+                        slug,
+                        approved: true,
+                        active: true
+                    }) === null) throw new UserInputError('invalid-slug');
                 if (!link.includes('http')) link = 'http://' + link;
 
                 const resource = await Resource.findOne({
@@ -1743,7 +1751,35 @@ module.exports = {
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
             }
-        }, //toggleApproval(onModel: String!, documentID: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
+        },
+        setAllegiance: async (_, {
+            maximalist
+        }, {
+            User,
+            currentUser
+        }) => {
+            try {
+                if (!currentUser) {
+                    throw new Error('You must be logged in to perform this function!')
+                }
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+
+                const user = await User.findOne({
+                    username: currentUser.username
+                });
+
+                if (!user) {
+                    throw new UserInputError('user-not-found');
+                }                
+                user.maximalist = maximalist;
+                user.save();
+
+                return user;
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
+            }
+        },
         toggleApproval: async (_, {
             onModel,
             documentID,

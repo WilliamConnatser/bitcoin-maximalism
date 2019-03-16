@@ -12,6 +12,10 @@ strong {
     font-weight: 500;
 }
 
+a {
+    cursor: pointer;
+}
+
 .extra-small-text {
     font-size: 1.4rem;
 }
@@ -43,10 +47,6 @@ strong {
 
 .loading {
     animation: throb .5s infinite;
-}
-
-.heading {
-    margin: 0rem auto 20px;
 }
 
 .unstyled-link {

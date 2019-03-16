@@ -8,25 +8,25 @@
                     inline-template>
         <div>
             <network network="twitter">
-                <a class="unstyled-link cursor-pointer"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'twitter-square' }" class="large-icon" /></a>
+                <a class="unstyled-link "><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'twitter-square' }" class="large-icon" /></a>
             </network>
             <network network="facebook">
-                <a class="unstyled-link cursor-pointer"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook-square' }" class="large-icon" /></a>
+                <a class="unstyled-link "><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook-square' }" class="large-icon" /></a>
             </network>
             <network network="reddit">
-                <a class="unstyled-link cursor-pointer"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'reddit-square' }" class="large-icon" /></a>
+                <a class="unstyled-link "><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'reddit-square' }" class="large-icon" /></a>
             </network>
             <network network="telegram">
-                <a class="unstyled-link cursor-pointer"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'telegram' }" class="large-icon" /></a>
+                <a class="unstyled-link "><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'telegram' }" class="large-icon" /></a>
             </network>
             <network network="weibo">
-                <a class="unstyled-link cursor-pointer"><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'weibo' }" class="large-icon" /></a>
+                <a class="unstyled-link "><font-awesome-icon :icon="{ prefix: 'fab', iconName: 'weibo' }" class="large-icon" /></a>
             </network>
             <network network="email">
-                <a class="unstyled-link cursor-pointer"><font-awesome-icon icon="envelope-square" class="large-icon" /></a>
+                <a class="unstyled-link "><font-awesome-icon icon="envelope-square" class="large-icon" /></a>
             </network>
             <network network="sms">
-                <a class="unstyled-link cursor-pointer"><font-awesome-icon icon="sms" class="large-icon" /></a>
+                <a class="unstyled-link "><font-awesome-icon icon="sms" class="large-icon" /></a>
             </network>
         </div>
     </social-sharing>

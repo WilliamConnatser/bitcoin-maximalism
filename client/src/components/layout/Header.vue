@@ -22,12 +22,12 @@
         </li>
 
         <li v-if="!showSocial" @click="toggleSocial" class="inline-nav">
-          <a class="cursor-pointer">
+          <a>
           <font-awesome-icon icon="share-alt-square" class="social-icons-header large-text" />
           </a>
         </li>
         <li v-else @click="toggleSocial" class="inline-nav">
-          <a class="cursor-pointer">
+          <a>
             <font-awesome-icon icon="times-circle" class="social-icons-header large-text" />
           </a>
         </li>
@@ -39,7 +39,7 @@
       </div>
 
       <li v-if="showSocial" class="social-dropdown">
-        <a class="cursor-pointer">
+        <a>
           <SocialIcons :currentUser="currentUser" />
         </a>
       </li>

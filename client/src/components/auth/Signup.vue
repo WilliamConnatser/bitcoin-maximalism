@@ -25,7 +25,7 @@
             </div>
             <button type="submit">Register</button>
             <div class="medium-margin">
-                <a @click="$emit('toggle-login')" class="unstyled-link cursor-pointer">
+                <a @click="$emit('toggle-login')" class="unstyled-link">
                     Already Registered?
                     <h2>Sign In Here!</h2>
                 </a>
