@@ -146,6 +146,7 @@ type User {
     bannedUntil: String # Timestamp user is banned until
     certified: Boolean!
     certificates: [Certificate!]!
+    maximalist: Boolean
     donations: [Donation!]! # Array containing donation document IDs
     accruedDonations: Float! # Total amount user has donated (including any boosts), updated when payment is successfuly proccessed
     opinions: [Opinion!]!
