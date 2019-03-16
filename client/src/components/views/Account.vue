@@ -11,7 +11,30 @@
                 <div>
                     Influence: {{currentUser.accruedDonations | formatBitcoinAmount}}
                 </div>
-                <div>
+                <div v-if="currentUser.maximalist === undefined || changeAllegiance" class="medium-margin-vertical">
+                    
+                    <div v-if="currentUser.maximalist === undefined">
+                        You have not yet sworn allegiance to either faction. Your ancestors would be ashamed...
+                    </div>
+                    <div v-else>
+                        So you think you're enlightened now, huh? Go ahead, change your allegiance below...
+                    </div>
+                    <button @click="setAllegiance(true)" :class="allegianceButtonStyle(true)">
+                        Bitcoin Maximalist
+                    </button>
+                    <button @click="setAllegiance(false)" :class="allegianceButtonStyle(false)">
+                        Multicoinist
+                    </button>
+                </div>
+                <div v-else class="medium-margin-vertical">
+                    Allegiance: {{getAllegiance}}
+                    <br/>
+                    <button @click="changeAllegiance = true">
+                        Change Allegiance
+                    </button>
+                </div>
+
+                <div class="medium-margin-vertical">
                     Referral Link: <br />
                     <a :href="refLink" class="small-uppercase-link">{{refLink}}</a>
                     <SocialIcons :currentUser="currentUser" />
@@ -372,7 +395,8 @@
                 unapprovedResources: [],
                 approved: null,
                 approvalCommentary: [],
-                historyTab: 'Donation'
+                historyTab: 'Donation',
+                changeAllegiance: false
             }
         },
         created() {
@@ -385,6 +409,13 @@
         computed: {
             refLink() {
                 return `https://www.BitcoinMaximalism.com/?ref=${this.currentUser._id}`
+            },
+            getAllegiance() {
+                if (this.currentUser.maximalist) {
+                    return "Bitcoin Maximalist";
+                } else {
+                    return "Multicoinist";
+                }
             }
         },
         methods: {
@@ -423,8 +454,15 @@
                 this.historyTab = tabName;
             },
             tabButtonStyle(tabName) {
-                if (tabName === this.historyTab) return "small-button selected-button ";
-                else return "small-button ";
+                if (tabName === this.historyTab) return "small-button selected-button";
+                else return "small-button";
+            },
+            allegianceButtonStyle(maximalist) {
+                if(this.currentUser.maximalist === maximalist) {
+                    return "large-button selected-button";
+                } else {
+                    return "large-button"
+                }
             },
             calculateVotes(voteArray) {
                 let cumulativeVote = 0;
@@ -433,6 +471,37 @@
                     else cumulativeVote -= vote.createdBy.accruedDonations;
                 });
                 return cumulativeVote;
+            },
+            validAllegiance(allegiance) {
+                return typeof allegiance === 'boolean' ? true : false;
+            },
+            setAllegiance: async function(maximalist) {
+                await this.$apollo.queries.currentUser.refetch();
+
+                if (!this.currentUser) {
+                    this.$toasted.global.log_in();
+
+                } else if (!this.currentUser.emailVerified) {
+                    this.$toasted.global.verify_email();
+
+                } else if (this.validAllegiance(maximalist)) {
+                    //GraphQL Mutation
+                    this.$apollo.mutate({
+                        mutation: gql `
+                            mutation setAllegiance($maximalist: Boolean!) {
+                                setAllegiance(maximalist: $maximalist)
+                            }
+                        `,
+                        variables: {
+                            maximalist
+                        }
+                    }).then(() => {
+                        this.$apollo.queries.currentUser.refetch();
+                        this.changeAllegiance = false;
+                    }).catch(() => {
+                        // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
+                    });
+                }
             }
         },
         apollo: {
@@ -446,6 +515,7 @@
                             emailVerified
                             active
                             admin
+                            maximalist
                             accruedDonations
                             donations {
                                 _id

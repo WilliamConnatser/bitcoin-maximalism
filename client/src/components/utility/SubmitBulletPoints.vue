@@ -7,10 +7,10 @@
                 <label>argument type</label>
                 <select v-model="metaSlug" class="wide-input" @change="metaSlugChanged()">
                     <option value="protagonistic" :selected="metaSlug === 'protagonistic'">
-                        Protagonistic
+                        protagonistic
                     </option>
                     <option value="antagonistic" :selected="metaSlug === 'antagonistic'">
-                        Antagonistic
+                        antagonistic
                     </option>
                 </select>
                 <label>argument slug</label>

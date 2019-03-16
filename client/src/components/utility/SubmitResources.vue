@@ -7,10 +7,10 @@
                 <label>argument type</label>
                 <select v-model="metaSlug" class="wide-input" @change="metaSlugChanged()">
                     <option value="protagonistic" :selected="metaSlug === 'protagonistic'">
-                        Protagonistic
+                        protagonistic
                     </option>
                     <option value="antagonistic" :selected="metaSlug === 'antagonistic'">
-                        Antagonistic
+                        antagonistic
                     </option>
                 </select>
                 <label>argument slug</label>
@@ -28,25 +28,25 @@
                 <label>resource type</label>
                 <select v-model="media" class="wide-input">
                     <option value="article" :selected="media === 'article'">
-                        Article
+                        article
                     </option>
                     <option value="blog" :selected="media === 'blog'">
-                        Blog
+                        blog
                     </option>
                     <option value="podcast" :selected="media === 'podcast'">
-                        Podcast
+                        podcast
                     </option>
                     <option value="video" :selected="media === 'video'">
-                        Video
+                        video
                     </option>
                     <option value="whitepaper" :selected="media === 'whitepaper'">
-                        Whitepaper
+                        whitepaper
                     </option>
                     <option value="book" :selected="media === 'book'">
-                        Book
+                        book
                     </option>
                     <option value="website" :selected="media === 'website'">
-                        Website
+                        website
                     </option>
                 </select>
                 <div class="extra-small-text medium-margin-vertical">

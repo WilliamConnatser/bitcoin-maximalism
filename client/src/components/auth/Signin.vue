@@ -104,6 +104,7 @@
                             emailVerified
                             active
                             admin
+                            maximalist
                             accruedDonations
                             donations {
                                 _id
