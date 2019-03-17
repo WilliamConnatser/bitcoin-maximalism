@@ -118,7 +118,7 @@
                         }
                     }).then(() => {
                         this.submitted = true;
-                        this.$apollo.queries.unapprovedRhetoric.refetch();
+                        this.$parent.$apollo.queries.unapprovedRhetoric.refetch();
                         //Redirect to status page
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)

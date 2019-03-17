@@ -50,7 +50,7 @@ const OpinionSchema = new mongoose.Schema({
     },
     onModel: {
         type: String,
-        enum: ['BulletPoint', 'Resource', 'Rhetoric'],
+        enum: ['BulletPoint', 'Resource', 'Rhetoric', 'Project'],
         required: true
     },
     votes: {

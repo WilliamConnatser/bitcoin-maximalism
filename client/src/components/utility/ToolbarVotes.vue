@@ -96,14 +96,19 @@
                                 this.$parent.$emit('resources-changed');
                             } else if (this.arrayItemProp.__typename === 'BulletPoint') {
                                 this.$parent.$emit('bulletpoints-changed');
+                            } else if (this.arrayItemProp.__typename === 'Project') {
+                                this.$parent.$emit('projects-changed');
                             }
                         } else {
                             if (this.arrayItemProp.__typename === 'Rhetoric') {
                                 this.$parent.$emit('update-tos-query');
                             } else if (this.arrayItemProp.__typename === 'Opinion') {
                                 this.$emit('update-view-opinion-query');
-                            } else {
+                            } else if (this.arrayItemProp.__typename === 'BulletPoint' ||
+                                this.arrayItemProp.__typename === 'Resource')  {
                                 this.$parent.$emit('update-arguments-query');
+                            } else if (this.arrayItemProp.__typename === 'Project') {
+                                this.$parent.$emit('update-projects-query');
                             }
 
                         }

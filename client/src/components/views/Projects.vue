@@ -12,7 +12,7 @@
     <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
     <ul v-else class="medium-margin-horizontal">
-      <AdvancedListItem :arrayProp="this.args" v-on:update-projects-query="updateQuery" />
+      <AdvancedListItem :arrayProp="this.args" v-on:update-projects-query="updateQuery"/>
     </ul>
   </section>
 </template>

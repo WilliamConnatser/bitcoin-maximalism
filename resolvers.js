@@ -1029,7 +1029,61 @@ module.exports = {
                 }
 
             } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching these unapproved resource'));
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching these unapproved resources'));
+            }
+        },
+        unapprovedProjects: async (_, {
+            _id
+        }, {
+            Project
+        }) => {
+            try {
+
+                //Queried for a single document
+                if (_id !== undefined) {
+
+                    const project = await Project.findOne({
+                            _id
+                        })
+                        .populate({
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        })
+                        .populate({
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        });
+
+                    if (!project) throw new UserInputError('invalid-id');
+
+                    return [project];
+                }
+
+                //Queried for all documents
+                else {
+
+                    const project = await Project.find({
+                            approved: false,
+                            active: true
+                        })
+                        .populate({
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        })
+                        .populate({
+                            path: 'approvedBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        });
+
+                    return project;
+                }
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching these unapproved projects'));
             }
         }
     },
@@ -1041,14 +1095,15 @@ module.exports = {
             User
         }) => {
             try {
-                //Validation
-
-                //Construct regex for case-insensitive query
+                //Construct regex for case-insensitive Mongoose query
                 const emailRegEx = new RegExp(email.replace('.', '\.'), 'i');
 
+                //Grab the user document
                 const user = await User.findOne({
                     email: emailRegEx
                 });
+
+                //Validation
                 if (!user) {
                     throw new AuthenticationError("user-not-found");
                 }
@@ -1058,9 +1113,9 @@ module.exports = {
                     throw new AuthenticationError("invalid-password");
                 }
 
-                //Return token
+                //Return login token
                 return {
-                    token: createToken(user, process.env.SECRET, '1hr')
+                    token: createToken(user, process.env.SECRET, '3hr')
                 }
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while signing in'));
@@ -1090,7 +1145,7 @@ module.exports = {
 
                 //Return token 
                 return {
-                    token: createToken(user, process.env.SECRET, "1hr")
+                    token: createToken(user, process.env.SECRET, "3hr")
                 }
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while verifying your email'));
@@ -1102,10 +1157,15 @@ module.exports = {
             User
         }) => {
             try {
-                //Validation
+                //Construct regex for case-insensitive Mongoose query
+                const emailRegEx = new RegExp(email.replace('.', '\.'), 'i');
+
+                //Grab the user document
                 const user = await User.findOne({
-                    email
+                    email: emailRegEx
                 });
+
+                //Validation
                 if (!user) throw new UserInputError('user-not-found');
                 if (user.emailVerified) throw new UserInputError('already-verified');
 
@@ -1123,10 +1183,15 @@ module.exports = {
             User
         }) => {
             try {
-                //Validation
+                //Construct regex for case-insensitive Mongoose query
+                const emailRegEx = new RegExp(email.replace('.', '\.'), 'i');
+
+                //Grab the user document
                 const user = await User.findOne({
-                    email
+                    email: emailRegEx
                 });
+
+                //Validation
                 if (!user) throw new UserInputError('user-not-found');
                 if (!user.emailVerified) throw new AuthenticationError('verify-email')
 
@@ -1161,7 +1226,7 @@ module.exports = {
 
                 //Return token 
                 return {
-                    token: createToken(user, process.env.SECRET, "1hr")
+                    token: createToken(user, process.env.SECRET, "3hr")
                 }
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while verifying your email'));
@@ -1173,10 +1238,15 @@ module.exports = {
             User
         }) => {
             try {
-                //Validation
+                //Construct regex for case-insensitive Mongoose query
+                const emailRegEx = new RegExp(email.replace('.', '\.'), 'i');
+
+                //Grab the user document
                 const user = await User.findOne({
-                    email
+                    email: emailRegEx
                 });
+
+                //Validation
                 if (!user) throw new UserInputError("user-not-found");
 
                 //Construct and send email verification
@@ -1218,7 +1288,7 @@ module.exports = {
 
                 //Return token 
                 return {
-                    token: createToken(user, process.env.SECRET, "1hr")
+                    token: createToken(user, process.env.SECRET, "3hr")
                 }
             } catch (err) {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while updating your password'));
@@ -1234,13 +1304,19 @@ module.exports = {
         }) => {
             try {
                 //Validation
+
+                //Construct regex for case-insensitive Mongoose query
+                const usernameRegEx = new RegExp(username.replace('.', '\.'), 'i');
                 const userInUse = await User.findOne({
-                    username
+                    username: usernameRegEx
                 });
                 if (userInUse) throw new UserInputError("username-taken");
                 if (username.length > 25) throw new UserInputError("username-length");
+
+                //Construct regex for case-insensitive Mongoose query
+                const emailRegEx = new RegExp(email.replace('.', '\.'), 'i');
                 const emailInUse = await User.findOne({
-                    email
+                    email: emailRegEx
                 });
                 if (emailInUse) throw new UserInputError("email-taken");
 
@@ -1285,6 +1361,7 @@ module.exports = {
             documentID,
             opinion
         }, {
+            Project,
             Rhetoric,
             Opinion,
             BulletPoint,
@@ -1297,20 +1374,32 @@ module.exports = {
                 if (!currentUser) throw new AuthenticationError('log-in');
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
                 if (opinion.length > 280) throw new UserInputError('opinion-length');
-                if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric') throw new UserInputError('invalid-type');
+                if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric' && onModel !== 'Project') throw new UserInputError('invalid-type');
                 //TODO: Write helper function: ValidateOpinion(opinion)
 
-
                 //Create Invoice, Donation document, and Opinion document
-                let applicableDocument = {};
-                (onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
-                        _id: documentID
-                    }): (onModel === 'Resource') ? applicableDocument = await Resource.findOne({
-                        _id: documentID
-                    }) :
-                    applicableDocument = await Rhetoric.findOne({
-                        _id: documentID
-                    });
+                switch(onModel) {
+                    case 'BulletPoint':
+                        var applicableDocument = await BulletPoint.findOne({
+                            _id: documentID
+                        });
+                        break;
+                    case 'Resource':
+                        var applicableDocument = await Resource.findOne({
+                            _id: documentID
+                        });
+                        break;
+                    case 'Rhetoric':
+                        var applicableDocument = await Rhetoric.findOne({
+                            _id: documentID
+                        });
+                        break;
+                    case 'Project':
+                        var applicableDocument = await Project.findOne({
+                            _id: documentID
+                        });
+                        break;
+                }
 
                 let userDocument = await User.findOne({
                     _id: currentUser._id
@@ -1332,7 +1421,7 @@ module.exports = {
                     votes: []
                 };
 
-                if (onModel !== 'Rhetoric') {
+                if (onModel !== 'Rhetoric' && onModel !== 'Project') {
                     opinionObject.slug = applicableDocument.slug;
                 }
 
@@ -1345,6 +1434,7 @@ module.exports = {
 
                 return currentUser.accruedDonations;
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this opinion'));
             }
         },
@@ -1359,25 +1449,47 @@ module.exports = {
             Rhetoric,
             Opinion,
             User,
+            Project,
             currentUser
         }) => {
             try {
                 //Validation
                 if (!currentUser) throw new AuthenticationError('log-in');
-                if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric' && onModel !== 'Opinion') throw new UserInputError('invalid-type');
+                if (onModel !== 'BulletPoint' &&
+                    onModel !== 'Resource' &&
+                    onModel !== 'Rhetoric' &&
+                    onModel !== 'Opinion' &&
+                    onModel !== 'Project') throw new UserInputError('invalid-type');
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
 
                 //Get document being voted on & the user document
-                let applicableDocument = {};
-                (onModel === 'BulletPoint') ? applicableDocument = await BulletPoint.findOne({
-                    _id: documentID
-                }): (onModel === 'Resource') ? applicableDocument = await Resource.findOne({
-                    _id: documentID
-                }) : (onModel === 'Rhetoric') ? applicableDocument = await Rhetoric.findOne({
-                    _id: documentID
-                }) : applicableDocument = await Opinion.findOne({
-                    _id: documentID
-                });
+                switch(onModel) {
+                    case 'BulletPoint':
+                        var applicableDocument = await BulletPoint.findOne({
+                            _id: documentID
+                        });
+                        break;
+                    case 'Resource':
+                        var applicableDocument = await Resource.findOne({
+                            _id: documentID
+                        });
+                        break;
+                    case 'Rhetoric':
+                        var applicableDocument = await Rhetoric.findOne({
+                            _id: documentID
+                        });
+                        break;
+                    case 'Project':
+                        var applicableDocument = await Project.findOne({
+                            _id: documentID
+                        });
+                        break;
+                    case 'Opinion':
+                        var applicableDocument = await Opinion.findOne({
+                            _id: documentID
+                        });
+                        break;
+                }
 
                 const userDocument = await User.findOne({
                     _id: currentUser._id
@@ -1416,7 +1528,7 @@ module.exports = {
                         documentID,
                         upVote
                     }
-                    if (applicableDocument.__typename !== 'Rhetoric') {
+                    if (applicableDocument.__typename !== 'Rhetoric' && applicableDocument.__typename !== 'Project') {
                         voteObject.slug = applicableDocument.slug;
                     }
                     const newVote = await new Vote(voteObject).save();
@@ -1431,6 +1543,7 @@ module.exports = {
                     return userDocument.accruedDonations;
                 }
             } catch (err) {
+                console.log(err)
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this vote'));
             }
         },
@@ -1662,7 +1775,7 @@ module.exports = {
             currentUser
         }) => {
             try {
-                //Validation
+                //Validation & Sanitation
                 if (!currentUser) throw new AuthenticationError('log-in');
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
                 if (title.length > 280) throw new UserInputError('invalid-title');
@@ -1671,13 +1784,14 @@ module.exports = {
                     media !== "video" && media !== "whitepaper" && media !== "website") throw new UserInputError('invalid-media');
                 if (media.trim() === "") throw new UserInputError('invalid-media');
                 if (link.trim() === "") throw new UserInputError('invalid-link');
+                if (link.trim() === "") throw new UserInputError('invalid-link');
+                if (!link.includes('http')) link = 'http://' + link;
                 if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');
                 if (await Rhetoric.findOne({
                         slug,
                         approved: true,
                         active: true
                     }) === null) throw new UserInputError('invalid-slug');
-                if (!link.includes('http')) link = 'http://' + link;
 
                 const resource = await Resource.findOne({
                     _id: documentID
@@ -1793,6 +1907,107 @@ module.exports = {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
             }
         },
+        submitProject: async (_, {
+            metaSlug,
+            title,
+            link,
+            description
+        }, {
+            User,
+            Project,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+                if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');
+                if (title.length > 80) throw new UserInputError('invalid-title');
+                if (title.trim() === "") throw new UserInputError('invalid-title');
+                if (description.length > 1150) throw new UserInputError('invalid-description');
+                if (description.trim() === "") throw new UserInputError('invalid-description');
+                if (link.trim() === "") throw new UserInputError('invalid-link');
+                if (link.trim() === "") throw new UserInputError('invalid-link');
+                if (!link.includes('http')) link = 'http://' + link;
+
+                const project = await Project.findOne({
+                    title
+                });
+                if (project) {
+                    throw new UserInputError('already-exists');
+                }
+
+                const user = await User.findOne({
+                    _id: currentUser._id
+                });
+                if (!user) {
+                    throw new UserInputError('user-not-found');
+                }
+
+                //Create Rhetoric Document
+                let _id = require('mongodb').ObjectID();
+                const newProject = await new Project({
+                    _id,
+                    metaSlug,
+                    title,
+                    link,
+                    description,
+                    createdBy: user._id
+                }).save();
+
+                user.projects.push(newProject._id);
+                user.save();
+
+                return _id;
+
+            } catch (err) {
+                console.log(err)
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Project'));
+            }
+        },
+        submitEditProject: async (_, {
+            documentID,
+            metaSlug,
+            title,
+            link,
+            description
+        }, {
+            Project,
+            currentUser
+        }) => {
+            try {
+                //Validation
+                if (!currentUser) throw new AuthenticationError('log-in');
+                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
+                if (metaSlug !== "protagonistic" && metaSlug !== "antagonistic") throw new UserInputError('invalid-argument-type');
+                if (title.length > 80) throw new UserInputError('invalid-title');
+                if (title.trim() === "") throw new UserInputError('invalid-title');
+                if (description.length > 1150) throw new UserInputError('invalid-description');
+                if (description.trim() === "") throw new UserInputError('invalid-description');
+                if (link.trim() === "") throw new UserInputError('invalid-link');
+                if (link.trim() === "") throw new UserInputError('invalid-link');
+                if (!link.includes('http')) link = 'http://' + link;
+
+                let project = await Project.findOne({
+                    _id: documentID
+                });
+                if (!project) throw new UserInputError('invalid-id');
+                if (!project.createdBy.equals(currentUser._id) && !currentUser.admin) throw new UserInputError('edit-submission-unauthorized');
+                if (project.approved && !currentUser.admin) throw new UserInputError('edit-submission-approved');
+
+                //Update and Save Project Document
+                project.metaSlug = metaSlug;
+                project.title = title;
+                project.link = link;
+                project.description = description;
+                project.save();
+
+                return true;
+
+            } catch (err) {
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Project'));
+            }
+        },
         setAllegiance: async (_, {
             maximalist
         }, {
@@ -1811,7 +2026,7 @@ module.exports = {
 
                 if (!user) {
                     throw new UserInputError('user-not-found');
-                }                
+                }
                 user.maximalist = maximalist;
                 user.save();
 
@@ -1830,6 +2045,7 @@ module.exports = {
             BulletPoint,
             Resource,
             Rhetoric,
+            Project,
             currentUser
         }) => {
             try {
@@ -1837,7 +2053,7 @@ module.exports = {
                 if (!currentUser) throw new AuthenticationError('log-in');
                 if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
                 if (!currentUser.admin) throw new UserInputError('admin');
-                if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric') throw new UserInputError('invalid-model')
+                if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric' && onModel !== 'Project') throw new UserInputError('invalid-model')
 
                 let applicableDocument = null;
 
@@ -1858,11 +2074,16 @@ module.exports = {
                         applicableDocument = await Rhetoric.findOne({
                             _id: documentID
                         });
+
+                    case "Project":
+                        applicableDocument = await Project.findOne({
+                            _id: documentID
+                        });
                 }
 
                 if (!applicableDocument) throw new UserInputError('invalid-id');
 
-                //Update and Save Rhetoric Document
+                //Update and Save The Applicable Document
                 applicableDocument.approved = approved;
                 applicableDocument.approvalCommentary = approvalCommentary;
                 applicableDocument.dateApproved = new Date();

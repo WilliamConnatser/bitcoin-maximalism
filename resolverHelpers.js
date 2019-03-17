@@ -321,6 +321,7 @@ const parseError = (error, unknownError) => {
     else if (error == 'invalid-slug') return 'Invalid slug submitted';
     else if (error == 'invalid-rhetoric') return 'Invalid rhetoric submitted';
     else if (error == 'invalid-argument-type') return 'Invalid argument type';
+    else if (error == 'invalid-description') return 'Invalid description';
     else if (error == 'admin') return 'You must be an admin';
     else if (error == 'edit-submission-unauthorized') return 'You may only edit submissions you created';
     else if (error == 'edit-submission-approved') return 'Submissions that were already approved can not be edited';

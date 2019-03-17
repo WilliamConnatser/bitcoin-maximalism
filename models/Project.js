@@ -66,6 +66,12 @@ const ProjectSchema = new mongoose.Schema({
         required: true,
         ref: 'Vote',
         default: []
+    },
+    donations: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        ref: 'Donation',
+        default: []
     }
 });
 

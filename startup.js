@@ -131,6 +131,17 @@ const startup = async models => {
     setInterval(function () {
         updateBitcoinValue();
     }, 60 * 60000);
+
+    //Update user documents with new array which holds projects they've submitted
+    const users = await models.User.find({}); 
+    users.forEach(function(user) {
+        console.log(user.projects)
+        if(user.projects === undefined) {
+            console.log("adding projects array")
+            user.projects = [];
+            user.save();
+        }
+    })
 }
 
 module.exports = startup;

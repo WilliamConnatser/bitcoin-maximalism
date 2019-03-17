@@ -1,8 +1,8 @@
 <template>
     <div class="list-submissions-toolbar medium-margin">
-        <span v-if="this.$route.fullPath.includes('projects')" @click="show('submitProject')"
+        <span v-if="this.$route.fullPath.includes('projects')" @click="show('submitProjects')"
             class="small-text icon-group cursor-pointer">
-            <font-awesome-icon v-if="!submitProject" icon="plus-square" class="large-icon" />
+            <font-awesome-icon v-if="!submitProjects" icon="plus-square" class="large-icon" />
             <font-awesome-icon v-else icon="minus-square" class="large-icon" />
             <span>project</span>
         </span>
@@ -25,6 +25,7 @@
             <span>resource</span>
         </span>
 
+        <SubmitProjects v-if="submitProjects" class="submission-form" />
         <SubmitRhetoric v-if="submitRhetoric" class="submission-form" />
         <SubmitResources v-if="submitResources" class="submission-form" />
         <SubmitBulletPoints v-if="submitBulletPoints" class="submission-form" />
@@ -56,7 +57,7 @@
                 submitBulletPoints: false,
                 submitResources: false,
                 submitRhetoric: false,
-                submitProject: false
+                submitProjects: false
             }
         },
         methods: {

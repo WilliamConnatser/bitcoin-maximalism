@@ -57,7 +57,7 @@ const DonationSchema = new mongoose.Schema({
     },
     onModel: {
         type: String,
-        enum: ['Certificate', 'User'],
+        enum: ['Certificate', 'User', 'Project'],
         required: true
     },
     documentID: {

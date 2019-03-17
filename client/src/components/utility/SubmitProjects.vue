@@ -69,9 +69,9 @@
                     currentUser: null,
                     submitted: false,
                     metaSlug: this.projectObject.metaSlug,
-                    title: "",
-                    description: "",
-                    link: ""
+                    title: this.projectObject.title,
+                    description: this.projectObject.description,
+                    link: this.projectObject.link
                 }
             }
         },
@@ -100,21 +100,19 @@
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                            mutation submitEditResource(
+                            mutation submitEditProject(
                                 $documentID: ID!
                                 $metaSlug: String!
-                                $slug: String!
                                 $title: String!
-                                $media: String!
                                 $link: String!
+                                $description: String!
                             ) {
-                                submitEditResource(
+                                submitEditProject(
                                     documentID: $documentID
                                     metaSlug: $metaSlug
-                                    slug: $slug
                                     title: $title
-                                    media: $media
                                     link: $link
+                                    description: $description
                                 )
                             }
                         `,
@@ -127,13 +125,13 @@
                         }
                     }).then(() => {
                         this.submitted = true;
-                        this.$apollo.queries.unapprovedProjects.refetch();
+                        this.$parent.$apollo.queries.unapprovedProjects.refetch();
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
                 }
             },
-            submitResource: async function () {
+            submitProject: async function () {
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (!this.currentUser) {
@@ -149,8 +147,18 @@
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                            mutation submitResource($metaSlug: String!, $slug: String!, $title: String!, $media: String!, $link:String!){
-                                submitResource(metaSlug: $metaSlug, slug: $slug, title: $title, media: $media, link:$link)
+                            mutation submitProject(
+                                $metaSlug: String!
+                                $title: String!
+                                $link: String!
+                                $description: String!
+                            ) {
+                                submitProject(
+                                    metaSlug: $metaSlug
+                                    title: $title                                  
+                                    link: $link
+                                    description: $description
+                                )
                             }
                         `,
                         variables: {
@@ -271,13 +279,7 @@
                     return true;
 
                 } else {
-                    if (this.resourceObject === undefined) {
-                        this.metaSlug = this.$route.params.metaSlug;
-                    } else {
-                        this.metaSlug = this.resourceObject.metaSlug;
-                    }
-
-                    this.$toasted.show('Invalid argument type submitted', {
+                    this.$toasted.show('You must choose a project type', {
                         duration: 5000,
                         position: 'bottom-center',
                         fullWidth: true,
@@ -328,33 +330,28 @@
             },
             unapprovedProjects: {
                 query: gql `query unapprovedProjects($_id: ID!) {
-                    unapprovedProjects(_id: $_id) {
-                        _id
-                        createdBy {
+                        unapprovedProjects(_id: $_id) {
                             _id
-                            username
-                        }
-                        metaSlug
-                        title
-                        link
-                        description
-                        votes {
-                            upVote
+                            dateCreated
                             createdBy {
                                 _id
                                 username
-                                accruedDonations
                             }
+                            active
+                            metaSlug
+                            title
+                            description
+                            link
+                            approved
+                            dateApproved
+                            approvedBy {
+                                _id
+                                username
+                            }
+                            approvalCommentary
                         }
-                        approved
-                        dateApproved
-                        approvedBy {
-                            _id
-                            username
-                        }
-                        approvalCommentary
                     }
-                }`,
+                `,
                 variables() {
                     return {
                         _id: this.resourceObject._id

@@ -123,7 +123,7 @@
                         }
                     }).then(() => {
                         this.submitted = true;
-                        this.$apollo.queries.unapprovedBulletPoints.refetch();
+                        this.$parent.$apollo.queries.unapprovedBulletPoints.refetch();
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });

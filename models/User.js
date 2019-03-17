@@ -99,6 +99,12 @@ const UserSchema = new mongoose.Schema({
         default: [],
         ref: 'BulletPoint'
     },
+    projects: {
+        type: [mongoose.Schema.Types.ObjectId],
+        required: true,
+        default: [],
+        ref: 'Project'
+    },
     resources: {
         type: [mongoose.Schema.Types.ObjectId],
         required: true,

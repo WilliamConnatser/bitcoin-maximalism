@@ -168,7 +168,7 @@
                         }
                     }).then(() => {
                         this.submitted = true;
-                        this.$apollo.queries.unapprovedResources.refetch();
+                        this.$parent.$apollo.queries.unapprovedResources.refetch();
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });

@@ -34,7 +34,7 @@ const EditSchema = new mongoose.Schema({
     onModel: {
         type: String,
         required: true,
-        enum: ['BulletPoint', 'Resource', 'Rhetoric']
+        enum: ['BulletPoint', 'Resource', 'Rhetoric', 'Project']
     },
     approved: {
         type: Boolean,

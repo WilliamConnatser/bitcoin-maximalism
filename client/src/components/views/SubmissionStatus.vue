@@ -174,6 +174,62 @@
                 There aren't any unapproved resources.
             </div>
         </div>
+        <div v-if="documentType==='project'">
+            <h2>Unapproved Project</h2>
+            <div v-if="unapprovedProjects.length>0">
+                <ul v-for="project in unapprovedProjects" :key="project._id" class="list">
+                    <li>
+                        <strong>{{project.dateCreated | formatDate}}</strong>
+                        <br />
+                        <a :href="project.link" class="unstyled-link">
+                            <span class="media-type">
+                                { {{project.title}} }
+                            </span>
+                        </a>
+                        <br/>
+                        {{project.description}}
+
+                        <div v-if="project.dateApproved" class="small-text medium-margin">
+                            <div v-if="project.approved">
+                                This project was approved on {{project.dateApproved | formatDate}}
+                            </div>
+                            <div v-else>
+                                This project was denied approval on {{project.dateApproved | formatDate}}
+                                <br />
+                                Reason: {{project.approvalCommentary}}
+                            </div>
+                        </div>
+                        <div v-else class="small-text medium-margin">
+                            This project has not been approved yet.
+                        </div>
+                        <div v-if="currentUser && (currentUser.admin || (project.createdBy._id === currentUser._id && !project.dateApproved))">
+                            <div class="list-submissions-toolbar small-text medium-margin">
+                                <span @click="show('editProject'), cancel('approveProject')" class="small-text icon-group cursor-pointer">
+                                    <font-awesome-icon v-if="!editProject" icon="pen-square" class="large-icon" />
+                                    <font-awesome-icon v-else icon="minus-square" class="large-icon" />
+                                    <span>edit project</span>
+                                </span>
+
+                                <span v-if="currentUser && currentUser.admin" @click="show('approveProject'), cancel('editProject')"
+                                    class="small-text icon-group cursor-pointer">
+                                    <font-awesome-icon v-if="!approveProject" icon="check-square" class="large-icon" />
+                                    <font-awesome-icon v-else icon="minus-square" class="large-icon" />
+                                    <span>approve project</span>
+                                </span>
+                            </div>
+                            <SubmitProjects v-if="editProject" :projectObject="project" />
+                            <ApproveSubmission v-if="approveProject" :submissionObject="project" />
+                        </div>
+                        <router-link :to="submissionStatusLink(project)" class="small-uppercase-link">
+                            Reference Link
+                        </router-link>
+                    </li>
+                </ul>
+            </div>
+            <div v-else class="small-text medium-margin">
+                There aren't any unapproved projects.
+            </div>
+        </div>
     </main>
 </template>
 
@@ -182,6 +238,7 @@
     import SubmitResources from '../utility/SubmitResources.vue';
     import SubmitRhetoric from '../utility/SubmitRhetoric.vue';
     import SubmitBulletPoints from '../utility/SubmitBulletPoints.vue';
+    import SubmitProjects from '../utility/SubmitProjects.vue';
     import ApproveSubmission from '../utility/ApproveSubmission.vue';
 
     export default {
@@ -191,22 +248,27 @@
                 unapprovedRhetoric: [],
                 unapprovedBulletPoints: [],
                 unapprovedResources: [],
+                unapprovedProjects: [],
                 editRhetoric: false,
                 approveRhetoric: false,
                 editBulletPoint: false,
                 approveBulletPoint: false,
                 editResource: false,
-                approveResource: false
+                approveResource: false,
+                editProject: false,
+                approveProject: false
             }
         },
         components: {
             ApproveSubmission,
             SubmitRhetoric,
             SubmitBulletPoints,
-            SubmitResources
+            SubmitResources,
+            SubmitProjects
         },
         methods: {
             submissionStatusLink(submission) {
+                if (submission.__typename === 'Project') return `/submission-status/project/${submission._id}`;
                 if (submission.__typename === 'Rhetoric') return `/submission-status/argument/${submission._id}`;
                 if (submission.__typename === 'Resource') return `/submission-status/resource/${submission._id}`;
                 if (submission.__typename === 'BulletPoint') return `/submission-status/bulletpoint/${submission._id}`;
@@ -353,6 +415,39 @@
                 },
                 skip() {
                     if (this.documentType === "resource") return false;
+                    else return true;
+                }
+            },
+            unapprovedProjects: {
+                query: gql `query unapprovedProjects($_id: ID!) {
+                    unapprovedProjects(_id: $_id) {
+                        _id
+                        dateCreated
+                        createdBy {
+                            _id
+                            username
+                        }
+                        active
+                        metaSlug
+                        title
+                        description
+                        link
+                        approved
+                        dateApproved
+                        approvedBy {
+                            _id
+                            username
+                        }
+                        approvalCommentary
+                    }
+                }`,
+                variables() {
+                    return {
+                        _id: this.documentID
+                    }
+                },
+                skip() {
+                    if (this.documentType === "project") return false;
                     else return true;
                 }
             }
