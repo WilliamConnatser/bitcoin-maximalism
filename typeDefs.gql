@@ -225,7 +225,8 @@ type Query {
     docIDSpecificOpinionCount(onModel: String!, _id: ID!): Int
     docIDSpecificVotes(onModel: String!, _id: ID!): [Vote!]!
 
-    allRhetoric(metaSlug: String): [Rhetoric]
+    allProjects(metaSlug: String): [Project!]!
+    allRhetoric(metaSlug: String): [Rhetoric!]!
     argumentSpecificRhetoric(metaSlug: String!, slug: String!): Rhetoric
     allSlugs: AllSlugs
 
@@ -245,6 +246,7 @@ type Query {
     unapprovedRhetoric(_id: ID): [Rhetoric!]!
     unapprovedBulletPoints(_id: ID): [BulletPoint!]!
     unapprovedResources(_id: ID): [Resource!]!
+    #unapprovedProjects
 }
 
 type Mutation {
@@ -266,10 +268,12 @@ type Mutation {
     submitBulletPoint(metaSlug: String!, slug: String!, content: String!): ID
     submitResource(metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): ID
     submitRhetoric(metaSlug: String!, slug: String!, title: String!): ID
+    #submitProject
 
     submitEditRhetoric(documentID: ID!, metaSlug: String!, slug: String!, title: String!): Boolean
     submitEditBulletPoint(documentID: ID!, metaSlug: String!, slug: String!, content: String!): Boolean
     submitEditResource(documentID: ID!, metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): Boolean
+    #submitEditProject
     
     toggleApproval(onModel: String!, documentID: ID!, approved: Boolean!, approvalCommentary: String!): Boolean
 }

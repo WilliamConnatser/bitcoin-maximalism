@@ -1,81 +1,46 @@
 <template>
     <div class="submission-form">
         <form v-if="!submitted" @submit.prevent="submitForm()">
-            <h2 v-if="resourceObject === undefined" class="medium-margin-vertical">submit resource</h2>
-            <h2 class="medium-margin-vertical">edit resource</h2>
+            <h2 v-if="projectObject === undefined" class="medium-margin-vertical">submit project</h2>
+            <h2 class="medium-margin-vertical">edit project</h2>
             <div class="medium-margin-vertical">
-                <label>argument type</label>
-                <select v-model="metaSlug" class="wide-input" @change="metaSlugChanged()">
+                <label>project type</label>
+                <select v-model="metaSlug" class="wide-input">
                     <option value="protagonistic" :selected="metaSlug === 'protagonistic'">
-                        protagonistic
+                        protagonistic (bitcoin-related)
                     </option>
                     <option value="antagonistic" :selected="metaSlug === 'antagonistic'">
-                        antagonistic
+                        antagonistic (ALT coin-related)
                     </option>
                 </select>
-                <label>argument slug</label>
-                <select v-model="slug" class="wide-input">
-                    <option v-if="slug===null" value="null">Pick a Slug...</option>
-                    <option v-for="querySlug in allSlugs[metaSlug]" :value="querySlug" :selected="querySlug === slug"
-                        :key="querySlug">
-                        {{querySlug}}
-                    </option>
-                </select>
-                <label>resource title</label>
+                <label>project title</label>
                 <textarea v-model="title" maxlength=280 name="title" class="short-textarea"></textarea>
-                <label>resource link</label>
+                <label>project link</label>
                 <textarea v-model="link" name="link" class="short-textarea"></textarea>
-                <label>resource type</label>
-                <select v-model="media" class="wide-input">
-                    <option value="article" :selected="media === 'article'">
-                        article
-                    </option>
-                    <option value="blog" :selected="media === 'blog'">
-                        blog
-                    </option>
-                    <option value="podcast" :selected="media === 'podcast'">
-                        podcast
-                    </option>
-                    <option value="video" :selected="media === 'video'">
-                        video
-                    </option>
-                    <option value="whitepaper" :selected="media === 'whitepaper'">
-                        whitepaper
-                    </option>
-                    <option value="book" :selected="media === 'book'">
-                        book
-                    </option>
-                    <option value="website" :selected="media === 'website'">
-                        website
-                    </option>
-                </select>
+                <label>project description</label>
+                <textarea v-model="description" name="link" class="short-textarea"></textarea>
                 <div class="extra-small-text medium-margin-vertical">
-                    Please look over the already existing resources and the rhetoric contained within them. New
-                    resources should only be submitted if you are certain that the other resources do not already
-                    cover the content that you are submitting. The title of the article should be written
-                    exactly how it is typed on the original source.
-                </div>
-
-                <div class="extra-small-text medium-margin-vertical">
-                    Foul language and namecalling is not allowed. Please remain respectful of others, on topic, and
-                    intellectually honest. We retain the right to reject any new resources for any reason. Please
+                    Please look over the already existing projects and make certain the project you're submitting has
+                    not already been submitted. The title of the article should be written exactly how it is typed on
+                    the original source. We retain the right to reject any new projects for any reason. Please
                     read our <router-link to='/terms' class="small-uppercase-link">Terms</router-link> for more
-                    information. By clicking Agree &amp; Submit below you agree that you have read and understand those Terms.
+                    information. By clicking Agree &amp; Submit below you agree that you have read and understand
+                    those Terms.
                 </div>
             </div>
 
             <button type="submit">
                 Agree &amp; Submit
-                <span v-if="resourceObject !== undefined">Edit</span>
+                <span v-if="projectObject !== undefined">Edit</span>
             </button>
         </form>
-        <div v-else-if="resourceObject === undefined" class="medium-margin large-margin-vertical">
-            <h2>The resource was submitted successfully!</h2>
+        <div v-else-if="projectObject === undefined" class="medium-margin large-margin-vertical">
+            <h2>The project was submitted successfully!</h2>
             You may track the status of your submission in your Account Panel or <router-link :to="submissionStatusLink(submitted)"
                 class="small-uppercase-link">HERE</router-link>
         </div>
         <div v-else>
-            <h2>The resource was edited successfully!</h2>
+            <h2>The project was edited successfully!</h2>
         </div>
     </div>
 </template>
@@ -84,46 +49,42 @@
     import gql from 'graphql-tag';
 
     export default {
-        name: "SubmitResources",
+        name: "SubmitProjects",
         props: {
-            resourceObject: Object
+            projectObject: Object
         },
         data() {
-            if (this.resourceObject === undefined) {
+            if (this.projectObject === undefined) {
                 return {
                     currentUser: null,
-                    allSlugs: {},
                     submitted: false,
-                    slug: this.$route.params.slug,
                     metaSlug: this.$route.params.metaSlug,
                     title: "",
-                    media: "article",
+                    description: "",
                     link: ""
                 }
 
             } else {
                 return {
                     currentUser: null,
-                    allSlugs: {},
                     submitted: false,
-                    slug: this.resourceObject.slug,
-                    metaSlug: this.resourceObject.metaSlug,
-                    title: this.resourceObject.title,
-                    media: this.resourceObject.media,
-                    link: this.resourceObject.link
+                    metaSlug: this.projectObject.metaSlug,
+                    title: "",
+                    description: "",
+                    link: ""
                 }
             }
         },
         methods: {
             submitForm() {
-                if (this.resourceObject) {
-                    this.submitResourceEdit();
+                if (this.projectObject) {
+                    this.submitProjectEdit();
 
                 } else {
-                    this.submitResource();
+                    this.submitProject();
                 }
             },
-            submitResourceEdit: async function () {
+            submitProjectEdit: async function () {
                 await this.$apollo.queries.currentUser.refetch();
 
                 if (!this.currentUser) {
@@ -133,10 +94,9 @@
                     this.$toasted.global.verify_email();
 
                 } else if (this.validTitle(this.title) &&
-                    this.validMedia(this.media) &&
+                    this.validDescription(this.description) &&
                     this.validLink(this.link) &&
-                    this.validMetaSlug(this.metaSlug) &&
-                    this.validSlug(this.slug)) {
+                    this.validMetaSlug(this.metaSlug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -159,16 +119,15 @@
                             }
                         `,
                         variables: {
-                            documentID: this.resourceObject._id,
+                            documentID: this.projectObject._id,
                             metaSlug: this.metaSlug,
-                            slug: this.slug,
                             title: this.title,
-                            media: this.media,
-                            link: this.link
+                            link: this.link,
+                            description: this.description
                         }
                     }).then(() => {
                         this.submitted = true;
-                        this.$apollo.queries.unapprovedResources.refetch();
+                        this.$apollo.queries.unapprovedProjects.refetch();
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
                     });
@@ -184,10 +143,9 @@
                     this.$toasted.global.verify_email();
 
                 } else if (this.validTitle(this.title) &&
-                    this.validMedia(this.media) &&
+                    this.validDescription(this.description) &&
                     this.validLink(this.link) &&
-                    this.validMetaSlug(this.metaSlug) &&
-                    this.validSlug(this.slug)) {
+                    this.validMetaSlug(this.metaSlug)) {
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
@@ -197,15 +155,14 @@
                         `,
                         variables: {
                             metaSlug: this.metaSlug,
-                            slug: this.slug,
                             title: this.title,
-                            media: this.media,
-                            link: this.link
+                            link: this.link,
+                            description: this.description
                         }
                     }).then(({
                         data
                     }) => {
-                        this.submitted = data.submitResource;
+                        this.submitted = data.submitProject;
                         //Redirect to status page
                     }).catch(() => {
                         // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
@@ -250,46 +207,6 @@
                     return true;
                 }
             },
-            validMedia(media) {
-                if (media !== "article" && media !== "blog" &&
-                    media !== "podcast" && media !== "video" &&
-                    media !== "whitepaper" && media !== "website") {
-                    this.media = "article";
-                    this.$toasted.show('Invalid media type submitted', {
-                        duration: 5000,
-                        position: 'bottom-center',
-                        fullWidth: true,
-                        fitToScreen: true,
-                        singleton: true,
-                        action: [{
-                            text: 'Close',
-                            onClick: (e, toastObject) => {
-                                toastObject.goAway(0);
-                            }
-                        }]
-                    });
-                    return false;
-
-                } else if (media.trim() === "") {
-                    this.$toasted.show('You must enter a media type', {
-                        duration: 5000,
-                        position: 'bottom-center',
-                        fullWidth: true,
-                        fitToScreen: true,
-                        singleton: true,
-                        action: [{
-                            text: 'Close',
-                            onClick: (e, toastObject) => {
-                                toastObject.goAway(0);
-                            }
-                        }]
-                    });
-                    return false;
-
-                } else {
-                    return true;
-                }
-            },
             validLink(link) {
                 if (link.trim() === "") {
                     this.$toasted.show('You must enter a link', {
@@ -310,16 +227,26 @@
                     return true;
                 }
             },
-            validSlug(slug) {
-                if (!this.allSlugs[this.metaSlug].includes(slug)) {
+            validDescription(title) {
+                if (title.length > 1150) {
+                    this.title = title.slice(0, 1150);
+                    this.$toasted.show('Descriptions must be 1150 characters or less', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                    return false;
 
-                    if (this.resourceObject === undefined) {
-                        this.slug = this.$route.params.slug;
-                    } else {
-                        this.slug = this.resourceObject.slug;
-                    }
-
-                    this.$toasted.show('You must choose a valid slug', {
+                } else if (title.trim() === "") {
+                    this.$toasted.show('You must enter a description', {
                         duration: 5000,
                         position: 'bottom-center',
                         fullWidth: true,
@@ -366,28 +293,22 @@
                     return false;
                 }
             },
-            metaSlugChanged() {
-                this.slug = null;
-            },
             submissionStatusLink(_id) {
-                return `/submission-status/argument/${_id}`;
+                return `/submission-status/project/${_id}`;
             }
         },
         watch: {
             title(newTitle) {
                 this.validTitle(newTitle);
             },
-            media(newMedia) {
-                this.validMedia(newMedia);
+            description(newDescription) {
+                this.validDescription(newDescription);
             },
             link(newLink) {
                 this.validLink(newLink);
             },
             metaSlug(newMetaSlug) {
                 this.validMetaSlug(newMetaSlug);
-            },
-            slug(newSlug) {
-                this.validSlug(newSlug);
             }
         },
         apollo: {
@@ -405,31 +326,26 @@
                     }
                 `
             },
-            allSlugs: {
-                query: gql `
-                    query allSlugs{
-                        allSlugs{
-                            protagonistic
-                            antagonistic
-                        }
-                    }
-                `
-            },
-            unapprovedResources: {
-                query: gql `query unapprovedResources($_id: ID!) {
-                    unapprovedResources(_id: $_id) {
+            unapprovedProjects: {
+                query: gql `query unapprovedProjects($_id: ID!) {
+                    unapprovedProjects(_id: $_id) {
                         _id
-                        dateCreated
                         createdBy {
                             _id
                             username
                         }
-                        active
-                        slug
                         metaSlug
                         title
-                        media
                         link
+                        description
+                        votes {
+                            upVote
+                            createdBy {
+                                _id
+                                username
+                                accruedDonations
+                            }
+                        }
                         approved
                         dateApproved
                         approvedBy {

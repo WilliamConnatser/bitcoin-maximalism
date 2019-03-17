@@ -1,6 +1,12 @@
 <template>
     <div class="list-submissions-toolbar medium-margin">
-        <span v-if="slug === undefined" @click="show('submitRhetoric'), cancel('submitResources'), cancel('submitBulletPoints')"
+        <span v-if="this.$route.fullPath.includes('projects')" @click="show('submitProject')"
+            class="small-text icon-group cursor-pointer">
+            <font-awesome-icon v-if="!submitProject" icon="plus-square" class="large-icon" />
+            <font-awesome-icon v-else icon="minus-square" class="large-icon" />
+            <span>project</span>
+        </span>
+        <span v-if="slug === undefined && !this.$route.fullPath.includes('projects')" @click="show('submitRhetoric')"
             class="small-text icon-group cursor-pointer">
             <font-awesome-icon v-if="!submitRhetoric" icon="plus-square" class="large-icon" />
             <font-awesome-icon v-else icon="minus-square" class="large-icon" />
@@ -28,6 +34,7 @@
 
 <script>
     import gql from 'graphql-tag';
+    import SubmitProjects from '../utility/SubmitProjects';
     import SubmitRhetoric from '../utility/SubmitRhetoric';
     import SubmitBulletPoints from '../utility/SubmitBulletPoints';
     import SubmitResources from '../utility/SubmitResources';
@@ -40,14 +47,16 @@
         components: {
             SubmitRhetoric,
             SubmitBulletPoints,
-            SubmitResources
+            SubmitResources,
+            SubmitProjects
         },
         data() {
             return {
                 currentUser: null,
                 submitBulletPoints: false,
                 submitResources: false,
-                submitRhetoric: false
+                submitRhetoric: false,
+                submitProject: false
             }
         },
         methods: {

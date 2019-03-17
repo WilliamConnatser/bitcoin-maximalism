@@ -2,17 +2,17 @@
   <section class="container">
     <h1 class="heading">
       <span v-if="metaSlug">{{metaSlug}}</span>
-      <span v-else>arguments</span>
+      <span v-else>projects</span>
     </h1>
 
-    <router-link to="/arguments"><button :class="filterButtonStyle()">All</button></router-link>
-    <router-link to="/arguments/protagonistic"><button :class="filterButtonStyle('protagonistic')">Protagonistic</button></router-link>
-    <router-link to="/arguments/antagonistic"><button :class="filterButtonStyle('antagonistic')">Antagonistic</button></router-link>
+    <router-link to="/projects"><button :class="filterButtonStyle()">All</button></router-link>
+    <router-link to="/projects/protagonistic"><button :class="filterButtonStyle('protagonistic')">Protagonistic</button></router-link>
+    <router-link to="/projects/antagonistic"><button :class="filterButtonStyle('antagonistic')">Antagonistic</button></router-link>
 
     <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
     <ul v-else class="medium-margin-horizontal">
-      <AdvancedListItem :arrayProp="this.args" v-on:update-tos-query="updateQuery" />
+      <AdvancedListItem :arrayProp="this.args" v-on:update-projects-query="updateQuery" />
     </ul>
   </section>
 </template>
@@ -25,7 +25,7 @@
     name: "Projects",
     data: () => {
       return {
-        allRhetoric: [],
+        allProjects: [],
       }
     },
     components: {
@@ -36,16 +36,13 @@
         if (this.metaSlug === "protagonistic" ||
           this.$route.params.metaSlug === "antagonistic" ||
           !this.metaSlug) {
-          return this.sortArrayByVote(this.allRhetoric);
+          return this.sortArrayByVote(this.allProjects);
         } else {
           this.forwardTo404();
         }
       },
       metaSlug() {
         return this.$route.params.metaSlug;
-      },
-      slug() {
-        return this.$route.params.slug;
       }
     },
     methods: {
@@ -62,49 +59,49 @@
         });
         return cumulativeVote;
       },
-      sortArrayByVote(rhetoricArray) {
-        return rhetoricArray.sort((a, b) => {
+      sortArrayByVote(projectArray) {
+        return projectArray.sort((a, b) => {
           return this.calculateVotes(b.votes) - this.calculateVotes(a.votes);
         });
       },
       updateQuery() {
-        this.$apollo.queries.allRhetoric.refetch();
+        this.$apollo.queries.allProjects.refetch();
       },
       toggleFilter(metaSlug) {
         if (metaSlug === 'antagonistic') {
           this.$router.push({
-            path: '/arguments/antagonistic'
+            path: '/projects/antagonistic'
           });
         } else if (metaSlug === 'protagonistic') {
           this.$router.push({
-            path: '/arguments/protagonistic'
+            path: '/projects/protagonistic'
           });
         } else {
           this.$router.push({
-            path: '/arguments'
+            path: '/projects'
           });
         }
       },
       filterButtonStyle(metaSlug) {
         if (metaSlug === this.metaSlug) {
-          return "small-button selected-button ";
+          return "small-button selected-button";
         } else {
-          return "small-button ";
+          return "small-button";
         }
       }
     },
     apollo: {
-      allRhetoric: {
+      allProjects: {
         query: gql `
-            query allRhetoric($metaSlug: String) {
-              allRhetoric(metaSlug: $metaSlug) {
+            query allProjects($metaSlug: String) {
+              allProjects(metaSlug: $metaSlug) {
                 _id
                 metaSlug
-                slug
                 title
+                link
+                description
                 votes {
                   _id
-                  dateCreated
                   upVote
                   createdBy {
                     _id

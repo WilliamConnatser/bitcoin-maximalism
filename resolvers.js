@@ -272,6 +272,47 @@ module.exports = {
                 throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching all rhetoric'));
             }
         },
+        allProjects: async (_, {
+            metaSlug
+        }, {
+            Project
+        }) => {
+            try {
+
+                //Default query if no Meta Slug is provided
+                const queryObject = {
+                    approved: true,
+                    active: true
+                }
+
+                //Query if Meta Slug is provided
+                if (metaSlug) {
+                    if (metaSlug !== 'protagonistic' && metaSlug !== 'antagonistic') {
+                        throw new UserInputError('invalid-variable');
+                    } else {
+                        queryObject.metaSlug = metaSlug;
+                    }
+                }
+
+                //Use query object to get an array of Rhetoric documents
+                const projects = await Project
+                    .find(queryObject)
+                    .populate({
+                        path: 'votes',
+                        model: 'Vote',
+                        populate: {
+                            path: 'createdBy',
+                            model: 'User',
+                            select: '_id username accruedDonations'
+                        }
+                    });
+
+                return projects;
+            } catch (err) {
+                console.log(allProjects)
+                throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching all projects'));
+            }
+        },
         allSlugs: async (_, args, {
             Rhetoric
         }) => {

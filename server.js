@@ -24,6 +24,7 @@ const BulletPoint = require('./models/BulletPoint');
 const User = require('./models/User');
 const Vote = require('./models/Vote');
 const Crypto = require('./models/Crypto');
+const Project = require('./models/Project');
 
 //Needed to authenticate the token sent from the client
 const jwt = require('jsonwebtoken');
@@ -99,6 +100,7 @@ const server = new ApolloServer({
             User,
             Vote,
             Crypto,
+            Project,
             currentUser: await getUser(token),
             operationName
         }
