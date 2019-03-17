@@ -2,10 +2,13 @@
   <header>
     <nav id="header" class="small-text">
       <li class="inline-nav">
-        <router-link to="/" class="unstyled-link">About</router-link>
+        <router-link to="/" class="unstyled-link">about</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/arguments" class="unstyled-link">Arguments</router-link>
+        <router-link to="/arguments" class="unstyled-link">arguments</router-link>
+      </li>
+      <li class="inline-nav">
+        <router-link to="/projects" class="unstyled-link">projects</router-link>
       </li>
       <li class="inline-nav">
         <router-link to="/leaderboards/arguments" class="unstyled-link">leaderboards</router-link>

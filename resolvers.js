@@ -1836,39 +1836,3 @@ module.exports = {
         }
     }
 }
-
-/* 
-
-Inactive for now:
-        
-approveOpinion: async (_, {
-            _id,
-            approved,
-            approvalCommentary
-        }, {
-            Opinion,
-            currentUser
-        }) => {
-            try {
-                //Validation
-                if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
-                if (!currentUser.admin) throw new ForbiddenError('admin');
-
-                //Update Opinion document
-                const opinion = await Opinion.findOne({
-                    _id
-                });
-                opinion.approved = approved;
-                opinion.approvedBy = currentUser.username;
-                opinion.approvalCommentary = approvalCommentary;
-                opinion.dateApproved = new Date();
-                opinion.save();
-
-                return true;
-
-            } catch (err) {
-                throw new ApolloError(parseError(err.message, 'An unknown error occurred while approving this opinion'));
-            }
-
-        }
-*/
