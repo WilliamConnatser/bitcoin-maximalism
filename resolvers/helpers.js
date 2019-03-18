@@ -6,28 +6,19 @@ const {
     emailTransporter,
     registrationEmail,
     passwordResetEmail
-} = require('./smtp');
+} = require('../smtp');
 
-//BTCPayServer client
-const btcPayClient = require('./btcpay');
+//BTCPayServer Client
+const btcPayClient = require('../btcpay');
 
-//Apollo errors
+//Apollo Error
 const {
     ApolloError
 } = require('apollo-server');
 
 //MongoDB / Mongoose dependency & Models
-const mongoose = require('mongoose');
-const Rhetoric = require('./models/Rhetoric');
-const Edit = require('./models/Edit');
-const Opinion = require('./models/Opinion');
-const Resource = require('./models/Resource');
-const Certificate = require('./models/Certificate');
-const Donation = require('./models/Donation');
-const BulletPoint = require('./models/BulletPoint');
-const User = require('./models/User');
-const Vote = require('./models/Vote');
-const Crypto = require('./models/Crypto');
+const Donation = require('../models/Donation');
+const User = require('../models/User');
 
 const createToken = ({
     _id,

@@ -184,8 +184,9 @@ type Crypto {
 }
 
 type MetaState {
-    maintenance: Boolean!
-    nextMaintenance: String!
+    maintenance: Boolean! # Currently performing maintenance
+    nextMaintenance: String! # Timestamp of next maintenance period
+    maintenanceCosts: Int! # Costs of maintaining the server and BTCPay server
 }
 
 # All types below are only used for query and mutation responses

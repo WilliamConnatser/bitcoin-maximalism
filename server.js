@@ -10,7 +10,7 @@ const typeDefs = fs.readFileSync(filePath, 'utf-8');
 const {
     ApolloServer
 } = require('apollo-server');
-const resolvers = require('./resolvers');
+const resolvers = require('./resolvers/resolvers');
 
 //MongoDB / Mongoose dependency & Models
 const mongoose = require('mongoose');
