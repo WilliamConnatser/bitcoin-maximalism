@@ -1,12 +1,17 @@
+//Apollo errors
+const {
+    ApolloError
+} = require('apollo-server');
+
 //Resolver helpers
 const {
     parseError
 } = require('../helpers');
 
-module.exports = currentUser = async function(_, args, {
+module.exports = async (_, args, {
     User,
     currentUser
-}) {
+}) => {
     try {
         //Return null if no user is logged in
         //currentUser object is injected into the Apollo GraphQL Context

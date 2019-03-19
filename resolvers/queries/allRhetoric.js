@@ -1,9 +1,15 @@
+//Apollo errors
+const {
+    ApolloError,
+    UserInputError,
+} = require('apollo-server');
+
 //Resolver helpers
 const {
     parseError
 } = require('../helpers');
 
-module.exports = allRhetoric = async (_, {
+module.exports = async (_, {
     metaSlug
 }, {
     Rhetoric

@@ -1,9 +1,14 @@
+//Apollo errors
+const {
+    ApolloError
+} = require('apollo-server');
+
 //Resolver helpers
 const {
     parseError
 } = require('../helpers');
 
-module.exports = cryptoValue = async (_, {
+module.exports = async (_, {
     ticker
 }, {
     Crypto

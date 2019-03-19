@@ -1,9 +1,14 @@
+//Apollo errors
+const {
+    ApolloError
+} = require('apollo-server');
+
 //Resolver helpers
 const {
     parseError
 } = require('../helpers');
 
-module.exports = argumentSpecificRhetoric = async (_, args, {
+module.exports = async (_, args, {
     Rhetoric
 }) => {
     // args not deconstructed to make it easier to pass into Query

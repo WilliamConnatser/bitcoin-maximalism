@@ -1,3 +1,9 @@
+//Apollo errors
+const {
+    ApolloError,
+    UserInputError,
+} = require('apollo-server');
+
 //Resolver helpers
 const {
     parseError
