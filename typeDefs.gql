@@ -226,17 +226,18 @@ type Query {
     docIDSpecificOpinionCount(onModel: String!, _id: ID!): Int
     docIDSpecificVotes(onModel: String!, _id: ID!): [Vote!]!
 
-    allProjects(metaSlug: String): [Project!]!
-    allRhetoric(metaSlug: String): [Rhetoric!]!
-    argumentSpecificRhetoric(metaSlug: String!, slug: String!): Rhetoric
-    allSlugs: AllSlugs
+    allProjects(metaSlug: String): [Project!]! #Get all projects with an optional filer for metaSlug
+    allRhetoric(metaSlug: String): [Rhetoric!]! #Get all rhetoric with an optional filter for metaSlug
+    argumentSpecificRhetoric(metaSlug: String!, slug: String!): Rhetoric #Get argument-specific bulletpoints and resources
+    allSlugs: AllSlugs #Get all slugs currently in use
 
-    checkDonation(_id: ID!): Boolean
-    cryptoValue(ticker: String!): Float
+    checkDonation(_id: ID!): Boolean #Check if a donation has been paid
+    cryptoValue(ticker: String!): Float #Get the current value of a cryptocurrency
 
     topArguments(onModel: String!, descending: Boolean!, limit: Int!): [Rhetoric!]! #Most/Least Upvoted/Opinionated Rhetoric - onModel = Opinion or Vote
     topBulletPoints(onModel: String!, descending: Boolean!, limit: Int!): [BulletPoint!]! #Most/Least Upvoted/Opinionated BulletPoint - onModel = Opinion or Vote
     topResources(onModel: String!, descending: Boolean!, limit: Int!): [Resource!]! #Most/Least Upvoted/Opinionated Resource - onModel = Opinion or Vote
+    topProjects(onModel: String!, descending: Boolean!, limit: Int!): [Project!]! #Most/Least Upvoted/Opinionated Project - onModel = Opinion or Vote
     topOpinions(descending: Boolean!, limit: Int!): [Opinion] #Most/Least Upvoted Opinions
 
     recentOpinions(limit: Int!): [Opinion!]!

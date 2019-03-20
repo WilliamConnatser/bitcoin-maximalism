@@ -181,7 +181,14 @@ const adjustUserInfluence = async user => {
         });
 
         user.accruedDonations = accruedDonations;
-        user.save();
+        
+        //The Administrator account's influence should not be updated.
+        //It will make donations on behalf of the website to Projects
+        //But these donations should not effect influence
+        //I think it's easier to filter it out here than in every applicable query/mutation/method
+        if(user.username !== 'Administrator') {
+            user.save();
+        }
 
     } catch (err) {
         throw new ApolloError(parseError(err.message, 'An unknown error occurred while adjusting your influence'));

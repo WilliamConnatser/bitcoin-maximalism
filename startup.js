@@ -141,7 +141,7 @@ const startup = async models => {
             user.projects = [];
             user.save();
         }
-    })
+    });
 }
 
 module.exports = startup;
