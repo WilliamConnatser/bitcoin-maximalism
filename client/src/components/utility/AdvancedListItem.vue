@@ -19,6 +19,8 @@
                             {{arrayItem.title}}
                         </a>
                         <br/>
+                        { {{arrayItem.metaSlug}} }
+                        <br/>
                         {{arrayItem.description}}
                     </div>                    
                 </div>

@@ -16,6 +16,7 @@ const recentOpinions = require('./queries/recentOpinions');
 const topArguments = require('./queries/topArguments');
 const topBulletPoints = require('./queries/topBulletPoints');
 const topOpinions = require('./queries/topOpinions');
+const topProjects = require('./queries/topProjects');
 const topResources = require('./queries/topResources');
 const mostReferralInfluence = require('./queries/mostReferralInfluence');
 const mostReferrals = require('./queries/mostReferrals');
@@ -66,6 +67,7 @@ module.exports = {
         topArguments,
         topBulletPoints,
         topOpinions,
+        topProjects,
         topResources,
         mostReferralInfluence,
         mostReferrals,

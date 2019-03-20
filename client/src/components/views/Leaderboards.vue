@@ -2,13 +2,22 @@
     <main class="container">
         <h1 class="heading">leaderboards</h1>
 
-        <router-link to="/leaderboards"><button :class="filterButtonStyle(undefined)" style="cursor: pointer">All</button></router-link>
-        <router-link to="/leaderboards/arguments"><button :class="filterButtonStyle('arguments')" style="cursor: pointer">Arguments</button></router-link>
-        <router-link to="/leaderboards/bulletpoints"><button :class="filterButtonStyle('bulletpoints')" style="cursor: pointer;">Bulletpoints</button></router-link>
-        <br/>
-        <router-link to="/leaderboards/resources"><button :class="filterButtonStyle('resources')" style="cursor: pointer;">Resources</button></router-link>
-        <router-link to="/leaderboards/opinions"><button :class="filterButtonStyle('opinions')" style=" cursor: pointer">Opinions</button></router-link>
-        <router-link to="/leaderboards/users"><button :class="filterButtonStyle('users')" style="cursor: pointer">Users</button></router-link>
+        <router-link to="/leaderboards"><button :class="filterButtonStyle(undefined)">All</button></router-link>
+        <router-link to="/leaderboards/arguments"><button :class="filterButtonStyle('arguments')">Arguments</button>
+        </router-link>
+        <router-link to="/leaderboards/bulletpoints"><button
+                :class="filterButtonStyle('bulletpoints')">Bulletpoints</button></router-link>
+        <br />
+        <router-link to="/leaderboards/resources"><button :class="filterButtonStyle('resources')">Resources</button>
+        </router-link>
+        <router-link to="/leaderboards/opinions"><button :class="filterButtonStyle('opinions')">Opinions</button>
+        </router-link>
+        <router-link to="/leaderboards/users"><button :class="filterButtonStyle('users')">Users</button></router-link>
+        <br />
+        <router-link to="/leaderboards/projects"><button :class="filterButtonStyle('projects')">Projects</button>
+        </router-link>
+        <router-link to="/leaderboards/allegiances"><button
+                :class="filterButtonStyle('allegiances')">Allegiances</button></router-link>
 
         <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
@@ -114,7 +123,8 @@
                 </h2>
 
                 <div v-for="bulletPoint in mostUpvotedBulletPoints" :key="bulletPoint._id">
-                    <ViewSingles :singleDocument="bulletPoint" v-on:bulletpoints-changed="refetchQueries('bulletpoints')" />
+                    <ViewSingles :singleDocument="bulletPoint"
+                        v-on:bulletpoints-changed="refetchQueries('bulletpoints')" />
                 </div>
             </div>
             <div v-else-if="!$apollo.loading">
@@ -127,7 +137,8 @@
                 </h2>
 
                 <div v-for="bulletPoint in mostDownvotedBulletPoints" :key="bulletPoint._id">
-                    <ViewSingles :singleDocument="bulletPoint" v-on:bulletpoints-changed="refetchQueries('bulletpoints')" />
+                    <ViewSingles :singleDocument="bulletPoint"
+                        v-on:bulletpoints-changed="refetchQueries('bulletpoints')" />
                 </div>
             </div>
             <div v-else-if="!$apollo.loading">
@@ -140,7 +151,8 @@
                 </h2>
 
                 <div v-for="bulletPoint in mostOpinionatedBulletPoints" :key="bulletPoint._id">
-                    <ViewSingles :singleDocument="bulletPoint" v-on:bulletpoints-changed="refetchQueries('bulletpoints')" />
+                    <ViewSingles :singleDocument="bulletPoint"
+                        v-on:bulletpoints-changed="refetchQueries('bulletpoints')" />
                 </div>
             </div>
             <div v-else-if="!$apollo.loading">
@@ -153,7 +165,8 @@
                 </h2>
 
                 <div v-for="bulletPoint in leastOpinionatedBulletPoints" :key="bulletPoint._id">
-                    <ViewSingles :singleDocument="bulletPoint" v-on:bulletpoints-changed="refetchQueries('bulletpoints')" />
+                    <ViewSingles :singleDocument="bulletPoint"
+                        v-on:bulletpoints-changed="refetchQueries('bulletpoints')" />
                 </div>
             </div>
             <div v-else-if="!$apollo.loading">
@@ -252,6 +265,69 @@
                 </ul>
             </div>
         </section>
+
+        <section v-if="!leaderboardsCategory || leaderboardsCategory === 'projects'">
+            <div v-if="mostDonatedProjects" class="medium-margin">
+                <h2>
+                    Most Donated Projects
+                </h2>
+
+                <div v-for="project in mostDonatedProjects" :key="project._id">
+                    <ViewSingles :singleDocument="project" v-on:projects-changed="refetchQueries('projects')" />
+                </div>
+            </div>
+            <div v-if="mostUpvotedProjects" class="medium-margin">
+                <h2>
+                    Most Upvoted Projects
+                </h2>
+
+                <div v-for="project in mostUpvotedProjects" :key="project._id">
+                    <ViewSingles :singleDocument="project" v-on:projects-changed="refetchQueries('projects')" />
+                </div>
+            </div>
+            <div v-else-if="!$apollo.loading">
+                <span>No Upvoted Projects</span>
+            </div>
+
+            <div v-if="mostDownvotedProjects" class="medium-margin">
+                <h2>
+                    Most Downvoted Projects
+                </h2>
+
+                <div v-for="project in mostDownvotedProjects" :key="project._id">
+                    <ViewSingles :singleDocument="project" v-on:projects-changed="refetchQueries('projects')" />
+                </div>
+            </div>
+            <div v-else-if="!$apollo.loading">
+                <span>No Downvoted Projects</span>
+            </div>
+
+            <div v-if="mostOpinionatedProjects" class="medium-margin">
+                <h2>
+                    Most Opinionated Projects
+                </h2>
+
+                <div v-for="project in mostOpinionatedProjects" :key="project._id">
+                    <ViewSingles :singleDocument="project" v-on:projects-changed="refetchQueries('projects')" />
+                </div>
+            </div>
+            <div v-else-if="!$apollo.loading">
+                <span>No Opinionated Projects</span>
+            </div>
+
+            <div v-if="leastOpinionatedProjects" class="medium-margin">
+                <h2>
+                    Least Opinionated Projects
+                </h2>
+
+                <div v-for="project in leastOpinionatedProjects" :key="project._id">
+                    <ViewSingles :singleDocument="project" v-on:projects-changed="refetchQueries('projects')" />
+                </div>
+            </div>
+            <div v-else-if="!$apollo.loading">
+                <span>No Least Opinionated Projects</span>
+            </div>
+        </section>
     </main>
 </template>
 
@@ -284,7 +360,13 @@
                 mostDownvotedResources: null,
                 mostOpinionatedResources: null,
                 leastOpinionatedResources: null,
-                
+
+                mostDonatedProjects: null,
+                mostUpvotedProjects: null,
+                mostDownvotedProjects: null,
+                mostOpinionatedProjects: null,
+                leastOpinionatedProjects: null,
+
                 mostInfluentialUsers: null,
                 mostReferrals: null,
                 mostReferralInfluence: null
@@ -294,12 +376,14 @@
             leaderboardsCategory() {
                 let leaderboardsCategory = this.$route.params.leaderboardsCategory;
 
-                if(leaderboardsCategory) {
-                    if(leaderboardsCategory !== 'arguments' &&
+                if (leaderboardsCategory) {
+                    if (leaderboardsCategory !== 'arguments' &&
                         leaderboardsCategory !== 'opinions' &&
                         leaderboardsCategory !== 'bulletpoints' &&
                         leaderboardsCategory !== 'resources' &&
-                        leaderboardsCategory !== 'users') {
+                        leaderboardsCategory !== 'users' &&
+                        leaderboardsCategory !== 'projects' &&
+                        leaderboardsCategory !== 'allegiances') {
                         this.forwardTo404();
                     }
                 }
@@ -321,26 +405,40 @@
                 });
             },
             refetchQueries(category) {
-                if(category === 'opinions') {
-                    this.$apollo.queries.recentOpinions.refetch();
-                    this.$apollo.queries.mostUpvotedOpinions.refetch();
-                    this.$apollo.queries.mostDownvotedOpinions.refetch();
-                } else if (category === 'arguments') {
-                    this.$apollo.queries.mostUpvotedArguments.refetch();
-                    this.$apollo.queries.mostDownvotedArguments.refetch();
-                    this.$apollo.queries.mostOpinionatedArguments.refetch();
-                    this.$apollo.queries.leastOpinionatedArguments.refetch();
-                } else if (category === 'bulletpoints') {
-                    this.$apollo.queries.mostUpvotedBulletPoints.refetch();
-                    this.$apollo.queries.mostDownvotedBulletPoints.refetch();
-                    this.$apollo.queries.mostOpinionatedBulletPoints.refetch();
-                    this.$apollo.queries.leastOpinionatedBulletPoints.refetch();
-                } else if (category === 'resources') {
-                    this.$apollo.queries.mostUpvotedResources.refetch();
-                    this.$apollo.queries.mostDownvotedResources.refetch();
-                    this.$apollo.queries.mostOpinionatedResources.refetch();
-                    this.$apollo.queries.leastOpinionatedResources.refetch();
+
+                switch (category) {
+                    case 'opinions':
+                        this.$apollo.queries.recentOpinions.refetch();
+                        this.$apollo.queries.mostUpvotedOpinions.refetch();
+                        this.$apollo.queries.mostDownvotedOpinions.refetch();
+                        break;
+                    case 'arguments':
+                        this.$apollo.queries.mostUpvotedArguments.refetch();
+                        this.$apollo.queries.mostDownvotedArguments.refetch();
+                        this.$apollo.queries.mostOpinionatedArguments.refetch();
+                        this.$apollo.queries.leastOpinionatedArguments.refetch();
+                        break;
+                    case 'bulletpoints':
+                        this.$apollo.queries.mostUpvotedBulletPoints.refetch();
+                        this.$apollo.queries.mostDownvotedBulletPoints.refetch();
+                        this.$apollo.queries.mostOpinionatedBulletPoints.refetch();
+                        this.$apollo.queries.leastOpinionatedBulletPoints.refetch();
+                        break;
+                    case 'resources':
+                        this.$apollo.queries.mostUpvotedResources.refetch();
+                        this.$apollo.queries.mostDownvotedResources.refetch();
+                        this.$apollo.queries.mostOpinionatedResources.refetch();
+                        this.$apollo.queries.leastOpinionatedResources.refetch();
+                        break;
+                    case 'projects':
+                        this.$apollo.queries.mostDonatedProjects.refetch();
+                        this.$apollo.queries.mostUpvotedProjects.refetch();
+                        this.$apollo.queries.mostDownvotedProjects.refetch();
+                        this.$apollo.queries.mostOpinionatedProjects.refetch();
+                        this.$apollo.queries.leastOpinionatedProjects.refetch();
+                        break;
                 }
+
             }
         },
         apollo: {
@@ -371,7 +469,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'opinions' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'opinions' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -407,7 +505,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'opinions' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'opinions' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -443,7 +541,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'opinions' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'opinions' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -478,7 +576,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'arguments' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'arguments' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -513,7 +611,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'arguments' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'arguments' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -548,7 +646,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'arguments' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'arguments' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -583,7 +681,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'arguments' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'arguments' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -618,7 +716,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'bulletpoints' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'bulletpoints' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -653,7 +751,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'bulletpoints' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'bulletpoints' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -688,7 +786,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'bulletpoints' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'bulletpoints' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -723,7 +821,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'bulletpoints' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'bulletpoints' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -760,7 +858,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'resources' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'resources' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -796,7 +894,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'resources' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'resources' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -832,7 +930,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'resources' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'resources' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -868,7 +966,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'resources' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'resources' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -889,7 +987,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'users' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'users' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -910,7 +1008,7 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'users' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'users' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
@@ -931,7 +1029,179 @@
                     limit: 5
                 },
                 skip() {
-                    if(this.leaderboardsCategory !== 'users' && this.leaderboardsCategory) {
+                    if (this.leaderboardsCategory !== 'users' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostDonatedProjects: {
+                query: gql `
+                    query mostDonatedProjects($onModel:String!, $descending: Boolean!, $limit:Int!) {
+                        topProjects(onModel: $onModel, descending: $descending, limit:$limit) {
+                            _id
+                            metaSlug
+                            title
+                            link
+                            description
+                            votes {
+                                _id
+                                upVote
+                                createdBy {
+                                    _id
+                                    username
+                                    accruedDonations
+                                }
+                            }
+                        }
+                    }
+                `,
+                update: data => (data.topProjects),
+                variables: {
+                    onModel: 'Donation',
+                    descending: true,
+                    limit: 5
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'projects' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostUpvotedProjects: {
+                query: gql `
+                    query mostUpvotedProjects($onModel:String!, $descending: Boolean!, $limit:Int!) {
+                        topProjects(onModel: $onModel, descending: $descending, limit:$limit) {
+                            _id
+                            metaSlug
+                            title
+                            link
+                            description
+                            votes {
+                                _id
+                                upVote
+                                createdBy {
+                                    _id
+                                    username
+                                    accruedDonations
+                                }
+                            }
+                        }
+                    }
+                `,
+                update: data => (data.topProjects),
+                variables: {
+                    onModel: 'Vote',
+                    descending: true,
+                    limit: 5
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'projects' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostDownvotedProjects: {
+                query: gql `
+                    query mostDownvotedProjects($onModel:String!, $descending: Boolean!, $limit:Int!) {
+                        topProjects(onModel: $onModel, descending: $descending, limit:$limit) {
+                            _id
+                            metaSlug
+                            title
+                            link
+                            description
+                            votes {
+                                _id
+                                upVote
+                                createdBy {
+                                    _id
+                                    username
+                                    accruedDonations
+                                }
+                            }
+                        }
+                }`,
+                update: data => (data.topProjects),
+                variables: {
+                    onModel: 'Vote',
+                    descending: false,
+                    limit: 5
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'projects' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostOpinionatedProjects: {
+                query: gql `
+                    query mostOpinionatedProjects($onModel:String!, $descending: Boolean!, $limit:Int!) {
+                        topProjects(onModel: $onModel, descending: $descending, limit:$limit) {
+                            _id
+                            metaSlug
+                            title
+                            link
+                            description
+                            votes {
+                                _id
+                                upVote
+                                createdBy {
+                                    _id
+                                    username
+                                    accruedDonations
+                                }
+                            }
+                        }
+                }`,
+                update: data => (data.topProjects),
+                variables: {
+                    onModel: 'Opinion',
+                    descending: false,
+                    limit: 5
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'projects' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            leastOpinionatedProjects: {
+                query: gql `
+                    query leastOpinionatedProjects($onModel:String!, $descending: Boolean!, $limit:Int!) {
+                        topProjects(onModel: $onModel, descending: $descending, limit:$limit) {
+                            _id
+                            metaSlug
+                            title
+                            link
+                            description
+                            votes {
+                                _id
+                                upVote
+                                createdBy {
+                                    _id
+                                    username
+                                    accruedDonations
+                                }
+                            }
+                        }
+                }`,
+                update: data => (data.topProjects),
+                variables: {
+                    onModel: 'Opinion',
+                    descending: false,
+                    limit: 5
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'projects' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;

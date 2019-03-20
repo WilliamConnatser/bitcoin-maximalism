@@ -283,6 +283,24 @@ const sortByVote = (documentArray, descending) => {
     });
 }
 
+const calculateDonations = donationArray => {
+    let cumulativeDonations = 0;
+    donationArray.forEach(donation => {
+        if (donation.paid) cumulativeDonations += donation.preBonusAmount;
+    });
+    return cumulativeDonations;
+}
+
+const sortByDonation = (documentArray, descending) => {
+    return documentArray.sort((a, b) => {
+        if (descending) {
+            return calculateDonations(b.donations) - calculateDonations(a.donations);
+        } else {
+            return calculateDonations(a.donations) - calculateDonations(b.donations);
+        }
+    });
+}
+
 const parseError = (error, unknownError) => {
     //Known errors which return a slug have special notifications in the onError property inside /client/apolloProvider.js
     if (error == 'log-in') return 'log-in';
@@ -325,6 +343,7 @@ const parseError = (error, unknownError) => {
     else if (error == 'edit-submission-approved') return 'Submissions that were already approved can not be edited';
     else if (error == 'unauthorized') return 'You are not authorized to view this';
     else {
+        console.log(error)
         return unknownError;
     }
 }
@@ -339,5 +358,6 @@ module.exports = {
     invoicePaid,
     calculateVotes,
     sortByVote,
+    sortByDonation,
     parseError
 };

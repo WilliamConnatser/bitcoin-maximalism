@@ -7,6 +7,7 @@ const {
 //Resolver helpers
 const {
     sortByVote,
+    sortByDonation,
     parseError
 } = require('../helpers');
 
@@ -19,12 +20,12 @@ module.exports = async (_, {
 }) => {
     try {
         //Validation
-        if (onModel !== 'Opinion' && onModel !== 'Vote') throw new UserInputError('invalid-model');
+        if (onModel !== 'Opinion' && onModel !== 'Vote' && onModel !== 'Donation') throw new UserInputError('invalid-model');
         if (limit < 1) throw new UserInputError('invalid-limit');
 
-        //If requesting most/least opinionated
         if (onModel === 'Opinion') {
 
+            //Most/least opinionated was requested
             //Populate an array of approved and active Projects
             let projects = await Project.find({
                     approved: true,
@@ -50,10 +51,11 @@ module.exports = async (_, {
                 }
             }).slice(0, limit);
 
-        } else {
-            //Else, most upvoted/downvoted projects were requested
+        } else if (onModel === 'Vote') {
+
+            //Most upvoted/downvoted projects were requested
             //Get a list of active and approved Projects
-            let projects = await Rhetoric.find({
+            let projects = await Project.find({
                     approved: true,
                     active: true
                 })
@@ -67,11 +69,36 @@ module.exports = async (_, {
                         select: '_id username accruedDonations'
                     }
                 });
-            
+
             //Return the sorted array and shorten it accordingly
             return await sortByVote(projects, descending).slice(0, limit);
-        }
 
+        } else if (onModel === 'Donation') {
+
+            //Most donated projects were requested
+            //Get a list of active and approved Projects
+            let projects = await Project.find({
+                    approved: true,
+                    active: true
+                })
+                .populate({
+                    path: 'votes',
+                    model: 'Vote',
+                    populate: {
+                        path: 'createdBy',
+                        model: 'User',
+                        //Sanitize user document
+                        select: '_id username accruedDonations'
+                    }
+                })
+                .populate({
+                    path: 'donations',
+                    model: 'Donation'
+                });
+
+            //Return the sorted array and shorten it accordingly
+            return await sortByDonation(projects, descending).slice(0, limit);
+        }
     } catch (err) {
         throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these projects'));
     }

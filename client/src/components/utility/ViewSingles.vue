@@ -17,22 +17,37 @@
             </li>
         </ul>
 
-        <ul v-if="singleDocument && (singleDocument.__typename === 'Rhetoric' || singleDocument.__typename === 'Resource' || singleDocument.__typename === 'BulletPoint')">
+        <ul v-if="singleDocument && (
+            singleDocument.__typename === 'Rhetoric' ||
+            singleDocument.__typename === 'Resource' ||
+            singleDocument.__typename === 'BulletPoint' ||
+            singleDocument.__typename === 'Project')">
             <li class="list">
                 <ToolbarVotes :arrayItemProp="singleDocument" />
 
-                <span v-if="singleDocument.__typename == 'BulletPoint'" >{{singleDocument.content}}</span>
-                <a v-if="singleDocument.__typename == 'Resource'" :href="singleDocument.link" class="unstyled-link">
+                <span v-if="singleDocument.__typename == 'BulletPoint'" >
+                    {{singleDocument.content}}
+                </span>
+                <a v-else-if="singleDocument.__typename == 'Resource'" :href="singleDocument.link" class="unstyled-link">
                     <span class="media-type">
                         { {{singleDocument.media}} }
                     </span>
                     {{singleDocument.title}}
                 </a>
-                <router-link v-if="singleDocument.__typename == 'Rhetoric'"
+                <router-link v-else-if="singleDocument.__typename == 'Rhetoric'"
                         :to="urlGenerator(singleDocument.metaSlug, singleDocument.slug)"
                         class="unstyled-link">
                     {{singleDocument.title}}
                 </router-link>
+                <div v-else>
+                    <a :href="singleDocument.link" class="unstyled-link">
+                        {{singleDocument.title}}
+                    </a>
+                    <br/>
+                    { {{singleDocument.metaSlug}} }
+                    <br/>
+                    {{singleDocument.description}}
+                </div>
 
                 <ToolbarActions :arrayItemProp="singleDocument"/>
             </li>

@@ -237,7 +237,7 @@ type Query {
     topArguments(onModel: String!, descending: Boolean!, limit: Int!): [Rhetoric!]! #Most/Least Upvoted/Opinionated Rhetoric - onModel = Opinion or Vote
     topBulletPoints(onModel: String!, descending: Boolean!, limit: Int!): [BulletPoint!]! #Most/Least Upvoted/Opinionated BulletPoint - onModel = Opinion or Vote
     topResources(onModel: String!, descending: Boolean!, limit: Int!): [Resource!]! #Most/Least Upvoted/Opinionated Resource - onModel = Opinion or Vote
-    topProjects(onModel: String!, descending: Boolean!, limit: Int!): [Project!]! #Most/Least Upvoted/Opinionated Project - onModel = Opinion or Vote
+    topProjects(onModel: String!, descending: Boolean!, limit: Int!): [Project!]! #Most/Least Upvoted/Opinionated Project - onModel = Opinion or Vote or Donation
     topOpinions(descending: Boolean!, limit: Int!): [Opinion] #Most/Least Upvoted Opinions
 
     recentOpinions(limit: Int!): [Opinion!]!
