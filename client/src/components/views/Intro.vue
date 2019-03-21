@@ -7,7 +7,7 @@
         <div class="large-margin-vertical">
             <h2>already know the basics?</h2>
             <router-link to="/arguments">
-                <button class="large-button">
+                <button class="large-button button-flash">
                     Become An Expert
                 </button>
             </router-link>

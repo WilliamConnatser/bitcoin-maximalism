@@ -109,6 +109,9 @@
                     accruedDonations
                   }
                 }
+                donations {
+                  preBonusAmount
+                }
               }
             }
         `,

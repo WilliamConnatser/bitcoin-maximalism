@@ -1054,6 +1054,9 @@
                                     accruedDonations
                                 }
                             }
+                            donations {
+                                preBonusAmount
+                            }
                         }
                     }
                 `,
@@ -1088,6 +1091,9 @@
                                     username
                                     accruedDonations
                                 }
+                            }
+                            donations {
+                                preBonusAmount
                             }
                         }
                     }
@@ -1124,6 +1130,9 @@
                                     accruedDonations
                                 }
                             }
+                            donations {
+                                preBonusAmount
+                            }
                         }
                 }`,
                 update: data => (data.topProjects),
@@ -1158,6 +1167,9 @@
                                     accruedDonations
                                 }
                             }
+                            donations {
+                                preBonusAmount
+                            }
                         }
                 }`,
                 update: data => (data.topProjects),
@@ -1191,6 +1203,9 @@
                                     username
                                     accruedDonations
                                 }
+                            }
+                            donations {
+                                preBonusAmount
                             }
                         }
                 }`,

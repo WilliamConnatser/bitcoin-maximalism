@@ -44,9 +44,12 @@
                         {{singleDocument.title}}
                     </a>
                     <br/>
-                    { {{singleDocument.metaSlug}} }
+                    allegiance: {{singleDocument.metaSlug}}
                     <br/>
+                    bitcoin raised: {{calculateDonations(singleDocument.donations)}}
+                    <p class="medium-margin-vertical">
                     {{singleDocument.description}}
+                    </p>
                 </div>
 
                 <ToolbarActions :arrayItemProp="singleDocument"/>
@@ -80,6 +83,13 @@
                 } else {
                     return `/arguments/${metaSlug}`;
                 }
+            },
+            calculateDonations(donationArray) {
+                let cumulativeDonations = 0;
+                donationArray.forEach(donation => {
+                    if (donation.paid) cumulativeDonations += donation.preBonusAmount;
+                });
+                return cumulativeDonations;
             }
         }
     };

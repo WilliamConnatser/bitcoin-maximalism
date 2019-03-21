@@ -130,8 +130,13 @@ button {
     height: 80px;
     max-width: 250px;
     width: 55%;
+    border-radius: 5px;
     font-size: 2rem;
     text-transform: uppercase;
+}
+
+.button-flash {
+    animation: shake 1.25s 1.25s;
 }
 
 .selected-button {

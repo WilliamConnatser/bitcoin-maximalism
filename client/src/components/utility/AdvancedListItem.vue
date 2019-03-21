@@ -10,8 +10,8 @@
                     <a v-else-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link" class="unstyled-link">
                         <span class="media-type">{ {{arrayItem.media}} } </span>{{arrayItem.title}}
                     </a>
-                    <router-link v-else-if="arrayItem.__typename == 'Rhetoric'" :to="urlGenerator(arrayItem.metaSlug, arrayItem.slug)"
-                        class="unstyled-link ">
+                    <router-link v-else-if="arrayItem.__typename == 'Rhetoric'"
+                        :to="urlGenerator(arrayItem.metaSlug, arrayItem.slug)" class="unstyled-link ">
                         {{arrayItem.title}}
                     </router-link>
                     <div v-else>
@@ -19,10 +19,11 @@
                             {{arrayItem.title}}
                         </a>
                         <br/>
-                        { {{arrayItem.metaSlug}} }
-                        <br/>
+                        bitcoin raised: {{calculateDonations(arrayItem.donations)}}
+                        <p class="medium-margin-vertical">
                         {{arrayItem.description}}
-                    </div>                    
+                        </p>
+                    </div>
                 </div>
 
                 <ToolbarActions :arrayItemProp="arrayItem" />
@@ -58,6 +59,13 @@
                 } else {
                     return `${metaSlug}/${slug}`;
                 }
+            },
+            calculateDonations(donationArray) {
+                let cumulativeDonations = 0;
+                donationArray.forEach(donation => {
+                    if (donation.paid) cumulativeDonations += donation.preBonusAmount;
+                });
+                return cumulativeDonations;
             }
         }
     };

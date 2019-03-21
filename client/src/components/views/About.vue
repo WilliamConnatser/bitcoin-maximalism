@@ -7,7 +7,7 @@
 
         <div class="medium-margin">
             <router-link to="/account">
-                <button class="large-button medium-margin">
+                <button class="large-button button-flash medium-margin">
                     Register Here
                 </button>
             </router-link>
