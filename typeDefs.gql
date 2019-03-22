@@ -213,6 +213,21 @@ type MostReferrals {
     referralAmount: Float!
 }
 
+type TopAllegiance {
+    mostDonated: TopAllegianceObject!
+    mostInfluence: TopAllegianceObject!
+    mostUpvotes: TopAllegianceObject!
+    mostUsers: TopAllegianceObject!
+    mostArguments: TopAllegianceObject!
+    mostResources: TopAllegianceObject!
+}
+
+type TopAllegianceObject {
+    allegiance: String!
+    rank: Int!
+    amount: Int!
+}
+
 type Username {
     _id: ID!
     username: String!
@@ -240,6 +255,7 @@ type Query {
     topResources(onModel: String!, descending: Boolean!, limit: Int!): [Resource!]! #Most/Least Upvoted/Opinionated Resource - onModel = Opinion or Vote
     topProjects(onModel: String!, descending: Boolean!, limit: Int!): [Project!]! #Most/Least Upvoted/Opinionated Project - onModel = Opinion or Vote or Donation
     topOpinions(descending: Boolean!, limit: Int!): [Opinion] #Most/Least Upvoted Opinions
+    topAllegiances(type: String!, descending: Boolean!, limit: Int!): TopAllegiance #Allegiance leaderboards - Types: mostDonated, mostInfluence, mostUpvotes, mostUsers, mostArguments, mostResources, mostBulletPoints
 
     recentOpinions(limit: Int!): [Opinion!]!
     mostInfluentialUsers(limit: Int!): [User!]!

@@ -13,6 +13,7 @@ const docIDSpecificOpinions = require('./queries/docIDSpecificOpinions');
 const docIDSpecificVotes = require('./queries/docIDSpecificVotes');
 const mostInfluentialUsers = require('./queries/mostInfluentialUsers');
 const recentOpinions = require('./queries/recentOpinions');
+const topAllegiances = require('./queries/topAllegiances');
 const topArguments = require('./queries/topArguments');
 const topBulletPoints = require('./queries/topBulletPoints');
 const topOpinions = require('./queries/topOpinions');
@@ -64,6 +65,7 @@ module.exports = {
         docIDSpecificVotes,
         mostInfluentialUsers,
         recentOpinions,
+        topAllegiances,
         topArguments,
         topBulletPoints,
         topOpinions,
