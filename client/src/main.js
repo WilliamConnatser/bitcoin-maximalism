@@ -18,6 +18,10 @@ require('./filters');
 require('./fontAwesome');
 //Toasted Toastr Notifications
 require('./notifications');
+//VueChartKick
+import VueChartkick from 'vue-chartkick';
+import Chart from 'chart.js';
+Vue.use(VueChartkick, {adapter: Chart});
 //Apollo Client / GraphQL /apolloProvider / defaultClient
 const apolloProvider = require('./apolloProvider');
 

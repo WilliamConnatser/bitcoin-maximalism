@@ -331,14 +331,25 @@
         <section v-if="!leaderboardsCategory || leaderboardsCategory === 'allegiances'">
             <div v-if="mostRaised" class="medium-margin">
                 <h2>
-                    Most Money Raised For Open Source Projects
+                    Bitcoin Raised For Open Source Projects
                 </h2>
 
-                <div v-for="allegiance in mostRaised" :key="allegiance._id">
-                    {{allegiance.allegiance}}
-                    {{allegiance.rank}}
-                    {{allegiance.amount}}
-                </div>
+                <pie-chart :data="chartData(mostRaised)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
+                <strong>{{mostRaised[0].allegiance}}: </strong> {{mostRaised[0].amount | formatBitcoinAmount}} satoshis
+                <br />
+                <strong>{{mostRaised[1].allegiance}}: </strong> {{mostRaised[1].amount | formatBitcoinAmount}} satoshis
+                <br />
+            </div>
+            <div v-if="mostInfluence" class="medium-margin">
+                <h2>
+                    Most Influence Acquired
+                </h2>
+
+                <pie-chart :data="chartData(mostInfluence)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
+                <strong>{{mostInfluence[0].allegiance}}: </strong> {{mostInfluence[0].amount | formatBitcoinAmount}}
+                <br />
+                <strong>{{mostInfluence[1].allegiance}}: </strong> {{mostInfluence[1].amount | formatBitcoinAmount}}
+                <br />
             </div>
         </section>
     </main>
@@ -470,6 +481,16 @@
                         this.$apollo.queries.mostBullePoints.refetch();
                         break;
                 }
+            },
+            chartData(queryResponse) {
+               let total = 0;
+               total = queryResponse.reduce((previous, current) => previous + current.amount, 0);
+               return queryResponse.map(function(allegiance){
+                   console.log(isNaN(total / allegiance.amount))
+                   if(total === 0 && allegiance.amount === 0) return [allegiance.allegiance, .5]
+                   else if(isNaN(total / allegiance.amount)) return [allegiance.allegiance, .3]
+                   else return [allegiance.allegiance, total / allegiance.amount]
+               })
             }
         },
         apollo: {
