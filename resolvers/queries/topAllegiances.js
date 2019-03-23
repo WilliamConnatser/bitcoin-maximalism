@@ -11,17 +11,18 @@ const {
 } = require('../helpers');
 
 module.exports = async (_, {
-    type,
-    descending,
-    limit
+    type
 }, {
-    Project,
+    Donation,
+    User,
+    Vote,
     Rhetoric,
-    Resources,
-    BulletPoints
+    Resource,
+    BulletPoint,
+    Opinion
 }) => {
     try {
-        if (type !== 'mostDonated' &&
+        if (type !== 'mostRaised' &&
             type !== 'mostInfluence' &&
             type !== 'mostUpvotes' &&
             type !== 'mostOpinions' &&
@@ -29,23 +30,24 @@ module.exports = async (_, {
             type !== 'mostArguments' &&
             type !== 'mostResources' &&
             type !== 'mostBulletPoints') throw new UserInputError('invalid-model');
-        if (limit < 1) throw new UserInputError('invalid-limit');
+
+        let proCount = 0;
+        let antCount = 0;
 
         switch (type) {
-            case 'mostDonated':
+            case 'mostRaised':
 
-                let proCount = 0;
-                let antCount = 0;
-
-                const donations = await Donations.find({})
+                const donations = await Donation.find({
+                    paid: true
+                })
                     .populate({
                         path: 'createdBy',
                         model: 'User'
                     });
 
                 donations.forEach(donation => {
-                    if (donation.createdBy.maximalist !== undefined) {
-                        if (donation.createdBy.maximalist) {
+                    if (donation.onModel === 'Project') {
+                        if (donation.metaSlug.maximalist) {
                             proCount += donation.preBonusAmount;
                         } else {
                             antCount += donation.preBonusAmount;
@@ -53,97 +55,164 @@ module.exports = async (_, {
                     }
                 });
 
+                break;
+
             case 'mostInfluence':
 
                 const proUsers = await User.find({
-                    maximalist: true
+                    maximalist: true,
+                    active: true
                 });
                 const antUsers = await User.find({
-                    maximalist: false
+                    maximalist: false,
+                    active: true
                 });
-                const proCount = proUsers.reduce((previous, current) => previous + current.accruedDonations);
-                const antCount = antUsers.reduce((previous, current) => previous + current.accruedDonations);
+                if (proUsers.length > 0) proCount = proUsers.reduce((previous, current) => previous + current.accruedDonations, 0);
+                if (antUsers.length > 0) antCount = antUsers.reduce((previous, current) => previous + current.accruedDonations, 0);
 
+
+                break;
 
             case 'mostUpvotes':
 
-                let proCount = 0;
-                let antCount = 0;
-
-                const votes = await Votes.find({})
+                const proVotes = await Vote.find({
+                        metaSlug: 'protagonistic'
+                    })
                     .populate({
                         path: 'createdBy',
                         model: 'User',
                         select: '_id username accruedDonations'
                     });
 
-                votes.forEach(vote => {
-                    if (vote.metaSlug === 'protagonistic') {
-                        if (upVote) proCount += vote.createdBy.accruedDonations;
-                        else proCount -= vote.createdBy.accruedDonations;
-                    } else {
-                        if (upVote) antCount += vote.createdBy.accruedDonations;
-                        else antCount -= vote.createdBy.accruedDonations;
-                    }
-                });
+                const antVotes = await Vote.find({
+                        metaSlug: 'antagonistic'
+                    })
+                    .populate({
+                        path: 'createdBy',
+                        model: 'User',
+                        select: '_id username accruedDonations'
+                    });
 
+                if (proVotes.length > 0) proCount = proVotes.reduce(function (previous, vote) {
+                    if (vote.upVote) {
+                        return previous + vote.createdBy.accruedDonations;
+                    } else {
+                        return previous - vote.createdBy.accruedDonations;
+                    }
+                }, 0);
+
+                if (antVotes.length > 0) antCount = antVotes.reduce(function (previous, vote) {
+                    if (vote.upVote) {
+                        return previous + vote.createdBy.accruedDonations;
+                    } else {
+                        return previous - vote.createdBy.accruedDonations;
+                    }
+                }, 0);
+
+                break;
 
             case 'mostOpinions':
 
-                let proCount = await Opinion.find({
-                    metaSlug: "protagonistic"
+                proCount = await Opinion.find({
+                    metaSlug: "protagonistic",
+                    active: true,
+                    approved: true
                 }).countDocuments();
-                let antCount = await Opinion.find({
-                    metaSlug: "antagonistic"
+                antCount = await Opinion.find({
+                    metaSlug: "antagonistic",
+                    active: true,
+                    approved: true
                 }).countDocuments();
+
+                break;
 
             case 'mostUsers':
 
-                let proCount = await User.find({
-                    maximalist: true
+                proCount = await User.find({
+                    maximalist: true,
+                    active: true
                 }).countDocuments();
-                let antCount = await User.find({
-                    maximalist: false
+                antCount = await User.find({
+                    maximalist: false,
+                    active: true
                 }).countDocuments();
+
+                break;
 
             case 'mostArguments':
 
-                let proCount = await Rhetoric.find({
-                    metaSlug: 'protagonistic'
+                proCount = await Rhetoric.find({
+                    metaSlug: 'protagonistic',
+                    active: true,
+                    approved: true
                 }).countDocuments();
-                let conCount = await Rhetoric.find({
-                    metaSlug: 'antagonistic'
+                antCount = await Rhetoric.find({
+                    metaSlug: 'antagonistic',
+                    active: true,
+                    approved: true
                 }).countDocuments();
+
+                break;
 
             case 'mostResources':
 
-                let proCount = await Resource.find({
-                    metaSlug: 'protagonistic'
+                proCount = await Resource.find({
+                    metaSlug: 'protagonistic',
+                    active: true,
+                    approved: true
                 }).countDocuments();
-                let antCount = await Resource.find({
-                    metaSlug: 'antagonistic'
+                antCount = await Resource.find({
+                    metaSlug: 'antagonistic',
+                    active: true,
+                    approved: true
                 }).countDocuments();
+
+                break;
 
             case 'mostBulletPoints':
 
-                let proCount = await BulletPoint.find({
-                    metaSlug: 'protagonistic'
+                proCount = await BulletPoint.find({
+                    metaSlug: 'protagonistic',
+                    active: true,
+                    approved: true
                 }).countDocuments();
-                let antCount = await BulletPoint.find({
-                    metaSlug: 'antagonistic'
+                antCount = await BulletPoint.find({
+                    metaSlug: 'antagonistic',
+                    active: true,
+                    approved: true
                 }).countDocuments();
+
+                break;
         }
 
-        /*
-            return await rhetoric.sort((a, b) => {
-                if (descending) {
-                    return b.opinions.length - a.opinions.length;
-                } else {
-                    return a.opinions.length - b.opinions.length;
+        if (proCount > antCount) {
+            return [{
+                    allegiance: "protagonistic",
+                    rank: 1,
+                    amount: proCount
+                },
+                {
+                    allegiance: "antagonistic",
+                    rank: 2,
+                    amount: antCount
                 }
-            }).slice(0, limit); */
+            ]
+        } else {
+            return [{
+                    allegiance: "antagonistic",
+                    rank: 1,
+                    amount: antCount
+                },
+                {
+                    allegiance: "protagonistic",
+                    rank: 2,
+                    amount: proCount
+                }
+            ]
+        }
 
     } catch (err) {
-        throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these arguments'));
+        console.log(err)
+        throw new ApolloError(parseError(err.message, 'An unknown error occurred while aggregating these allegiances'));
     }
 }

@@ -135,9 +135,8 @@ const startup = async models => {
     //Update user documents with new array which holds projects they've submitted
     const users = await models.User.find({}); 
     users.forEach(function(user) {
-        console.log(user.projects)
         if(user.projects === undefined) {
-            console.log("adding projects array")
+            console.log("adding projects array to", user.username)
             user.projects = [];
             user.save();
         }

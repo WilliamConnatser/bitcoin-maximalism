@@ -328,6 +328,19 @@
                 <span>No Least Opinionated Projects</span>
             </div>
         </section>
+        <section v-if="!leaderboardsCategory || leaderboardsCategory === 'allegiances'">
+            <div v-if="mostRaised" class="medium-margin">
+                <h2>
+                    Most Money Raised For Open Source Projects
+                </h2>
+
+                <div v-for="allegiance in mostRaised" :key="allegiance._id">
+                    {{allegiance.allegiance}}
+                    {{allegiance.rank}}
+                    {{allegiance.amount}}
+                </div>
+            </div>
+        </section>
     </main>
 </template>
 
@@ -369,7 +382,16 @@
 
                 mostInfluentialUsers: null,
                 mostReferrals: null,
-                mostReferralInfluence: null
+                mostReferralInfluence: null,
+
+                mostRaised: null,
+                mostInfluence: null,
+                mostUpvotes: null,
+                mostOpinions: null,
+                mostUsers: null,
+                mostArguments: null,
+                mostResources: null,
+                mostBullePoints: null
             }
         },
         computed: {
@@ -437,8 +459,17 @@
                         this.$apollo.queries.mostOpinionatedProjects.refetch();
                         this.$apollo.queries.leastOpinionatedProjects.refetch();
                         break;
+                    case 'allegiances':
+                        this.$apollo.queries.mostRaised.refetch();
+                        this.$apollo.queries.mostInfluence.refetch();
+                        this.$apollo.queries.mostUpvotes.refetch();
+                        this.$apollo.queries.mostOpinions.refetch();
+                        this.$apollo.queries.mostUsers.refetch();
+                        this.$apollo.queries.mostArguments.refetch();
+                        this.$apollo.queries.mostResources.refetch();
+                        this.$apollo.queries.mostBullePoints.refetch();
+                        break;
                 }
-
             }
         },
         apollo: {
@@ -1217,6 +1248,174 @@
                 },
                 skip() {
                     if (this.leaderboardsCategory !== 'projects' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostRaised: {
+                query: gql `
+                    query mostRaised($type:String!) {
+                        topAllegiances(type: $type) {
+                            allegiance
+                            rank
+                            amount
+                        }
+                }`,
+                update: data => (data.topAllegiances),
+                variables: {
+                    type: 'mostRaised',
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'allegiances' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostInfluence: {
+                query: gql `
+                    query mostInfluence($type:String!) {
+                        topAllegiances(type: $type) {
+                            allegiance
+                            rank
+                            amount
+                        }
+                }`,
+                update: data => (data.topAllegiances),
+                variables: {
+                    type: 'mostInfluence',
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'allegiances' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostUpvotes: {
+                query: gql `
+                    query mostUpvotes($type:String!) {
+                        topAllegiances(type: $type) {
+                            allegiance
+                            rank
+                            amount
+                        }
+                }`,
+                update: data => (data.topAllegiances),
+                variables: {
+                    type: 'mostUpvotes',
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'allegiances' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostOpinions: {
+                query: gql `
+                    query mostOpinions($type:String!) {
+                        topAllegiances(type: $type) {
+                            allegiance
+                            rank
+                            amount
+                        }
+                }`,
+                update: data => (data.topAllegiances),
+                variables: {
+                    type: 'mostOpinions',
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'allegiances' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostUsers: {
+                query: gql `
+                    query mostUsers($type:String!) {
+                        topAllegiances(type: $type) {
+                            allegiance
+                            rank
+                            amount
+                        }
+                }`,
+                update: data => (data.topAllegiances),
+                variables: {
+                    type: 'mostUsers',
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'allegiances' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostArguments: {
+                query: gql `
+                    query mostArguments($type:String!) {
+                        topAllegiances(type: $type) {
+                            allegiance
+                            rank
+                            amount
+                        }
+                }`,
+                update: data => (data.topAllegiances),
+                variables: {
+                    type: 'mostArguments',
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'allegiances' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostResources: {
+                query: gql `
+                    query mostResources($type:String!) {
+                        topAllegiances(type: $type) {
+                            allegiance
+                            rank
+                            amount
+                        }
+                }`,
+                update: data => (data.topAllegiances),
+                variables: {
+                    type: 'mostResources',
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'allegiances' && this.leaderboardsCategory) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            },
+            mostBulletPoints: {
+                query: gql `
+                    query mostBulletPoints($type:String!) {
+                        topAllegiances(type: $type) {
+                            allegiance
+                            rank
+                            amount
+                        }
+                }`,
+                update: data => (data.topAllegiances),
+                variables: {
+                    type: 'mostBulletPoints',
+                },
+                skip() {
+                    if (this.leaderboardsCategory !== 'allegiances' && this.leaderboardsCategory) {
                         return true;
                     } else {
                         return false;
