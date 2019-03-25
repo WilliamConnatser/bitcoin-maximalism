@@ -2,7 +2,7 @@
     <main >
         <h1 class="heading">donation status</h1>
         <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
-        <apollo-response v-else class="apollo-response" />
+        <div v-else class="apollo-response" />
         
         <ul v-if="docIDSpecificDonation" class="list">
             <h2>Donation</h2>
@@ -48,7 +48,7 @@
                 <strong>Donation ID</strong>: <router-link :to="donationLink" class="small-uppercase-link">{{docIDSpecificDonation._id}}</router-link>
             </li>
             <li>
-                <strong>Invoice ID</strong>: <a :href="docIDSpecificDonation.invoiceURL">{{ docIDSpecificDonation.invoiceID }}</a>
+                <strong>Invoice ID</strong>: <a :href="docIDSpecificDonation.invoiceURL" class="small-uppercase-link">{{ docIDSpecificDonation.invoiceID }}</a>
             </li>
         </ul>
         <div v-else-if="!$apollo.loading" class="medium-margin">

@@ -331,9 +331,9 @@
         <section v-if="!leaderboardsCategory || leaderboardsCategory === 'allegiances'">
             <div v-if="mostRaised" class="medium-margin">
                 <h2>
-                    Bitcoin Raised For Open Source Projects
+                    Bitcoin Raised
                 </h2>
-
+                (for open source projects)
                 <pie-chart :data="chartData(mostRaised)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
                 <strong>{{mostRaised[0].allegiance}}: </strong> {{mostRaised[0].amount | formatBitcoinAmount}} satoshis
                 <br />
@@ -344,11 +344,77 @@
                 <h2>
                     Most Influence Acquired
                 </h2>
-
+                (total donated)
                 <pie-chart :data="chartData(mostInfluence)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
-                <strong>{{mostInfluence[0].allegiance}}: </strong> {{mostInfluence[0].amount | formatBitcoinAmount}}
+                <strong>{{mostInfluence[0].allegiance}}: </strong> {{mostInfluence[0].amount | formatBitcoinAmount}} satoshis
                 <br />
-                <strong>{{mostInfluence[1].allegiance}}: </strong> {{mostInfluence[1].amount | formatBitcoinAmount}}
+                <strong>{{mostInfluence[1].allegiance}}: </strong> {{mostInfluence[1].amount | formatBitcoinAmount}} satoshis
+                <br />
+            </div>
+            <div v-if="mostUpvotes" class="medium-margin">
+                <h2>
+                    Most Influence Upvoted
+                </h2>
+                (includes upvotes on arguments, bulletpoints, resources, projects, and opinions)
+                <pie-chart :data="chartData(mostUpvotes)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
+                <strong>{{mostUpvotes[0].allegiance}}: </strong> {{mostUpvotes[0].amount | formatBitcoinAmount}} satoshis
+                <br />
+                <strong>{{mostUpvotes[1].allegiance}}: </strong> {{mostUpvotes[1].amount | formatBitcoinAmount}} satoshis
+                <br />
+            </div>
+            <div v-if="mostOpinions" class="medium-margin">
+                <h2>
+                    Most Opinions
+                </h2>
+                (includes upvotes on arguments, bulletpoints, resources, and projects)
+                <pie-chart :data="chartData(mostOpinions)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
+                <strong>{{mostOpinions[0].allegiance}}: </strong> {{mostOpinions[0].amount}} opinions
+                <br />
+                <strong>{{mostOpinions[1].allegiance}}: </strong> {{mostOpinions[1].amount}} opinions
+                <br />
+            </div>
+            <div v-if="mostUsers" class="medium-margin">
+                <h2>
+                    Most Users
+                </h2>
+                (number of users)
+                <pie-chart :data="chartData(mostUsers)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
+                <strong>{{mostUsers[0].allegiance}}: </strong> {{mostUsers[0].amount}} users
+                <br />
+                <strong>{{mostUsers[1].allegiance}}: </strong> {{mostUsers[1].amount}} users
+                <br />
+            </div>
+            <div v-if="mostArguments" class="medium-margin">
+                <h2>
+                    Most Arguments
+                </h2>
+                (number of arguments)
+                <pie-chart :data="chartData(mostArguments)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
+                <strong>{{mostArguments[0].allegiance}}: </strong> {{mostArguments[0].amount}} arguments
+                <br />
+                <strong>{{mostArguments[1].allegiance}}: </strong> {{mostArguments[1].amount}} arguments
+                <br />
+            </div>
+            <div v-if="mostResources" class="medium-margin">
+                <h2>
+                    Most Resources
+                </h2>
+                (number of resources)
+                <pie-chart :data="chartData(mostResources)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
+                <strong>{{mostResources[0].allegiance}}: </strong> {{mostResources[0].amount}} resources
+                <br />
+                <strong>{{mostResources[1].allegiance}}: </strong> {{mostResources[1].amount}} resources
+                <br />
+            </div>
+            <div v-if="mostBulletPoints" class="medium-margin">
+                <h2>
+                    Most BulletPoints
+                </h2>
+                (number of bulletpoints)
+                <pie-chart :data="chartData(mostBulletPoints)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
+                <strong>{{mostBulletPoints[0].allegiance}}: </strong> {{mostBulletPoints[0].amount}} bulletpoints
+                <br />
+                <strong>{{mostBulletPoints[1].allegiance}}: </strong> {{mostBulletPoints[1].amount}} bulletpoints
                 <br />
             </div>
         </section>
@@ -482,15 +548,32 @@
                         break;
                 }
             },
-            chartData(queryResponse) {
-               let total = 0;
-               total = queryResponse.reduce((previous, current) => previous + current.amount, 0);
-               return queryResponse.map(function(allegiance){
-                   console.log(isNaN(total / allegiance.amount))
-                   if(total === 0 && allegiance.amount === 0) return [allegiance.allegiance, .5]
-                   else if(isNaN(total / allegiance.amount)) return [allegiance.allegiance, .3]
-                   else return [allegiance.allegiance, total / allegiance.amount]
-               })
+            chartData(queryResponse, analyze) {
+
+                const parsedResponse = queryResponse.map(function (allegiance) {
+
+                    const total = queryResponse.reduce((previous, current) => {
+                        //If the the amount is votes, then the vote tally may be negative
+                        //This would call division of 0 below, leaving only one amount of 0 being sent into the pie chart
+                        //Whereas in reality the number represents 100% (or 1 in numerical form) of the votes
+                        //So don't don't include negative amounts in the total
+                        if (current.amount >= 0) return previous + current.amount;
+                        else return previous;
+                    }, 0);
+
+                    //console.log("total", total, "amount", allegiance.amount)
+                    //If both amounts are 0, then division by 0 would occur below
+                    //When in actuality both amounts equal 50% (or .5 in numerical form) of the total.
+                    if (total === 0 && allegiance.amount === 0) return [allegiance.allegiance, .5]
+                    //If the amount is negative, then return an empty array
+                    //The empy array is removed from the outer array using .filter() below
+                    //You can't represent negative amounts on a Pie Chart
+                    else if (allegiance.amount <= 0) return [];
+
+                    else return [allegiance.allegiance, (allegiance.amount / total).toFixed(2)];
+                }).filter(arrayItem => arrayItem.length > 0);
+
+                return parsedResponse;
             }
         },
         apollo: {
@@ -1280,7 +1363,6 @@
                     query mostRaised($type:String!) {
                         topAllegiances(type: $type) {
                             allegiance
-                            rank
                             amount
                         }
                 }`,
@@ -1301,7 +1383,6 @@
                     query mostInfluence($type:String!) {
                         topAllegiances(type: $type) {
                             allegiance
-                            rank
                             amount
                         }
                 }`,
@@ -1322,7 +1403,6 @@
                     query mostUpvotes($type:String!) {
                         topAllegiances(type: $type) {
                             allegiance
-                            rank
                             amount
                         }
                 }`,
@@ -1343,7 +1423,6 @@
                     query mostOpinions($type:String!) {
                         topAllegiances(type: $type) {
                             allegiance
-                            rank
                             amount
                         }
                 }`,
@@ -1364,7 +1443,6 @@
                     query mostUsers($type:String!) {
                         topAllegiances(type: $type) {
                             allegiance
-                            rank
                             amount
                         }
                 }`,
@@ -1385,7 +1463,6 @@
                     query mostArguments($type:String!) {
                         topAllegiances(type: $type) {
                             allegiance
-                            rank
                             amount
                         }
                 }`,
@@ -1406,7 +1483,6 @@
                     query mostResources($type:String!) {
                         topAllegiances(type: $type) {
                             allegiance
-                            rank
                             amount
                         }
                 }`,
@@ -1427,7 +1503,6 @@
                     query mostBulletPoints($type:String!) {
                         topAllegiances(type: $type) {
                             allegiance
-                            rank
                             amount
                         }
                 }`,

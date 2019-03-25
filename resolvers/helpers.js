@@ -89,7 +89,7 @@ const createInvoice = async (amount, currentUser) => {
     }
 }
 
-const createDonation = async (amount, invoice, currentUser, applicableDocument, otherUserDocument) => {
+const createDonation = async (amount, invoice, currentUser, otherUserDocument, applicableDocument) => {
 
     try {
         const donationObject = {
@@ -100,8 +100,11 @@ const createDonation = async (amount, invoice, currentUser, applicableDocument, 
             createdFor: otherUserDocument._id
         }
 
-        //If the document is a User document, then it's an accruing donation towards influence weight
-        if (applicableDocument.username) {
+        console.log(applicableDocument)
+
+        //If the donation is for influence, then the applicableDocument parameter will be undefined
+        //So, it's known that it is an accruing donation meant to be contributed towards the user's influence weight
+        if (applicableDocument === undefined) {
             donationObject.accruing = true;
             donationObject.onModel = 'User';
 
@@ -111,11 +114,25 @@ const createDonation = async (amount, invoice, currentUser, applicableDocument, 
             donationObject.preBonusAmount = Number(amount);
             donationObject.amount = amount * (donationObject.bonusPercentage + 1);
 
-        } else {
-            //Document ID is only assigned for non-accruing donations (IE. purchases of items, subscriptions, etc)
-            //TODO: create extra conditional on fields of applicableDocument to see what type it is. For now, we assume it's a certificate
+        } 
+        
+        //Else If it's a donation to an open source project
+        //These types of donations are only made by the Administrator on behalf of BitcoinMaximalism.com
+        else if (applicableDocument.description !== undefined) {
+            donationObject.onModel = 'Project';
+            donationObject.documentID = applicableDocument._id;
+            donationObject.metaSlug = applicableDocument.metaSlug;
+            donationObject.accruing = false;
+            donationObject.amount = amount;
+            donationObject.preBonusAmount = amount;
+            donationObject.paid = true;
+        }
+
+        //Else If a certificate was purchased
+        //Not currently implemented..
+        else if (applicableDocument.certificateType !== undefined) {        
             donationObject.onModel = 'Certificate';
-            donationObject.documentID = otherUserDocument._id;
+            donationObject.documentID = applicableDocument._id;
             donationObject.accruing = false;
             donationObject.amount = amount;
         }

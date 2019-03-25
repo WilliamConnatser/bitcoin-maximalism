@@ -215,7 +215,6 @@ type MostReferrals {
 
 type TopAllegiance {
     allegiance: String!
-    rank: Int!
     amount: Float!
 }
 
@@ -273,7 +272,7 @@ type Mutation {
 
     submitOpinion(onModel: String!, documentID: ID!, opinion: String!): Float
     submitVote(onModel: String!, documentID: ID!, upVote: Boolean!): Float
-    submitDonation(amount: String!, userID: ID!): ID
+    submitDonation(amount: String!, userID: ID!, onModel: String, documentID: ID): ID
 
     submitBulletPoint(metaSlug: String!, slug: String!, content: String!): ID
     submitResource(metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): ID

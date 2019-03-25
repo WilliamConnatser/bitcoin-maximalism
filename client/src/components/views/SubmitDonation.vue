@@ -5,7 +5,8 @@
         <div class="medium-margin">
             <label>Username</label>
             <select v-if="currentUser && allUsernames" v-model="userID">
-                <option v-for="user in allUsernames" :key="user._id" :value="user._id" :selected="sameUser(user.username)">
+                <option v-for="user in allUsernames" :key="user._id" :value="user._id"
+                    :selected="sameUser(user.username)">
                     {{user.username}}
                 </option>
             </select>
@@ -16,22 +17,37 @@
                 boosting your own influence, the donation would boost their influence.
             </p>
         </div>
-
-        <label>Donation Amount (BTC)</label>
-        <input type="text" v-model="donationAmount">
-        <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>
-        <p class="extra-small-text">
-            The influence of your upvotes and downvotes will change proportionally with the
-            amount you've donated. Features may be implemented (or deprecated) in the future which reduce (or
-            increase) the weight of your upvotes or downvotes. All donations are non-binding, no products or
-            services are guaranteed in lieu of a donation, and absolutely no refunds will be performed. Please
-            refer to our Privacy Policy and Terms of Service for more details.
-        </p>
+        <div class="medium-margin">
+            <label>Donation Amount (BTC)</label>
+            <input type="text" v-model="donationAmount">
+            <div>{{donationAmount}} BTC is about {{computedAmount}} USD</div>
+            <p class="extra-small-text">
+                The influence of your upvotes and downvotes will change proportionally with the
+                amount you've donated. Features may be implemented (or deprecated) in the future which reduce (or
+                increase) the weight of your upvotes or downvotes. All donations are non-binding, no products or
+                services are guaranteed in lieu of a donation, and absolutely no refunds will be performed. Please
+                refer to our Privacy Policy and Terms of Service for more details.
+            </p>
+        </div>
+        <div v-if="currentUser && currentUser.admin" class="medium-margin">
+            <strong>
+                All Administrator-created donations will be automatically marked as paid. Donations created by the
+                administrator are for documenting when The Site makes a donation to an open source project. Which
+                project is The Site donating to??
+            </strong>
+            <label>Choose Project</label>
+            <select v-if="allProjects" v-model="projectID">
+                <option v-for="project in allProjects" :key="project._id" :value="project._id"
+                    :selected="project._id === projectID">
+                    {{project.metaSlug}} - {{project.title}}
+                </option>
+            </select>
+        </div>
         <div class="medium-margin">
             I have read and agree to the <router-link to="/terms" class="small-uppercase-link">Terms</router-link> &amp;
             <router-link to="/privacy" class="small-uppercase-link">Privacy Policy</router-link>
             <label @click="toggleCheck()" for="agree" class="checkbox">
-                <input type="checkbox" name="agree" class=".checkbox">
+                <input type="checkbox" name="agree" class="checkbox">
                 <font-awesome-icon v-if="!checked" icon="square" title="Unchecked" class="checkbox__icon" />
                 <font-awesome-icon v-else icon="check-square" title="Checked" class="checkbox__icon" />
             </label>
@@ -51,6 +67,8 @@
             return {
                 currentUser: null,
                 allUsernames: null,
+                allProjects: null,
+                projectID: null,
                 userID: null,
                 cryptoValue: 0,
                 donationAmount: 0,
@@ -80,7 +98,7 @@
                             }
                         }]
                     });
-                } else if (!this.validUser(this.userID)) {
+                } else if (!this.currentUser.admin && !this.validUser(this.userID)) {
                     this.$toasted.show('An invalid user was submitted', {
                         duration: 5000,
                         position: 'bottom-center',
@@ -94,7 +112,8 @@
                             }
                         }]
                     });
-                } else if (this.currentUser._id !== this.userID && !this.confirmedDifferentUser) {
+                } else if (!this.currentUser.admin && this.currentUser._id !== this.userID && !this
+                    .confirmedDifferentUser) {
                     this.$toasted.show(
                         'You are making a donation on behalf of a different user. Are you sure you want to do this?', {
                             duration: null,
@@ -116,19 +135,46 @@
                                 }
                             }]
                         });
+                } else if (this.currentUser.admin && !this.projectID) {
+                    this.$toasted.show(
+                        'You must pick a project to donate to', {
+                            duration: null,
+                            position: 'bottom-center',
+                            fullWidth: true,
+                            fitToScreen: true,
+                            singleton: true,
+                            action: [{
+                                text: 'Cancel',
+                                onClick: (e, toastObject) => {
+                                    toastObject.goAway(0);
+                                }
+                            }]
+                        });
                 } else if (this.validAmount(this.donationAmount)) {
+
+                    let variables;
+                    if (!this.currentUser.admin) {
+                        variables = {
+                            amount: this.donationAmount,
+                            userID: this.userID
+                        }
+                    } else {
+                        variables = {
+                            amount: this.donationAmount,
+                            userID: this.currentUser._id,
+                            onModel: 'Poject',
+                            documentID: this.projectID
+                        }
+                    }
 
                     //GraphQL Mutation
                     this.$apollo.mutate({
                         mutation: gql `
-                            mutation submitDonation($amount: String!, $userID: ID!){
-                                submitDonation(amount: $amount, userID: $userID)
+                            mutation submitDonation($amount: String!, $userID: ID!, $onModel: String, $documentID: ID){
+                                submitDonation(amount: $amount, userID: $userID, onModel: $onModel, documentID: $documentID)
                             }
                         `,
-                        variables: {
-                            amount: this.donationAmount,
-                            userID: this.userID
-                        }
+                        variables
                     }).then(async ({
                         data
                     }) => {
@@ -258,6 +304,7 @@
                         currentUser {
                             _id
                             username
+                            admin
                             emailVerified
                         }
                     }
@@ -287,6 +334,24 @@
                 `,
                 variables: {
                     ticker: 'BTC'
+                }
+            },
+            allProjects: {
+                query: gql `
+                    query allProjects {
+                        allProjects {
+                            _id
+                            metaSlug
+                            title
+                        }
+                    }
+                `,
+                skip() {
+                    if (this.currentUser && this.currentUser.admin) {
+                        return false;
+                    } else {
+                        return true;
+                    }
                 }
             }
         }

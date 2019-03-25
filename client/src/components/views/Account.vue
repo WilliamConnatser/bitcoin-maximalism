@@ -11,9 +11,10 @@
                 <div>
                     Influence: {{currentUser.accruedDonations | formatBitcoinAmount}}
                 </div>
-                <div v-if="currentUser.maximalist === undefined || changeAllegiance" class="medium-margin-vertical">
+                
+                <div v-if="currentUser.maximalist === null || changeAllegiance" class="medium-margin-vertical">
                     
-                    <div v-if="currentUser.maximalist === undefined">
+                    <div v-if="currentUser.maximalist === null">
                         You have not yet sworn allegiance to either faction. Your ancestors would be ashamed...
                     </div>
                     <div v-else>

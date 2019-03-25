@@ -6,7 +6,6 @@ const {
 
 //Resolver helpers
 const {
-    sortByVote,
     parseError
 } = require('../helpers');
 
@@ -38,16 +37,13 @@ module.exports = async (_, {
             case 'mostRaised':
 
                 const donations = await Donation.find({
-                    paid: true
-                })
-                    .populate({
-                        path: 'createdBy',
-                        model: 'User'
+                        paid: true
                     });
 
                 donations.forEach(donation => {
                     if (donation.onModel === 'Project') {
-                        if (donation.metaSlug.maximalist) {
+                        console.log(donation)
+                        if (donation.metaSlug === "protagonistic") {
                             proCount += donation.preBonusAmount;
                         } else {
                             antCount += donation.preBonusAmount;
@@ -185,31 +181,16 @@ module.exports = async (_, {
                 break;
         }
 
-        if (proCount > antCount) {
-            return [{
-                    allegiance: "protagonistic",
-                    rank: 1,
-                    amount: proCount
-                },
-                {
-                    allegiance: "antagonistic",
-                    rank: 2,
-                    amount: antCount
-                }
-            ]
-        } else {
-            return [{
-                    allegiance: "antagonistic",
-                    rank: 1,
-                    amount: antCount
-                },
-                {
-                    allegiance: "protagonistic",
-                    rank: 2,
-                    amount: proCount
-                }
-            ]
-        }
+
+        return [{
+                allegiance: "Maximalist",
+                amount: proCount
+            },
+            {
+                allegiance: "Multicoinist",
+                amount: antCount
+            }
+        ]
 
     } catch (err) {
         console.log(err)

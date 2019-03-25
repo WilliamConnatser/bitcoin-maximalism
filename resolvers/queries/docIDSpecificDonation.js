@@ -10,7 +10,7 @@ const {
     parseError
 } = require('../helpers');
 
-module.export = async (_, {
+module.exports = async (_, {
     _id
 }, {
     Donation,
@@ -37,7 +37,6 @@ module.export = async (_, {
         if (!donation) throw new UserInputError('invalid-id');
         if (donation.createdBy._id.toString() !== currentUser._id &&
             donation.createdFor._id.toString() !== currentUser._id) throw new AuthenticationError('unauthorized');
-
         else return donation;
 
     } catch (err) {
