@@ -346,9 +346,11 @@
                 </h2>
                 (total donated)
                 <pie-chart :data="chartData(mostInfluence)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
-                <strong>{{mostInfluence[0].allegiance}}: </strong> {{mostInfluence[0].amount | formatBitcoinAmount}} satoshis
+                <strong>{{mostInfluence[0].allegiance}}: </strong> {{mostInfluence[0].amount | formatBitcoinAmount}}
+                satoshis
                 <br />
-                <strong>{{mostInfluence[1].allegiance}}: </strong> {{mostInfluence[1].amount | formatBitcoinAmount}} satoshis
+                <strong>{{mostInfluence[1].allegiance}}: </strong> {{mostInfluence[1].amount | formatBitcoinAmount}}
+                satoshis
                 <br />
             </div>
             <div v-if="mostUpvotes" class="medium-margin">
@@ -357,16 +359,18 @@
                 </h2>
                 (includes upvotes on arguments, bulletpoints, resources, projects, and opinions)
                 <pie-chart :data="chartData(mostUpvotes)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
-                <strong>{{mostUpvotes[0].allegiance}}: </strong> {{mostUpvotes[0].amount | formatBitcoinAmount}} satoshis
+                <strong>{{mostUpvotes[0].allegiance}}: </strong> {{mostUpvotes[0].amount | formatBitcoinAmount}}
+                satoshis
                 <br />
-                <strong>{{mostUpvotes[1].allegiance}}: </strong> {{mostUpvotes[1].amount | formatBitcoinAmount}} satoshis
+                <strong>{{mostUpvotes[1].allegiance}}: </strong> {{mostUpvotes[1].amount | formatBitcoinAmount}}
+                satoshis
                 <br />
             </div>
             <div v-if="mostOpinions" class="medium-margin">
                 <h2>
                     Most Opinions
                 </h2>
-                (includes upvotes on arguments, bulletpoints, resources, and projects)
+                (includes opinions on arguments, bulletpoints, resources, and projects)
                 <pie-chart :data="chartData(mostOpinions)" :colors="['#41b883', '#fdfdfd']"></pie-chart>
                 <strong>{{mostOpinions[0].allegiance}}: </strong> {{mostOpinions[0].amount}} opinions
                 <br />
@@ -488,6 +492,18 @@
                 }
 
                 return leaderboardsCategory;
+            },
+            opinions() {
+                return [{
+                        recentOpinions: this.recentOpinions
+                    },
+                    {
+                        mostUpvotedOpinions: this.mostUpvotedOpinions
+                    },
+                    {
+                        mostDownvotedOpinions: this.mostDownvotedOpinions
+                    }
+                ]
             }
         },
         methods: {
@@ -561,7 +577,6 @@
                         else return previous;
                     }, 0);
 
-                    //console.log("total", total, "amount", allegiance.amount)
                     //If both amounts are 0, then division by 0 would occur below
                     //When in actuality both amounts equal 50% (or .5 in numerical form) of the total.
                     if (total === 0 && allegiance.amount === 0) return [allegiance.allegiance, .5]
@@ -570,7 +585,7 @@
                     //You can't represent negative amounts on a Pie Chart
                     else if (allegiance.amount <= 0) return [];
 
-                    else return [allegiance.allegiance, (allegiance.amount / total).toFixed(2)];                    
+                    else return [allegiance.allegiance, (allegiance.amount / total).toFixed(2)];
                 }).filter(arrayItem => arrayItem.length > 0);
 
                 return parsedResponse;

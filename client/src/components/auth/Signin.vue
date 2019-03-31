@@ -192,6 +192,19 @@
                                 }
                                 approvalCommentary
                             }
+                            projects {
+                                _id
+                                metaSlug
+                                title
+                                link
+                                description
+                                approved
+                                approvalCommentary
+                                approvedBy {
+                                    _id
+                                    username
+                                }
+                            }
                         }
                     }
                 `

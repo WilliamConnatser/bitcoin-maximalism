@@ -5,12 +5,12 @@
             <section>
                 <div>
                     <h1 class="heading">account panel</h1>
-                    <router-link to="/submit-donation"><button>Add Influence</button></router-link>
-                    <button @click="signoutUser">Signout</button>
+                    <router-link to="/submit-donation"><button class="large-button">Add Influence</button></router-link>
+                    <button @click="signoutUser" class="large-button">Signout</button>
                 </div>
-                <div>
+                <h2>
                     Influence: {{currentUser.accruedDonations | formatBitcoinAmount}}
-                </div>
+                </h2>
                 
                 <div v-if="currentUser.maximalist === null || changeAllegiance" class="medium-margin-vertical">
                     
@@ -30,7 +30,7 @@
                 <div v-else class="medium-margin-vertical">
                     Allegiance: {{getAllegiance}}
                     <br/>
-                    <button @click="changeAllegiance = true">
+                    <button @click="changeAllegiance = true" class="large-button">
                         Change Allegiance
                     </button>
                 </div>
@@ -51,324 +51,41 @@
                 <button @click="toggleHistoryTab('Rhetoric')" :class="tabButtonStyle('Rhetoric')">Arguments</button>
                 <button @click="toggleHistoryTab('BulletPoint')" :class="tabButtonStyle('BulletPoint')">Bulletpoints</button>
                 <button @click="toggleHistoryTab('Resource')" :class="tabButtonStyle('Resource')">Resources</button>
+                <br/>
+                <button @click="toggleHistoryTab('Project')" :class="tabButtonStyle('Project')">Projects</button>
             </div>
             <h2 v-if="$apollo.loading" class="loading">Loading...</h2>
 
             <div v-if="historyTab === 'Donation'" class="medium-margin">
-                <h2>Donations</h2>
-                <div v-if="currentUser.donations.length>0">
-                    <ul v-for="donation in currentUser.donations" :key="donation._id" class="list">
-                        <li>
-                            <strong>{{donation.dateCreated | formatDate}}</strong>
-                            <br />
-                            Donation For: {{donationFor(donation.accruing, donation.onModel)}}
-                            <br />
-                            Status: <strong>{{status(donation)}}</strong>
-                            <br />
-
-                            <div v-if="!donation.active && !donation.paid">
-                                This invoice expired without payment.
-                            </div>
-                            <div v-else-if="donation.paid">
-                                This donation was paid!
-                            </div>
-
-                            <router-link :to="statusLink(donation)" class="uppercase small-uppercase-link">
-                                Info
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else class="small-text medium-margin">
-                    You haven't made any donations yet.
-                </div>
+                <AccountTab title="Donations" :objectArray="currentUser.donations" :currentUser="currentUser" />
             </div>
 
             <div v-if="historyTab === 'Opinion'" class="medium-margin">
-                <h2>Opinions</h2>
-                <div v-if="currentUser.opinions.length>0">
-                    <ul v-for="opinion in currentUser.opinions" :key="opinion._id" class="list">
-                        <li>
-                            <strong>{{opinion.dateCreated | formatDate}}</strong>
-                            <br />
-                            Influence:
-                            <span v-if="calculateVotes(opinion.votes)>0">
-                                + {{calculateVotes(opinion.votes) | formatBitcoinAmount}}
-                            </span>
-                            <span v-else-if="calculateVotes(opinion.votes)<0">
-                                - {{calculateVotes(opinion.votes)*-1 | formatBitcoinAmount}}
-                            </span>
-                            <span v-else-if="calculateVotes(opinion.votes)===0">
-                                {{calculateVotes(opinion.votes) | formatBitcoinAmount}}
-                            </span>
-                            <br />
-                            {{opinion.opinion}}
-                            <br />
-
-                            <router-link :to="argumentLink(opinion.metaSlug, opinion.slug)" class="small-uppercase-link">
-                                {{argumentLink(opinion.metaSlug,opinion.slug)}}
-                            </router-link>
-
-                            <div v-if="opinion.approvalCommentary">
-                                <div v-if="!opinion.active">
-                                    Removed From Website
-                                </div>
-                                <div v-else>
-                                    Edited By Administrators
-                                </div>
-                                Reason: {{opinion.approvalCommentary}}
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else class="small-text medium-margin">
-                    You haven't submitted any opinions yet.
-                </div>
+                <AccountTab title="Opinions" :objectArray="currentUser.opinions" :currentUser="currentUser" />
             </div>
 
             <div v-if="historyTab === 'Vote'" class="medium-margin">
-                <h2>Votes</h2>
-                <div v-if="currentUser.votes.length>0">
-                    <ul v-for="vote in currentUser.votes" :key="vote._id" class="list">
-                        <li>
-                            <strong>{{vote.dateCreated | formatDate}}</strong>
-                            <br />
-
-                            <span v-if="vote.upVote">Upvote +{{currentUser.accruedDonations | formatBitcoinAmount}}</span>
-                            <span v-else>Downvote -{{currentUser.accruedDonations | formatBitcoinAmount}}</span>
-                            <br />
-
-                            <router-link :to="argumentLink(vote.metaSlug, vote.slug)" class="small-uppercase-link">
-                                {{argumentLink(vote.metaSlug,vote.slug)}}
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else class="small-text medium-margin">
-                    You haven't submitted any votes yet.
-                </div>
+                <AccountTab title="Votes" :objectArray="currentUser.votes" :currentUser="currentUser" />
             </div>
 
             <div v-if="historyTab === 'Rhetoric'" class="medium-margin">
-                <h2>Arguments</h2>
-                <div v-if="currentUser.rhetoric.length>0">
-                    <ul v-for="argument in currentUser.rhetoric" :key="argument._id" class="list">
-                        <li>
-                            <strong>{{argument.dateCreated | formatDate}}</strong>
-                            <br />
-                            {{argument.title}}
-
-                            <div v-if="argument.dateApproved" class="small-text medium-margin">
-                                <div v-if="argument.approved">
-                                    This argument was approved on {{argument.dateApproved | formatDate}}
-                                    <br />
-                                    <router-link :to="argumentLink(argument.metaSlug, argument.slug)" class="small-uppercase-link">
-                                        {{argumentLink(argument.metaSlug,argument.slug)}}
-                                    </router-link>
-                                </div>
-                                <div v-else>
-                                    This argument was denied approval on {{argument.dateApproved | formatDate}}
-                                    <br />
-                                    Reason: {{argument.approvalCommentary}}
-                                </div>
-                            </div>
-                            <div v-else class="small-text medium-margin">
-                                This argument has not been approved yet.
-                            </div>
-                            <router-link :to="submissionStatusLink(argument)" class="small-uppercase-link">
-                                Reference Link
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else class="small-text medium-margin">
-                    You haven't submitted any arguments yet.
-                </div>
-                <h2 v-if="currentUser.admin">Admin - Unapproved Arguments</h2>
-                <div v-if="unapprovedRhetoric.length>0">
-                    <ul v-for="argument in unapprovedRhetoric" :key="argument._id" class="list">
-                        <li>
-                            <strong>{{argument.dateCreated | formatDate}}</strong>
-                            <br />
-                            {{argument.title}}
-
-                            <div v-if="argument.dateApproved">
-                                <div v-if="argument.approved">
-                                    This argument was approved on {{argument.dateApproved | formatDate}}
-                                    <br />
-                                    <router-link :to="argumentLink(argument.metaSlug, argument.slug)" class="small-uppercase-link">
-                                        {{argumentLink(argument.metaSlug,argument.slug)}}
-                                    </router-link>
-                                </div>
-                                <div v-else>
-                                    This argument was denied approval on {{argument.dateApproved | formatDate}}
-                                    <br />
-                                    Reason Given: {{argument.approvalCommentary}}
-                                </div>
-                            </div>
-                            <div v-else class="small-text medium-margin">
-                                This argument has not been approved yet.
-                            </div>
-                            <router-link :to="submissionStatusLink(argument)" class="small-uppercase-link">
-                                Reference Link
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else-if="currentUser.admin" class="small-text medium-margin">
-                    There aren't any unapproved arguments yet.
-                </div>
+                <AccountTab title="Arguments" :objectArray="currentUser.rhetoric" :currentUser="currentUser" />
+                <AccountTab v-if="currentUser.admin" title="Unapproved Arguments" :objectArray="unapprovedRhetoric" :currentUser="currentUser" />
             </div>
 
             <div v-if="historyTab === 'BulletPoint'" class="medium-margin">
-                <h2>BulletPoints</h2>
-                <div v-if="currentUser.bulletPoints.length>0">
-                    <ul v-for="bulletPoint in currentUser.bulletPoints" :key="bulletPoint._id" class="list">
-                        <li>
-                            <strong>{{bulletPoint.dateCreated | formatDate}}</strong>
-                            <br />
-                            {{bulletPoint.content}}
-
-                            <div v-if="bulletPoint.dateApproved">
-                                <div v-if="bulletPoint.approved">
-                                    This bulletpoint was approved on {{bulletPoint.dateApproved | formatDate}}
-                                    <br />
-                                    <router-link :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)" class="small-uppercase-link">
-                                        {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
-                                    </router-link>
-                                </div>
-                                <div v-else>
-                                    This bulletpoint was denied approval on {{bulletPoint.dateApproved | formatDate}}
-                                    <br />
-                                    Reason Given: {{bulletPoint.approvalCommentary}}
-                                </div>
-                            </div>
-                            <div v-else class="small-text medium-margin">
-                                This bulletpoint has not been approved yet.
-                            </div>
-                            <router-link :to="submissionStatusLink(bulletPoint)" class="small-uppercase-link">
-                                Reference Link
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else class="small-text medium-margin">
-                    You haven't submitted any bulletpoints yet.
-                </div>
-                <h2 v-if="currentUser.admin">Admin - Unapproved BulletPoints</h2>
-                <div v-if="unapprovedBulletPoints.length>0">
-                    <ul v-for="bulletPoint in unapprovedBulletPoints" :key="bulletPoint._id" class="list">
-                        <li>
-                            <strong>{{bulletPoint.dateCreated | formatDate}}</strong>
-                            <br />
-                            {{bulletPoint.content}}
-
-                            <div v-if="bulletPoint.dateApproved">
-                                <div v-if="bulletPoint.approved">
-                                    This bulletpoint was approved on {{bulletPoint.dateApproved | formatDate}}
-                                    <br />
-                                    <router-link :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)" class="small-uppercase-link">
-                                        {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
-                                    </router-link>
-                                </div>
-                                <div v-else>
-                                    This bulletpoint was denied approval on {{bulletPoint.dateApproved | formatDate}}
-                                    <br />
-                                    Reason Given: {{bulletPoint.approvalCommentary}}
-                                </div>
-                            </div>
-                            <div v-else class="small-text medium-margin">
-                                This bulletpoint has not been approved yet.
-                            </div>
-                            <router-link :to="submissionStatusLink(bulletPoint)" class="small-uppercase-link">
-                                Reference Link
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else-if="currentUser.admin" class="small-text medium-margin">
-                    There are no unapproved bulletpoints yet.
-                </div>
+                <AccountTab title="BulletPoints" :objectArray="currentUser.bulletPoints" :currentUser="currentUser" />
+                <AccountTab v-if="currentUser.admin" title="Unapproved BulletPoint" :objectArray="unapprovedBulletPoints" :currentUser="currentUser" />
             </div>
 
             <div v-if="historyTab === 'Resource'" class="medium-margin">
-                <h2>Resources</h2>
-                <div v-if="currentUser.resources.length>0">
-                    <ul v-for="resource in currentUser.resources" :key="resource._id" class="list">
-                        <li>
-                            <strong>{{resource.dateCreated | formatDate}}</strong>
-                            <br />
-                            <a :href="resource.link" class="unstyled-link">
-                                <span class="media-type">
-                                    { {{resource.media}} }
-                                </span>
-                                {{resource.title}}
-                            </a>
+                <AccountTab title="Resources" :objectArray="currentUser.resources" :currentUser="currentUser" />
+                <AccountTab v-if="currentUser.admin" title="Unapproved Resources" :objectArray="unapprovedResources" :currentUser="currentUser" />
+            </div>
 
-                            <div v-if="resource.dateApproved">
-                                <div v-if="resource.approved">
-                                    This resource was approved on {{resource.dateApproved | formatDate}}
-                                    <br />
-                                    <router-link :to="argumentLink(resource.metaSlug, resource.slug)" class="small-uppercase-link">
-                                        {{argumentLink(resource.metaSlug,resource.slug)}}
-                                    </router-link>
-                                </div>
-                                <div v-else>
-                                    This resource was denied approval on {{resource.dateApproved | formatDate}}
-                                    <br />
-                                    Reason Given: {{resource.approvalCommentary}}
-                                </div>
-                            </div>
-                            <div v-else class="small-text medium-margin">
-                                This resource has not been approved yet.
-                            </div>
-                            <router-link :to="submissionStatusLink(resource)" class="small-uppercase-link">
-                                Reference Link
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else class="small-text medium-margin">
-                    You haven't submitted any resources yet.
-                </div>
-                <h2 v-if="currentUser.admin">Admin - Unapproved Resources</h2>
-                <div v-if="unapprovedResources.length>0">
-                    <ul v-for="resource in unapprovedResources" :key="resource._id" class="list">
-                        <li>
-                            <strong>{{resource.dateCreated | formatDate}}</strong>
-                            <br />
-                            <a :href="resource.link" class="unstyled-link">
-                                <span class="media-type">
-                                    { {{resource.media}} }
-                                </span>
-                                {{resource.title}}
-                            </a>
-                            <div v-if="resource.dateApproved">
-                                <div v-if="resource.approved">
-                                    This resource was approved on {{resource.dateApproved | formatDate}}
-                                    <br />
-                                    <router-link :to="argumentLink(resource.metaSlug, resource.slug)" class="small-uppercase-link">
-                                        {{argumentLink(resource.metaSlug,resource.slug)}}
-                                    </router-link>
-                                </div>
-                                <div v-else>
-                                    This resource was denied approval on {{resource.dateApproved | formatDate}}
-                                    <br />
-                                    Reason Given: {{resource.approvalCommentary}}
-                                </div>
-                            </div>
-                            <div v-else class="small-text medium-margin">
-                                This resource has not been approved yet.
-                            </div>
-                            <router-link :to="submissionStatusLink(resource)" class="small-uppercase-link">
-                                Reference Link
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else-if="currentUser && currentUser.admin" class="small-text medium-margin">
-                    There aren't any unapproved resources.
-                </div>
+            <div v-if="historyTab === 'Project'" class="medium-margin">
+                <AccountTab title="Projects" :objectArray="currentUser.projects" :currentUser="currentUser" />
+                <AccountTab v-if="currentUser.admin" title="Unapproved Projects" :objectArray="unapprovedProjects" :currentUser="currentUser" />
             </div>
 
             <div v-show="currentUser.admin">
@@ -380,7 +97,8 @@
 
 <script>
     import Login from '../auth/Login';
-    import SocialIcons from '../utility/SocialIcons'
+    import SocialIcons from '../utility/SocialIcons';
+    import AccountTab from '../utility/AccountTab';
     import {
         defaultClient as apolloClient
     } from '../../apolloProvider';
@@ -394,6 +112,7 @@
                 unapprovedRhetoric: [],
                 unapprovedBulletPoints: [],
                 unapprovedResources: [],
+                unapprovedProjects: [],
                 approved: null,
                 approvalCommentary: [],
                 historyTab: 'Donation',
@@ -405,7 +124,8 @@
         },
         components: {
             Login,
-            SocialIcons
+            SocialIcons,
+            AccountTab
         },
         computed: {
             refLink() {
@@ -420,36 +140,11 @@
             }
         },
         methods: {
-            statusLink(donation) {
-                return `/donation-status/${donation._id}`;
-            },
-            argumentLink(metaSlug, slug) {
-                if (slug !== null) {
-                    return `/arguments/${metaSlug}/${slug}`;
-                } else {
-                    return `/arguments/${metaSlug}`;
-                }
-            },
-            submissionStatusLink(submission) {
-                if (submission.__typename === 'Rhetoric') return `/submission-status/argument/${submission._id}`;
-                if (submission.__typename === 'Resource') return `/submission-status/resource/${submission._id}`;
-                if (submission.__typename === 'BulletPoint') return `/submission-status/bulletpoint/${submission._id}`;
-                else return `/404`;
-            },
             signoutUser() {
                 //Remove token in localStorage
                 localStorage.setItem("token", "");
                 //End Apollo Client Session
                 apolloClient.resetStore();
-            },
-            status(donation) {
-                if (!donation.active) return 'Inactive'
-                if (!donation.paid) return 'Unpaid'
-                if (donation.paid) return 'Paid'
-            },
-            donationFor(accruing, onModel) {
-                if (accruing) return 'Influence';
-                else if (onModel === 'Certificate') return 'Certificate';
             },
             toggleHistoryTab(tabName) {
                 this.historyTab = tabName;
@@ -464,14 +159,6 @@
                 } else {
                     return "large-button"
                 }
-            },
-            calculateVotes(voteArray) {
-                let cumulativeVote = 0;
-                voteArray.forEach(vote => {
-                    if (vote.upVote) cumulativeVote += vote.createdBy.accruedDonations;
-                    else cumulativeVote -= vote.createdBy.accruedDonations;
-                });
-                return cumulativeVote;
             },
             validAllegiance(allegiance) {
                 return typeof allegiance === 'boolean' ? true : false;
@@ -604,6 +291,19 @@
                                 }
                                 approvalCommentary
                             }
+                            projects {
+                                _id
+                                metaSlug
+                                title
+                                link
+                                description
+                                approved
+                                approvalCommentary
+                                approvedBy {
+                                    _id
+                                    username
+                                }
+                            }
                         }
                     }
                 `
@@ -671,6 +371,34 @@
                             username
                         }
                         approvalCommentary
+                    }
+                }`,
+                skip() {
+                    if (this.currentUser && this.currentUser.admin) return false;
+                    else return true;
+                }
+            },
+            unapprovedProjects: {
+                query: gql `query unapprovedProjects {
+                    unapprovedProjects {
+                        _id
+                        metaSlug
+                        title
+                        link
+                        description
+                        votes {
+                            _id
+                            upVote
+                            createdBy {
+                                _id
+                                username
+                                accruedDonations
+                            }
+                        }
+                        donations {
+                            paid
+                            preBonusAmount
+                        }
                     }
                 }`,
                 skip() {

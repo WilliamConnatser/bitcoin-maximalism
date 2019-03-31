@@ -13,19 +13,19 @@ module.exports = async (_, args, {
     currentUser
 }) => {
     try {
-        //Return null if no user is logged in
-        //currentUser object is injected into the Apollo GraphQL Context
-        //It will be populated with User Data if they can provide a valid JWT token
+        // Return null if no user is logged in currentUser object is injected into the
+        // Apollo GraphQL Context It will be populated with User Data if they can
+        // provide a valid JWT token
         if (!currentUser) {
             return null;
         }
 
         //Populate and sanitize user document
         const user = await User.findOne({
-                _id: currentUser._id
-            },
-            //Exclude the document's password property
-            '-password')
+                    _id: currentUser._id
+                },
+                //Exclude the document's password property
+                '-password')
             .populate({
                 path: 'donations',
                 model: 'Donation',
@@ -132,11 +132,27 @@ module.exports = async (_, args, {
                     }
                 }
             })
+            .populate({
+                path: 'projects',
+                model: 'Project',
+                populate: {
+                    path: 'approvedBy',
+                    model: 'User',
+                    //Sanitize user document
+                    select: '_id username'
+                },
+                options: {
+                    sort: {
+                        'dateCreated': 'descending'
+                    }
+                }
+            });
 
         //Return User Document
         return user;
 
     } catch (err) {
+        console.log(err)
         throw new ApolloError(parseError(err.message, 'An unknown error occurred while fetching this user'));
     }
 }
