@@ -136,10 +136,17 @@ const startup = async models => {
     const users = await models.User.find({}); 
     users.forEach(function(user) {
         if(user.projects === undefined) {
-            console.log("adding projects array to", user.username)
+            console.log("adding projects array to", user.username);
             user.projects = [];
             user.save();
         }
+    });
+
+    const opinions = await models.Opinion.find({});
+    opinions.forEach(function(opinion) {
+        opinion.set('censored', null);
+        opinion.active = true;
+        opinion.save();
     });
 }
 

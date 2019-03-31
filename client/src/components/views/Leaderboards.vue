@@ -548,7 +548,7 @@
                         break;
                 }
             },
-            chartData(queryResponse, analyze) {
+            chartData(queryResponse) {
 
                 const parsedResponse = queryResponse.map(function (allegiance) {
 
@@ -570,7 +570,7 @@
                     //You can't represent negative amounts on a Pie Chart
                     else if (allegiance.amount <= 0) return [];
 
-                    else return [allegiance.allegiance, (allegiance.amount / total).toFixed(2)];
+                    else return [allegiance.allegiance, (allegiance.amount / total).toFixed(2)];                    
                 }).filter(arrayItem => arrayItem.length > 0);
 
                 return parsedResponse;
@@ -1191,6 +1191,7 @@
                             }
                             donations {
                                 preBonusAmount
+                                paid
                             }
                         }
                     }
@@ -1229,6 +1230,7 @@
                             }
                             donations {
                                 preBonusAmount
+                                paid
                             }
                         }
                     }
@@ -1267,6 +1269,7 @@
                             }
                             donations {
                                 preBonusAmount
+                                paid
                             }
                         }
                 }`,
@@ -1304,6 +1307,7 @@
                             }
                             donations {
                                 preBonusAmount
+                                paid
                             }
                         }
                 }`,

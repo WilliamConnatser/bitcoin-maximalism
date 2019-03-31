@@ -30,7 +30,6 @@ module.exports = async (_, {
         if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
         if (opinion.length > 280) throw new UserInputError('opinion-length');
         if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric' && onModel !== 'Project') throw new UserInputError('invalid-type');
-        //TODO: Write helper function: ValidateOpinion(opinion)
 
         //Create Invoice, Donation document, and Opinion document
         switch(onModel) {
@@ -72,7 +71,7 @@ module.exports = async (_, {
             documentID,
             opinion,
             approved: true,
-            censored: false,
+            active: true,
             votes: []
         };
 

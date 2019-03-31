@@ -109,14 +109,14 @@
                                 {{argumentLink(opinion.metaSlug,opinion.slug)}}
                             </router-link>
 
-                            <div v-if="opinion.censored">
-                                <div v-if="!approved">
+                            <div v-if="opinion.approvalCommentary">
+                                <div v-if="!opinion.active">
                                     Removed From Website
                                 </div>
                                 <div v-else>
                                     Edited By Administrators
                                 </div>
-                                Reason: {{opinion.censoredCommentary}}
+                                Reason: {{opinion.approvalCommentary}}
                             </div>
                         </li>
                     </ul>
@@ -534,10 +534,11 @@
                                 opinion
                                 onModel
                                 documentID
+                                active
                                 approved
-                                censored
-                                censoredBy
-                                censoredCommentary
+                                approvedBy
+                                dateApproved
+                                approvalCommentary
                                 votes {
                                     _id
                                     dateCreated

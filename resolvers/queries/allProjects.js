@@ -43,6 +43,16 @@ module.exports = allProjects = async (_, {
                     //Sanitize user documents
                     select: '_id username accruedDonations'
                 }
+            })
+            .populate({
+                path: 'donations',
+                model: 'Donation',
+                populate: {
+                    path: 'createdBy',
+                    model: 'User',
+                    //Sanitize user documents
+                    select: '_id username accruedDonations'
+                }
             });
 
         //Return an Array of Projects

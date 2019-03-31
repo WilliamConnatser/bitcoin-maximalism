@@ -35,8 +35,9 @@ const signinUser = require('./mutations/signinUser');
 const signupUser = require('./mutations/signupUser');
 const startPasswordReset = require('./mutations/startPasswordReset');
 const submitBulletPoint = require('./mutations/submitBulletPoint');
-const submitDonation = require('./mutations/submitDonation');    
+const submitDonation = require('./mutations/submitDonation');
 const submitEditBulletPoint = require('./mutations/submitEditBulletPoint');
+const submitEditOpinion = require('./mutations/submitEditOpinion');
 const submitEditProject = require('./mutations/submitEditProject');
 const submitEditResource = require('./mutations/submitEditResource');
 const submitEditRhetoric = require('./mutations/submitEditRhetoric');        
@@ -89,6 +90,7 @@ module.exports = {
         submitBulletPoint,
         submitDonation,    
         submitEditBulletPoint,
+        submitEditOpinion,
         submitEditProject,
         submitEditResource,
         submitEditRhetoric,        

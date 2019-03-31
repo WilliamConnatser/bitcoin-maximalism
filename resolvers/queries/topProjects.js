@@ -41,6 +41,10 @@ module.exports = async (_, {
                         select: '_id username accruedDonations'
                     }
                 })
+                .populate({
+                    path: 'donations',
+                    model: 'Donation'
+                });
 
             //Sort the array and shorten it to the limit
             return await projects.sort((a, b) => {
@@ -68,6 +72,10 @@ module.exports = async (_, {
                         //Sanitize user document
                         select: '_id username accruedDonations'
                     }
+                })
+                .populate({
+                    path: 'donations',
+                    model: 'Donation'
                 });
 
             //Return the sorted array and shorten it accordingly

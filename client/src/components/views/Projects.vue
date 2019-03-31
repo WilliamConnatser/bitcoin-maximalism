@@ -110,6 +110,7 @@
                   }
                 }
                 donations {
+                  paid
                   preBonusAmount
                 }
               }

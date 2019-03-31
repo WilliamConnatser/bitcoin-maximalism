@@ -1,9 +1,11 @@
 <template>
     <div>
-        <form v-if="!submitted" @submit.prevent="submitOpinion()">
+        <form v-if="!submitted" @submit.prevent="submitForm()">
             <div class="medium-margin">
-                <h2>submit opinion</h2>
-                <label>Your Opinion</label>
+                <h2 v-if="opinionDocument === undefined">submit opinion</h2>
+                <h2 v-else>edit opinion</h2>
+
+                <label>the opinion</label>
                 <textarea v-model="opinion" maxlength=280></textarea>
                 <div class="extra-small-text">
                     No foul language or namecalling is allowed. Please remain
@@ -24,16 +26,32 @@
     export default {
         name: "SubmitOpinions",
         props: {
-            arrayItemProp: Object
+            applicableDocument: Object,
+            opinionDocument: Object
         },
         data() {
-            return {
+
+            const dataObject = {
                 currentUser: null,
-                submitted: false,
-                opinion: ""
+                submitted: false
             }
+
+            if (this.opinionDocument === undefined) {
+                dataObject.opinion = "";
+            } else {
+                dataObject.opinion = this.opinionDocument.opinion;
+            }
+
+            return dataObject;
         },
         methods: {
+            submitForm() {
+                if (this.opinionDocument === undefined) {
+                    this.submitOpinion();
+                } else {
+                    this.submitEditOpinion();
+                }
+            },
             submitOpinion: async function () {
                 await this.$apollo.queries.currentUser.refetch();
 
@@ -50,34 +68,99 @@
                             }
                         `,
                         variables: {
-                            documentID: this.arrayItemProp._id,
-                            onModel: this.arrayItemProp.__typename,
+                            documentID: this.applicableDocument._id,
+                            onModel: this.applicableDocument.__typename,
                             opinion: this.opinion
                         }
                     }).then(() => {
                         this.submitted = true;
 
                         if (this.$route.fullPath.indexOf('leaderboards') > -1) {
-                            if (this.arrayItemProp.__typename === 'Rhetoric') {
+                            if (this.applicableDocument.__typename === 'Rhetoric') {
                                 this.$parent.$emit('arguments-changed');
-                            } else if (this.arrayItemProp.__typename === 'Opinion') {
+                            } else if (this.applicableDocument.__typename === 'Opinion') {
                                 this.$parent.$emit('opinions-changed');
-                            } else if (this.arrayItemProp.__typename === 'Resource') {
+                            } else if (this.applicableDocument.__typename === 'Resource') {
                                 this.$parent.$emit('resources-changed');
-                            } else if (this.arrayItemProp.__typename === 'BulletPoint') {
+                            } else if (this.applicableDocument.__typename === 'BulletPoint') {
                                 this.$parent.$emit('bulletpoints-changed');
-                            } else if (this.arrayItemProp.__typename === 'Project') {
+                            } else if (this.applicableDocument.__typename === 'Project') {
                                 this.$parent.$emit('projects-changed');
                             }
                         } else {
-                            if (this.arrayItemProp.__typename === 'Rhetoric') {
+                            if (this.applicableDocument.__typename === 'Rhetoric') {
                                 this.$parent.$emit('update-tos-query');
-                            } else if (this.arrayItemProp.__typename === 'Opinion') {
+                            } else if (this.applicableDocument.__typename === 'Opinion') {
                                 this.$emit('update-view-opinion-query');
-                            } else if (this.arrayItemProp.__typename === 'BulletPoint' ||
-                                        this.arrayItemProp.__typename === 'Resource') {
+                            } else if (this.applicableDocument.__typename === 'BulletPoint' ||
+                                this.applicableDocument.__typename === 'Resource') {
                                 this.$parent.$emit('update-arguments-query');
-                            } else if (this.arrayItemProp.__typename === 'Project') {
+                            } else if (this.applicableDocument.__typename === 'Project') {
+                                this.$parent.$emit('update-projects-query');
+                            }
+                        }
+                    }).catch(() => {
+                        // Errors handled in apolloProvider.js (client-side) and resolverHelpers.js (server-side)
+                    });
+                }
+            },
+            submitEditOpinion: async function () {
+                await this.$apollo.queries.currentUser.refetch();
+
+                if (!this.currentUser) {
+                    this.$toasted.global.log_in();
+                } else if (!this.currentUser.emailVerified) {
+                    this.$toasted.global.verify_email();
+                } else if (!this.currentUser.admin) {
+                    this.$toasted.show('You are not authorized to do this', {
+                        duration: 5000,
+                        position: 'bottom-center',
+                        fullWidth: true,
+                        fitToScreen: true,
+                        singleton: true,
+                        action: [{
+                            text: 'Close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }]
+                    });
+                } else if (this.validOpinion(this.opinion)) {
+                    //GraphQL Mutation
+                    this.$apollo.mutate({
+                        mutation: gql `
+                            mutation submitEditOpinion($documentID: ID!, $opinion: String!){
+                                submitEditOpinion(documentID: $documentID, opinion: $opinion)
+                            }
+                        `,
+                        variables: {
+                            documentID: this.opinionDocument._id,
+                            opinion: this.opinion
+                        }
+                    }).then(() => {
+                        this.submitted = true;
+
+                        if (this.$route.fullPath.indexOf('leaderboards') > -1) {
+                            if (this.applicableDocument.__typename === 'Rhetoric') {
+                                this.$parent.$emit('arguments-changed');
+                            } else if (this.applicableDocument.__typename === 'Opinion') {
+                                this.$parent.$emit('opinions-changed');
+                            } else if (this.applicableDocument.__typename === 'Resource') {
+                                this.$parent.$emit('resources-changed');
+                            } else if (this.applicableDocument.__typename === 'BulletPoint') {
+                                this.$parent.$emit('bulletpoints-changed');
+                            } else if (this.applicableDocument.__typename === 'Project') {
+                                this.$parent.$emit('projects-changed');
+                            }
+                        } else {
+                            if (this.applicableDocument.__typename === 'Rhetoric') {
+                                this.$parent.$emit('update-tos-query');
+                            } else if (this.applicableDocument.__typename === 'Opinion') {
+                                this.$emit('update-view-opinion-query');
+                            } else if (this.applicableDocument.__typename === 'BulletPoint' ||
+                                this.applicableDocument.__typename === 'Resource') {
+                                this.$parent.$emit('update-arguments-query');
+                            } else if (this.applicableDocument.__typename === 'Project') {
                                 this.$parent.$emit('update-projects-query');
                             }
                         }

@@ -21,6 +21,7 @@ module.exports = async (_, {
     Resource,
     Rhetoric,
     Project,
+    Opinion,
     currentUser
 }) => {
     try {
@@ -28,7 +29,7 @@ module.exports = async (_, {
         if (!currentUser) throw new AuthenticationError('log-in');
         if (!currentUser.emailVerified) throw new ForbiddenError('verify-email');
         if (!currentUser.admin) throw new UserInputError('admin');
-        if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric' && onModel !== 'Project') throw new UserInputError('invalid-model')
+        if (onModel !== 'BulletPoint' && onModel !== 'Resource' && onModel !== 'Rhetoric' && onModel !== 'Project' && onModel !== 'Opinion') throw new UserInputError('invalid-model')
 
         switch (onModel) {
             case "BulletPoint":
@@ -52,6 +53,11 @@ module.exports = async (_, {
                 var applicableDocument = await Project.findOne({
                     _id: documentID
                 });
+
+            case "Opinion":
+                var applicableDocument = await Opinion.findOne({
+                    _id: documentID
+                });
         }
 
         if (!applicableDocument) throw new UserInputError('invalid-id');
@@ -66,6 +72,7 @@ module.exports = async (_, {
         return true;
 
     } catch (err) {
+        console.log(err)
         throw new ApolloError(parseError(err.message, 'An unknown error occurred while submitting this Rhetoric'));
     }
 }

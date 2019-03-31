@@ -34,6 +34,7 @@ module.exports = async (_, {
         if (sortType === 'dateCreated') {
 
             opinions = await Opinion.find({
+                    active: true,
                     approved: true,
                     documentID: _id,
                     onModel
@@ -81,6 +82,7 @@ module.exports = async (_, {
             }
 
             opinions = await Opinion.find({
+                    active: true,
                     approved: true,
                     documentID: _id,
                     onModel
@@ -105,8 +107,8 @@ module.exports = async (_, {
             } else {
                 opinions = await sortArrayByVoteAscending(opinions)
             }
-
             opinions = opinions.slice(0, (index + 10));
+            
         } else {
             throw new UserInputError('invalid-sort-type');
         }

@@ -122,10 +122,11 @@
                                 opinion
                                 onModel
                                 documentID
+                                active
                                 approved
-                                censored
-                                censoredBy
-                                censoredCommentary
+                                approvedBy
+                                dateApproved
+                                approvalCommentary
                                 votes {
                                     _id
                                     dateCreated

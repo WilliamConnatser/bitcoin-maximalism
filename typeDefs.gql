@@ -81,14 +81,14 @@ type Opinion {
     _id: ID
     dateCreated: String!
     createdBy: User!
+    active: Boolean!
     slug: String
     metaSlug: String!
     opinion: String!
     approved: Boolean!
-    censored: Boolean!
-    dateCensored: String
-    censoredBy: String
-    censoredCommentary: String
+    dateApproved: String
+    approvedBy: String
+    approvalCommentary: String
     documentID: ID!
     onModel: String!
     votes: [Vote!]!
@@ -273,12 +273,12 @@ type Mutation {
     submitOpinion(onModel: String!, documentID: ID!, opinion: String!): Float
     submitVote(onModel: String!, documentID: ID!, upVote: Boolean!): Float
     submitDonation(amount: String!, userID: ID!, onModel: String, documentID: ID): ID
-
     submitBulletPoint(metaSlug: String!, slug: String!, content: String!): ID
     submitResource(metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): ID
     submitRhetoric(metaSlug: String!, slug: String!, title: String!): ID
     submitProject(metaSlug: String!, title: String!, link: String!, description: String!): ID
 
+    submitEditOpinion(documentID: ID!, opinion: String!): Boolean
     submitEditRhetoric(documentID: ID!, metaSlug: String!, slug: String!, title: String!): Boolean
     submitEditBulletPoint(documentID: ID!, metaSlug: String!, slug: String!, content: String!): Boolean
     submitEditResource(documentID: ID!, metaSlug: String!, slug: String!, title: String!, media: String!, link: String!): Boolean

@@ -9,7 +9,7 @@
                 </div>
             </div>
         </a>
-        <a v-else @click="show('viewOpinions'), cancel('viewEdits'), cancel('submitOpinion')" class="cursor-pointer">
+        <a v-else @click="show('viewOpinions'), cancel('submitOpinion')" class="cursor-pointer">
             <div class="list-action-group small-text" title="Show Opinions">
                 opinions
                 <div class="unstyled-link list-action-group-icon">
@@ -18,15 +18,6 @@
                 </div>
             </div>
         </a>
-
-        <!--
-            <div class="action-icon-group">
-                <strong v-if="this.viewEdits !== null" @click="cancel('viewEdits')" class="action-count extra-small-text">X</strong>
-                <strong v-else @click="show('viewEdits'), cancel('viewOpinions'), cancel('submitEdit')" class="action-count extra-small-text">{{docIDSpecificOpinionCount}}</strong>
-                <font-awesome-icon v-if="this.viewEdits === null" icon="pen-square" title="View Edits" class="action-icon" />
-                <font-awesome-icon v-else icon="square" title="View Edits" class="action-icon" />
-            </div>
-        -->
 
         <div v-if="this.viewOpinions !== null">
             <button v-if="this.submitOpinion === null" @click="show('submitOpinion')" class="cursor-pointer">
@@ -37,27 +28,15 @@
             </button>
 
             <ViewOpinions v-if="this.submitOpinion === null" :arrayItemProp="arrayItemProp" />
-            <SubmitOpinions v-if="this.submitOpinion !== null" :arrayItemProp="arrayItemProp" />
+            <SubmitOpinions v-if="this.submitOpinion !== null" :applicableDocument="arrayItemProp" />
         </div>
-        <!--
-            <div v-if="this.viewEdits !== null">
-                <h2>Suggest an Edit</h2>
-                <button v-if="this.submitEdit === null" @click="show('submitEdit')">Submit Edit</button>
-                <button v-if="this.submitEdit !== null" @click="cancel('submitEdit')">View Edits</button>
-
-                <ViewEdits v-if="this.submitEdit === null" :arrayItemProp="arrayItemProp" :metaSlug="metaSlug" />
-                <SubmitEdits v-if="this.submitEdit !== null" :arrayItemProp="arrayItemProp" :metaSlug="metaSlug" />
-            </div>
-        -->
     </div>
 </template>
 
 <script>
     import gql from 'graphql-tag';
     import ViewOpinions from '../utility/ViewOpinions';
-    import ViewEdits from '../utility/ViewEdits';
     import SubmitOpinions from '../utility/SubmitOpinions';
-    import SubmitEdits from '../utility/SubmitEdits';
 
     export default {
         name: "ToolbarActions",
@@ -66,16 +45,13 @@
         },
         components: {
             ViewOpinions,
-            ViewEdits,
-            SubmitOpinions,
-            SubmitEdits
+            SubmitOpinions
         },
         data() {
             return {
                 currentUser: null,
                 docIDSpecificOpinionCount: 0,
                 viewOpinions: null,
-                viewEdits: null,
                 submitOpinion: null,
                 submitEdit: null
             }

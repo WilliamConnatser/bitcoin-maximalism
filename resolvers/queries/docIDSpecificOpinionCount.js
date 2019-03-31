@@ -17,6 +17,7 @@ module.exports = async (_, {
 }) => {
     try {
         return await Opinion.find({
+            active: true,
             approved: true,
             documentID: _id,
             onModel

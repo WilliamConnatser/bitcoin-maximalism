@@ -2,8 +2,10 @@
     <div>
         <button @click="toggleSort('votes')" class="small-button">
             Votes
-            <font-awesome-icon v-if="sortType==='votes' && sortDirection==='descending'" icon="sort-amount-down" title="Descending" />
-            <font-awesome-icon v-if="sortType==='votes' && sortDirection==='ascending'" icon="sort-amount-up" title="Ascending" />
+            <font-awesome-icon v-if="sortType==='votes' && sortDirection==='descending'" icon="sort-amount-down"
+                title="Descending" />
+            <font-awesome-icon v-if="sortType==='votes' && sortDirection==='ascending'" icon="sort-amount-up"
+                title="Ascending" />
         </button>
 
         <button @click="toggleSort('dateCreated')" class="small-button">
@@ -26,13 +28,33 @@
                 <div>
                     {{opinion.opinion}}
                 </div>
+                <div v-if="currentUser && currentUser.admin">
+                    <div class="list-submissions-toolbar small-text medium-margin">
+                        <span @click="show('editOpinion'), cancel('approveOpinion')"
+                            class="small-text icon-group cursor-pointer">
+                            <font-awesome-icon v-if="!editOpinion" icon="pen-square" class="large-icon" />
+                            <font-awesome-icon v-else icon="minus-square" class="large-icon" />
+                            <span>edit opinion</span>
+                        </span>
+
+                        <span v-if="currentUser && currentUser.admin"
+                            @click="show('approveOpinion'), cancel('editOpinion')"
+                            class="small-text icon-group cursor-pointer">
+                            <font-awesome-icon v-if="!approveOpinion" icon="check-square" class="large-icon" />
+                            <font-awesome-icon v-else icon="minus-square" class="large-icon" />
+                            <span>approve opinion</span>
+                        </span>
+                    </div>
+                    <SubmitOpinions v-if="editOpinion" :opinionDocument="opinion" />
+                    <ApproveSubmission v-if="approveOpinion" :submissionObject="opinion" />
+                </div>
                 <hr v-if="docIDSpecificOpinions.length-1!==forLoopIndex">
             </li>
-            <a class="pointer-cursor">
-                <button @click="loadMore()" v-if="docIDSpecificOpinionCount>index+10" class="medium-margin">Load More
-                    Opinions
-                </button>
-            </a>
+
+            <button @click="loadMore()" v-if="docIDSpecificOpinionCount>index+10" class="medium-margin">Load More
+                Opinions
+            </button>
+
         </ul>
         <div class="medium-margin" v-if="!$apollo.loading && (!docIDSpecificOpinions || !docIDSpecificOpinions[0])">
             No one's commented on this yet...
@@ -43,6 +65,8 @@
 <script>
     import gql from 'graphql-tag';
     import ToolbarVotes from './ToolbarVotes';
+    import SubmitOpinions from './SubmitOpinions';
+    import ApproveSubmission from './ApproveSubmission';
 
     export default {
         name: "ViewOpinions",
@@ -50,7 +74,9 @@
             arrayItemProp: Object
         },
         components: {
-            ToolbarVotes
+            ToolbarVotes,
+            SubmitOpinions,
+            ApproveSubmission
         },
         data() {
             return {
@@ -59,6 +85,8 @@
                 viewEdits: null,
                 docIDSpecificOpinions: null,
                 docIDSpecificOpinionCount: null,
+                editOpinion: null,
+                approveOpinion: null,
                 sortType: 'votes',
                 sortDirection: 'descending',
                 index: 0
@@ -73,7 +101,11 @@
                 this[actionType] = null;
             },
             show(actionType) {
-                this[actionType] = true;
+                if (!this[actionType]) {
+                    this[actionType] = true;
+                } else {
+                    this[actionType] = false;
+                }
             },
             initialize(actionType) {
                 this.currentUser ? this[actionType] = true : this.$toasted.global.log_in();
@@ -133,6 +165,8 @@
                             username
                         }
                         opinion
+                        approved
+                        approvalCommentary
                         votes {
                             upVote
                             createdBy {

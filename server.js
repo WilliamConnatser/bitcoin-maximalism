@@ -48,7 +48,7 @@ mongoose
         useNewUrlParser: true,
         useCreateIndex: true
     })
-    .then(async ({
+    .then(({
         models
     }) => {
         console.log("MongoDB Database Connected")
