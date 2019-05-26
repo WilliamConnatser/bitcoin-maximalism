@@ -1,7 +1,12 @@
 <template>
     <div class="small-text medium-margin">
-        <div v-if="object.dateApproved" class="small-text medium-margin">
-            <div v-if="object.approved">
+        <div v-if="object.dateApproved || object.__typename === 'Opinion'" class="small-text medium-margin">
+            <div v-if="object.__typename === 'Opinion' && object.approved">
+                This {{title}} was automatically approved.
+                <br />
+                <ArgumentLink :object="object" />
+            </div>
+            <div v-else-if="object.approved">
                 This {{title}} was approved on {{object.dateApproved | formatDate}}
                 <br />
                 <ArgumentLink :object="object" />

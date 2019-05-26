@@ -298,6 +298,7 @@
                                 link
                                 description
                                 approved
+                                dateApproved
                                 approvalCommentary
                                 approvedBy {
                                     _id

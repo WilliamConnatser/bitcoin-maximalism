@@ -2,7 +2,7 @@
     <div class="submission-form">
         <form v-if="!submitted" @submit.prevent="submitForm()">
             <h2 v-if="projectObject === undefined" class="medium-margin-vertical">submit project</h2>
-            <h2 class="medium-margin-vertical">edit project</h2>
+            <h2 v-else class="medium-margin-vertical">edit project</h2>
             <div class="medium-margin-vertical">
                 <label>project type</label>
                 <select v-model="metaSlug" class="wide-input">

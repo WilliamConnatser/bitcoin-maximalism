@@ -2,6 +2,8 @@
 Playground*.html
 Playground*/
 
+#VScode settings
+.vscode/
 
 #ZEIT configuration files
 now.json

@@ -16,7 +16,8 @@
                                 <div v-if="argument.approved">
                                     This argument was approved on {{argument.dateApproved | formatDate}}
                                     <br />
-                                    <router-link :to="argumentLink(argument.metaSlug, argument.slug)" class="small-uppercase-link">
+                                    <router-link :to="argumentLink(argument.metaSlug, argument.slug)"
+                                        class="small-uppercase-link">
                                         {{argumentLink(argument.metaSlug,argument.slug)}}
                                     </router-link>
                                 </div>
@@ -30,15 +31,18 @@
                                 This argument has not been approved yet.
                             </div>
                         </div>
-                        <div v-if="currentUser && (currentUser.admin || (argument.createdBy._id === currentUser._id && !argument.dateApproved))">
+                        <div
+                            v-if="currentUser && (currentUser.admin || (argument.createdBy._id === currentUser._id && !argument.dateApproved))">
                             <div class="list-submissions-toolbar small-text medium-margin">
-                                <span @click="show('editRhetoric'), cancel('approveRhetoric')" class="small-text icon-group cursor-pointer">
+                                <span @click="show('editRhetoric'), cancel('approveRhetoric')"
+                                    class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!editRhetoric" icon="pen-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit argument</span>
                                 </span>
 
-                                <span v-if="currentUser && currentUser.admin" @click="show('approveRhetoric'), cancel('editRhetoric')"
+                                <span v-if="currentUser && currentUser.admin"
+                                    @click="show('approveRhetoric'), cancel('editRhetoric')"
                                     class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!approveRhetoric" icon="check-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
@@ -72,7 +76,8 @@
                                 <div v-if="bulletPoint.approved">
                                     This bulletpoint was approved on {{bulletPoint.dateApproved | formatDate}}
                                     <br />
-                                    <router-link :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)" class="small-uppercase-link">
+                                    <router-link :to="argumentLink(bulletPoint.metaSlug, bulletPoint.slug)"
+                                        class="small-uppercase-link">
                                         {{argumentLink(bulletPoint.metaSlug,bulletPoint.slug)}}
                                     </router-link>
                                 </div>
@@ -86,7 +91,8 @@
                                 This bulletpoint has not been approved yet.
                             </div>
                         </div>
-                        <div v-if="currentUser && (currentUser.admin || (bulletPoint.createdBy._id === currentUser._id && !bulletPoint.dateApproved))">
+                        <div
+                            v-if="currentUser && (currentUser.admin || (bulletPoint.createdBy._id === currentUser._id && !bulletPoint.dateApproved))">
                             <div class="list-submissions-toolbar small-text medium-margin">
                                 <span @click="show('editBulletPoint'), cancel('approveBulletPoint')" class="small-text
                                     icon-group cursor-pointer">
@@ -94,9 +100,11 @@
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit bulletpoint</span>
                                 </span>
-                                <span v-if="currentUser && currentUser.admin" @click="show('approveBulletPoint'), cancel('editBulletPoint')"
+                                <span v-if="currentUser && currentUser.admin"
+                                    @click="show('approveBulletPoint'), cancel('editBulletPoint')"
                                     class="small-text icon-group cursor-pointer">
-                                    <font-awesome-icon v-if="!approveBulletPoint" icon="check-square" class="large-icon" />
+                                    <font-awesome-icon v-if="!approveBulletPoint" icon="check-square"
+                                        class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>approve bulletpoint</span>
                                 </span>
@@ -133,7 +141,8 @@
                             <div v-if="resource.approved">
                                 This resource was approved on {{resource.dateApproved | formatDate}}
                                 <br />
-                                <router-link :to="argumentLink(resource.metaSlug, resource.slug)" class="small-uppercase-link">
+                                <router-link :to="argumentLink(resource.metaSlug, resource.slug)"
+                                    class="small-uppercase-link">
                                     {{argumentLink(resource.metaSlug, resource.slug)}}
                                 </router-link>
                             </div>
@@ -146,15 +155,18 @@
                         <div v-else class="small-text medium-margin">
                             This resource has not been approved yet.
                         </div>
-                        <div v-if="currentUser && (currentUser.admin || (resource.createdBy._id === currentUser._id && !resource.dateApproved))">
+                        <div
+                            v-if="currentUser && (currentUser.admin || (resource.createdBy._id === currentUser._id && !resource.dateApproved))">
                             <div class="list-submissions-toolbar small-text medium-margin">
-                                <span @click="show('editResource'), cancel('approveResource')" class="small-text icon-group cursor-pointer">
+                                <span @click="show('editResource'), cancel('approveResource')"
+                                    class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!editResource" icon="pen-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit resource</span>
                                 </span>
 
-                                <span v-if="currentUser && currentUser.admin" @click="show('approveResource'), cancel('editResource')"
+                                <span v-if="currentUser && currentUser.admin"
+                                    @click="show('approveResource'), cancel('editResource')"
                                     class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!approveResource" icon="check-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
@@ -183,10 +195,11 @@
                         <br />
                         <a :href="project.link" class="unstyled-link">
                             <span class="media-type">
-                                { {{project.title}} }
+                                { {{project.metaSlug}} }
                             </span>
+                            {{project.title}}
                         </a>
-                        <br/>
+                        <br />
                         {{project.description}}
 
                         <div v-if="project.dateApproved" class="small-text medium-margin">
@@ -202,15 +215,18 @@
                         <div v-else class="small-text medium-margin">
                             This project has not been approved yet.
                         </div>
-                        <div v-if="currentUser && (currentUser.admin || (project.createdBy._id === currentUser._id && !project.dateApproved))">
+                        <div
+                            v-if="currentUser && (currentUser.admin || (project.createdBy._id === currentUser._id && !project.dateApproved))">
                             <div class="list-submissions-toolbar small-text medium-margin">
-                                <span @click="show('editProject'), cancel('approveProject')" class="small-text icon-group cursor-pointer">
+                                <span @click="show('editProject'), cancel('approveProject')"
+                                    class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!editProject" icon="pen-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />
                                     <span>edit project</span>
                                 </span>
 
-                                <span v-if="currentUser && currentUser.admin" @click="show('approveProject'), cancel('editProject')"
+                                <span v-if="currentUser && currentUser.admin"
+                                    @click="show('approveProject'), cancel('editProject')"
                                     class="small-text icon-group cursor-pointer">
                                     <font-awesome-icon v-if="!approveProject" icon="check-square" class="large-icon" />
                                     <font-awesome-icon v-else icon="minus-square" class="large-icon" />

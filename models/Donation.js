@@ -62,6 +62,9 @@ const DonationSchema = new mongoose.Schema({
     },
     documentID: {
         type: String
+    },
+    metaSlug: {
+        type: String
     }
 });
 

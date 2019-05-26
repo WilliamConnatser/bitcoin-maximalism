@@ -124,6 +124,7 @@ type Donation {
     accruing: Boolean! # If the donation is attributable towards total donated for upvotes/downvotes
     onModel: String! # The model the donation is applicable to
     documentID: ID # Only really used if non-acruuing vote to buy certificates etc
+    metaSlug: String #Meta slug of the applicable document if the donation is non-accruing
     bonusPercentage: Float # The bonus percentage applied to their original donation
     preBonusAmount: Float # The donation amount before the bonus was applied
 }

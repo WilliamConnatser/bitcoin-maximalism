@@ -41,8 +41,8 @@ module.exports = async (_, {
                     });
 
                 donations.forEach(donation => {
+                    //On all applicable donations, OnModel will == Project
                     if (donation.onModel === 'Project') {
-                        console.log(donation)
                         if (donation.metaSlug === "protagonistic") {
                             proCount += donation.preBonusAmount;
                         } else {

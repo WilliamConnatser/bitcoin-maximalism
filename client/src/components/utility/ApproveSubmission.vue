@@ -2,8 +2,14 @@
     <div class="submission-form">
         <form v-if="!submitted" @submit.prevent="submitApproval()">
             <h2 class="medium-margin-vertical">approve {{submissionObject.__typename.toLowerCase()}}</h2>
+            
+            <div v-if="submissionObject.__typename === 'BulletPoint' || submissionObject.__typename === 'Resource' || submissionObject.__typename === 'Opinion'">
+                <h3>MetaSlug:</h3>
+                {{submissionObject.metaSlug}}
+                <h3>Slug:</h3>
+                {{submissionObject.slug}}
+            </div>
             <div class="medium-margin-vertical">
-
                 <label @click="approved = !approved" for="agree" class="checkbox">
                     <input type="checkbox" name="agree" class=".checkbox">
                     <font-awesome-icon v-if="!approved" icon="square" title="Unchecked" class="checkbox__icon" />

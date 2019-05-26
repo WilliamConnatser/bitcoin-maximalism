@@ -41,10 +41,11 @@
                 </router-link>
                 <div v-else>
                     <a :href="singleDocument.link" class="unstyled-link">
+                        <span class="media-type">
+                            { {{singleDocument.metaSlug}} }
+                        </span>
                         {{singleDocument.title}}
                     </a>
-                    <br/>
-                    allegiance: {{singleDocument.metaSlug}}
                     <br/>
                     bitcoin raised: {{calculateDonations(singleDocument.donations)}}
                     <p class="medium-margin-vertical">
