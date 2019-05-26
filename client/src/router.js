@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Router from "vue-router";
+import VueRouter from "vue-router";
 
 import Leaderboards from "./components/views/Leaderboards.vue";
 import About from "./components/views/About.vue";
@@ -19,15 +19,26 @@ import SubmissionStatus from "./components/views/SubmissionStatus.vue";
 import Projects from "./components/views/Projects.vue";
 //import Maintenance from "./components/views/Maintenance.vue";
 
-Vue.use(Router);
+Vue.use(VueRouter);
 
-export default new Router({
+export default new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes: [/*{
-    path: "*",
-    component: Maintenance
-  }*/
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return {
+        x: 0,
+        y: 0
+      }
+    }
+  },
+  routes: [
+    /*{
+        path: "*",
+        component: Maintenance
+      }*/
     {
       path: "/",
       component: Intro
