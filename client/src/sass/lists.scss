@@ -1,7 +1,8 @@
 .list {
-    max-width: 100rem;
+    max-width: 1000px;
     list-style-type: none;
-    margin: 2rem auto;
+    margin: 20px auto;
+    padding: 5px;
 
     border: solid;
     border-width: .2rem;
@@ -53,6 +54,9 @@
     }
 
     &-action-group {
+        
+        padding: 0;
+        margin: 0;
 
         &:hover {
             transform: scale(1.2, 1.2);

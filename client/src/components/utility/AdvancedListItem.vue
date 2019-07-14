@@ -5,7 +5,7 @@
             <section>
                 <ToolbarVotes :arrayItemProp="arrayItem" />
 
-                <div class="medium-margin">
+                <div class="medium-margin-top">
                     <span v-if="arrayItem.__typename == 'BulletPoint'">{{arrayItem.content}}</span>
                     <a v-else-if="arrayItem.__typename == 'Resource'" :href="arrayItem.link" class="unstyled-link">
                         <span class="media-type">{ {{arrayItem.media}} } </span>{{arrayItem.title}}

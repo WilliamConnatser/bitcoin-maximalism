@@ -1,6 +1,6 @@
 {
-  "name": "bitcoin-maximalism-v2",
-  "version": "0.2.1",
+  "name": "bitcoin-maximalism",
+  "version": "0.2.2",
   "description": "BitcoinMaximalism.com is an unbiased and interactive overview of Bitcoin Maximalism.",
   "main": "server.js",
   "scripts": {
@@ -22,22 +22,22 @@
   },
   "dependencies": {
     "apollo-link-state": "^0.4.2",
-    "apollo-server": "^2.4.2",
-    "bcrypt": "^3.0.4",
+    "apollo-server": "^2.6.9",
+    "bcrypt": "^3.0.6",
     "btcpay": "github:btcpayserver/node-btcpay",
     "dotenv": "^6.2.0",
     "graphql": "^0.13.2",
     "i": "^0.3.6",
-    "jsonwebtoken": "^8.4.0",
+    "jsonwebtoken": "^8.5.1",
     "md5": "^2.2.1",
-    "mongoose": "^5.4.13",
+    "mongoose": "^5.6.4",
     "nodemailer": "^5.1.1",
-    "npm": "^6.8.0"
+    "npm": "^6.10.1"
   },
   "devDependencies": {
     "concurrently": "^3.6.0",
-    "node-sass": "^4.11.0",
-    "nodemon": "^1.18.10",
+    "node-sass": "^4.12.0",
+    "nodemon": "^1.19.1",
     "sass-loader": "^7.1.0"
   }
 }

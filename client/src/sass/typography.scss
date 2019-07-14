@@ -1,11 +1,10 @@
-h1 {
-    font-size: 4rem;
-    font-weight: 500;
-}
-
 h2 {
     font-size: 3rem;
     font-weight: 400;
+
+    @media screen and (max-width: $breakpoint-small) {
+        font-size: 2.25rem;
+    }
 }
 
 strong {
@@ -14,6 +13,17 @@ strong {
 
 a {
     cursor: pointer;
+}
+
+.heading {
+    font-size: 4rem;
+    font-weight: 400;
+    margin: 0 auto 20px;
+
+    @media screen and (max-width: $breakpoint-small) {
+        font-size: 3.25rem;
+        line-height: normal;
+    }
 }
 
 .extra-small-text {

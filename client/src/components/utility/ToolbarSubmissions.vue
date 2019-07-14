@@ -1,5 +1,5 @@
 <template>
-    <div class="list-submissions-toolbar medium-margin">
+    <div class="list-submissions-toolbar">
         <span v-if="this.$route.fullPath.includes('projects')" @click="show('submitProjects')"
             class="small-text icon-group cursor-pointer">
             <font-awesome-icon v-if="!submitProjects" icon="plus-square" class="large-icon" />

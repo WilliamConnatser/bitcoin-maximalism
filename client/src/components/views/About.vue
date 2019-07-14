@@ -2,12 +2,12 @@
     <div class="container apollo-response">
 
         <h1 class="heading">
-            about bitcoinmaximalism.com
+            about us
         </h1>
 
-        <div class="medium-margin">
+        <div class="medium-margin-bottom">
             <router-link to="/account">
-                <button class="large-button button-flash medium-margin">
+                <button class="large-button button-flash">
                     Register Here
                 </button>
             </router-link>

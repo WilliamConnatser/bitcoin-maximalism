@@ -58,16 +58,16 @@
     }
 }
 
-.heading {
-    margin: 0rem auto 20px;
-}
-
 .small-margin {
     margin: 10px;
 }
 
 .medium-margin {
     margin: 25px;
+}
+
+.medium-margin-top {
+    margin-top: 25px;
 }
 
 .medium-margin-vertical {
@@ -82,9 +82,31 @@
     margin: 50px 0;
 }
 
+.large-margin-bottom {
+    margin-bottom: 50px;
+}
+
 .btcpay-iframe {
     max-width: 100%;
     width: 320px;
     height: 720px;
     border: 0;
+}
+
+.toasted {
+    font-size: 2.5rem !important;
+    background: $color-blue !important;
+
+    @media screen and (max-width: $breakpoint-small) {
+        font-size: 2rem !important;
+    }
+}
+
+.ripple {
+    font-size: 2rem !important;
+    color: $color-white !important;
+
+    @media screen and (max-width: $breakpoint-small) {
+        font-size: 1.5rem !important;
+    }
 }
