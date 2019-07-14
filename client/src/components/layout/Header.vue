@@ -11,7 +11,7 @@
         <router-link to="/projects" :class="navClass('/projects')">projects</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/leaderboards/arguments" :class="navClass('/leaderboards/arguments')">leaderboards</router-link>
+        <router-link to="/leaderboards/arguments" :class="navClass('/leaderboards')">leaderboards</router-link>
       </li>
 
       <div class="right-nav">
