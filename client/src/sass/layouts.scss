@@ -16,6 +16,10 @@
     .inline-nav {
         display: inline-block;
         padding: 0 5px;
+
+        .active-nav {
+            font-weight: 600;
+        }
     }
 
     .right-nav {

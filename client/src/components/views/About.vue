@@ -73,8 +73,7 @@
             this web application is in open beta, so please let us know if you come accross
             any issues. All donations received during our open beta will be given a
             <strong>25% influence bonus</strong>. Refer your friends and receive a
-            <strong>10% influence bonus
-            </strong>
+            <strong>10% influence bonus</strong>
             that's permanently proportional to each of their donations!
         </div>
 

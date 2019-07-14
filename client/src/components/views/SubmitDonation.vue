@@ -13,8 +13,7 @@
             <p class="extra-small-text">
                 In most circumstances users will probably want to make sure their username is selected above, but
                 you may also make a donation on the behalf of another user if you would like to. Instead of the
-                donation
-                boosting your own influence, the donation would boost their influence.
+                donation boosting your own influence, the donation would boost their influence.
             </p>
         </div>
         <div class="medium-margin">

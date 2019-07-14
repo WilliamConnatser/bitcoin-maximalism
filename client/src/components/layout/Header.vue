@@ -2,16 +2,16 @@
   <header>
     <nav id="header" class="small-text">
       <li class="inline-nav">
-        <router-link to="/" class="unstyled-link">about</router-link>
+        <router-link to="/" :class="navClass('/')">about</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/arguments" class="unstyled-link">arguments</router-link>
+        <router-link to="/arguments" :class="navClass('/arguments')">arguments</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/projects" class="unstyled-link">projects</router-link>
+        <router-link to="/projects" :class="navClass('/projects')">projects</router-link>
       </li>
       <li class="inline-nav">
-        <router-link to="/leaderboards/arguments" class="unstyled-link">leaderboards</router-link>
+        <router-link to="/leaderboards/arguments" :class="navClass('/leaderboards/arguments')">leaderboards</router-link>
       </li>
 
       <div class="right-nav">
@@ -65,6 +65,13 @@
     methods: {
       toggleSocial() {
         this.showSocial = !this.showSocial;
+      },
+      navClass(slug){
+        //All routes start with / so it must be treated differently
+        if(slug !== '/')
+          return this.$route.path.startsWith(slug) ? "active-nav unstyled-link" : "unstyled-link"
+        else
+          return this.$route.path === slug ? "active-nav unstyled-link" : "unstyled-link"
       }
     },
     components: {
