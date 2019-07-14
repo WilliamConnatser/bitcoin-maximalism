@@ -2,25 +2,25 @@
     <div class="list-submissions-toolbar">
         <span v-if="this.$route.fullPath.includes('projects')" @click="show('submitProjects')"
             class="small-text icon-group cursor-pointer">
-            <font-awesome-icon v-if="!submitProjects" icon="plus-square" class="large-icon" />
+            <font-awesome-icon v-if="!submitProjects" icon="plus-square" class="large-icon" title="Submit A Project" />
             <font-awesome-icon v-else icon="minus-square" class="large-icon" />
             <span>project</span>
         </span>
         <span v-if="slug === undefined && !this.$route.fullPath.includes('projects')" @click="show('submitRhetoric')"
             class="small-text icon-group cursor-pointer">
-            <font-awesome-icon v-if="!submitRhetoric" icon="plus-square" class="large-icon" />
+            <font-awesome-icon v-if="!submitRhetoric" icon="plus-square" class="large-icon" title="Submit An Argument"/>
             <font-awesome-icon v-else icon="minus-square" class="large-icon" />
             <span>argument</span>
         </span>
         <span v-if="slug !== undefined" @click="show('submitBulletPoints'), cancel('submitResources'), cancel('submitRhetoric')"
             class="small-text icon-group cursor-pointer">
-            <font-awesome-icon v-if="!submitBulletPoints" icon="plus-square" class="large-icon" />
+            <font-awesome-icon v-if="!submitBulletPoints" icon="plus-square" class="large-icon" title="Submit A Bulletpoint" />
             <font-awesome-icon v-else icon="minus-square" class="large-icon" />
             <span>bulletpoint</span>
         </span>
         <span v-if="slug !== undefined" @click="show('submitResources'), cancel('submitBulletPoints'), cancel('submitRhetoric')"
             class="small-text icon-group cursor-pointer">
-            <font-awesome-icon v-if="!submitResources" icon="plus-square" class="large-icon" />
+            <font-awesome-icon v-if="!submitResources" icon="plus-square" class="large-icon" title="Submit A Resource"/>
             <font-awesome-icon v-else icon="minus-square" class="large-icon" />
             <span>resource</span>
         </span>

@@ -68,7 +68,7 @@ Vue.toasted.register('verify_email', 'Verify your email first.', {
     }]
 });
 
-Vue.toasted.register('accept_tos_privacy', 'Like cookies? By continuing you are agreeing to both:', {
+Vue.toasted.register('accept_tos_privacy', 'Like cookies? By continuing you are agreeing to:', {
     duration: null,
     position: 'bottom-center',
     fullWidth: true,
