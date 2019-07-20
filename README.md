@@ -1,6 +1,6 @@
 # www.BitcoinMaximalism.com v2
 
-Stack: Vue + Vue Router + Apollo GraphQL + Mongoose + MongoDB
+Stack: Vue + Vue Router + Apollo GraphQL + Mongoose + MongoDB + BTCPay
 
 ## Open Beta:
 
