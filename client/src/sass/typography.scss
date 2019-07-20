@@ -7,6 +7,15 @@ h2 {
     }
 }
 
+h3 {
+    font-size: 2.5rem;
+    font-weight: 400;
+
+    @media screen and (max-width: $breakpoint-small) {
+        font-size: 2rem;
+    }
+}
+
 strong {
     font-weight: 500;
 }

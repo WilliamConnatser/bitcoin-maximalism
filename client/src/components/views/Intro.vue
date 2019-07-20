@@ -5,7 +5,7 @@
         </h1>
 
         <div class="large-margin-bottom">
-            <h2>already know the basics?</h2>
+            <h3>already know the basics?</h3>
             <router-link to="/arguments">
                 <button class="large-button button-flash">
                     Become An Expert
