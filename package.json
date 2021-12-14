@@ -27,7 +27,7 @@
     "btcpay": "github:btcpayserver/node-btcpay",
     "dotenv": "^6.2.0",
     "graphql": "^0.13.2",
-    "i": "^0.3.6",
+    "i": "^0.3.7",
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.2.1",
     "mongoose": "^5.7.5",
