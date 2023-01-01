@@ -38,6 +38,6 @@
     "concurrently": "^3.6.0",
     "node-sass": "^4.13.1",
     "nodemon": "^1.19.1",
-    "sass-loader": "^7.1.0"
+    "sass-loader": "^13.2.0"
   }
 }
